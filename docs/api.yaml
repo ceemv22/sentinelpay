@@ -1,0 +1,192 @@
+openapi: 3.2.0
+info:
+  title: sentinelpay risk scoring API
+  description: |
+    ## real-time pre-deposit wallet risk evaluation
+
+    sentinelpay is a lightweight risk decision layer for crypto payment flows.
+    it scoreds wallet addresses before funds are acceted, helping platforms reject
+    deposits from malicious actors, mixer funds, and sanctioned addresses.
+
+    ### phase 1 capabilities (MVP)
+    - heuristics-based scoring (no ML)
+    - six core risk signals
+    - simple REST API
+    - designed for high-risk verticals (crypto casinos, OTC desks, onchain marketplaces)
+
+    ### rate limits
+    - starter plan: 5,000 requests/month
+    - pro plan: 25,000 requests/month
+    - hard limit enforced with 429 response
+
+    ### authentication (phase 2)
+    API key authentication will be added post-validation. phase 1 is open for design partners.
+  version: 1.0.0
+  contact:
+    name: sentinelpay
+    url: https://github.com/ceemv22/sentinelpay
+    email: ceemv22@aol.com
+tags:
+  - name: scoring
+    summary: risk evaluation endpoints
+    description: |
+      endpoints for real-time wallet risk assessment. use these to get a risk score and detailed
+      flags before accepting a crypto deposit.
+servers:
+  - url: http://localhost:3000/v1
+    description: local development
+  - url: https://api.sentinelpay.dev/v1
+    description: production (coming soon)
+paths:
+  /score:
+    post:
+      summary: score a wallet addresses
+      description: |
+        evaluates the wallet against phase 1 heuristics and returns a risk score (0-100),
+        risk category (low/medium/high), and a list of triggered flags.
+      operationId: scoreWallet
+      tags:
+      - $ref: '#/tags/Scoring'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScoreRequest'
+            examples:
+              establishedCleanWallet:
+                summary: established wallet (age > 180 days, no suspicious activity)
+                value:
+                  wallet: "0x742d35Cc6634C0532925a3b844Bc9e695d487DA2"
+              highRiskNewWallet:
+                summary: new wallet (< 7 days) with mixer interaction
+                value:
+                  wallet: "0x1da5821544e25c636c1417Ba96Ade4Cf6D2f9B5A"
+      responses:
+        '200':
+          description: successful scoring
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScoreResponse'
+              examples:
+                lowRiskResponse:
+                  summary: low risk - safe to accept
+                  value:
+                    wallet: "0x742d35Cc6634C0532925a3b844Bc9e695d487DA2"
+                    score: 12
+                    category: "low"
+                    flags: []
+                    timestamp: "2026-04-12T14:30:00Z"
+                highRiskResponse:
+                  summary: high risk - recommend rejection
+                  value:
+                    wallet: "0x1da5821544e25c636c1417Ba96Ade4Cf6D2f9B5A"
+                    score: 88
+                    category: "high"
+                    flags: ["mixer_interaction", "new_wallet", "high_velocity"]
+                    timestamp: "2026-04-12T14:30:05Z"
+        '400':
+          description: invalid wallet address format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: "invalid wallet address format. must be 0x followed by 40 hex characters"
+                code: 400
+        '429':
+          description: rate limit exceeded
+          headers:
+            Retry-after:
+              description: seconds until rate limit requests
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: "monthly request quota exceeded. please upgrade your plan"
+                code: 429
+        '500':
+          description: internal server error (data source unavailable)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: "unable to fetch on-chain data. please try later"
+                code: 500
+components:
+  schemas:
+    ScoreRequest:
+      type: object
+      required:
+        - wallet
+      properties:
+        wallet:
+          type: string
+          pattern: '^0x[a-fA-F0-9]{40}$'
+          description: ethereum wallet address (42 characters, case-insensitive hex)
+          example: "0x742d35Cc6634C0532925a3b844Bc9e695d487DA2"
+      additionalProperites: false
+    ScoreResponse:
+      type: object
+      required:
+        - wallet
+        - score
+        - category
+        - flags
+        - timestamp
+      properties:
+        wallet:
+          type: string
+          description: echoed wallet address (checksum format may be normalized)
+          exapmle: "0x742d35Cc6634C0532925a3b844Bc9e695d487DA2"
+        score:
+          type: integer
+          minimum: 0
+          maximum: 100
+          description: |
+            overall risk score calculated from weighted heuristics:
+            - 0-29: low risk (likely safe)
+            - 30-69: medium risk (requires manual review)
+            - 70-100: high risk (recommend rejection)
+          category:
+            type: string
+            enum: [low, medium, high]
+            description: risk category derived from score thresholds
+          flags:
+            type: array
+            items:
+              type: string
+              enum:
+                - mixer_interaction
+                - exploit_interaction
+                - high_velocity
+                - new_wallet
+                - imbalance
+                - sanctioned_cluster
+              description: |
+                specific heuristics that contributed to the score.
+                empty array indicated no flags triggered.
+              exapmle: ["mixer_interaction", "new_wallet"]
+            timestamp:
+              type: string
+              format: date-time
+              description: ISO 8601 UTC timestamp of the evaluation
+          additionalProperites: false
+    ErrorResponse:
+      type: object
+      required:
+        - error
+        - code
+      properties:
+        error:
+          type: string
+          description: human-readable error description
+        code:
+          type: integer
+          description: HTTP status code
+      additionalProperites: false
