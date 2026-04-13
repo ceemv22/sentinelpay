@@ -15,12 +15,12 @@ info:
     - designed for high-risk verticals (crypto casinos, OTC desks, onchain marketplaces)
 
     ### rate limits
-    - starter plan: 5,000 requests/month
-    - pro plan: 25,000 requests/month
+    - 30 requests per 15 minutes per IP
     - hard limit enforced with 429 response
 
-    ### authentication (phase 2)
-    API key authentication will be added post-validation. phase 1 is open for design partners.
+    ### authentication
+    phase 1 is open for design partners. API key authentication coming in phase 2.
+
   version: 1.0.0
   contact:
     name: sentinelpay
@@ -36,8 +36,8 @@ tags:
 servers:
   - url: http://localhost:3000/v1
     description: local development
-  - url: https://api.sentinelpay.dev/v1
-    description: production (coming soon)
+  - url: https://sentinelpay-production.up.railway.app/v1
+    description: production
 
 paths:
   /score:
@@ -97,6 +97,15 @@ paths:
               example:
                 error: "invalid wallet address format. must be 0x followed by 40 hex characters"
                 code: 400
+        '413':
+          description: request body too large
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: "request body too large"
+                code: 413
         '429':
           description: rate limit exceeded
           headers:
@@ -109,7 +118,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               example:
-                error: "monthly request quota exceeded. please upgrade your plan"
+                error: "request limit exceeded. try again in 15 minutes."
                 code: 429
         '500':
           description: internal server error
@@ -120,6 +129,15 @@ paths:
               example:
                 error: "unable to fetch on-chain data. please try again later"
                 code: 500
+        '504':
+          description: scoring engine timeout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: "scoring engine timeout"
+                code: 504
 
 components:
   schemas:
