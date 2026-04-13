@@ -1,5 +1,5 @@
 [phases.setup]
-nixPkgs = ["nodejs_18", "python3", "python3Packages.requests"]
+nixPkgs = ["nodejs_18", "python3"]
 
 [phases.install]
-cmds = ["cd api && npm install"]
+cmds = ["cd api && npm install", "python3 -m ensurepip && python3 -m pip install requests"]
