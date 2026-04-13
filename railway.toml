@@ -1,5 +1,6 @@
 [build]
 builder = "nixpacks"
+buildCommand = "cd api && npm install"
 
 [deploy]
 startCommand = "cd api && node index.js"
