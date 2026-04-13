@@ -71,6 +71,7 @@ app.post('/v1/score', (req, res) => {
     }, 25000);
 
     python.stdout.on('data', (data) => { output += data.toString(); });
+
     python.stderr.on('data', (data) => {
         errorOutput += data.toString();
         console.error('[python stderr]', data.toString());
@@ -129,6 +130,13 @@ app.get('/health', (req, res) => {
         version: '1.0.0',
         timestamp: new Date().toISOString()
     });
+});
+
+app.use((err, req, res, next) => {
+    if (err.type === 'entity.too.large') {
+        return res.status(413).json({ error: 'request body too large', code: 413 });
+    }
+    next(err);
 });
 
 app.use((req, res) => {
