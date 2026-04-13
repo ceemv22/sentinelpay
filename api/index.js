@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const { spawn } = require('child_process');
 const path = require('path');
+const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
 const app = express();
@@ -9,6 +10,19 @@ const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
+
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 30,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: {
+        error: 'prekoračen limit requestova. pokušaj ponovo za 15 minuta.',
+        code: 429
+    }
+});
+
+app.use('/v1/score', limiter);
 
 app.post('/v1/score', (req, res) => {
     const { wallet } = req.body;
@@ -103,4 +117,4 @@ app.use((req, res) => {
 app.listen(PORT, () => {
     console.log(`sentinelpay API running on http://localhost:${PORT}`);
     console.log(`test endpoint: POST http://localhost:${PORT}/v1/score`);
-}); 
+});
