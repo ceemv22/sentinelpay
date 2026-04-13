@@ -30,7 +30,7 @@ app.post('/v1/score', (req, res) => {
 
     const scriptPath = path.join(__dirname, '..', 'engine', 'score.py');
 
-    const python = spawn('python', [scriptPath, wallet, apiKey]);
+    const python = spawn('python3', [scriptPath, wallet, apiKey]);
 
     let output = '';
     let errorOutput = '';
