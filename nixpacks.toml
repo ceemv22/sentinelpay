@@ -1,5 +1,0 @@
-[phases.setup]
-nixPkgs = ["nodejs_18", "python3Full", "python3Packages.pip"]
-
-[phases.install]
-cmds = ["cd api && npm install", "python3 -m pip install --break-system-packages requests"]
