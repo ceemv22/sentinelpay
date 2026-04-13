@@ -3,6 +3,7 @@ const cors = require('cors');
 const { spawn } = require('child_process');
 const path = require('path');
 const rateLimit = require('express-rate-limit');
+const helmet = require('helmet');
 require('dotenv').config();
 
 const app = express();
@@ -10,8 +11,14 @@ const PORT = process.env.PORT || 3000;
 
 app.set('trust proxy', 1);
 
-app.use(cors());
-app.use(express.json());
+app.use(helmet());
+
+app.use(cors({
+    origin: process.env.ALLOWED_ORIGINS?.split(',') || '*',
+    methods: ['POST', 'GET'],
+}));
+
+app.use(express.json({ limit: '10kb' }));
 
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000,
@@ -22,7 +29,7 @@ const limiter = rateLimit({
         return req.headers['x-forwarded-for']?.split(',')[0].trim() || req.ip;
     },
     message: {
-        error: 'request limit exceeded. try again in 15 minutes',
+        error: 'request limit exceeded. try again in 15 minutes.',
         code: 429
     }
 });
@@ -48,36 +55,44 @@ app.post('/v1/score', (req, res) => {
     }
 
     const scriptPath = path.join(__dirname, '..', 'engine', 'score.py');
-
     const python = spawn('python3', [scriptPath, wallet, apiKey]);
 
     let output = '';
     let errorOutput = '';
+    let responded = false;
 
-    python.stdout.on('data', (data) => {
-        output += data.toString();
-    });
+    const timer = setTimeout(() => {
+        python.kill();
+        if (!responded) {
+            responded = true;
+            console.error(`[timeout] scoring engine killed after 25s | wallet: ${wallet}`);
+            res.status(504).json({ error: 'scoring engine timeout', code: 504 });
+        }
+    }, 25000);
 
+    python.stdout.on('data', (data) => { output += data.toString(); });
     python.stderr.on('data', (data) => {
         errorOutput += data.toString();
         console.error('[python stderr]', data.toString());
     });
 
     python.on('close', (code) => {
+        clearTimeout(timer);
+        if (responded) return;
+        responded = true;
+
         console.log(`[python] exited with code ${code}`);
-        if (errorOutput) {
-            console.error('[python debug]', errorOutput);
-        }
+        if (errorOutput) console.error('[python debug]', errorOutput);
 
         try {
             const result = JSON.parse(output.trim());
 
             if (result.error) {
-                return res.status(500).json({
-                    error: result.error,
-                    code: 500
-                });
+                return res.status(500).json({ error: result.error, code: 500 });
             }
+
+            const ip = req.headers['x-forwarded-for']?.split(',')[0].trim() || req.ip;
+            console.log(`[score] ip=${ip} wallet=${wallet.toLowerCase()} score=${result.score} category=${result.category} flags=${result.flags.join(',')}`);
 
             res.json({
                 wallet: wallet.toLowerCase(),
@@ -96,6 +111,10 @@ app.post('/v1/score', (req, res) => {
     });
 
     python.on('error', (err) => {
+        clearTimeout(timer);
+        if (responded) return;
+        responded = true;
+
         console.error('[spawn error]', err);
         res.status(500).json({
             error: 'failed to start scoring engine. is python installed?',
@@ -113,13 +132,9 @@ app.get('/health', (req, res) => {
 });
 
 app.use((req, res) => {
-    res.status(404).json({
-        error: 'not found',
-        code: 404
-    });
+    res.status(404).json({ error: 'not found', code: 404 });
 });
 
 app.listen(PORT, () => {
     console.log(`sentinelpay API running on http://localhost:${PORT}`);
-    console.log(`test endpoint: POST http://localhost:${PORT}/v1/score`);
 });
