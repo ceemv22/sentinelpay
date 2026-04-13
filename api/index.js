@@ -1,5 +1,7 @@
 const express = require('express');
 const cors = require('cors');
+const { spawn } = require('child_process');
+const path = require('path');
 require('dotenv').config();
 
 const app = express();
@@ -18,33 +20,69 @@ app.post('/v1/score', (req, res) => {
         });
     }
 
-    const normalizedWallet = wallet.toLowerCase();
-
-    let score, category, flags;
-
-    if (normalizedWallet === '0x1da5821544e25c636c1417ba96ade4cf6d2f9b5a') {
-        score = 88;
-        category = 'high';
-        flags = ['mixer_interaction', 'new_wallet', 'high_velocity'];
-    } else if (normalizedWallet === '0x742d35cc6634c0532925a3b844bc9e695d487da2') {
-        score = 12;
-        category = 'low';
-        flags = [];
-    } else {
-        score = 42;
-        category = 'medium';
-        flags = ['new_wallet'];
+    const apiKey = process.env.ETHERSCAN_API_KEY;
+    if (!apiKey) {
+        return res.status(500).json({
+            error: 'ETHERSCAN_API_KEY not configured',
+            code: 500
+        });
     }
 
-    const response = {
-        wallet: normalizedWallet,
-        score,
-        category,
-        flags,
-        timestamp: new Date().toISOString()
-    };
+    const scriptPath = path.join(__dirname, '..', 'engine', 'score.py');
 
-    res.json(response);
+    const python = spawn('python', [scriptPath, wallet, apiKey]);
+
+    let output = '';
+    let errorOutput = '';
+
+    python.stdout.on('data', (data) => {
+        output += data.toString();
+    });
+
+    python.stderr.on('data', (data) => {
+        errorOutput += data.toString();
+        console.error('[python stderr]', data.toString());
+    });
+
+    python.on('close', (code) => {
+        console.log(`[python] exited with code ${code}`);
+        if (errorOutput) {
+            console.error('[python debug]', errorOutput);
+        }
+
+        try {
+            const result = JSON.parse(output.trim());
+
+            if (result.error) {
+                return res.status(500).json({
+                    error: result.error,
+                    code: 500
+                });
+            }
+
+            res.json({
+                wallet: wallet.toLowerCase(),
+                score: result.score,
+                category: result.category,
+                flags: result.flags,
+                timestamp: new Date().toISOString()
+            });
+        } catch (e) {
+            console.error('[parse error]', e.message, '| raw output:', output);
+            res.status(500).json({
+                error: 'scoring engine returned invalid response',
+                code: 500
+            });
+        }
+    });
+
+    python.on('error', (err) => {
+        console.error('[spawn error]', err);
+        res.status(500).json({
+            error: 'failed to start scoring engine. is python installed?',
+            code: 500
+        });
+    });
 });
 
 app.get('/health', (req, res) => {
@@ -65,4 +103,4 @@ app.use((req, res) => {
 app.listen(PORT, () => {
     console.log(`sentinelpay API running on http://localhost:${PORT}`);
     console.log(`test endpoint: POST http://localhost:${PORT}/v1/score`);
-});
+}); 

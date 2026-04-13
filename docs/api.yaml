@@ -1,16 +1,16 @@
-openapi: 3.2.0
+openapi: 3.0.0
 info:
   title: sentinelpay risk scoring API
   description: |
     ## real-time pre-deposit wallet risk evaluation
 
     sentinelpay is a lightweight risk decision layer for crypto payment flows.
-    it scoreds wallet addresses before funds are acceted, helping platforms reject
+    it scores wallet addresses before funds are accepted, helping platforms reject
     deposits from malicious actors, mixer funds, and sanctioned addresses.
 
     ### phase 1 capabilities (MVP)
     - heuristics-based scoring (no ML)
-    - six core risk signals
+    - four core risk signals
     - simple REST API
     - designed for high-risk verticals (crypto casinos, OTC desks, onchain marketplaces)
 
@@ -26,27 +26,29 @@ info:
     name: sentinelpay
     url: https://github.com/ceemv22/sentinelpay
     email: ceemv22@aol.com
+
 tags:
   - name: scoring
-    summary: risk evaluation endpoints
     description: |
       endpoints for real-time wallet risk assessment. use these to get a risk score and detailed
       flags before accepting a crypto deposit.
+
 servers:
   - url: http://localhost:3000/v1
     description: local development
   - url: https://api.sentinelpay.dev/v1
     description: production (coming soon)
+
 paths:
   /score:
     post:
-      summary: score a wallet addresses
+      summary: score a wallet address
       description: |
         evaluates the wallet against phase 1 heuristics and returns a risk score (0-100),
         risk category (low/medium/high), and a list of triggered flags.
       operationId: scoreWallet
       tags:
-      - $ref: '#/tags/Scoring'
+        - scoring
       requestBody:
         required: true
         content:
@@ -55,13 +57,13 @@ paths:
               $ref: '#/components/schemas/ScoreRequest'
             examples:
               establishedCleanWallet:
-                summary: established wallet (age > 180 days, no suspicious activity)
+                summary: established wallet with no suspicious activity
                 value:
                   wallet: "0x742d35Cc6634C0532925a3b844Bc9e695d487DA2"
-              highRiskNewWallet:
-                summary: new wallet (< 7 days) with mixer interaction
+              highRiskWallet:
+                summary: wallet with known mixer interaction
                 value:
-                  wallet: "0x1da5821544e25c636c1417Ba96Ade4Cf6D2f9B5A"
+                  wallet: "0xd90e2f925DA726b50C4Ed8D0Fb90Ad053324F31b"
       responses:
         '200':
           description: successful scoring
@@ -73,19 +75,19 @@ paths:
                 lowRiskResponse:
                   summary: low risk - safe to accept
                   value:
-                    wallet: "0x742d35Cc6634C0532925a3b844Bc9e695d487DA2"
-                    score: 12
+                    wallet: "0x742d35cc6634c0532925a3b844bc9e695d487da2"
+                    score: 10
                     category: "low"
                     flags: []
-                    timestamp: "2026-04-12T14:30:00Z"
+                    timestamp: "2026-04-13T10:00:00Z"
                 highRiskResponse:
                   summary: high risk - recommend rejection
                   value:
-                    wallet: "0x1da5821544e25c636c1417Ba96Ade4Cf6D2f9B5A"
-                    score: 88
+                    wallet: "0xd90e2f925da726b50c4ed8d0fb90ad053324f31b"
+                    score: 60
                     category: "high"
-                    flags: ["mixer_interaction", "new_wallet", "high_velocity"]
-                    timestamp: "2026-04-12T14:30:05Z"
+                    flags: ["mixer_interaction", "io_imbalance"]
+                    timestamp: "2026-04-13T10:00:05Z"
         '400':
           description: invalid wallet address format
           content:
@@ -98,8 +100,8 @@ paths:
         '429':
           description: rate limit exceeded
           headers:
-            Retry-after:
-              description: seconds until rate limit requests
+            Retry-After:
+              description: seconds until rate limit resets
               schema:
                 type: integer
           content:
@@ -110,27 +112,29 @@ paths:
                 error: "monthly request quota exceeded. please upgrade your plan"
                 code: 429
         '500':
-          description: internal server error (data source unavailable)
+          description: internal server error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               example:
-                error: "unable to fetch on-chain data. please try later"
+                error: "unable to fetch on-chain data. please try again later"
                 code: 500
+
 components:
   schemas:
     ScoreRequest:
       type: object
       required:
         - wallet
+      additionalProperties: false
       properties:
         wallet:
           type: string
           pattern: '^0x[a-fA-F0-9]{40}$'
           description: ethereum wallet address (42 characters, case-insensitive hex)
           example: "0x742d35Cc6634C0532925a3b844Bc9e695d487DA2"
-      additionalProperites: false
+
     ScoreResponse:
       type: object
       required:
@@ -139,11 +143,12 @@ components:
         - category
         - flags
         - timestamp
+      additionalProperties: false
       properties:
         wallet:
           type: string
-          description: echoed wallet address (checksum format may be normalized)
-          exapmle: "0x742d35Cc6634C0532925a3b844Bc9e695d487DA2"
+          description: normalized (lowercased) wallet address
+          example: "0x742d35cc6634c0532925a3b844bc9e695d487da2"
         score:
           type: integer
           minimum: 0
@@ -151,42 +156,45 @@ components:
           description: |
             overall risk score calculated from weighted heuristics:
             - 0-29: low risk (likely safe)
-            - 30-69: medium risk (requires manual review)
-            - 70-100: high risk (recommend rejection)
-          category:
+            - 30-59: medium risk (manual review recommended)
+            - 60-100: high risk (recommend rejection)
+          example: 60
+        category:
+          type: string
+          enum: [low, medium, high]
+          description: risk category derived from score thresholds
+          example: "high"
+        flags:
+          type: array
+          items:
             type: string
-            enum: [low, medium, high]
-            description: risk category derived from score thresholds
-          flags:
-            type: array
-            items:
-              type: string
-              enum:
-                - mixer_interaction
-                - exploit_interaction
-                - high_velocity
-                - new_wallet
-                - imbalance
-                - sanctioned_cluster
-              description: |
-                specific heuristics that contributed to the score.
-                empty array indicated no flags triggered.
-              exapmle: ["mixer_interaction", "new_wallet"]
-            timestamp:
-              type: string
-              format: date-time
-              description: ISO 8601 UTC timestamp of the evaluation
-          additionalProperites: false
+            enum:
+              - mixer_interaction
+              - new_wallet
+              - high_velocity
+              - io_imbalance
+          description: |
+            specific signals that contributed to the score.
+            empty array indicates no flags triggered.
+          example: ["mixer_interaction", "io_imbalance"]
+        timestamp:
+          type: string
+          format: date-time
+          description: ISO 8601 UTC timestamp of the evaluation
+          example: "2026-04-13T10:00:05Z"
+
     ErrorResponse:
       type: object
       required:
         - error
         - code
+      additionalProperties: false
       properties:
         error:
           type: string
           description: human-readable error description
+          example: "invalid wallet address format"
         code:
           type: integer
           description: HTTP status code
-      additionalProperites: false
+          example: 400
