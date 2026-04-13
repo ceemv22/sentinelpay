@@ -18,8 +18,11 @@ const limiter = rateLimit({
     max: 30,
     standardHeaders: true,
     legacyHeaders: false,
+    keyGenerator: (req) => {
+        return req.headers['x-forwarded-for']?.split(',')[0].trim() || req.ip;
+    },
     message: {
-        error: 'prekoračen limit requestova. pokušaj ponovo za 15 minuta.',
+        error: 'request limit exceeded. try again in 15 minutes',
         code: 429
     }
 });

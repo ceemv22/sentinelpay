@@ -151,7 +151,7 @@ def calculate_score_and_flags(wallet, api_key):
 
 def main():
     print("[DEBUG] score.py started", file=sys.stderr)
-    print(f"[DEBUG] args: {sys.argv}", file=sys.stderr)
+    print(f"[DEBUG] wallet: {sys.argv[1] if len(sys.argv) > 1 else 'none'}", file=sys.stderr)
 
     if len(sys.argv) != 3:
         print(json.dumps({"error": "usage: python score.py <wallet> <api_key>"}))
