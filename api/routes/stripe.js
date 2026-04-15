@@ -1,5 +1,5 @@
 const express = require('express');
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY || 'sk_test_dummy_key_replace_me');
 const crypto = require('crypto');
 const prisma = require('../services/db');
 
