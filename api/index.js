@@ -25,22 +25,42 @@ app.use(express.json({ limit: '10kb' }));
 // Serve the PLG Frontend
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Redis Setup for Rate Limiting
-const redisClient = createClient({
-    url: process.env.REDIS_URL || 'redis://localhost:6379'
+// Redis Setup & Rate Limiter Store
+const redisUrl = process.env.REDIS_URL;
+let rateLimitStore;
+
+if (redisUrl) {
+    const redisClient = createClient({ url: redisUrl });
+    redisClient.on('error', (err) => console.error('[redis error]', err.message));
+    redisClient.connect().catch(err => console.error('[redis connect error]', err.message));
+    
+    rateLimitStore = new RedisStore({
+        sendCommand: (...args) => redisClient.sendCommand(args),
+    });
+    console.log('[rate-limit] RedisStore initialized.');
+} else {
+    // Fallback to memory store if Redis is not configured (e.g. local testing)
+    console.warn('[rate-limit] WARNING: REDIS_URL not found. Falling back to MemoryStore.');
+    rateLimitStore = undefined; 
+}
+
+// B2B API Limiter (used internally if needed, but primarily auth is used)
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 30,
+    standardHeaders: true,
+    legacyHeaders: false,
+    store: rateLimitStore,
+    message: { error: 'request limit exceeded. try again in 15 minutes.', code: 429 }
 });
-redisClient.connect().catch(console.error);
 
 // Public IP Rate Limiter (very strict for PLG frontend)
 const publicLimiter = rateLimit({
     windowMs: 60 * 60 * 1000, // 1 hour
-    max: 5, // 5 requests per IP per hour
+    max: 5, // 5 requests per IP
     standardHeaders: true,
     legacyHeaders: false,
-    store: new RedisStore({
-        sendCommand: (...args) => redisClient.sendCommand(args),
-    }),
-    keyGenerator: (req) => req.headers['x-forwarded-for']?.split(',')[0].trim() || req.ip,
+    store: rateLimitStore,
     message: { error: 'public rate limit exceeded. max 5 scans per hour.', code: 429 }
 });
 
