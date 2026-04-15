@@ -20,6 +20,10 @@ app.use(cors({
     origin: process.env.ALLOWED_ORIGINS?.split(',') || '*',
     methods: ['POST', 'GET'],
 }));
+
+// Stripe integration MUST be above express.json() because webhooks require raw Body Buffers for cryptographic signature verification.
+app.use('/v1/stripe', require('./routes/stripe'));
+
 app.use(express.json({ limit: '10kb' }));
 
 // Serve the PLG Frontend
