@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         resetUI();
         btn.disabled = true;
-        btn.textContent = 'Scanning...';
+        btn.textContent = 'scanning...';
 
         try {
             const response = await fetch('/v1/public/score', {
@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
             showError(err.message);
         } finally {
             btn.disabled = false;
-            btn.textContent = 'Scan Wallet';
+            btn.textContent = 'scan wallet';
         }
     });
 });
