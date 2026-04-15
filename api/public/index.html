@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SentinelPay | Pre-Deposit Risk Tool</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="background-mesh"></div>
+    <main class="container">
+        <header>
+            <div class="logo">SentinelPay</div>
+            <p class="subtitle">Real-time wallet risk scoring before you accept the deposit.</p>
+        </header>
+
+        <section class="scanner-card glass-panel">
+            <div class="input-group">
+                <input type="text" id="wallet-input" placeholder="0x..." autocomplete="off" spellcheck="false" maxlength="42">
+                <button id="scan-btn">Scan Wallet</button>
+            </div>
+            <div class="status-message" id="status-message"></div>
+        </section>
+
+        <section class="result-card glass-panel hidden" id="result-card">
+            <div class="traffic-light">
+                <div class="light red" id="light-high"></div>
+                <div class="light yellow" id="light-medium"></div>
+                <div class="light green" id="light-low"></div>
+            </div>
+            
+            <div class="score-details">
+                <div class="score-circle" id="score-value">--</div>
+            </div>
+
+            <div class="flags-container" id="flags-container">
+            </div>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>

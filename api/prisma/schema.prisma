@@ -1,0 +1,30 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model ApiKey {
+  id               String   @id @default(uuid())
+  keyHash          String   @unique
+  stripeCustomerId String?
+  plan             String   @default("starter")
+  active           Boolean  @default(true)
+  requestsCount    Int      @default(0)
+  createdAt        DateTime @default(now())
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  ip        String
+  wallet    String
+  score     Int
+  category  String
+  flags     String[]
+  endpoint  String   @default("/v1/score")
+  apiKeyId  String?  // nullable for public requests
+  timestamp DateTime @default(now())
+}
