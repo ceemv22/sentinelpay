@@ -27,21 +27,24 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Redis Setup & Rate Limiter Store
 const redisUrl = process.env.REDIS_URL;
-let rateLimitStore;
+let redisClient;
 
 if (redisUrl) {
-    const redisClient = createClient({ url: redisUrl });
+    redisClient = createClient({ url: redisUrl });
     redisClient.on('error', (err) => console.error('[redis error]', err.message));
     redisClient.connect().catch(err => console.error('[redis connect error]', err.message));
-    
-    rateLimitStore = new RedisStore({
-        sendCommand: (...args) => redisClient.sendCommand(args),
-    });
-    console.log('[rate-limit] RedisStore initialized.');
+    console.log('[rate-limit] Redis Client connected.');
 } else {
     // Fallback to memory store if Redis is not configured (e.g. local testing)
     console.warn('[rate-limit] WARNING: REDIS_URL not found. Falling back to MemoryStore.');
-    rateLimitStore = undefined; 
+}
+
+function createStore(prefix) {
+    if (!redisClient) return undefined;
+    return new RedisStore({
+        sendCommand: (...args) => redisClient.sendCommand(args),
+        prefix: prefix
+    });
 }
 
 // B2B API Limiter (used internally if needed, but primarily auth is used)
@@ -50,7 +53,7 @@ const limiter = rateLimit({
     max: 30,
     standardHeaders: true,
     legacyHeaders: false,
-    store: rateLimitStore,
+    store: createStore('b2b:'),
     message: { error: 'request limit exceeded. try again in 15 minutes.', code: 429 }
 });
 
@@ -60,7 +63,7 @@ const publicLimiter = rateLimit({
     max: 5, // 5 requests per IP
     standardHeaders: true,
     legacyHeaders: false,
-    store: rateLimitStore,
+    store: createStore('plg:'),
     message: { error: 'public rate limit exceeded. max 5 scans per hour.', code: 429 }
 });
 
