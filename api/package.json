@@ -13,14 +13,14 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "@prisma/client": "^7.7.0",
+    "@prisma/client": "^5.12.1",
     "@redis/client": "^5.12.1",
     "cors": "^2.8.6",
     "dotenv": "^17.4.1",
     "express": "^5.2.1",
     "express-rate-limit": "^8.3.2",
     "helmet": "^8.1.0",
-    "prisma": "^7.7.0",
+    "prisma": "^5.12.1",
     "rate-limit-redis": "^4.3.1",
     "redis": "^5.12.1",
     "stripe": "^22.0.1"
