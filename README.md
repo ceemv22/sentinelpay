@@ -26,32 +26,24 @@ wallet address → sentinelpay → risk score + flags → accept or reject
 
 ---
 
-## live API
+## live products (phase 2 active)
 
-```
-https://sentinelpay-production.up.railway.app
-```
+### 1. public PLG tool (free risk scanner)
+check any wallet directly via our simple UI without registration. 
+features traffic-light assessment logic (red/yellow/green) with a strict IP-based rate limit.
 
----
+**endpoint:** `POST /v1/public/score` (strictly limited to 5 req/hour/IP)
 
-## quickstart
+### 2. B2B enterprise API
+integrate directly into your payment processor. requires active authentication via `x-api-key`.
+
+**endpoint:** `POST /v1/score`
 
 ```bash
 curl -X POST https://sentinelpay-production.up.railway.app/v1/score \
   -H "Content-Type: application/json" \
+  -H "x-api-key: sp_your_api_key_here" \
   -d '{"wallet": "0xd90e2f925DA726b50C4Ed8D0Fb90Ad053324F31b"}'
-```
-
-**response:**
-
-```json
-{
-  "wallet": "0xd90e2f925da726b50c4ed8d0fb90ad053324f31b",
-  "score": 60,
-  "category": "high",
-  "flags": ["mixer_interaction", "io_imbalance"],
-  "timestamp": "2026-04-13T21:17:09.883Z"
-}
 ```
 
 ---
@@ -64,7 +56,7 @@ curl -X POST https://sentinelpay-production.up.railway.app/v1/score \
 | 30–59 | medium | manual review recommended |
 | 60–100 | high | recommend rejection |
 
-### signals (phase 1)
+### signals (v1.0)
 
 | flag | description | score impact |
 |------|-------------|-------------|
@@ -75,62 +67,14 @@ curl -X POST https://sentinelpay-production.up.railway.app/v1/score \
 
 ---
 
-## API reference
-
-### POST `/v1/score`
-
-**request:**
-
-```json
-{
-  "wallet": "0x742d35Cc6634C0532925a3b844Bc9e695d487DA2"
-}
-```
-
-**success response (200):**
-
-```json
-{
-  "wallet": "0x742d35cc6634c0532925a3b844bc9e695d487da2",
-  "score": 10,
-  "category": "low",
-  "flags": [],
-  "timestamp": "2026-04-13T10:00:00Z"
-}
-```
-
-**error responses:**
-
-| code | meaning |
-|------|---------|
-| 400 | invalid wallet address format |
-| 413 | request body too large |
-| 429 | rate limit exceeded (30 req / 15 min) |
-| 504 | scoring engine timeout |
-
-### GET `/health`
-
-```bash
-curl https://sentinelpay-production.up.railway.app/health
-```
-
-```json
-{
-  "status": "ok",
-  "version": "1.0.0",
-  "timestamp": "2026-04-13T21:36:02.063Z"
-}
-```
-
----
-
 ## tech stack
 
 - **API layer:** Node.js + Express
-- **scoring engine:** Python (rule-based heuristics)
-- **chain data:** Etherscan API (Ethereum mainnet)
-- **deployment:** Railway (Docker)
-- **security:** helmet, rate limiting, body size limit, subprocess timeout
+- **scoring engine:** Python (rule-based heuristics via Etherscan)
+- **database:** PostgreSQL (via Prisma ORM) for Audit Logging & API Auth
+- **scaling:** Redis for distributed rate-limiting
+- **frontend:** Vanilla HTML/CSS Glassmorphism UI
+- **billing:** Stripe Checkout integration
 
 ---
 
@@ -142,24 +86,28 @@ curl https://sentinelpay-production.up.railway.app/health
 | pro | $500+ / month | 25,000 req |
 | enterprise | custom | unlimited |
 
-phase 1 is open to design partners — **free 30-day access** for operators who want to test in production and provide feedback.
+*phase 1/2 is open to design partners — **free 30-day access** for operators who want to test in production and provide feedback.*
 
 ---
 
 ## roadmap
 
-**phase 1 (now)**
+**phase 1 (completed)**
 - [x] real-time wallet scoring via REST API
 - [x] four core risk signals
-- [x] rate limiting + security hardening
-- [x] OpenAPI 3.0 documentation
+- [x] basic rate limiting 
 
-**phase 2**
-- [ ] API key authentication + per-client rate limiting
-- [ ] usage dashboard
-- [ ] Postgres audit logging
+**phase 2 (completed)**
+- [x] free public frontend (PLG tool) with traffic light UI
+- [x] API key authentication (hashed into DB)
+- [x] Stripe billing + webhooks integration
+- [x] Redis distributed rate limiting
+- [x] Postgres audit logging
+
+**phase 3 (next)**
 - [ ] Solana support
 - [ ] ML-based scoring layer
+- [ ] automated ML model retrains based on chargeback data
 
 ---
 
@@ -167,7 +115,6 @@ phase 1 is open to design partners — **free 30-day access** for operators who 
 
 interested in early access or a demo?
 
+- twitter / X: [@Ceemv22](https://x.com/Ceemv22)
 - github: [@ceemv22](https://github.com/ceemv22)
 - email: ceemv22@aol.com
-
-> phase 1 is open for design partners. no strings attached — just looking for real operators to test with.
