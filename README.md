@@ -1,5 +1,7 @@
 # sentinelpay
 
+**Live at: [sentinelpay.org](https://sentinelpay.org)**
+
 **real-time wallet risk scoring API for crypto payment flows**
 
 score a wallet address before you accept a deposit. one API call returns a risk score, category, and flags — so you can reject bad funds before they hit your platform.
@@ -29,7 +31,7 @@ wallet address → sentinelpay → risk score + flags → accept or reject
 ## live products (phase 2 active)
 
 ### 1. public PLG tool (free risk scanner)
-check any wallet directly via our simple UI without registration. 
+check any wallet directly via our simple UI without registration at **[sentinelpay.org](https://sentinelpay.org)**. 
 features traffic-light assessment logic (red/yellow/green) with a strict IP-based rate limit.
 
 **endpoint:** `POST /v1/public/score` (strictly limited to 5 req/hour/IP)
