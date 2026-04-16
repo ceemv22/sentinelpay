@@ -123,4 +123,24 @@ document.addEventListener('DOMContentLoaded', () => {
         const text = encodeURIComponent(`Wallet [${lastResult.wallet.slice(0, 6)}...] flagged as ${lastResult.category.toUpperCase()} risk (${lastResult.score}/100) by @SentinelPay. \n\nProtect your B2B crypto flow: sentinelpay.org`);
         window.open(`https://twitter.com/intent/tweet?text=${text}`, '_blank');
     });
+
+    // Eye-Cursor Tracking Logic
+    const pupil = document.getElementById('eye-pupil');
+    if (pupil) {
+        document.addEventListener('mousemove', (e) => {
+            const windowCenterX = window.innerWidth / 2;
+            const windowCenterY = window.innerHeight / 2;
+            
+            // Calculate offset from -1 to 1
+            const offsetX = (e.clientX - windowCenterX) / windowCenterX;
+            const offsetY = (e.clientY - windowCenterY) / windowCenterY;
+            
+            // Max movement in SVG coordinate space
+            const maxMove = 3; 
+            const moveX = offsetX * maxMove;
+            const moveY = offsetY * maxMove;
+            
+            pupil.style.transform = `translate(${moveX}px, ${moveY}px)`;
+        });
+    }
 });
