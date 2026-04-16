@@ -40,7 +40,7 @@ integrate directly into your payment processor. requires active authentication v
 **endpoint:** `POST /v1/score`
 
 ```bash
-curl -X POST https://sentinelpay-production.up.railway.app/v1/score \
+curl -X POST https://sentinelpay.org/v1/score \
   -H "Content-Type: application/json" \
   -H "x-api-key: sp_your_api_key_here" \
   -d '{"wallet": "0xd90e2f925DA726b50C4Ed8D0Fb90Ad053324F31b"}'

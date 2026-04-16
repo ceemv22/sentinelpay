@@ -36,7 +36,7 @@ tags:
 servers:
   - url: http://localhost:3000/v1
     description: local development
-  - url: https://sentinelpay-production.up.railway.app/v1
+  - url: https://sentinelpay.org/v1
     description: production
 
 paths:
