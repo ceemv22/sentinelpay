@@ -1,7 +1,7 @@
 # sentinelpay
 
 <p align="center">
-  <img src="api/public/logo.png" alt="SentinelPay Logo" width="200"/>
+  <img src="api/public/logo.svg" alt="SentinelPay Logo" width="200"/>
 </p>
 
 **Live at: [sentinelpay.org](https://sentinelpay.org)**
