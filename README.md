@@ -1,5 +1,9 @@
 # sentinelpay
 
+<p align="center">
+  <img src="api/public/logo.png" alt="SentinelPay Logo" width="200"/>
+</p>
+
 **Live at: [sentinelpay.org](https://sentinelpay.org)**
 
 **real-time wallet risk scoring API for crypto payment flows**
