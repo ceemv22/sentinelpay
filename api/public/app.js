@@ -1,9 +1,7 @@
-import { useState, useEffect } from 'react';
-
-// We aren't using React realistically since we serve static, so we will use pure Vanilla JS for zero-latency.
 document.addEventListener('DOMContentLoaded', () => {
     const input = document.getElementById('wallet-input');
     const btn = document.getElementById('scan-btn');
+    const shareBtn = document.getElementById('share-btn');
     const resultCard = document.getElementById('result-card');
     const statusMsg = document.getElementById('status-message');
     
@@ -16,8 +14,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const scoreValue = document.getElementById('score-value');
     const flagsContainer = document.getElementById('flags-container');
 
+    let lastResult = null;
+
     function resetUI() {
         resultCard.classList.add('hidden');
+        shareBtn.classList.add('hidden');
         statusMsg.style.display = 'none';
         Object.values(lights).forEach(l => l.classList.remove('active'));
         flagsContainer.innerHTML = '';
@@ -36,7 +37,6 @@ document.addEventListener('DOMContentLoaded', () => {
         else if (category === 'low') lights.low.classList.add('active');
     }
 
-    // Matrix Scramble effect for the score
     function scrambleScore(finalScore, category) {
         let iterations = 0;
         const maxIterations = 20;
@@ -54,7 +54,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 40);
     }
 
-    // Typewriter effect for flags
     function typeFlag(text, isSafe) {
         const badge = document.createElement('div');
         badge.className = isSafe ? 'flag-badge safe' : 'flag-badge';
@@ -68,10 +67,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 30);
     }
 
-    input.addEventListener('input', () => {
-        if (statusMsg.style.display === 'block') statusMsg.style.display = 'none';
-    });
-
     btn.addEventListener('click', async () => {
         const wallet = input.value.trim();
         if (!/^0x[a-fA-F0-9]{40}$/.test(wallet)) {
@@ -81,8 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         resetUI();
         btn.disabled = true;
-        btn.textContent = 'analyzing chain...';
-        btn.classList.add('pulse');
+        btn.textContent = 'scanning...';
 
         try {
             const response = await fetch('/v1/public/score', {
@@ -98,9 +92,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw new Error(data.error || 'sys_error');
             }
 
+            lastResult = data;
             resultCard.classList.remove('hidden');
-            
-            // Execute sleek animations
             scrambleScore(data.score, data.category);
             
             setTimeout(() => {
@@ -110,23 +103,24 @@ document.addEventListener('DOMContentLoaded', () => {
                         setTimeout(() => typeFlag(flag, false), idx * 400); 
                     });
                 } else {
-                    typeFlag('NO_RISK_DETECTED', true);
+                    typeFlag('no_risk_detected', true);
                 }
-            }, 800); // Trigger lights after matrix effect finishes
+                
+                // Show share button after a small delay
+                setTimeout(() => shareBtn.classList.remove('hidden'), 1000);
+            }, 800);
 
         } catch (err) {
             showError(`[err_code]: ${err.message}`);
         } finally {
             btn.disabled = false;
-            btn.classList.remove('pulse');
             btn.textContent = 'scan wallet';
         }
     });
 
-    // Create background grid effect
-    const grid = document.querySelector('.cyber-grid');
-    for(let i=0; i<100; i++){
-        const dot = document.createElement('div');
-        grid.appendChild(dot);
-    }
+    shareBtn.addEventListener('click', () => {
+        if (!lastResult) return;
+        const text = encodeURIComponent(`Wallet [${lastResult.wallet.slice(0, 6)}...] flagged as ${lastResult.category.toUpperCase()} risk (${lastResult.score}/100) by @SentinelPay. \n\nProtect your B2B crypto flow: sentinelpay.org`);
+        window.open(`https://twitter.com/intent/tweet?text=${text}`, '_blank');
+    });
 });
