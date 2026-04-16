@@ -123,4 +123,4 @@ interested in early access or a demo?
 
 - twitter / X: [@Ceemv22](https://x.com/Ceemv22)
 - github: [@ceemv22](https://github.com/ceemv22)
-- email: ceemv22@aol.com
+- email: ceem@sentinelpay.org
