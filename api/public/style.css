@@ -284,3 +284,56 @@ button:hover:not(:disabled) {
 }
 
 .hidden { display: none !important; }
+
+/* Responsive adjustments for mobile devices */
+@media (max-width: 600px) {
+    .container {
+        padding: 1rem;
+    }
+    
+    .glass-panel {
+        padding: 1.5rem;
+    }
+    
+    .input-group {
+        flex-direction: column;
+    }
+    
+    button {
+        padding: 1rem;
+        width: 100%;
+    }
+    
+    .result-card {
+        flex-direction: column-reverse; /* Put score on top, traffic lights beneath */
+        align-items: center;
+        gap: 2rem;
+        padding-top: 2rem;
+    }
+    
+    .score-display, .flags {
+        align-items: center;
+        text-align: center;
+    }
+    
+    .traffic-lights {
+        flex-direction: row; /* Horizontal lights instead of vertical */
+        width: 100%;
+        justify-content: center;
+        gap: 1.5rem;
+    }
+    
+    .score-h1 {
+        font-size: 4rem;
+    }
+    
+    .top-nav {
+        top: -60px;
+        right: 50%;
+        transform: translateX(50%);
+    }
+    
+    .github-link {
+        font-size: 0.7rem;
+    }
+}
