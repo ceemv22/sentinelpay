@@ -17,7 +17,20 @@ const PORT = process.env.PORT || 3000;
 app.set('trust proxy', 1);
 app.use(helmet());
 app.use(cors({
-    origin: process.env.ALLOWED_ORIGINS?.split(',') || '*',
+    origin: (origin, callback) => {
+        const allowed = process.env.ALLOWED_ORIGINS?.split(',') || [];
+        if (allowed.length === 0 || allowed.includes('*')) {
+            if (process.env.NODE_ENV === 'production') {
+                console.warn('[security] WARNING: CORS is set to allow all origins in production.');
+            }
+            return callback(null, true);
+        }
+        if (allowed.indexOf(origin) !== -1 || !origin) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     methods: ['POST', 'GET'],
 }));
 
@@ -73,7 +86,7 @@ const publicLimiter = rateLimit({
 
 // Helper for audit logging
 async function logAudit(req, wallet, result, apiKeyId = null) {
-    const ip = req.headers['x-forwarded-for']?.split(',')[0].trim() || req.ip;
+    const ip = req.ip; // trust proxy is enabled, so req.ip is the verified client IP
     try {
         await prisma.auditLog.create({
             data: {

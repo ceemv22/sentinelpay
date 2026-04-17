@@ -135,5 +135,14 @@ dist
 !.yarn/versions
 
 # Vite logs files
-vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# SentinelPay Internal & Dev Utils
+docs/pr_launch_kit_1.md
+Processor.cs
+ProcessorClean.cs
+remove_bg.py
+clean_bg.py
+*.db
+*.sqlite
+.secure/
