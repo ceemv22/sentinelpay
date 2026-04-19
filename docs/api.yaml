@@ -8,20 +8,21 @@ info:
     it scores wallet addresses before funds are accepted, helping platforms reject
     deposits from malicious actors, mixer funds, and sanctioned addresses.
 
-    ### phase 1 capabilities (MVP)
-    - heuristics-based scoring (no ML)
-    - four core risk signals
-    - simple REST API
+    ### phase 2.5 capabilities
+    - heuristics-based scoring across ETH, internal, and ERC-20 token transfers
+    - four core risk signals with descending-priority risk analysis
+    - authenticated B2B API + free public PLG endpoint
     - designed for high-risk verticals (crypto casinos, OTC desks, onchain marketplaces)
 
     ### rate limits
-    - 30 requests per 15 minutes per IP
-    - hard limit enforced with 429 response
+    - **B2B API**: 30 requests per 15 minutes per IP (authenticated via x-api-key)
+    - **Public API**: 5 requests per hour per IP (no auth required)
 
     ### authentication
-    phase 1 is open for design partners. API key authentication coming in phase 2.
+    B2B endpoint requires `x-api-key` header. keys are SHA-256 hashed and validated against the database.
+    public endpoint requires no authentication but is strictly rate-limited.
 
-  version: 1.0.0
+  version: 2.5.0
   contact:
     name: sentinelpay
     url: https://github.com/ceemv22/sentinelpay
