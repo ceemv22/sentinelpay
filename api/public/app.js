@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     shareBtn.addEventListener('click', () => {
         if (!lastResult) return;
-        const text = encodeURIComponent(`Wallet [${lastResult.wallet.slice(0, 6)}...] flagged as ${lastResult.category.toUpperCase()} risk (${lastResult.score}/100) by @SentinelPay. \n\nProtect your B2B crypto flow: sentinelpay.org`);
+        const text = encodeURIComponent(`Wallet [${lastResult.wallet.slice(0, 6)}...] flagged as ${lastResult.category.toUpperCase()} risk (${lastResult.score}/100) by @sentinelpayorg. \n\nProtect your B2B crypto flow: sentinelpay.org`);
         window.open(`https://twitter.com/intent/tweet?text=${text}`, '_blank');
     });
 

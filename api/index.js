@@ -112,7 +112,7 @@ async function logAudit(req, wallet, result, apiKeyId = null) {
 }
 
 // B2B Protected Endpoint
-app.post('/v1/score', requireApiKey, async (req, res) => {
+app.post('/v1/score', limiter, requireApiKey, async (req, res) => {
     const { wallet } = req.body;
     if (!wallet || !/^0x[a-fA-F0-9]{40}$/.test(wallet)) {
         return res.status(400).json({ error: 'invalid wallet address format', code: 400 });
@@ -130,7 +130,8 @@ app.post('/v1/score', requireApiKey, async (req, res) => {
             timestamp: new Date().toISOString()
         });
     } catch (err) {
-        res.status(err.status || 500).json({ error: err.error || 'internal error', code: err.code || 500 });
+        console.error('[b2b score error]', err);
+        res.status(err.status || 500).json({ error: 'failed to process risk score', code: 500 });
     }
 });
 
@@ -153,7 +154,8 @@ app.post('/v1/public/score', publicLimiter, async (req, res) => {
             timestamp: new Date().toISOString()
         });
     } catch (err) {
-        res.status(err.status || 500).json({ error: err.error || 'internal error', code: err.code || 500 });
+        console.error('[public score error]', err);
+        res.status(err.status || 500).json({ error: 'failed to process risk score', code: 500 });
     }
 });
 
