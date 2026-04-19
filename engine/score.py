@@ -118,6 +118,13 @@ def calculate_score_and_flags(wallet, api_key):
     score = 0
 
     normal_txs, internal_txs, token_txs = fetch_all_relevant_txs(wallet, api_key)
+    
+    # Check if the address ITSELF is sanctioned or a known mixer/scammer
+    mixer_set = set(load_mixer_addresses())
+    if wallet.lower() in mixer_set:
+        flags.append("sanctioned_entity")
+        score = 100
+        return score, "high", flags
 
     if check_mixer_interaction(wallet, normal_txs, internal_txs, token_txs):
         flags.append("mixer_interaction")
