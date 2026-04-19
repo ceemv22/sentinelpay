@@ -30,7 +30,7 @@ body {
     justify-content: center;
     align-items: center;
     position: relative;
-    overflow-y: auto;
+    overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
 }
 
@@ -44,6 +44,7 @@ body {
     z-index: 0;
     opacity: 0.5;
     animation: panGrid 20s linear infinite;
+    bottom: -30px;
 }
 
 @keyframes panGrid {
@@ -297,6 +298,7 @@ button:hover:not(:disabled) {
         display: block;
         padding-top: 80px;
         padding-bottom: 40px;
+        overflow-y: auto;
     }
 
     .container {
