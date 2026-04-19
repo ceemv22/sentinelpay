@@ -1,0 +1,32 @@
+# Build artifacts
+node_modules/
+npm-debug.log*
+
+# Environment & secrets
+.env
+.env.*
+.secure/
+api/.env
+
+# Dev utilities
+docs/pr_strategy_master.md
+Processor.cs
+ProcessorClean.cs
+remove_bg.py
+clean_bg.py
+
+# IDE & OS
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Branding assets (not needed in container)
+*.png
+pfp.png
+SENTINEL_BANNER_FINAL.png
