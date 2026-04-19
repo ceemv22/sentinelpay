@@ -13,6 +13,7 @@
 html {
     height: 100%;
     overflow-x: hidden;
+    overflow-y: auto; /* Only show scrollbar if content exceeds container */
 }
 
 * {
@@ -35,8 +36,11 @@ body {
 }
 
 .cyber-grid {
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
+    position: fixed;
+    top: -32px; 
+    left: 0; 
+    right: 0; 
+    bottom: -32px;
     background-image: 
         linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
         linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
@@ -44,7 +48,7 @@ body {
     z-index: 0;
     opacity: 0.5;
     animation: panGrid 20s linear infinite;
-    bottom: -30px;
+    pointer-events: none;
 }
 
 @keyframes panGrid {
