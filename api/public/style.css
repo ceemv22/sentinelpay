@@ -10,21 +10,20 @@
     --neon-blue: #00f0ff;
 }
 
+html {
+    height: 100%;
+    overflow-x: hidden;
+}
+
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
 
-body {
-    background-color: var(--bg-dark);
-    color: var(--text-main);
-    font-family: 'JetBrains Mono', 'Inter', -apple-system, sans-serif;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     position: relative;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .cyber-grid {
@@ -287,12 +286,13 @@ button:hover:not(:disabled) {
 /* Responsive adjustments for mobile devices */
 @media (max-width: 600px) {
     body {
-        align-items: flex-start;
+        display: block;
         padding-top: 80px;
         padding-bottom: 40px;
     }
 
     .container {
+        margin: 0 auto;
         padding: 1rem;
     }
     
