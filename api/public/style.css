@@ -27,6 +27,7 @@ body {
     color: var(--text-main);
     font-family: 'JetBrains Mono', 'Inter', -apple-system, sans-serif;
     min-height: 100vh;
+    min-height: 100dvh; /* Dynamic viewport height for mobile */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -300,8 +301,8 @@ button:hover:not(:disabled) {
 @media (max-width: 600px) {
     body {
         display: block;
-        padding-top: 80px;
-        padding-bottom: 40px;
+        padding-top: 40px; /* Reduced to avoid pushing content out */
+        padding-bottom: 20px;
     }
 
     .container {
