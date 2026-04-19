@@ -1,10 +1,10 @@
 # sentinelpay
 
 <p align="center">
-  <img src="api/public/logo.svg" alt="SentinelPay Logo" width="200"/>
+  <img src="api/public/logo.svg" alt="sentinelpay logo" width="200"/>
 </p>
 
-**Live at: [sentinelpay.org](https://sentinelpay.org)**
+**live at: [sentinelpay.org](https://sentinelpay.org)**
 
 **real-time wallet risk scoring API for crypto payment flows**
 
@@ -32,7 +32,7 @@ wallet address → sentinelpay → risk score + flags → accept or reject
 
 ---
 
-## live products (phase 2.5 active)
+## live products (phase 2.5b active)
 
 ### 1. public PLG tool (free risk scanner)
 check any wallet directly via our simple UI without registration at **[sentinelpay.org](https://sentinelpay.org)**.  
@@ -62,10 +62,11 @@ curl -X POST https://sentinelpay.org/v1/score \
 | 30–59 | medium | manual review recommended |
 | 60–100 | high | recommend rejection |
 
-### signals (v2.0)
+### signals (v2.5)
 
 | flag | description | score impact |
 |------|-------------|-------------|
+| `sanctioned_entity` | wallet address is a direct match in our high-risk/OFAC database | +100 |
 | `mixer_interaction` | wallet interacted with Tornado Cash, Sinbad, ChipMixer or known mixers (ETH + ERC-20 token transfers) | +50 |
 | `new_wallet` | wallet is less than 30 days old | +20 |
 | `high_velocity` | more than 50 transactions in the last 24 hours | +20 |
@@ -81,6 +82,7 @@ curl -X POST https://sentinelpay.org/v1/score \
 - **scaling:** Redis for distributed rate-limiting
 - **frontend:** Vanilla HTML/CSS Glassmorphism UI (mobile-optimized)
 - **billing:** Stripe Checkout integration
+- **automation:** GitHub Actions (daily automated mixer database scraping)
 - **security:** Helmet, SHA-256 key hashing, sanitized errors, env-based secrets
 
 ---
@@ -93,7 +95,7 @@ curl -X POST https://sentinelpay.org/v1/score \
 | pro | $500+ / month | 25,000 req |
 | enterprise | custom | unlimited |
 
-*phase 2 is open to design partners — **free 30-day access** for operators who want to test in production and provide feedback.*
+*phase 2 (self-serve) is currently in development. contact us for early design partner access.*
 
 ---
 
@@ -120,24 +122,28 @@ curl -X POST https://sentinelpay.org/v1/score \
 - [x] mobile-optimized responsive UI
 - [x] full penetration test (S-tier, 0 critical/high/medium findings)
 
-**phase 2.5b — threat intelligence (in progress)**
-- [ ] expanded mixer/sanctioned address database (OFAC, known mixers)
-- [ ] automated address scraper pipeline
+**phase 2.5b — threat intelligence (completed)**
+- [x] expanded mixer/sanctioned address database (140+ origins)
+- [x] automated daily address scraper pipeline (GitHub Actions)
+- [x] direct sanctioned entity detection logic (100/100 risk)
 
-**phase 3 (next)**
+**phase 3 (in progress)**
 - [ ] self-serve signup + user dashboard + credit system
-- [ ] pricing page for B2B and individual users
+- [ ] google & x (twitter) social login integration
+- [ ] email verification & anti-abuse fingerprinting
 - [ ] Solana support
 - [ ] ML-based scoring layer
 
-## Maintenance
+---
 
-### Updating Mixer Database
-To fetch the latest high-risk addresses from OFAC and Tornado Cash sources, run:
+## maintenance
+
+### updating mixer database
+sentinelpay uses an automated GitHub Action to update the `data/mixers.json` every 24 hours. to trigger a manual update:
 ```bash
 python scripts/update_mixers.py
 ```
-This script will deduplicate and validate addresses, then update `data/mixers.json`.
+this script will deduplicate and validate addresses from OFAC and Tornado Cash sources.
 
 ---
 
