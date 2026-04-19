@@ -301,13 +301,17 @@ button:hover:not(:disabled) {
 @media (max-width: 600px) {
     body {
         display: block;
-        padding-top: 40px; /* Reduced to avoid pushing content out */
-        padding-bottom: 20px;
+        padding-top: 1rem;
+        padding-bottom: 1rem;
     }
 
     .container {
         margin: 0 auto;
         padding: 1rem;
+    }
+
+    header {
+        margin-bottom: 1.5rem;
     }
     
     .glass-panel {
@@ -347,9 +351,13 @@ button:hover:not(:disabled) {
     }
     
     .top-nav {
-        top: -60px;
-        right: 50%;
-        transform: translateX(50%);
+        position: relative;
+        top: auto;
+        right: auto;
+        transform: none;
+        display: flex;
+        justify-content: center;
+        margin-bottom: 1rem;
     }
     
     .github-link {
