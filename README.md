@@ -130,6 +130,15 @@ curl -X POST https://sentinelpay.org/v1/score \
 - [ ] Solana support
 - [ ] ML-based scoring layer
 
+## Maintenance
+
+### Updating Mixer Database
+To fetch the latest high-risk addresses from OFAC and Tornado Cash sources, run:
+```bash
+python scripts/update_mixers.py
+```
+This script will deduplicate and validate addresses, then update `data/mixers.json`.
+
 ---
 
 ## security
