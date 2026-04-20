@@ -59,13 +59,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (error) throw error;
                 
                 // Success login, redirect to dashboard
-                window.location.href = 'dashboard.html';
+                window.location.href = '/dashboard';
             } else {
                 // Register via Magic Link
                 const { data, error } = await supabase.auth.signInWithOtp({
                     email,
                     options: {
-                        emailRedirectTo: window.location.origin + '/dashboard.html'
+                        emailRedirectTo: window.location.origin + '/dashboard'
                     }
                 });
 
@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
         await supabase.auth.signInWithOAuth({
             provider: 'google',
             options: {
-                redirectTo: window.location.origin + '/dashboard.html'
+                redirectTo: window.location.origin + '/dashboard'
             }
         });
     });
@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
         await supabase.auth.signInWithOAuth({
             provider: 'twitter',
             options: {
-                redirectTo: window.location.origin + '/dashboard.html'
+                redirectTo: window.location.origin + '/dashboard'
             }
         });
     });

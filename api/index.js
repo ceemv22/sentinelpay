@@ -40,8 +40,8 @@ app.use('/v1/stripe', require('./routes/stripe'));
 
 app.use(express.json({ limit: '10kb' }));
 
-// Serve the PLG Frontend
-app.use(express.static(path.join(__dirname, 'public')));
+// Serve the PLG Frontend with extensionless URLs
+app.use(express.static(path.join(__dirname, 'public'), { extensions: ['html'] }));
 
 // Redis Setup & Rate Limiter Store
 const redisUrl = process.env.REDIS_URL;

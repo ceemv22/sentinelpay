@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (session) {
                 if (authNavBtn) {
                     authNavBtn.textContent = 'dashboard';
-                    authNavBtn.href = 'dashboard.html';
+                    authNavBtn.href = '/dashboard';
                 }
             }
         });

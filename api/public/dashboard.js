@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     if (error || !session) {
         // Not logged in, redirect
-        window.location.href = 'auth.html';
+        window.location.href = '/auth';
         return;
     }
 
@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // 2. Setup Logout
     document.getElementById('btn-logout').addEventListener('click', async () => {
         await supabase.auth.signOut();
-        window.location.href = 'index.html';
+        window.location.href = '/';
     });
 
     // 3. Fetch Dashboard Data
