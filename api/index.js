@@ -10,6 +10,7 @@ require('dotenv').config();
 const { runScoringEngine } = require('./services/scorer');
 const prisma = require('./services/db');
 const requireApiKey = require('./middleware/auth');
+const requireSupabaseAuth = require('./middleware/supabaseAuth');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -64,7 +65,31 @@ function createStore(prefix) {
     });
 }
 
-// B2B API Limiter (used internally if needed, but primarily auth is used)
+// PLG Unauth Limiter logic (3 lifetime scans via Fingerprint/IP)
+async function consumeUnauthCredit(req, res, next) {
+    const fingerprint = req.headers['x-fingerprint'];
+    const ip = req.ip;
+    const identifier = fingerprint ? `fp:${fingerprint}` : `ip:${ip}`;
+    const usageKey = `unauth:${identifier}`;
+
+    if (redisClient) {
+        try {
+            const usage = await redisClient.get(usageKey);
+            if (usage && parseInt(usage) >= 3) {
+                return res.status(403).json({ error: 'free limit reached. register to continue.', code: 403, requiresAuth: true });
+            }
+            await redisClient.incr(usageKey);
+            next();
+        } catch (err) {
+            console.error('[redis auth error]', err);
+            next(); // fail open securely
+        }
+    } else {
+        next(); // local fallback
+    }
+}
+
+// B2B API Limiter
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000,
     max: 30,
@@ -72,16 +97,6 @@ const limiter = rateLimit({
     legacyHeaders: false,
     store: createStore('b2b:'),
     message: { error: 'request limit exceeded. try again in 15 minutes.', code: 429 }
-});
-
-// Public IP Rate Limiter (very strict for PLG frontend)
-const publicLimiter = rateLimit({
-    windowMs: 60 * 60 * 1000, // 1 hour
-    max: 5, // 5 requests per IP
-    standardHeaders: true,
-    legacyHeaders: false,
-    store: createStore('plg:'),
-    message: { error: 'public rate limit exceeded. max 5 scans per hour.', code: 429 }
 });
 
 // Helper for audit logging
@@ -135,8 +150,8 @@ app.post('/v1/score', limiter, requireApiKey, async (req, res) => {
     }
 });
 
-// PLG Public Endpoint (Rate Limited by IP)
-app.post('/v1/public/score', publicLimiter, async (req, res) => {
+// PLG Public Endpoint (Unauth)
+app.post('/v1/public/score', consumeUnauthCredit, async (req, res) => {
     const { wallet } = req.body;
     if (!wallet || !/^0x[a-fA-F0-9]{40}$/.test(wallet)) {
         return res.status(400).json({ error: 'invalid wallet address format', code: 400 });
@@ -144,7 +159,7 @@ app.post('/v1/public/score', publicLimiter, async (req, res) => {
 
     try {
         const result = await runScoringEngine(wallet);
-        await logAudit(req, wallet, result, null); // null API key ID for public
+        await logAudit(req, wallet, result, null);
 
         res.json({
             wallet: wallet.toLowerCase(),
@@ -155,6 +170,53 @@ app.post('/v1/public/score', publicLimiter, async (req, res) => {
         });
     } catch (err) {
         console.error('[public score error]', err);
+        res.status(err.status || 500).json({ error: 'failed to process risk score', code: 500 });
+    }
+});
+
+// PLG Auth Endpoint (Logged In Users with Credits)
+app.post('/v1/user/score', requireSupabaseAuth, async (req, res) => {
+    const { wallet } = req.body;
+    if (!wallet || !/^0x[a-fA-F0-9]{40}$/.test(wallet)) {
+        return res.status(400).json({ error: 'invalid wallet address format', code: 400 });
+    }
+
+    if (req.user.credits <= 0) {
+        return res.status(403).json({ error: 'insufficient credits. please upgrade your plan.', code: 403, requiresUpgrade: true });
+    }
+
+    try {
+        const result = await runScoringEngine(wallet);
+        
+        // Deduct credit and log to scan history
+        await prisma.$transaction([
+            prisma.user.update({
+                where: { id: req.user.id },
+                data: { credits: { decrement: 1 } }
+            }),
+            prisma.scanHistory.create({
+                data: {
+                    userId: req.user.id,
+                    wallet: wallet.toLowerCase(),
+                    score: result.score,
+                    category: result.category,
+                    flags: result.flags
+                }
+            })
+        ]);
+
+        await logAudit(req, wallet, result, null);
+
+        res.json({
+            wallet: wallet.toLowerCase(),
+            score: result.score,
+            category: result.category,
+            flags: result.flags,
+            creditsRemaining: req.user.credits - 1,
+            timestamp: new Date().toISOString()
+        });
+    } catch (err) {
+        console.error('[user score error]', err);
         res.status(err.status || 500).json({ error: 'failed to process risk score', code: 500 });
     }
 });
