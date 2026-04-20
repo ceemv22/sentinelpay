@@ -341,8 +341,8 @@ button:hover:not(:disabled) {
 @media (max-width: 600px) {
     body {
         display: block;
-        padding-top: 1rem;
-        padding-bottom: 1rem;
+        padding-top: 5rem;
+        padding-bottom: 2rem;
     }
 
     .container {
@@ -391,19 +391,30 @@ button:hover:not(:disabled) {
     }
     
     .top-nav {
-        position: relative;
-        top: auto;
-        right: auto;
-        transform: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        height: 60px;
+        background: rgba(8, 8, 8, 0.85); /* Deep dark glass */
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         display: flex;
-        justify-content: center;
-        margin-bottom: 1rem;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 1rem;
+        margin-bottom: 0;
+        z-index: 1000;
+        transform: none;
     }
     
     #auth-nav-container {
-        top: 1rem;
-        right: 1rem;
-        gap: 0.2rem;
+        position: relative;
+        top: auto;
+        right: auto;
+        gap: 0.3rem;
     }
     
     .auth-nav-btn {
