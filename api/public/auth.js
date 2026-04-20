@@ -40,6 +40,12 @@ document.addEventListener('DOMContentLoaded', () => {
         passwordInput.required = false;
     });
 
+    // Handle initial state from URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('tab') === 'register') {
+        tabRegister.click();
+    }
+
     authForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const email = emailInput.value;

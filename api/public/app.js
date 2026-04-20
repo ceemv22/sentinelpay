@@ -30,9 +30,9 @@ document.addEventListener('DOMContentLoaded', () => {
         supabaseClient.auth.getSession().then(({ data: { session } }) => {
             cachedSession = session;
             if (session) {
-                if (authNavBtn) {
-                    authNavBtn.textContent = 'dashboard';
-                    authNavBtn.href = '/dashboard';
+                const authContainer = document.getElementById('auth-nav-container');
+                if (authContainer) {
+                    authContainer.innerHTML = '<a href="/dashboard" class="auth-nav-btn">dashboard</a>';
                 }
             }
         });
