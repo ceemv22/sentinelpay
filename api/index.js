@@ -65,24 +65,41 @@ function createStore(prefix) {
     });
 }
 
-// PLG Unauth Limiter logic (3 lifetime scans via Fingerprint/IP) - ATOMIC RACE-CONDITION PROOF
+// PLG Unauth Limiter logic: DUAL LAYER (IP-Daily + Fingerprint-Lifetime)
 async function consumeUnauthCredit(req, res, next) {
     let rawFp = req.headers['x-fingerprint'];
-    // Sanitize fingerprint to prevent header bloat/memory attacks
-    const fingerprint = (typeof rawFp === 'string') ? rawFp.substring(0, 64) : null;
-    const ip = req.ip;
-    const identifier = fingerprint ? `fp:${fingerprint}` : `ip:${ip}`;
-    const usageKey = `unauth:${identifier}`;
+    // Sanitize fingerprint perfectly
+    const fingerprint = (typeof rawFp === 'string') && rawFp.trim().length > 0 ? rawFp.substring(0, 64) : null;
+    const ip = req.ip || req.connection.remoteAddress;
 
     if (redisClient) {
         try {
-            // Atomic INCR prevents Race Conditions
-            const currentUsage = await redisClient.incr(usageKey);
+            // LAYER 1: IP Rate Limiting (Prevent bot nets from refreshing fingerprints infinitely)
+            // 20 scans per IP per day maximum for unauthenticated users
+            const ipKey = `ip_limit:${ip}`;
+            const ipUsage = await redisClient.incr(ipKey);
+            if (ipUsage === 1) await redisClient.expire(ipKey, 86400); // 24 hours TTL
             
-            if (currentUsage > 3) {
-                // Rollback if exceeded to keep the counter accurate
-                await redisClient.decr(usageKey);
-                return res.status(403).json({ error: 'free limit reached. register to continue.', code: 403, requiresAuth: true });
+            if (ipUsage > 20) {
+                return res.status(429).json({ error: 'network proxy usage too high. login required.', code: 429, requiresAuth: true });
+            }
+
+            // LAYER 2: Fingerprint Lifetime Limiter (3 free scans per device)
+            if (fingerprint) {
+                const fpKey = `unauth:fp:${fingerprint}`;
+                const fpUsage = await redisClient.incr(fpKey);
+                if (fpUsage > 3) {
+                    await redisClient.decr(fpKey); // Keep accurate
+                    return res.status(403).json({ error: 'free limit reached. please register.', code: 403, requiresAuth: true });
+                }
+            } else {
+                // If they block headers/fingerprints, we bind them aggressively to IP (3 lifetime per IP)
+                const strictIpKey = `strict:ip:${ip}`;
+                const strictIpUsage = await redisClient.incr(strictIpKey);
+                if (strictIpUsage > 3) {
+                    await redisClient.decr(strictIpKey);
+                    return res.status(403).json({ error: 'ip limit reached. please register.', code: 403, requiresAuth: true });
+                }
             }
             next();
         } catch (err) {
