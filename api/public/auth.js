@@ -5,132 +5,186 @@ const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 document.addEventListener('DOMContentLoaded', () => {
     const tabLogin = document.getElementById('tab-login');
     const tabRegister = document.getElementById('tab-register');
-    const submitBtn = document.getElementById('auth-submit-btn');
-    const authForm = document.getElementById('auth-form');
-    const emailInput = document.getElementById('email');
-    const passwordInput = document.getElementById('password');
-    const errorMsg = document.getElementById('auth-error-msg');
-    const authPanel = document.getElementById('auth-panel');
+    const panelLogin = document.getElementById('panel-login');
+    const panelRegister = document.getElementById('panel-register');
     const successState = document.getElementById('auth-success-state');
+    const authPanel = document.getElementById('auth-panel');
 
-    let isLogin = true;
+    let currentTab = 'login';
 
-    // Smooth fade helper
-    const formContent = authPanel.querySelector('.auth-social');
-    const formFields = authPanel.querySelector('.auth-form');
-    const divider = authPanel.querySelector('.auth-divider');
-    const animTargets = [formContent, formFields, divider].filter(Boolean);
+    // ── Smooth Panel Switch ──
+    function switchPanel(target) {
+        if (currentTab === target) return;
+        const outgoing = target === 'register' ? panelLogin : panelRegister;
+        const incoming = target === 'register' ? panelRegister : panelLogin;
 
-    function animateTabSwitch(callback) {
-        animTargets.forEach(el => {
-            el.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
-            el.style.opacity = '0';
-            el.style.transform = 'translateY(8px)';
-        });
+        outgoing.classList.add('fade-out');
         setTimeout(() => {
-            callback();
-            animTargets.forEach(el => {
-                el.style.opacity = '1';
-                el.style.transform = 'translateY(0)';
+            outgoing.style.display = 'none';
+            outgoing.classList.remove('fade-out');
+            incoming.style.display = 'block';
+            // Force reflow then animate in
+            incoming.classList.add('fade-out');
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    incoming.classList.remove('fade-out');
+                });
             });
-        }, 200);
+        }, 250);
+
+        currentTab = target;
+        tabLogin.classList.toggle('active', target === 'login');
+        tabRegister.classList.toggle('active', target === 'register');
     }
 
-    // Tab switching
-    tabLogin.addEventListener('click', () => {
-        if (isLogin) return;
-        animateTabSwitch(() => {
-            isLogin = true;
-            tabLogin.classList.add('active');
-            tabRegister.classList.remove('active');
-            submitBtn.textContent = 'login';
-            errorMsg.style.display = 'none';
-            passwordInput.style.display = 'block';
-            passwordInput.previousElementSibling.style.display = 'block';
-            passwordInput.required = true;
-        });
-    });
+    tabLogin.addEventListener('click', () => switchPanel('login'));
+    tabRegister.addEventListener('click', () => switchPanel('register'));
 
-    tabRegister.addEventListener('click', () => {
-        if (!isLogin) return;
-        animateTabSwitch(() => {
-            isLogin = false;
-            tabRegister.classList.add('active');
-            tabLogin.classList.remove('active');
-            submitBtn.textContent = 'send magic link';
-            errorMsg.style.display = 'none';
-            // For registration, we will use Magic Link for highest conversion & S-Tier security
-            passwordInput.style.display = 'none';
-            passwordInput.previousElementSibling.style.display = 'none';
-            passwordInput.required = false;
-        });
-    });
-
-    // Handle initial state from URL parameters
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('tab') === 'register') {
-        tabRegister.click();
+    // ── URL Param ──
+    if (new URLSearchParams(window.location.search).get('tab') === 'register') {
+        // Instant switch, no animation
+        panelLogin.style.display = 'none';
+        panelRegister.style.display = 'block';
+        tabLogin.classList.remove('active');
+        tabRegister.classList.add('active');
+        currentTab = 'register';
     }
 
-    authForm.addEventListener('submit', async (e) => {
+    // ── Password Rules Toggle ──
+    const pwRulesToggle = document.getElementById('pw-rules-toggle');
+    const pwRulesTooltip = document.getElementById('pw-rules-tooltip');
+    if (pwRulesToggle) {
+        pwRulesToggle.addEventListener('click', () => {
+            const showing = pwRulesTooltip.style.display !== 'none';
+            pwRulesTooltip.style.display = showing ? 'none' : 'block';
+        });
+    }
+
+    // ── Live Password Validation ──
+    const regPassword = document.getElementById('reg-password');
+    if (regPassword) {
+        regPassword.addEventListener('input', () => {
+            const val = regPassword.value;
+            const ruleLen = document.getElementById('rule-len');
+            const ruleUpper = document.getElementById('rule-upper');
+            const ruleNum = document.getElementById('rule-num');
+
+            ruleLen.textContent = val.length >= 8 ? '✓' : '✗';
+            ruleLen.style.color = val.length >= 8 ? 'var(--color-green)' : 'var(--color-red)';
+
+            ruleUpper.textContent = /[A-Z]/.test(val) ? '✓' : '✗';
+            ruleUpper.style.color = /[A-Z]/.test(val) ? 'var(--color-green)' : 'var(--color-red)';
+
+            ruleNum.textContent = /[0-9]/.test(val) ? '✓' : '✗';
+            ruleNum.style.color = /[0-9]/.test(val) ? 'var(--color-green)' : 'var(--color-red)';
+        });
+    }
+
+    // ── LOGIN Form ──
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
         e.preventDefault();
-        const email = emailInput.value;
-        const password = passwordInput.value;
+        const email = document.getElementById('login-email').value;
+        const password = document.getElementById('login-password').value;
+        const errorMsg = document.getElementById('login-error-msg');
+        const btn = document.getElementById('login-submit-btn');
 
-        submitBtn.textContent = 'processing...';
-        submitBtn.disabled = true;
+        btn.textContent = 'processing...';
+        btn.disabled = true;
         errorMsg.style.display = 'none';
 
         try {
-            if (isLogin) {
-                const { data, error } = await supabase.auth.signInWithPassword({
-                    email,
-                    password
-                });
-
-                if (error) throw error;
-                
-                // Success login, redirect to dashboard
-                window.location.href = '/dashboard';
-            } else {
-                // Register via Magic Link
-                const { data, error } = await supabase.auth.signInWithOtp({
-                    email,
-                    options: {
-                        emailRedirectTo: window.location.origin + '/dashboard'
-                    }
-                });
-
-                if (error) throw error;
-
-                // Show success state
-                authPanel.style.display = 'none';
-                successState.style.display = 'block';
-            }
+            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+            if (error) throw error;
+            window.location.href = '/dashboard';
         } catch (error) {
             errorMsg.textContent = error.message;
             errorMsg.style.display = 'block';
-            submitBtn.disabled = false;
-            submitBtn.textContent = isLogin ? 'login' : 'send magic link';
+            btn.disabled = false;
+            btn.textContent = 'login';
         }
     });
 
-    // Social Logins
-    document.getElementById('btn-google').addEventListener('click', async () => {
-        await supabase.auth.signInWithOAuth({
-            provider: 'google',
-            options: {
-                redirectTo: window.location.origin + '/dashboard'
-            }
+    // ── REGISTER Form ──
+    document.getElementById('register-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('reg-email').value;
+        const password = document.getElementById('reg-password').value;
+        const confirm = document.getElementById('reg-confirm').value;
+        const tos = document.getElementById('reg-tos').checked;
+        const errorMsg = document.getElementById('register-error-msg');
+        const btn = document.getElementById('register-submit-btn');
+
+        errorMsg.style.display = 'none';
+
+        // Client-side validation
+        if (password.length < 8) {
+            errorMsg.textContent = 'password must be at least 8 characters.';
+            errorMsg.style.display = 'block';
+            return;
+        }
+        if (!/[A-Z]/.test(password)) {
+            errorMsg.textContent = 'password needs at least one uppercase letter.';
+            errorMsg.style.display = 'block';
+            return;
+        }
+        if (!/[0-9]/.test(password)) {
+            errorMsg.textContent = 'password needs at least one number.';
+            errorMsg.style.display = 'block';
+            return;
+        }
+        if (password !== confirm) {
+            errorMsg.textContent = 'passwords do not match.';
+            errorMsg.style.display = 'block';
+            return;
+        }
+        if (!tos) {
+            errorMsg.textContent = 'you must agree to the terms.';
+            errorMsg.style.display = 'block';
+            return;
+        }
+
+        btn.textContent = 'creating...';
+        btn.disabled = true;
+
+        try {
+            const { data, error } = await supabase.auth.signUp({
+                email,
+                password,
+                options: {
+                    emailRedirectTo: window.location.origin + '/dashboard'
+                }
+            });
+            if (error) throw error;
+
+            // Show success
+            authPanel.style.display = 'none';
+            successState.style.display = 'block';
+        } catch (error) {
+            errorMsg.textContent = error.message;
+            errorMsg.style.display = 'block';
+            btn.disabled = false;
+            btn.textContent = 'create account';
+        }
+    });
+
+    // ── Social Logins (both panels) ──
+    const oauthRedirect = window.location.origin + '/dashboard';
+
+    ['btn-google', 'btn-google-reg'].forEach(id => {
+        document.getElementById(id).addEventListener('click', async () => {
+            await supabase.auth.signInWithOAuth({
+                provider: 'google',
+                options: { redirectTo: oauthRedirect }
+            });
         });
     });
 
-    document.getElementById('btn-x').addEventListener('click', async () => {
-        await supabase.auth.signInWithOAuth({
-            provider: 'twitter',
-            options: {
-                redirectTo: window.location.origin + '/dashboard'
-            }
+    ['btn-x', 'btn-x-reg'].forEach(id => {
+        document.getElementById(id).addEventListener('click', async () => {
+            await supabase.auth.signInWithOAuth({
+                provider: 'twitter',
+                options: { redirectTo: oauthRedirect }
+            });
         });
     });
 });
