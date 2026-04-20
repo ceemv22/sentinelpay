@@ -141,23 +141,21 @@
     </div>
 
     <script src="auth.js"></script>
-    <!-- Eye-Cursor Tracking (same as homepage) -->
+    <!-- Eye-Cursor Tracking — runs immediately, DOM already parsed -->
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        (function() {
             const pupil = document.getElementById('eye-pupil');
             if (pupil) {
-                document.addEventListener('mousemove', (e) => {
+                document.addEventListener('mousemove', function(e) {
                     const windowCenterX = window.innerWidth / 2;
                     const windowCenterY = window.innerHeight / 2;
                     const offsetX = (e.clientX - windowCenterX) / windowCenterX;
                     const offsetY = (e.clientY - windowCenterY) / windowCenterY;
                     const maxMove = 3;
-                    const moveX = offsetX * maxMove;
-                    const moveY = offsetY * maxMove;
-                    pupil.style.transform = `translate(${moveX}px, ${moveY}px)`;
+                    pupil.style.transform = 'translate(' + (offsetX * maxMove) + 'px, ' + (offsetY * maxMove) + 'px)';
                 });
             }
-        });
+        })();
     </script>
 </body>
 </html>

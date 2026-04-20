@@ -15,29 +15,55 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let isLogin = true;
 
+    // Smooth fade helper
+    const formContent = authPanel.querySelector('.auth-social');
+    const formFields = authPanel.querySelector('.auth-form');
+    const divider = authPanel.querySelector('.auth-divider');
+    const animTargets = [formContent, formFields, divider].filter(Boolean);
+
+    function animateTabSwitch(callback) {
+        animTargets.forEach(el => {
+            el.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(8px)';
+        });
+        setTimeout(() => {
+            callback();
+            animTargets.forEach(el => {
+                el.style.opacity = '1';
+                el.style.transform = 'translateY(0)';
+            });
+        }, 200);
+    }
+
     // Tab switching
     tabLogin.addEventListener('click', () => {
-        isLogin = true;
-        tabLogin.classList.add('active');
-        tabRegister.classList.remove('active');
-        submitBtn.textContent = 'login';
-        errorMsg.style.display = 'none';
-        passwordInput.style.display = 'block';
-        passwordInput.previousElementSibling.style.display = 'block';
-        passwordInput.required = true;
+        if (isLogin) return;
+        animateTabSwitch(() => {
+            isLogin = true;
+            tabLogin.classList.add('active');
+            tabRegister.classList.remove('active');
+            submitBtn.textContent = 'login';
+            errorMsg.style.display = 'none';
+            passwordInput.style.display = 'block';
+            passwordInput.previousElementSibling.style.display = 'block';
+            passwordInput.required = true;
+        });
     });
 
     tabRegister.addEventListener('click', () => {
-        isLogin = false;
-        tabRegister.classList.add('active');
-        tabLogin.classList.remove('active');
-        submitBtn.textContent = 'send magic link';
-        errorMsg.style.display = 'none';
-        
-        // For registration, we will use Magic Link for highest conversion & S-Tier security
-        passwordInput.style.display = 'none';
-        passwordInput.previousElementSibling.style.display = 'none';
-        passwordInput.required = false;
+        if (!isLogin) return;
+        animateTabSwitch(() => {
+            isLogin = false;
+            tabRegister.classList.add('active');
+            tabLogin.classList.remove('active');
+            submitBtn.textContent = 'send magic link';
+            errorMsg.style.display = 'none';
+            // For registration, we will use Magic Link for highest conversion & S-Tier security
+            passwordInput.style.display = 'none';
+            passwordInput.previousElementSibling.style.display = 'none';
+            passwordInput.required = false;
+        });
     });
 
     // Handle initial state from URL parameters

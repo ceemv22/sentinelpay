@@ -559,8 +559,7 @@ button:hover:not(:disabled) {
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.75rem;
     margin: 1.5rem 0;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
 }
 
 .auth-divider::before, .auth-divider::after {
@@ -599,8 +598,7 @@ button:hover:not(:disabled) {
     font-size: 0.75rem;
     font-family: 'JetBrains Mono', monospace;
     margin-bottom: 0.5rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
     text-align: left;
 }
 
