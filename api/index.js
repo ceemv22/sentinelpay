@@ -16,7 +16,18 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.set('trust proxy', 1);
-app.use(helmet());
+app.use(helmet({
+    contentSecurityPolicy: {
+        directives: {
+            ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+            "script-src": ["'self'", "https://cdn.jsdelivr.net"],
+            "img-src": ["'self'", "data:", "https://aivqwkgjdpklxxuvkxpy.supabase.co"],
+            "connect-src": ["'self'", "https://aivqwkgjdpklxxuvkxpy.supabase.co"],
+            "font-src": ["'self'", "https://fonts.gstatic.com"],
+            "style-src": ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+        },
+    },
+}));
 app.use(cors({
     origin: (origin, callback) => {
         const allowed = process.env.ALLOWED_ORIGINS?.split(',') || [];

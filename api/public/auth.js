@@ -1,6 +1,11 @@
 const supabaseUrl = 'https://aivqwkgjdpklxxuvkxpy.supabase.co';
 const supabaseKey = 'sb_publishable_bRfAssaGT6D8oFDQtPARbw_5fyYGWM6';
-const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+let supabase = null;
+try {
+    if (window.supabase) {
+        supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+    }
+} catch(e) { console.warn('[auth] supabase init failed:', e); }
 
 document.addEventListener('DOMContentLoaded', () => {
     const tabLogin = document.getElementById('tab-login');
@@ -93,6 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
         errorMsg.style.display = 'none';
 
         try {
+            if (!supabase) throw new Error('auth service unavailable. try refreshing.');
             const { data, error } = await supabase.auth.signInWithPassword({ email, password });
             if (error) throw error;
             window.location.href = '/dashboard';
@@ -147,6 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.disabled = true;
 
         try {
+            if (!supabase) throw new Error('auth service unavailable. try refreshing.');
             const { data, error } = await supabase.auth.signUp({
                 email,
                 password,
