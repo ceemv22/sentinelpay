@@ -6,15 +6,11 @@
     <title>sentinelpay | auth</title>
     <meta name="description" content="Login or register for SentinelPay to unlock deep scanning and API access.">
     <meta name="theme-color" content="#050505">
-    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/svg+xml" href="logo.svg">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=3.0">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        /* Auth-specific layout overrides */
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
         .auth-page-wrap {
             position: relative;
             z-index: 10;
@@ -22,23 +18,12 @@
             max-width: 420px;
             padding: 2rem;
         }
-        /* Logo centered above the card  */
         .auth-logo-block {
             display: flex;
             flex-direction: column;
             align-items: center;
             margin-bottom: 2rem;
         }
-        .auth-logo-block svg {
-            width: 56px;
-            height: 56px;
-        }
-        .auth-logo-block .logo {
-            margin-top: 0.5rem;
-            font-size: 1.4rem;
-            margin-bottom: 0;
-        }
-        /* Fixed top bar - same as homepage desktop */
         .auth-topbar {
             position: fixed;
             top: 0;
@@ -61,7 +46,7 @@
     <div class="cyber-grid"></div>
     <div class="glow-orb"></div>
 
-    <!-- Fixed Top Bar: same as homepage -->
+    <!-- Fixed Top Bar — identical pattern to homepage -->
     <div class="auth-topbar">
         <a href="https://github.com/ceemv22/sentinelpay" target="_blank" class="github-link">
             <svg height="16" viewBox="0 0 16 16" width="16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
@@ -73,9 +58,9 @@
     <!-- Centered content -->
     <div class="auth-page-wrap">
 
-        <!-- Logo block -->
+        <!-- Logo — exact same SVG and size as homepage (80x80) -->
         <div class="auth-logo-block">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" style="width: 80px; height: 80px;">
               <defs>
                 <linearGradient id="neonGradient" x1="0%" y1="0%" x2="100%" y2="100%">
                   <stop offset="0%" stop-color="#00ffff" />
@@ -92,7 +77,7 @@
               <g filter="url(#neonGlow)" fill="none" stroke="url(#neonGradient)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z" />
                 <path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z" />
-                <g>
+                <g id="eye-pupil" style="transition: transform 0.1s ease-out;">
                   <circle cx="60" cy="60" r="6" />
                   <circle cx="60" cy="60" r="2" fill="url(#neonGradient)" stroke="none"/>
                 </g>
@@ -100,7 +85,6 @@
                 <path d="M60 90 V 105" stroke-width="2" opacity="0.6"/>
               </g>
             </svg>
-            <div class="logo">sentinelpay</div>
         </div>
 
         <!-- Auth Card -->
@@ -154,12 +138,26 @@
                 <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
                 <polyline points="22 4 12 14.01 9 11.01"/>
             </svg>
-            <div class="logo" style="font-size: 1.2rem;">check your inbox.</div>
+            <div style="font-size: 1.2rem; font-weight: 800; letter-spacing: -1px; background: linear-gradient(135deg, #fff 0%, #777 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">check your inbox.</div>
             <p style="color: var(--text-muted); margin-top: 0.75rem; font-size: 0.875rem; font-family: 'JetBrains Mono', monospace;">magic link sent. no password needed.</p>
         </div>
 
     </div>
 
     <script src="auth.js"></script>
+    <!-- Eye-Cursor Tracking (same as homepage) -->
+    <script>
+        const pupil = document.getElementById('eye-pupil');
+        if (pupil) {
+            document.addEventListener('mousemove', (e) => {
+                const cx = window.innerWidth / 2;
+                const cy = window.innerHeight / 2;
+                const ox = (e.clientX - cx) / cx;
+                const oy = (e.clientY - cy) / cy;
+                const m = 3;
+                pupil.style.transform = `translate(${ox * m}px, ${oy * m}px)`;
+            });
+        }
+    </script>
 </body>
 </html>
