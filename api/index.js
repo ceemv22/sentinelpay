@@ -19,12 +19,15 @@ app.set('trust proxy', 1);
 app.use(helmet({
     contentSecurityPolicy: {
         directives: {
-            ...helmet.contentSecurityPolicy.getDefaultDirectives(),
-            "script-src": ["'self'", "https://cdn.jsdelivr.net"],
-            "img-src": ["'self'", "data:", "https://aivqwkgjdpklxxuvkxpy.supabase.co"],
-            "connect-src": ["'self'", "https://aivqwkgjdpklxxuvkxpy.supabase.co"],
+            "default-src": ["'self'"],
+            "script-src": ["'self'", "https://cdn.jsdelivr.net", "'unsafe-inline'"],
+            "style-src": ["'self'", "https://fonts.googleapis.com", "'unsafe-inline'"],
             "font-src": ["'self'", "https://fonts.gstatic.com"],
-            "style-src": ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+            "connect-src": ["'self'", "https://aivqwkgjdpklxxuvkxpy.supabase.co"],
+            "img-src": ["'self'", "data:", "https://aivqwkgjdpklxxuvkxpy.supabase.co"],
+            "frame-src": ["'self'"],
+            "object-src": ["'none'"],
+            "upgrade-insecure-requests": [],
         },
     },
 }));
