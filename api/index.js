@@ -65,20 +65,25 @@ function createStore(prefix) {
     });
 }
 
-// PLG Unauth Limiter logic (3 lifetime scans via Fingerprint/IP)
+// PLG Unauth Limiter logic (3 lifetime scans via Fingerprint/IP) - ATOMIC RACE-CONDITION PROOF
 async function consumeUnauthCredit(req, res, next) {
-    const fingerprint = req.headers['x-fingerprint'];
+    let rawFp = req.headers['x-fingerprint'];
+    // Sanitize fingerprint to prevent header bloat/memory attacks
+    const fingerprint = (typeof rawFp === 'string') ? rawFp.substring(0, 64) : null;
     const ip = req.ip;
     const identifier = fingerprint ? `fp:${fingerprint}` : `ip:${ip}`;
     const usageKey = `unauth:${identifier}`;
 
     if (redisClient) {
         try {
-            const usage = await redisClient.get(usageKey);
-            if (usage && parseInt(usage) >= 3) {
+            // Atomic INCR prevents Race Conditions
+            const currentUsage = await redisClient.incr(usageKey);
+            
+            if (currentUsage > 3) {
+                // Rollback if exceeded to keep the counter accurate
+                await redisClient.decr(usageKey);
                 return res.status(403).json({ error: 'free limit reached. register to continue.', code: 403, requiresAuth: true });
             }
-            await redisClient.incr(usageKey);
             next();
         } catch (err) {
             console.error('[redis auth error]', err);
@@ -188,22 +193,29 @@ app.post('/v1/user/score', requireSupabaseAuth, async (req, res) => {
     try {
         const result = await runScoringEngine(wallet);
         
-        // Deduct credit and log to scan history
-        await prisma.$transaction([
-            prisma.user.update({
-                where: { id: req.user.id },
-                data: { credits: { decrement: 1 } }
-            }),
-            prisma.scanHistory.create({
-                data: {
-                    userId: req.user.id,
-                    wallet: wallet.toLowerCase(),
-                    score: result.score,
-                    category: result.category,
-                    flags: result.flags
-                }
-            })
-        ]);
+        // OWASP S-Tier Fix: Atomic update prevents Race Conditions for negative credits
+        const updatedUser = await prisma.user.updateMany({
+            where: {
+                id: req.user.id,
+                credits: { gt: 0 } // Only decrement if they ACTUALLY have > 0 credits
+            },
+            data: { credits: { decrement: 1 } }
+        });
+
+        if (updatedUser.count === 0) {
+            return res.status(403).json({ error: 'zero credits internally. bypass thwarted.', code: 403, requiresUpgrade: true });
+        }
+
+        // Only after an atomic decrement do we log the scan history
+        await prisma.scanHistory.create({
+            data: {
+                userId: req.user.id,
+                wallet: wallet.toLowerCase(),
+                score: result.score,
+                category: result.category,
+                flags: result.flags
+            }
+        });
 
         await logAudit(req, wallet, result, null);
 
@@ -212,7 +224,7 @@ app.post('/v1/user/score', requireSupabaseAuth, async (req, res) => {
             score: result.score,
             category: result.category,
             flags: result.flags,
-            creditsRemaining: req.user.credits - 1,
+            creditsRemaining: req.user.credits - 1, // Will represent state accurately before next DB pull
             timestamp: new Date().toISOString()
         });
     } catch (err) {
