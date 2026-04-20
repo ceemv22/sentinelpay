@@ -7,6 +7,8 @@ try {
     }
 } catch(e) { console.warn('[auth] supabase init failed:', e); }
 
+console.log('[sentinel-auth] initializing v2.1...');
+
 document.addEventListener('DOMContentLoaded', () => {
     const tabLogin = document.getElementById('tab-login');
     const tabRegister = document.getElementById('tab-register');
@@ -14,6 +16,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const panelRegister = document.getElementById('panel-register');
     const successState = document.getElementById('auth-success-state');
     const authPanel = document.getElementById('auth-panel');
+
+    if (!tabLogin || !tabRegister || !panelLogin || !panelRegister) {
+        console.error('[sentinel-auth] critical elements missing from DOM');
+        return;
+    }
+
+    console.log('[sentinel-auth] DOM elements matched');
 
     let currentTab = 'login';
 
@@ -178,20 +187,28 @@ document.addEventListener('DOMContentLoaded', () => {
     const oauthRedirect = window.location.origin + '/dashboard';
 
     ['btn-google', 'btn-google-reg'].forEach(id => {
-        document.getElementById(id).addEventListener('click', async () => {
-            await supabase.auth.signInWithOAuth({
-                provider: 'google',
-                options: { redirectTo: oauthRedirect }
+        const btn = document.getElementById(id);
+        if (btn) {
+            btn.addEventListener('click', async () => {
+                if (!supabase) return alert('auth service unavailable. please try again later.');
+                await supabase.auth.signInWithOAuth({
+                    provider: 'google',
+                    options: { redirectTo: oauthRedirect }
+                });
             });
-        });
+        }
     });
 
     ['btn-x', 'btn-x-reg'].forEach(id => {
-        document.getElementById(id).addEventListener('click', async () => {
-            await supabase.auth.signInWithOAuth({
-                provider: 'twitter',
-                options: { redirectTo: oauthRedirect }
+        const btn = document.getElementById(id);
+        if (btn) {
+            btn.addEventListener('click', async () => {
+                if (!supabase) return alert('auth service unavailable. please try again later.');
+                await supabase.auth.signInWithOAuth({
+                    provider: 'twitter',
+                    options: { redirectTo: oauthRedirect }
+                });
             });
-        });
+        }
     });
 });
