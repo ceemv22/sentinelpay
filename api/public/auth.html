@@ -8,8 +8,44 @@
     <meta name="theme-color" content="#050505">
     <link rel="icon" type="image/svg+xml" href="logo.svg">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=4.0">
+    <link rel="stylesheet" href="style.css?v=5.0">
     <script src="lib/supabase.js"></script>
+    <script>
+        // Global UI state
+        let currentTab = 'login';
+        
+        function switchPanel(target) {
+            console.log('[sentinel] switching to:', target);
+            const tabLogin = document.getElementById('tab-login');
+            const tabRegister = document.getElementById('tab-register');
+            const panelLogin = document.getElementById('panel-login');
+            const panelRegister = document.getElementById('panel-register');
+
+            if (!tabLogin || !tabRegister || !panelLogin || !panelRegister) return;
+
+            // Toggle CSS classes
+            tabLogin.classList.toggle('active', target === 'login');
+            tabRegister.classList.toggle('active', target === 'register');
+
+            // Atomic display switch
+            if (target === 'register') {
+                panelLogin.style.display = 'none';
+                panelRegister.style.display = 'block';
+            } else {
+                panelRegister.style.display = 'none';
+                panelLogin.style.display = 'block';
+            }
+            currentTab = target;
+        }
+
+        // Handle URL params immediately
+        window.initTabFromUrl = function() {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('tab') === 'register') {
+                switchPanel('register');
+            }
+        };
+    </script>
 </head>
 <body>
 
@@ -56,8 +92,8 @@
         <!-- Auth Card -->
         <div class="auth-card" id="auth-panel">
             <div class="auth-tabs">
-                <button class="auth-tab active" id="tab-login">login</button>
-                <button class="auth-tab" id="tab-register">register</button>
+                <button class="auth-tab active" id="tab-login" onclick="switchPanel('login')">login</button>
+                <button class="auth-tab" id="tab-register" onclick="switchPanel('register')">register</button>
             </div>
 
             <!-- LOGIN PANEL -->
@@ -161,8 +197,7 @@
 
     </div>
 
-    <script>
-        // Full Auth & UI Logic
+        // Business Logic (Submit Handlers)
         const supabaseUrl = 'https://aivqwkgjdpklxxuvkxpy.supabase.co';
         const supabaseKey = 'sb_publishable_bRfAssaGT6D8oFDQtPARbw_5fyYGWM6';
         let supabase = null;
@@ -173,50 +208,11 @@
             }
         } catch(e) { console.warn('[auth] supabase init failed:', e); }
 
-        function initAuth() {
-            const tabLogin = document.getElementById('tab-login');
-            const tabRegister = document.getElementById('tab-register');
-            const panelLogin = document.getElementById('panel-login');
-            const panelRegister = document.getElementById('panel-register');
-            const authPanel = document.getElementById('auth-panel');
+        function setupForms() {
+            // Already handled in head? Let's just ensure URL params are checked
+            if (window.initTabFromUrl) window.initTabFromUrl();
 
-            if (!tabLogin || !tabRegister || !panelLogin || !panelRegister) return;
-
-            let currentTab = 'login';
-
-            function switchPanel(target) {
-                if (currentTab === target) return;
-                
-                // Toggle active tab classes
-                tabLogin.classList.toggle('active', target === 'login');
-                tabRegister.classList.toggle('active', target === 'register');
-
-                // Instant UI switch
-                if (target === 'register') {
-                    panelLogin.style.display = 'none';
-                    panelRegister.style.display = 'block';
-                } else {
-                    panelRegister.style.display = 'none';
-                    panelLogin.style.display = 'block';
-                }
-
-                currentTab = target;
-                console.log('[sentinel-auth] switched to:', target);
-            }
-
-            tabLogin.addEventListener('click', () => switchPanel('login'));
-            tabRegister.addEventListener('click', () => switchPanel('register'));
-
-            const params = new URLSearchParams(window.location.search);
-            if (params.get('tab') === 'register') {
-                panelLogin.style.display = 'none';
-                panelRegister.style.display = 'block';
-                tabLogin.classList.remove('active');
-                tabRegister.classList.add('active');
-                currentTab = 'register';
-            }
-
-            // Password Rules Live Validation
+            // Password Rules Logic
             const regPw = document.getElementById('reg-password');
             const rules = {
                 len: document.getElementById('rule-len'),
@@ -232,7 +228,6 @@
                 });
             }
 
-            // Rules Tooltip Toggle
             const pwToggle = document.getElementById('pw-rules-toggle');
             const pwTooltip = document.getElementById('pw-rules-tooltip');
             if (pwToggle && pwTooltip) {
@@ -251,7 +246,6 @@
                     const password = document.getElementById('login-password').value;
                     const btn = document.getElementById('login-submit-btn');
                     const errorMsg = document.getElementById('login-error-msg');
-
                     btn.disabled = true;
                     btn.textContent = 'authenticating...';
                     errorMsg.style.display = 'none';
@@ -283,12 +277,12 @@
                     if (password !== confirm) {
                         errorMsg.textContent = 'error: passwords do not match';
                         errorMsg.style.display = 'block';
-                        return;
+                        btn.disabled = false; return;
                     }
                     if (!tos) {
                         errorMsg.textContent = 'error: please accept terms';
                         errorMsg.style.display = 'block';
-                        return;
+                        btn.disabled = false; return;
                     }
 
                     btn.disabled = true;
@@ -313,8 +307,7 @@
                 });
             }
 
-            // Social Buttons
-            const oauthRedirect = window.location.origin + '/dashboard';
+            // Socials
             ['btn-google', 'btn-google-reg', 'btn-x', 'btn-x-reg'].forEach(id => {
                 const b = document.getElementById(id);
                 if (b) {
@@ -323,16 +316,16 @@
                         const provider = id.includes('google') ? 'google' : 'twitter';
                         await supabase.auth.signInWithOAuth({
                             provider,
-                            options: { redirectTo: oauthRedirect }
+                            options: { redirectTo: window.location.origin + '/dashboard' }
                         });
                     });
                 }
             });
         }
 
-        if (document.readyState === 'complete') initAuth();
-        else document.addEventListener('DOMContentLoaded', initAuth);
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', setupForms);
+        else setupForms();
     </script>
-    <script src="eye-track.js?v=4.2"></script>
+    <script src="eye-track.js?v=5.0"></script>
 </body>
 </html>
