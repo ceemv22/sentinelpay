@@ -186,22 +186,22 @@
 
             function switchPanel(target) {
                 if (currentTab === target) return;
-                const outgoing = target === 'register' ? panelLogin : panelRegister;
-                const incoming = target === 'register' ? panelRegister : panelLogin;
-
+                
+                // Toggle active tab classes
                 tabLogin.classList.toggle('active', target === 'login');
                 tabRegister.classList.toggle('active', target === 'register');
 
-                outgoing.classList.add('fade-out');
-                setTimeout(() => {
-                    outgoing.style.display = 'none';
-                    outgoing.classList.remove('fade-out');
-                    incoming.style.display = 'block';
-                    window.requestAnimationFrame(() => {
-                        incoming.classList.remove('fade-out');
-                    });
-                }, 250);
+                // Instant UI switch
+                if (target === 'register') {
+                    panelLogin.style.display = 'none';
+                    panelRegister.style.display = 'block';
+                } else {
+                    panelRegister.style.display = 'none';
+                    panelLogin.style.display = 'block';
+                }
+
                 currentTab = target;
+                console.log('[sentinel-auth] switched to:', target);
             }
 
             tabLogin.addEventListener('click', () => switchPanel('login'));

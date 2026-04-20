@@ -52,9 +52,11 @@ app.use('/v1/stripe', require('./routes/stripe'));
 
 app.use(express.json({ limit: '10kb' }));
 
-// Serve the PLG Frontend with extensionless URLs
-// Ensure correct MIME types for static assets
+// Ensure correct MIME types and No-Cache for HTML/JS during rapid debug phase
 app.use((req, res, next) => {
+    if (req.url.endsWith('.html') || req.url.endsWith('.js') || req.url.endsWith('.css')) {
+        res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    }
     if (req.url.endsWith('.js')) {
         res.type('application/javascript');
     } else if (req.url.endsWith('.css')) {
