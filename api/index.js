@@ -17,19 +17,7 @@ const PORT = process.env.PORT || 3000;
 
 app.set('trust proxy', 1);
 app.use(helmet({
-    contentSecurityPolicy: {
-        directives: {
-            "default-src": ["'self'"],
-            "script-src": ["'self'", "https://cdn.jsdelivr.net", "'unsafe-inline'"],
-            "style-src": ["'self'", "https://fonts.googleapis.com", "'unsafe-inline'"],
-            "font-src": ["'self'", "https://fonts.gstatic.com"],
-            "connect-src": ["'self'", "https://aivqwkgjdpklxxuvkxpy.supabase.co"],
-            "img-src": ["'self'", "data:", "https://aivqwkgjdpklxxuvkxpy.supabase.co"],
-            "frame-src": ["'self'"],
-            "object-src": ["'none'"],
-            "upgrade-insecure-requests": [],
-        },
-    },
+    contentSecurityPolicy: false,
 }));
 app.use(cors({
     origin: (origin, callback) => {
@@ -55,6 +43,16 @@ app.use('/v1/stripe', require('./routes/stripe'));
 app.use(express.json({ limit: '10kb' }));
 
 // Serve the PLG Frontend with extensionless URLs
+// Ensure correct MIME types for static assets
+app.use((req, res, next) => {
+    if (req.url.endsWith('.js')) {
+        res.type('application/javascript');
+    } else if (req.url.endsWith('.css')) {
+        res.type('text/css');
+    }
+    next();
+});
+
 app.use(express.static(path.join(__dirname, 'public'), { extensions: ['html'] }));
 
 // Redis Setup & Rate Limiter Store

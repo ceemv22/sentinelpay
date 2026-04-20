@@ -161,7 +161,94 @@
 
     </div>
 
-    <script src="auth.js?v=4.0"></script>
-    <script src="eye-track.js?v=4.0"></script>
+    <script>
+        // Bulletproof Auth UI Initialization
+        console.log('[sentinel-auth] inline init sequence starting...');
+
+        function initAuth() {
+            const tabLogin = document.getElementById('tab-login');
+            const tabRegister = document.getElementById('tab-register');
+            const panelLogin = document.getElementById('panel-login');
+            const panelRegister = document.getElementById('panel-register');
+            const successState = document.getElementById('auth-success-state');
+            const authPanel = document.getElementById('auth-panel');
+
+            if (!tabLogin || !tabRegister || !panelLogin || !panelRegister) {
+                console.error('[sentinel-auth] DOM elements missing');
+                return;
+            }
+
+            console.log('[sentinel-auth] elements found. mounting logic.');
+
+            let currentTab = 'login';
+
+            function switchPanel(target) {
+                if (currentTab === target) return;
+                const outgoing = target === 'register' ? panelLogin : panelRegister;
+                const incoming = target === 'register' ? panelRegister : panelLogin;
+
+                tabLogin.classList.toggle('active', target === 'login');
+                tabRegister.classList.toggle('active', target === 'register');
+
+                outgoing.classList.add('fade-out');
+                setTimeout(() => {
+                    outgoing.style.display = 'none';
+                    outgoing.classList.remove('fade-out');
+                    incoming.style.display = 'block';
+                    window.requestAnimationFrame(() => {
+                        incoming.classList.remove('fade-out');
+                    });
+                }, 250);
+
+                currentTab = target;
+                console.log('[sentinel-auth] switched to:', target);
+            }
+
+            tabLogin.addEventListener('click', () => switchPanel('login'));
+            tabRegister.addEventListener('click', () => switchPanel('register'));
+
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('tab') === 'register') {
+                panelLogin.style.display = 'none';
+                panelRegister.style.display = 'block';
+                tabLogin.classList.remove('active');
+                tabRegister.classList.add('active');
+                currentTab = 'register';
+                console.log('[sentinel-auth] direct mount: register');
+            }
+
+            // Simple Password Rules Logic
+            const regPw = document.getElementById('reg-password');
+            const rules = {
+                len: document.getElementById('rule-len'),
+                upper: document.getElementById('rule-upper'),
+                num: document.getElementById('rule-num')
+            };
+
+            if (regPw && rules.len) {
+                regPw.addEventListener('input', (e) => {
+                    const val = e.target.value;
+                    rules.len.classList.toggle('met', val.length >= 8);
+                    rules.upper.classList.toggle('met', /[A-Z]/.test(val));
+                    rules.num.classList.toggle('met', /[0-9]/.test(val));
+                });
+            }
+
+            const pwToggle = document.getElementById('pw-rules-toggle');
+            const pwTooltip = document.getElementById('pw-rules-tooltip');
+            if (pwToggle && pwTooltip) {
+                pwToggle.addEventListener('click', () => {
+                    pwTooltip.style.display = pwTooltip.style.display === 'block' ? 'none' : 'block';
+                });
+            }
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initAuth);
+        } else {
+            initAuth();
+        }
+    </script>
+    <script src="eye-track.js?v=4.1"></script>
 </body>
 </html>
