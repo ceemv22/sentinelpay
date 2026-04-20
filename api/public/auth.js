@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
         isLogin = true;
         tabLogin.classList.add('active');
         tabRegister.classList.remove('active');
-        submitBtn.textContent = 'login securely';
+        submitBtn.textContent = 'login';
         errorMsg.style.display = 'none';
         passwordInput.style.display = 'block';
         passwordInput.previousElementSibling.style.display = 'block';
@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
             errorMsg.textContent = error.message;
             errorMsg.style.display = 'block';
             submitBtn.disabled = false;
-            submitBtn.textContent = isLogin ? 'login securely' : 'send magic link';
+            submitBtn.textContent = isLogin ? 'login' : 'send magic link';
         }
     });
 
