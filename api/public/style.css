@@ -97,7 +97,18 @@ header {
     position: fixed;
     top: 1.5rem;
     right: 2rem;
-    z-index: 1000;
+    z-index: 10000 !important;
+}
+
+.auth-nav-btn {
+    pointer-events: auto !important;
+    z-index: 10001 !important;
+}
+
+.auth-nav-btn {
+    pointer-events: auto !important;
+    z-index: 10001 !important;
+}
 }
 
 .github-link {

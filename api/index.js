@@ -18,18 +18,7 @@ const PORT = process.env.PORT || 3000;
 app.set('trust proxy', 1);
 
 app.use(helmet({
-    contentSecurityPolicy: {
-        directives: {
-            "default-src": ["'self'"],
-            "script-src": ["'self'", "'unsafe-inline'"],
-            "style-src": ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
-            "font-src": ["'self'", "https://fonts.gstatic.com"],
-            "connect-src": ["'self'", "https://aivqwkgjdpklxxuvkxpy.supabase.co"],
-            "img-src": ["'self'", "data:", "https://aivqwkgjdpklxxuvkxpy.supabase.co"],
-            "frame-src": ["'self'"],
-            "object-src": ["'none'"],
-        },
-    },
+    contentSecurityPolicy: false,
 }));
 app.use(cors({
     origin: (origin, callback) => {
