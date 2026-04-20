@@ -197,6 +197,7 @@
 
     </div>
 
+    <script>
         // Business Logic (Submit Handlers)
         const supabaseUrl = 'https://aivqwkgjdpklxxuvkxpy.supabase.co';
         const supabaseKey = 'sb_publishable_bRfAssaGT6D8oFDQtPARbw_5fyYGWM6';
@@ -209,8 +210,11 @@
         } catch(e) { console.warn('[auth] supabase init failed:', e); }
 
         function setupForms() {
-            // Already handled in head? Let's just ensure URL params are checked
-            if (window.initTabFromUrl) window.initTabFromUrl();
+            // Check URL params for register redirection
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('tab') === 'register') {
+                if (window.switchPanel) window.switchPanel('register');
+            }
 
             // Password Rules Logic
             const regPw = document.getElementById('reg-password');

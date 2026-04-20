@@ -15,6 +15,8 @@ const requireSupabaseAuth = require('./middleware/supabaseAuth');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.set('trust proxy', 1);
+
 app.use(helmet({
     contentSecurityPolicy: {
         directives: {
@@ -54,12 +56,13 @@ app.use(express.json({ limit: '10kb' }));
 
 // Ensure correct MIME types and No-Cache for HTML/JS during rapid debug phase
 app.use((req, res, next) => {
-    if (req.url.endsWith('.html') || req.url.endsWith('.js') || req.url.endsWith('.css')) {
+    const p = req.path;
+    if (p.endsWith('.html') || p.endsWith('.js') || p.endsWith('.css') || p === '/auth' || p === '/') {
         res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
     }
-    if (req.url.endsWith('.js')) {
+    if (p.endsWith('.js')) {
         res.type('application/javascript');
-    } else if (req.url.endsWith('.css')) {
+    } else if (p.endsWith('.css')) {
         res.type('text/css');
     }
     next();
