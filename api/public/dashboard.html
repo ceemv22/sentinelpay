@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>sentinelpay | dashboard</title>
+    
+    <meta name="theme-color" content="#0b0e14">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        .dashboard-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 6rem 1rem 2rem 1rem;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 3rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1.5rem;
+        }
+
+        .user-email {
+            color: var(--text-secondary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .stat-value {
+            font-size: 3rem;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--primary);
+            line-height: 1;
+            margin-top: 0.5rem;
+        }
+
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+        }
+
+        .history-item.high { border-left: 3px solid var(--color-red); }
+        .history-item.medium { border-left: 3px solid var(--color-yellow); }
+        .history-item.low { border-left: 3px solid var(--color-green); }
+
+        .api-key-box {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: #000;
+            border: 1px solid var(--border);
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-secondary);
+        }
+
+        .buy-credits-btn {
+            background: var(--text);
+            color: var(--bg);
+        }
+
+        .buy-credits-btn:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="app-container">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+
+        <nav class="navbar">
+            <div class="nav-brand">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    <path d="M12 8v4"/>
+                    <path d="M12 16h.01"/>
+                </svg>
+                sentinelpay
+            </div>
+            <div style="display: flex; gap: 1rem; align-items: center;">
+                <a href="index.html" class="nav-link">scanner</a>
+                <button id="btn-logout" class="nav-link" style="background:none;border:none;cursor:pointer;">logout</button>
+            </div>
+        </nav>
+
+        <main class="dashboard-container">
+            <div class="dashboard-header">
+                <div>
+                    <h1>dashboard</h1>
+                    <div class="user-email" id="user-email">loading...</div>
+                </div>
+                <button class="btn buy-credits-btn" id="btn-buy" style="display:none;">buy credits</button>
+            </div>
+
+            <div class="stats-grid">
+                <div class="glass-panel stat-card">
+                    <div style="color: var(--text-secondary)">remaining credits</div>
+                    <div class="stat-value" id="credit-count">-</div>
+                </div>
+                <div class="glass-panel stat-card">
+                    <div style="color: var(--text-secondary)">api key</div>
+                    <div class="api-key-box" style="margin-top: 1rem;">
+                        <span id="api-key-display">••••••••••••••••</span>
+                        <button class="btn" style="padding: 0.5rem; font-size: 0.75rem;" onclick="alert('creating b2b keys coming in phase 3')">reveal</button>
+                    </div>
+                </div>
+            </div>
+
+            <h2>scan history</h2>
+            <div class="history-list glass-panel" id="history-container" style="padding: 1.5rem;">
+                <p style="color: var(--text-secondary); text-align: center; padding: 2rem;">loading history...</p>
+            </div>
+        </main>
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>

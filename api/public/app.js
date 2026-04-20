@@ -13,6 +13,30 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const scoreValue = document.getElementById('score-value');
     const flagsContainer = document.getElementById('flags-container');
+    const authNavBtn = document.getElementById('auth-nav-btn');
+
+    // Supabase Auth and Fingerprint Init
+    const supabaseUrl = 'https://aivqwkgjdpklxxuvkxpy.supabase.co';
+    const supabaseKey = 'sb_publishable_bRfAssaGT6D8oFDQtPARbw_5fyYGWM6';
+    const supabaseClient = window.supabase ? window.supabase.createClient(supabaseUrl, supabaseKey) : null;
+    let cachedSession = null;
+
+    if (!localStorage.getItem('sentinel_fp')) {
+        localStorage.setItem('sentinel_fp', crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substring(2));
+    }
+    const fingerprint = localStorage.getItem('sentinel_fp');
+
+    if (supabaseClient) {
+        supabaseClient.auth.getSession().then(({ data: { session } }) => {
+            cachedSession = session;
+            if (session) {
+                if (authNavBtn) {
+                    authNavBtn.textContent = 'dashboard';
+                    authNavBtn.href = 'dashboard.html';
+                }
+            }
+        });
+    }
 
     let lastResult = null;
 
@@ -79,16 +103,32 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.textContent = 'scanning...';
 
         try {
-            const response = await fetch('/v1/public/score', {
+            const endpoint = cachedSession ? '/v1/user/score' : '/v1/public/score';
+            const headers = {
+                'Content-Type': 'application/json',
+                'x-fingerprint': fingerprint
+            };
+
+            if (cachedSession) {
+                headers['Authorization'] = `Bearer ${cachedSession.access_token}`;
+            }
+
+            const response = await fetch(endpoint, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: headers,
                 body: JSON.stringify({ wallet })
             });
 
             const data = await response.json();
 
             if (!response.ok) {
-                if (response.status === 429) throw new Error('rate_limit_exceeded');
+                if (response.status === 403 && data.requiresAuth) {
+                    throw new Error('free limit reached. please login/register to continue.');
+                }
+                if (response.status === 403 && data.requiresUpgrade) {
+                    throw new Error('out of credits. go to dashboard to refill.');
+                }
+                if (response.status === 429) throw new Error('rate_limit_exceeded (try later)');
                 throw new Error(data.error || 'sys_error');
             }
 
