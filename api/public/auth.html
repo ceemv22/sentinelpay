@@ -20,18 +20,6 @@
     <div class="auth-topbar">
         <div class="auth-top-logo mobile-only">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" style="width: 32px; height: 32px;">
-              <g fill="none" stroke="url(#neonGradient)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z" />
-              </g>
-            </svg>
-        </div>
-        <a href="/" class="auth-nav-btn" style="background: transparent; border-color: rgba(255,255,255,0.1); color: var(--text-muted);">back to scanner</a>
-    </div>
-
-    <div class="auth-page-wrap">
-        <!-- Logo -->
-        <div class="auth-logo-block">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" style="width: 80px; height: 80px;">
               <defs>
                 <linearGradient id="neonGradient" x1="0%" y1="0%" x2="100%" y2="100%">
                   <stop offset="0%" stop-color="#00ffff" />
@@ -45,19 +33,22 @@
                   </feMerge>
                 </filter>
               </defs>
-              <g filter="url(#neonGlow)" fill="none" stroke="url(#neonGradient)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+              <g filter="url(#neonGlow)" fill="none" stroke="url(#neonGradient)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z" />
                 <path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z" />
                 <g id="eye-pupil" style="transition: transform 0.1s ease-out;">
-                  <circle cx="60" cy="60" r="6" />
-                  <circle cx="60" cy="60" r="2" fill="url(#neonGradient)" stroke="none"/>
+                  <circle cx="60" cy="60" r="10" />
+                  <circle cx="60" cy="60" r="4" fill="url(#neonGradient)" stroke="none"/>
                 </g>
-                <path d="M60 15 V 30" stroke-width="2" opacity="0.6"/>
-                <path d="M60 90 V 105" stroke-width="2" opacity="0.6"/>
               </g>
             </svg>
         </div>
+        <a href="/" class="auth-nav-btn" style="background: transparent; border-color: rgba(255,255,255,0.1); color: var(--text-muted);">back to scanner</a>
+    </div>
 
+    <!-- Centered content area -->
+    <div class="auth-page-wrap">
+        
         <!-- Auth Card -->
         <div class="auth-card" id="auth-panel">
             <div class="auth-tabs">

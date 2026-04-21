@@ -830,38 +830,40 @@ button:hover:not(:disabled) {
     }
 
     .auth-topbar {
-        padding: 0 1.25rem;
+        padding: 0 1rem;
         height: 60px;
-        background: rgba(5, 5, 5, 0.9);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        background: rgba(5, 5, 5, 0.95);
+        backdrop-filter: blur(25px);
+        -webkit-backdrop-filter: blur(25px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         pointer-events: auto;
         display: flex;
         align-items: center;
-        justify-content: space-between; /* Logo Left, Back Right */
+        justify-content: space-between;
     }
 
     .auth-top-logo.mobile-only {
         display: flex !important;
         align-items: center;
-        opacity: 0.9;
+        height: 100%;
     }
 
     .auth-page-wrap {
-        padding: 0.5rem;
+        padding: 0.25rem;
         min-height: 100dvh;
         justify-content: flex-start;
-        padding-top: 70px; /* Exactly enough space for topbar + tiny margin */
+        padding-top: 60px; /* Lock to navbar height */
     }
 
     .auth-card {
         width: 100%;
         max-width: 100%;
-        padding: 1.25rem;
-        margin-top: 0 !important;
-        border-radius: 12px;
+        padding: 1.25rem 1rem;
+        margin-top: 5px !important;
+        border-radius: 0 0 16px 16px; /* Match screen better */
+        border-top: none; /* Flow directly from navbar */
         min-height: auto;
+        box-shadow: none; /* Cleaner look for top-aligned */
     }
 
     .auth-top-brand.mobile-only {
