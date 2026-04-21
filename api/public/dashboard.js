@@ -2,26 +2,22 @@ const supabaseUrl = 'https://aivqwkgjdpklxxuvkxpy.supabase.co';
 const supabaseKey = 'sb_publishable_bRfAssaGT6D8oFDQtPARbw_5fyYGWM6';
 const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-// Aggressively clean up the URL hash after Supabase intercepts it
-supabase.auth.onAuthStateChange((event, session) => {
-    if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') {
-        setTimeout(() => {
-            if (window.location.hash && window.location.hash.includes('access_token')) {
-                window.history.replaceState(null, '', window.location.pathname + window.location.search);
-            }
-        }, 50); // micro-delay to let supabase finish parsing
-    }
-});
-
 document.addEventListener('DOMContentLoaded', async () => {
     // 1. Check auth state
     const { data: { session }, error } = await supabase.auth.getSession();
     
     if (error || !session) {
-        // Not logged in, redirect
         window.location.href = '/auth';
         return;
     }
+
+    // BRUTE FORCE CLEANUP: Wait a tick to ensure Supabase saved tokens, then wipe it completely.
+    setTimeout(() => {
+        if (window.location.hash && window.location.hash.includes('access_token')) {
+            window.location.hash = ''; // Wipes text
+            window.history.replaceState({}, document.title, window.location.pathname); // Destroys the '#'
+        }
+    }, 100);
 
     const token = session.access_token;
     
