@@ -510,24 +510,22 @@ button:hover:not(:disabled) {
     background: transparent;
     border: none;
     color: var(--text-muted);
-    padding: 0.75rem 0;
+    padding: 0.85rem 0;
     font-weight: 600;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     cursor: pointer;
     border-radius: 6px;
-    transition: all 0.2s ease;
+    transition: background 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .auth-tab.active {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.08);
     color: #fff;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .auth-tab:hover:not(.active) {
     color: #fff;
-    background: rgba(255, 255, 255, 0.03);
 }
 
 .auth-social {
@@ -640,6 +638,10 @@ button:hover:not(:disabled) {
     font-family: 'JetBrains Mono', monospace;
     line-height: 1.6;
     text-align: center;
+    min-height: 2.2rem; /* Preserves vertical space for symmetry */
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .auth-agreement a {
@@ -675,11 +677,15 @@ button:hover:not(:disabled) {
 
 .pw-tooltip {
     display: none;
+    position: absolute; /* Ensures it doesn't push elements down */
+    width: 100%;
+    z-index: 10;
     font-size: 0.7rem;
     color: var(--text-muted);
     font-family: 'JetBrains Mono', monospace;
     padding: 0.75rem;
-    background: rgba(0,0,0,0.4);
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(5px);
     border: 1px solid rgba(255,255,255,0.06);
     border-radius: 8px;
     margin-top: 0.5rem;
@@ -697,29 +703,27 @@ button:hover:not(:disabled) {
 .submit-btn {
     width: 100%;
     margin-top: 1.5rem;
-    padding: 1rem;
+    height: 3rem;
     font-size: 0.9rem;
     font-weight: 700;
     font-family: 'JetBrains Mono', monospace;
-    background: linear-gradient(135deg, var(--neon-blue) 0%, var(--neon-purple) 100%);
+    background: #fff;
+    color: #000;
     border: none;
     border-radius: 8px;
-    color: #fff;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 4px 15px rgba(0, 240, 255, 0.2);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    text-transform: lowercase;
 }
 
 .submit-btn:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 240, 255, 0.3);
-    filter: brightness(1.1);
+    box-shadow: 0 10px 20px rgba(255, 255, 255, 0.1);
 }
 
 .submit-btn:disabled {
-    opacity: 0.6;
+    opacity: 0.4;
     cursor: not-allowed;
-    filter: grayscale(0.5);
 }
 
 .error-msg {
@@ -728,6 +732,7 @@ button:hover:not(:disabled) {
     color: var(--color-red);
     font-family: 'JetBrains Mono', monospace;
     text-align: center;
+    min-height: 1.2rem;
 }
 
 .auth-form .btn.primary {
