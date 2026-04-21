@@ -1,3 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>sentinelpay | dashboard</title>
+    
+    <meta name="theme-color" content="#0b0e14">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="style.css">
@@ -22,13 +33,6 @@
             color: var(--text-secondary);
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.9rem;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 3rem;
         }
 
         .stat-card {
@@ -88,49 +92,67 @@
 
         .buy-credits-btn:hover {
             opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        .nav-link:hover {
+            color: var(--primary);
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            .dashboard-container { padding-top: 4rem; }
+            .stat-value { font-size: 2.2rem; }
         }
     </style>
 </head>
 <body>
-    
-    <div class="app-container">
-        <div class="blob blob-1"></div>
-        <div class="blob blob-2"></div>
-
-        <nav class="navbar">
-            <div class="nav-brand">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                    <path d="M12 8v4"/>
-                    <path d="M12 16h.01"/>
-                </svg>
-                sentinelpay
+    <div class="dashboard-wrapper">
+        <header class="navbar" style="position: fixed; top: 0; width: 100%; z-index: 100;">
+            <div class="logo">
+                <a href="/" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 0.5rem;">
+                    <div class="logo-eye">
+                        <div class="pupil"></div>
+                    </div>
+                    <span>sentinelpay</span>
+                </a>
             </div>
-            <div style="display: flex; gap: 1rem; align-items: center;">
+            <nav style="display: flex; gap: 2rem; align-items: center;">
                 <a href="/" class="nav-link">scanner</a>
-                <button id="btn-logout" class="nav-link" style="background:none;border:none;cursor:pointer;">logout</button>
-            </div>
-        </nav>
+                <button id="btn-logout" class="btn btn-secondary" style="padding: 0.5rem 1rem;">logout</button>
+            </nav>
+        </header>
 
         <main class="dashboard-container">
             <div class="dashboard-header">
                 <div>
-                    <h1>dashboard</h1>
-                    <div class="user-email" id="user-email">loading...</div>
+                    <h1 style="margin: 0; font-size: 2rem;">dashboard</h1>
+                    <div id="user-email" class="user-email">loading user...</div>
                 </div>
-                <button class="btn buy-credits-btn" id="btn-buy" style="display:none;">buy credits</button>
+                <button class="btn buy-credits-btn" onclick="alert('stripe integration coming in phase 3')">buy credits</button>
             </div>
 
             <div class="stats-grid">
                 <div class="glass-panel stat-card">
-                    <div style="color: var(--text-secondary)">remaining credits</div>
-                    <div class="stat-value" id="credit-count">-</div>
+                    <div style="color: var(--text-secondary)">available credits</div>
+                    <div id="credit-count" class="stat-value">0</div>
                 </div>
                 <div class="glass-panel stat-card">
                     <div style="color: var(--text-secondary)">api key</div>
                     <div class="api-key-box" style="margin-top: 1rem;">
                         <span id="api-key-display">••••••••••••••••</span>
-                        <button class="btn" style="padding: 0.5rem; font-size: 0.75rem;" onclick="alert('creating b2b keys coming in phase 3')">reveal</button>
+                        <button id="btn-reveal-key" class="btn" style="padding: 0.5rem; font-size: 0.75rem;">reveal</button>
                     </div>
                 </div>
             </div>
@@ -140,6 +162,8 @@
                 <p style="color: var(--text-secondary); text-align: center; padding: 2rem;">loading history...</p>
             </div>
         </main>
+    </div>
+
     <script src="dashboard-v5.js"></script>
 </body>
 </html>

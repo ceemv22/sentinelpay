@@ -1,11 +1,12 @@
 const supabaseUrl = 'https://aivqwkgjdpklxxuvkxpy.supabase.co';
 const supabaseKey = 'sb_publishable_bRfAssaGT6D8oFDQtPARbw_5fyYGWM6';
-const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+const sentinelAuth = window.supabase.createClient(supabaseUrl, supabaseKey);
 
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('[sentinel-dashboard] v5 loader active');
+
     // 1. Check auth state
-    const { data: { session }, error } = await supabase.auth.getSession();
+    const { data: { session }, error } = await sentinelAuth.auth.getSession();
     
     if (error || !session) {
         window.location.href = '/auth';
@@ -16,6 +17,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     let scrubCount = 0;
     const scrubber = setInterval(() => {
         if (window.location.href.includes('#access_token')) {
+            console.log('[sentinel-dashboard] hash detected, scrubbing...');
             window.history.replaceState(null, '', window.location.pathname);
         }
         if (++scrubCount > 20) clearInterval(scrubber);
@@ -24,10 +26,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     const token = session.access_token;
     
     // 2. Setup Logout
-    document.getElementById('btn-logout').addEventListener('click', async () => {
-        await supabase.auth.signOut();
-        window.location.href = '/';
-    });
+    const logoutBtn = document.getElementById('btn-logout');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', async () => {
+            await sentinelAuth.auth.signOut();
+            window.location.href = '/';
+        });
+    }
+
+    // CSP Fix: Setup Reveal Key Button
+    const revealBtn = document.getElementById('btn-reveal-key');
+    if (revealBtn) {
+        revealBtn.addEventListener('click', () => {
+            alert('creating b2b keys coming in phase 3');
+        });
+    }
 
     // 3. Fetch Dashboard Data
     try {
@@ -66,7 +79,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const dateRaw = new Date(item.timestamp);
                 const dateStr = dateRaw.toLocaleDateString() + ' ' + dateRaw.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
                 
-                // Secure DOM construction vs innerHTML
+                // Secure DOM construction
                 const infoDiv = document.createElement('div');
                 infoDiv.style.cssText = 'display:flex; flex-direction: column; gap: 0.25rem;';
                 
