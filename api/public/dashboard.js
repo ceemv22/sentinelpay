@@ -42,7 +42,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         const historyContainer = document.getElementById('history-container');
         
         if (data.history.length === 0) {
-            historyContainer.innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 2rem;">no scans yet. go back to the scanner to check a wallet.</p>';
+            const emptyMsg = document.createElement('p');
+            emptyMsg.style.cssText = 'color: var(--text-secondary); text-align: center; padding: 2rem;';
+            emptyMsg.textContent = 'no scans yet. go back to the scanner to check a wallet.';
+            historyContainer.appendChild(emptyMsg);
         } else {
             historyContainer.innerHTML = ''; // clear
             
@@ -53,15 +56,30 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const dateRaw = new Date(item.timestamp);
                 const dateStr = dateRaw.toLocaleDateString() + ' ' + dateRaw.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
                 
-                el.innerHTML = `
-                    <div style="display:flex; flex-direction: column; gap: 0.25rem;">
-                        <strong style="color: var(--text);">${item.wallet}</strong>
-                        <span style="color: var(--text-secondary); font-size: 0.75rem;">${dateStr}</span>
-                    </div>
-                    <div style="display: flex; gap: 1rem; align-items: center;">
-                        <span style="background: rgba(255,255,255,0.1); padding: 0.2rem 0.6rem; border-radius: 4px;">Score: ${item.score}</span>
-                    </div>
-                `;
+                // Secure DOM construction vs innerHTML
+                const infoDiv = document.createElement('div');
+                infoDiv.style.cssText = 'display:flex; flex-direction: column; gap: 0.25rem;';
+                
+                const walletLabel = document.createElement('strong');
+                walletLabel.style.color = 'var(--text)';
+                walletLabel.textContent = item.wallet;
+                
+                const timeLabel = document.createElement('span');
+                timeLabel.style.cssText = 'color: var(--text-secondary); font-size: 0.75rem;';
+                timeLabel.textContent = dateStr;
+                
+                infoDiv.appendChild(walletLabel);
+                infoDiv.appendChild(timeLabel);
+
+                const scoreDiv = document.createElement('div');
+                scoreDiv.style.cssText = 'display: flex; gap: 1rem; align-items: center;';
+                const scoreBadge = document.createElement('span');
+                scoreBadge.style.cssText = 'background: rgba(255,255,255,0.1); padding: 0.2rem 0.6rem; border-radius: 4px;';
+                scoreBadge.textContent = `Score: ${item.score}`;
+                scoreDiv.appendChild(scoreBadge);
+
+                el.appendChild(infoDiv);
+                el.appendChild(scoreDiv);
                 historyContainer.appendChild(el);
             });
         }

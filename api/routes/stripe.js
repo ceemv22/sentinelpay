@@ -52,8 +52,8 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (req, res
             }
         });
 
-        // Store this rawKey securely via email/dashboard in real-world scenario
-        console.log(`[billing] Provisioned new API KEY for customer ${session.customer}`);
+        // Provision API key
+        console.log(`[billing] Successfully provisioned API access for customer ${session.customer}`);
     }
 
     if (event.type === 'customer.subscription.deleted') {

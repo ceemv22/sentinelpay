@@ -18,18 +18,29 @@ const PORT = process.env.PORT || 3000;
 app.set('trust proxy', 1);
 
 app.use(helmet({
-    contentSecurityPolicy: false,
+    contentSecurityPolicy: {
+        directives: {
+            "default-src": ["'self'"],
+            "script-src": ["'self'", "https://aivqwkgjdpklxxuvkxpy.supabase.co", "https://cdn.jsdelivr.net"],
+            "style-src": ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+            "font-src": ["'self'", "https://fonts.gstatic.com"],
+            "img-src": ["'self'", "data:", "https://aivqwkgjdpklxxuvkxpy.supabase.co"],
+            "connect-src": ["'self'", "https://aivqwkgjdpklxxuvkxpy.supabase.co", "wss://aivqwkgjdpklxxuvkxpy.supabase.co", "https://api.etherscan.io"],
+            "frame-ancestors": ["'none'"],
+            "object-src": ["'none'"]
+        }
+    }
 }));
 app.use(cors({
     origin: (origin, callback) => {
-        const allowed = process.env.ALLOWED_ORIGINS?.split(',') || [];
-        if (allowed.length === 0 || allowed.includes('*')) {
+        const allowed = process.env.ALLOWED_ORIGINS?.split(',').filter(o => o.length > 0) || [];
+        if (allowed.includes('*')) {
             if (process.env.NODE_ENV === 'production') {
-                console.warn('[security] WARNING: CORS is set to allow all origins in production.');
+                return callback(new Error('Wildcard CORS disallowed in production.'));
             }
             return callback(null, true);
         }
-        if (allowed.indexOf(origin) !== -1 || !origin) {
+        if (allowed.length === 0 || allowed.indexOf(origin) !== -1 || !origin) {
             callback(null, true);
         } else {
             callback(new Error('Not allowed by CORS'));
@@ -263,6 +274,34 @@ app.post('/v1/user/score', requireSupabaseAuth, async (req, res) => {
     } catch (err) {
         console.error('[user score error]', err);
         res.status(err.status || 500).json({ error: 'failed to process risk score', code: 500 });
+    }
+});
+
+// Secure Profile & History Retrieval (IDOR Protected)
+app.get('/v1/user/profile', requireSupabaseAuth, async (req, res) => {
+    try {
+        const user = await prisma.user.findUnique({
+            where: { id: req.user.id },
+            include: {
+                history: {
+                    orderBy: { timestamp: 'desc' },
+                    take: 50
+                }
+            }
+        });
+
+        if (!user) {
+            return res.status(404).json({ error: 'user not found' });
+        }
+
+        res.json({
+            email: user.email,
+            credits: user.credits,
+            history: user.history
+        });
+    } catch (err) {
+        console.error('[profile error]', err);
+        res.status(500).json({ error: 'failed to load profile data' });
     }
 });
 
