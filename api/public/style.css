@@ -85,30 +85,29 @@ header {
 
 .top-nav {
     position: absolute;
-    top: -40px;
+    top: -60px;
     left: 0;
     right: 0;
     display: flex;
     justify-content: center;
     align-items: center;
+    pointer-events: none;
+}
+
+.top-nav > * {
+    pointer-events: auto;
 }
 
 #auth-nav-container {
     position: fixed;
     top: 1.5rem;
     right: 2rem;
-    z-index: 10000 !important;
+    z-index: 10000;
 }
 
 .auth-nav-btn {
     pointer-events: auto !important;
     z-index: 10001 !important;
-}
-
-.auth-nav-btn {
-    pointer-events: auto !important;
-    z-index: 10001 !important;
-}
 }
 
 .github-link {
