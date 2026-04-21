@@ -66,11 +66,6 @@ router.post('/checkout', checkoutJson, requireSupabaseAuth, async (req, res) => 
         res.status(500).json({ error: 'checkout failed', code: 500 });
     }
 });
-    } catch (error) {
-        console.error('[stripe]', error);
-        res.status(500).json({ error: 'checkout failed', code: 500 });
-    }
-});
 
 // Webhook to provision API Keys
 router.post('/webhook', express.raw({type: 'application/json'}), async (req, res) => {
