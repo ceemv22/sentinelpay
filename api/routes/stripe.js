@@ -1,11 +1,18 @@
 const express = require('express');
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY || 'sk_test_dummy_key_replace_me');
 const crypto = require('crypto');
 const prisma = require('../services/db');
 const requireSupabaseAuth = require('../middleware/supabaseAuth');
 
 const router = express.Router();
 const checkoutJson = express.json({ limit: '10kb' });
+const isProduction = process.env.NODE_ENV === 'production';
+const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
+
+if (isProduction && !stripeSecretKey) {
+    throw new Error('STRIPE_SECRET_KEY must be configured in production.');
+}
+
+const stripe = require('stripe')(stripeSecretKey || 'sk_test_dummy_key_replace_me');
 
 function getAppBaseUrl(req) {
     const configuredOrigin = process.env.PUBLIC_APP_URL?.trim();

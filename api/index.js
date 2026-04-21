@@ -19,8 +19,24 @@ const allowedOrigins = (process.env.ALLOWED_ORIGINS || '')
     .split(',')
     .map(origin => origin.trim())
     .filter(origin => origin.length > 0);
+const trustProxyEnv = process.env.TRUST_PROXY;
 
-app.set('trust proxy', 1);
+function resolveTrustProxySetting(value) {
+    if (value === undefined || value === null || value === '') {
+        return undefined;
+    }
+    const normalized = String(value).trim().toLowerCase();
+    if (normalized === 'true') return true;
+    if (normalized === 'false') return false;
+    if (/^\d+$/.test(normalized)) return Number(normalized);
+    return value;
+}
+
+const trustProxySetting = resolveTrustProxySetting(trustProxyEnv);
+if (isProduction && trustProxySetting === undefined) {
+    throw new Error('TRUST_PROXY must be explicitly configured in production.');
+}
+app.set('trust proxy', trustProxySetting === undefined ? 1 : trustProxySetting);
 
 app.use(helmet({
     contentSecurityPolicy: {

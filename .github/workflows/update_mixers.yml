@@ -23,9 +23,24 @@ jobs:
       - name: Run mixer updater
         run: python scripts/update_mixers.py
 
-      - name: Commit and push if changed
+      - name: Detect changes
+        id: detect_changes
         run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add data/mixers.json
-          git diff --quiet && git diff --staged --quiet || (git commit -m "auto: daily mixer database update" && git push origin dev)
+          if git diff --quiet -- data/mixers.json; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Upload reviewed mixer snapshot
+        if: steps.detect_changes.outputs.changed == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: reviewed-mixers-json
+          path: data/mixers.json
+
+      - name: Require manual review for dataset changes
+        if: steps.detect_changes.outputs.changed == 'true'
+        run: |
+          echo "Mixer dataset changed. Review the artifact and merge manually."
+          exit 1
