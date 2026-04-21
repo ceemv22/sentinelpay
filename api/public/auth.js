@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
         tabRegister.classList.toggle('active', target === 'register');
 
         setTimeout(() => {
-            // 2. Switch display
+            // 2. Switch visibility
             outgoing.style.display = 'none';
             incoming.style.display = 'block';
 
@@ -54,9 +54,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 currentTab = target;
                 isTransitioning = false;
                 if (persist) sessionStorage.setItem('sentinel_auth_tab', target);
-                console.log('[sentinel-auth] switched to:', target);
-            }, 50);
-        }, 200);
+            }, 30);
+        }, 150);
     }
 
     // Attach Listeners
