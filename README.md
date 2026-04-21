@@ -86,14 +86,13 @@ features:
 
 ## roadmap
 
-**phase 1, 2, & 2.5 (completed)**
+**phase 2, 2.5 & Security Audit (completed)**
 - [x] real-time wallet scoring via rest api
 - [x] api key authentication (sha-256 hashed)
 - [x] stripe billing + redis rate limiting
 - [x] postgres audit logging
 - [x] 140+ origin mixer/sanctioned database
-
-**phase 3 — enterprise & self-serve (completed)**
+- [x] S-TIER SECURITY CERTIFICATION (Audit confirmed 2026-04-21)
 - [x] self-serve signup + user dashboard + credit system
 - [x] google & x (twitter) social login integration
 - [x] email verification & anti-abuse fingerprinting

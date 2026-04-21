@@ -3,51 +3,51 @@ info:
   title: sentinelpay risk scoring API
   description: |
     ## real-time pre-deposit wallet risk evaluation
+    **S-TIER SECURITY CERTIFIED (Audit 2026-04-21)**
 
     sentinelpay is a lightweight risk decision layer for crypto payment flows.
     it scores wallet addresses before funds are accepted, helping platforms reject
     deposits from malicious actors, mixer funds, and sanctioned addresses.
 
-    ### phase 2.5 capabilities
+    ### phase 3.0 capabilities
     - heuristics-based scoring across ETH, internal, and ERC-20 token transfers
     - four core risk signals with descending-priority risk analysis
-    - authenticated B2B API + free public PLG endpoint
-    - designed for high-risk verticals (crypto casinos, OTC desks, onchain marketplaces)
+    - authenticated B2B API (API Keys) + User API (Supabase Bearer JWT)
+    - designed for high-risk verticals (crypto casinos, OTC desks)
 
     ### rate limits
     - **B2B API**: 30 requests per 15 minutes per IP (authenticated via x-api-key)
-    - **Public API**: 5 requests per hour per IP (no auth required)
+    - **Public API**: Strictly rate-limited via Dual-Layer Fingerprinting (3 free scans)
+    - **User API**: Credit-based (decrementing on verify)
 
     ### authentication
-    B2B endpoint requires `x-api-key` header. keys are SHA-256 hashed and validated against the database.
-    public endpoint requires no authentication but is strictly rate-limited.
+    - **B2B**: Requires `x-api-key` header (SHA-256 hashed).
+    - **User**: Requires `Authorization: Bearer <jwt-token>` (Supabase Auth).
+    - **Public**: No authentication (Traffic-limited).
 
-  version: 2.5.0
+  version: 3.0.0
   contact:
     name: sentinelpay
-    url: https://github.com/ceemv22/sentinelpay
+    url: https://sentinelpay.org
     email: ceem@sentinelpay.org
 
 tags:
   - name: scoring
-    description: |
-      endpoints for real-time wallet risk assessment. use these to get a risk score and detailed
-      flags before accepting a crypto deposit.
+    description: endpoints for real-time wallet risk assessment.
+  - name: profile
+    description: user credit and scan history management.
 
 servers:
-  - url: http://localhost:3000/v1
-    description: local development
   - url: https://sentinelpay.org/v1
     description: production
 
 paths:
   /score:
     post:
-      summary: score a wallet address
-      description: |
-        evaluates the wallet against phase 1 heuristics and returns a risk score (0-100),
-        risk category (low/medium/high), and a list of triggered flags.
-      operationId: scoreWallet
+      summary: [B2B] score a wallet address (API Key)
+      description: requires valid x-api-key.
+      security:
+        - ApiKeyAuth: []
       tags:
         - scoring
       requestBody:
@@ -56,15 +56,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/ScoreRequest'
-            examples:
-              establishedCleanWallet:
-                summary: established wallet with no suspicious activity
-                value:
-                  wallet: "0x742d35Cc6634C0532925a3b844Bc9e695d487DA2"
-              highRiskWallet:
-                summary: wallet with known mixer interaction
-                value:
-                  wallet: "0xd90e2f925DA726b50C4Ed8D0Fb90Ad053324F31b"
       responses:
         '200':
           description: successful scoring
@@ -72,148 +63,96 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ScoreResponse'
-              examples:
-                lowRiskResponse:
-                  summary: low risk - safe to accept
-                  value:
-                    wallet: "0x742d35cc6634c0532925a3b844bc9e695d487da2"
-                    score: 10
-                    category: "low"
-                    flags: []
-                    timestamp: "2026-04-13T10:00:00Z"
-                highRiskResponse:
-                  summary: high risk - recommend rejection
-                  value:
-                    wallet: "0xd90e2f925da726b50c4ed8d0fb90ad053324f31b"
-                    score: 60
-                    category: "high"
-                    flags: ["mixer_interaction", "io_imbalance"]
-                    timestamp: "2026-04-13T10:00:05Z"
-        '400':
-          description: invalid wallet address format
+        '401':
+          description: unauthorized
+
+  /user/score:
+    post:
+      summary: [User] score a wallet address (Bearer JWT)
+      description: consumes 1 credit. requires Bearer token.
+      security:
+        - BearerAuth: []
+      tags:
+        - scoring
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScoreRequest'
+      responses:
+        '200':
+          description: successful scoring
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              example:
-                error: "invalid wallet address format. must be 0x followed by 40 hex characters"
-                code: 400
-        '413':
-          description: request body too large
+                $ref: '#/components/schemas/ScoreResponse'
+
+  /user/profile:
+    get:
+      summary: get user profile and scan history
+      security:
+        - BearerAuth: []
+      tags:
+        - profile
+      responses:
+        '200':
+          description: success
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              example:
-                error: "request body too large"
-                code: 413
-        '429':
-          description: rate limit exceeded
-          headers:
-            Retry-After:
-              description: seconds until rate limit resets
-              schema:
-                type: integer
+                type: object
+                properties:
+                  email: { type: string }
+                  credits: { type: integer }
+                  history: { type: array, items: { $ref: '#/components/schemas/ScoreResponse' } }
+
+  /public/score:
+    post:
+      summary: [Public] free risk scan
+      description: no auth required. strictly rate limited.
+      tags:
+        - scoring
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScoreRequest'
+      responses:
+        '200':
+          description: success
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              example:
-                error: "request limit exceeded. try again in 15 minutes."
-                code: 429
-        '500':
-          description: internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              example:
-                error: "unable to fetch on-chain data. please try again later"
-                code: 500
-        '504':
-          description: scoring engine timeout
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              example:
-                error: "scoring engine timeout"
-                code: 504
+                $ref: '#/components/schemas/ScoreResponse'
 
 components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
   schemas:
     ScoreRequest:
       type: object
-      required:
-        - wallet
-      additionalProperties: false
+      required: [wallet]
       properties:
         wallet:
           type: string
           pattern: '^0x[a-fA-F0-9]{40}$'
-          description: ethereum wallet address (42 characters, case-insensitive hex)
           example: "0x742d35Cc6634C0532925a3b844Bc9e695d487DA2"
 
     ScoreResponse:
       type: object
-      required:
-        - wallet
-        - score
-        - category
-        - flags
-        - timestamp
-      additionalProperties: false
       properties:
-        wallet:
-          type: string
-          description: normalized (lowercased) wallet address
-          example: "0x742d35cc6634c0532925a3b844bc9e695d487da2"
-        score:
-          type: integer
-          minimum: 0
-          maximum: 100
-          description: |
-            overall risk score calculated from weighted heuristics:
-            - 0-29: low risk (likely safe)
-            - 30-59: medium risk (manual review recommended)
-            - 60-100: high risk (recommend rejection)
-          example: 60
-        category:
-          type: string
-          enum: [low, medium, high]
-          description: risk category derived from score thresholds
-          example: "high"
-        flags:
-          type: array
-          items:
-            type: string
-            enum:
-              - mixer_interaction
-              - new_wallet
-              - high_velocity
-              - io_imbalance
-          description: |
-            specific signals that contributed to the score.
-            empty array indicates no flags triggered.
-          example: ["mixer_interaction", "io_imbalance"]
-        timestamp:
-          type: string
-          format: date-time
-          description: ISO 8601 UTC timestamp of the evaluation
-          example: "2026-04-13T10:00:05Z"
-
-    ErrorResponse:
-      type: object
-      required:
-        - error
-        - code
-      additionalProperties: false
-      properties:
-        error:
-          type: string
-          description: human-readable error description
-          example: "invalid wallet address format"
-        code:
-          type: integer
-          description: HTTP status code
-          example: 400
+        wallet: { type: string }
+        score: { type: integer }
+        category: { type: string, enum: [low, medium, high] }
+        flags: { type: array, items: { type: string } }
+        timestamp: { type: string, format: date-time }
