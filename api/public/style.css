@@ -790,13 +790,19 @@ button:hover:not(:disabled) {
     width: 100%;
     max-width: 420px;
     padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 100vh;
 }
+
 .auth-logo-block {
     display: flex;
     flex-direction: column;
     align-items: center;
     margin-bottom: 2rem;
 }
+
 .auth-topbar {
     position: fixed;
     top: 0;
@@ -809,17 +815,43 @@ button:hover:not(:disabled) {
     padding: 1.5rem 2.5rem;
     pointer-events: none;
 }
+
 .auth-topbar > * {
     pointer-events: all;
 }
-.auth-panel-content {
-    transition: opacity 0.25s ease, transform 0.25s ease;
+
+/* Mobile Overrides for Auth Page */
+@media screen and (max-width: 480px) {
+    .auth-page-wrap {
+        padding: 1rem;
+    }
+
+    .auth-card {
+        width: 94%;
+        max-width: 100%;
+        padding: 1.5rem;
+        min-height: 510px; /* Slimmer for mobile */
+        margin: 1rem auto;
+    }
+
+    .auth-topbar {
+        padding: 1rem 1.25rem;
+        background: rgba(5, 5, 5, 0.6);
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        pointer-events: auto;
+    }
+    
+    .auth-tabs {
+        height: 44px;
+        margin-bottom: 1.5rem;
+    }
+
+    .auth-agreement {
+        padding: 0 0.5rem;
+        margin: 1.25rem 0;
+        line-height: 1.6;
+    }
 }
-.auth-panel-content.fade-out {
-    opacity: 0;
-    transform: translateY(6px);
-}
-#pw-rules-toggle:hover {
-    color: #fff;
-    border-color: rgba(255,255,255,0.3);
-}
+

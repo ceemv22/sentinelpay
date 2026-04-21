@@ -97,6 +97,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Sign In Logic
     const loginForm = document.getElementById('login-form');
+    
+    // Mobile Touch Toggle for Rules (Standard for touch devices)
+    const pwToggle = document.getElementById('pw-rules-toggle');
+    const pwTooltip = document.getElementById('pw-rules-tooltip');
+    if (pwToggle && pwTooltip) {
+        pwToggle.style.pointerEvents = 'auto'; // Ensure clickable
+        pwToggle.addEventListener('touchstart', (e) => {
+            e.stopPropagation();
+            const isVisible = window.getComputedStyle(pwTooltip).visibility === 'visible';
+            pwTooltip.style.visibility = isVisible ? 'hidden' : 'visible';
+            pwTooltip.style.opacity = isVisible ? '0' : '1';
+            pwTooltip.style.transform = isVisible ? 'translateY(5px) scale(0.98)' : 'translateY(0) scale(1)';
+        }, { passive: true });
+    }
+
     if (loginForm) {
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
