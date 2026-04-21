@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const panelRegister = document.getElementById('panel-register');
     const authPanel = document.getElementById('auth-panel');
     const successState = document.getElementById('auth-success-state');
+    const verifiedState = document.getElementById('auth-verified-state');
 
     if (!tabLogin || !tabRegister || !panelLogin || !panelRegister) {
         console.error('[sentinel-auth] critical elements missing');
@@ -66,7 +67,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const params = new URLSearchParams(window.location.search);
     const storedTab = sessionStorage.getItem('sentinel_auth_tab');
     
-    if (params.get('tab') === 'register') {
+    if (params.get('verified') === 'true') {
+        if (authPanel) authPanel.style.display = 'none';
+        if (verifiedState) verifiedState.style.display = 'flex';
+    } else if (params.get('tab') === 'register') {
         switchPanel('register', true);
     } else if (storedTab === 'register') {
         // Initial load needs immediate show
@@ -127,7 +131,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const { error } = await supabase.auth.signInWithPassword({ email, password });
             if (error) {
-                errorMsg.textContent = 'error: ' + error.message.toLowerCase();
+                let msg = error.message.toLowerCase();
+                if (msg.includes('confirm')) msg = 'please verify your email first.';
+                errorMsg.textContent = 'error: ' + msg;
                 errorMsg.style.display = 'block';
                 btn.disabled = false;
                 btn.textContent = 'login';
@@ -155,7 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const { error } = await supabase.auth.signUp({ 
                 email, 
                 password,
-                options: { emailRedirectTo: window.location.origin + '/auth' }
+                options: { emailRedirectTo: window.location.origin + '/auth?verified=true' }
             });
             
             if (error) {

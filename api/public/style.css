@@ -906,3 +906,15 @@ button:hover:not(:disabled) {
     }
 }
 
+
+/* Verification Success Enhancements */
+#auth-verified-state .success-icon-wrap svg {
+    filter: drop-shadow(0 0 10px rgba(0, 255, 255, 0.4));
+    animation: pulseCyan 2s infinite;
+}
+
+@keyframes pulseCyan {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.05); opacity: 0.8; }
+    100% { transform: scale(1); opacity: 1; }
+}
