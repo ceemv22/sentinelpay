@@ -133,8 +133,21 @@ if (redisUrl) {
 
 function createStore(prefix) {
     if (!redisClient) return undefined;
+
+    // Deferred connection gate: commands will wait until Redis emits 'ready'
+    // This prevents ClientClosedError when the store is created at module-level
+    // but redisClient.connect() is called later inside start()
+    const connectionReady = redisClient.isOpen
+        ? Promise.resolve()
+        : new Promise((resolve) => {
+            redisClient.once('ready', resolve);
+        });
+
     return new RedisStore({
-        sendCommand: (...args) => redisClient.sendCommand(args),
+        sendCommand: async (...args) => {
+            await connectionReady;
+            return redisClient.sendCommand(args);
+        },
         prefix: prefix
     });
 }
