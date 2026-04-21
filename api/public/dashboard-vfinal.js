@@ -4,10 +4,10 @@ const sentinelAuth = window.supabase.createClient(supabaseUrl, supabaseKey);
 
 // 0. ULTIMATE HASH SCRUBBER (Only call this AFTER session is confirmed)
 const scrubHash = () => {
-    if (window.location.hash) {
+    if (window.location.href.includes('#')) {
         console.log('[sentinel-dashboard] hash detected, scrubbing...');
-        const cleanURL = window.location.href.split('#')[0];
-        window.history.replaceState(null, document.title, cleanURL);
+        // Standard most compatible way to remove fragment without reload
+        window.history.replaceState(null, document.title, window.location.pathname + window.location.search);
     }
 };
 
