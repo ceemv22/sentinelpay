@@ -52,3 +52,9 @@ model AuditLog {
   apiKeyId  String?  // for historical/B2B logs
   timestamp DateTime @default(now())
 }
+
+model ProcessedEvent {
+  id        String   @id // This matches the Stripe event.id
+  type      String
+  createdAt DateTime @default(now())
+}

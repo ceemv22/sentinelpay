@@ -37,6 +37,21 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (req, res
         return res.status(400).send(`Webhook Error: ${err.message}`);
     }
 
+    // OWASP S-Tier Hardening: Idempotency Protection
+    // Ensures each Stripe event is processed EXACTLY once, preventing replay attacks or duplicate provisioning
+    try {
+        const alreadyProcessed = await prisma.processedEvent.findUnique({
+            where: { id: event.id }
+        });
+        if (alreadyProcessed) {
+            console.log(`[billing] Skipping already processed event: ${event.id}`);
+            return res.json({ received: true, duplicate: true });
+        }
+    } catch (err) {
+        console.error('[billing] Idempotency check failed', err);
+        // We continue defensively, but better to log
+    }
+
     if (event.type === 'checkout.session.completed') {
         const session = event.data.object;
         
@@ -63,6 +78,15 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (req, res
             data: { active: false }
         });
         console.log(`[billing] Revoked access for customer ${subscription.customer}`);
+    }
+
+    // Finalize: Track this event as processed
+    try {
+        await prisma.processedEvent.create({
+            data: { id: event.id, type: event.type }
+        });
+    } catch (err) {
+        console.error('[billing] Failed to log processed event', err);
     }
 
     res.json({ received: true });
