@@ -95,15 +95,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Rules Tooltip Toggle
-    const pwToggle = document.getElementById('pw-rules-toggle');
-    const pwTooltip = document.getElementById('pw-rules-tooltip');
-    if (pwToggle && pwTooltip) {
-        pwToggle.addEventListener('click', () => {
-            pwTooltip.style.display = pwTooltip.style.display === 'block' ? 'none' : 'block';
-        });
-    }
-
     // Sign In Logic
     const loginForm = document.getElementById('login-form');
     if (loginForm) {
