@@ -1102,41 +1102,44 @@ button:hover:not(:disabled) {
 }
 
 
-/* Password Eye Toggle & Wrapper (Desktop Locked) */
+/* Password Eye Toggle & Wrapper (The Final Fix) */
 .password-field-wrap {
-    position: relative;
-    width: 100%;
+    position: relative !important;
     display: block !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 .password-field-wrap input {
     width: 100% !important;
-    padding-right: 45px !important; /* Space for the eye icon */
+    padding-right: 48px !important; /* Space for the eye icon */
 }
 
+/* Using high specificity + all:unset to kill any white pill button leakage */
+#auth-panel .pw-eye-toggle,
 .pw-eye-toggle {
+    all: unset !important;
     position: absolute !important;
-    right: 12px !important;
+    right: 14px !important;
     top: 50% !important;
     transform: translateY(-50%) !important;
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-    outline: none !important;
-    color: var(--text-muted);
-    cursor: pointer;
-    padding: 8px !important;
+    cursor: pointer !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    transition: color 0.2s, transform 0.1s;
-    z-index: 10;
-    min-height: 20px;
-    height: auto;
+    width: 24px !important;
+    height: 24px !important;
+    color: var(--text-muted) !important;
+    z-index: 20 !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    transition: color 0.2s ease !important;
 }
 
 .pw-eye-toggle:hover {
-    color: #fff;
+    color: #fff !important;
     background: transparent !important;
 }
 
@@ -1145,8 +1148,8 @@ button:hover:not(:disabled) {
 }
 
 .pw-eye-toggle svg {
-    pointer-events: none;
-    display: block;
+    pointer-events: none !important;
+    display: block !important;
 }
 
 /* Success Card Enhancements */
