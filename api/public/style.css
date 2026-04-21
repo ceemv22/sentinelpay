@@ -519,7 +519,8 @@ button:hover:not(:disabled) {
 }
 
 .auth-tab {
-    flex: 1;
+    flex: 1 1 50% !important;
+    width: 50% !important;
     background: transparent;
     border: none;
     color: var(--text-muted);
@@ -537,11 +538,15 @@ button:hover:not(:disabled) {
 .auth-tab.active {
     background: rgba(255, 255, 255, 0.08);
     color: #fff;
+    transform: none !important; /* Ensure no scale shift */
+    box-shadow: none !important;
 }
 
 .auth-tab:hover:not(.active) {
     color: #fff;
     background: rgba(255, 255, 255, 0.02);
+    transform: none !important;
+    box-shadow: none !important;
 }
 
 .auth-social {
@@ -571,6 +576,8 @@ button:hover:not(:disabled) {
 .social-btn:hover {
     background: rgba(255, 255, 255, 0.08);
     border-color: rgba(255, 255, 255, 0.25);
+    transform: none !important;
+    box-shadow: none !important;
 }
 
 .auth-divider {
@@ -648,14 +655,17 @@ button:hover:not(:disabled) {
 
 .auth-agreement {
     margin: 1.5rem 0;
-    font-size: 0.7rem;
-    color: var(--text-muted);
+    font-size: 0.72rem;
+    color: rgba(255, 255, 255, 0.4); /* Subtler non-link text */
     font-family: 'JetBrains Mono', monospace;
     line-height: 1.8;
     text-align: center;
-    width: 100%;
-    min-height: 2.8rem; /* Correct spacing for 2 lines */
-    display: block; /* Standard block for clean wrap */
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: 2.8rem;
+    display: block !important;
+    box-sizing: border-box;
+    padding: 0 1.25rem;
 }
 
 .auth-agreement a {
@@ -732,6 +742,8 @@ button:hover:not(:disabled) {
 
 .submit-btn:hover:not(:disabled) {
     filter: brightness(1.1);
+    transform: none !important;
+    box-shadow: none !important;
 }
 
 .submit-btn:disabled {
