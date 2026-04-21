@@ -40,7 +40,9 @@ function runScoringEngine(wallet) {
                 const result = JSON.parse(output.trim());
                 if (result.error) {
                     const isUpstreamError = typeof result.error === 'string' && result.error.toLowerCase().includes('etherscan');
-                    return reject({ status: isUpstreamError ? 503 : 500, error: result.error, code: isUpstreamError ? 503 : 500 });
+                    // OWASP S-Tier: Sanitize error messages to prevent internal leakage
+                    const clientError = isUpstreamError ? 'upstream data provider is temporarily unavailable' : 'failed to calculate risk score';
+                    return reject({ status: isUpstreamError ? 503 : 500, error: clientError, code: isUpstreamError ? 503 : 500 });
                 }
                 resolve(result);
             } catch (e) {
