@@ -830,25 +830,41 @@ button:hover:not(:disabled) {
     }
 
     .auth-logo-block {
-        margin-bottom: 1rem; /* Tighter spacing */
-        transform: scale(0.9); /* Subtle rescale for smaller screens */
+        display: none !important; /* Hide large logo to eliminate scroll */
     }
 
     .auth-card {
         width: 96%;
         max-width: 100%;
         padding: 1.25rem;
-        min-height: auto; /* Allow natural fit on small mobile */
+        min-height: auto;
         margin: 0 auto;
     }
 
     .auth-topbar {
-        padding: 0.75rem 1rem;
+        padding: 1rem 1.25rem;
         background: rgba(5, 5, 5, 0.85);
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
         border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         pointer-events: auto;
+        justify-content: space-between; /* Brand Left, Back Right */
+    }
+
+    .auth-top-brand.mobile-only {
+        display: flex !important;
+        align-items: center;
+        gap: 0.5rem;
+        font-family: 'Inter', sans-serif;
+        font-weight: 800;
+        font-size: 0.85rem;
+        letter-spacing: -0.5px;
+        color: #fff;
+    }
+
+    .auth-nav-btn {
+        padding: 0.35rem 0.75rem !important;
+        font-size: 0.7rem !important;
     }
     
     .auth-tabs {

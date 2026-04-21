@@ -18,12 +18,18 @@
 
     <!-- Fixed Top Bar -->
     <div class="auth-topbar">
-        <a href="/" class="auth-nav-btn" style="background: transparent; border-color: rgba(255,255,255,0.06); color: var(--text-muted);">back to scanner</a>
+        <div class="auth-top-brand mobile-only">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                <path d="M12 8v4"/>
+                <path d="M12 16h.01"/>
+            </svg>
+            <span>sentinelpay</span>
+        </div>
+        <a href="/" class="auth-nav-btn" style="background: transparent; border-color: rgba(255,255,255,0.1); color: var(--text-muted);">back to scanner</a>
     </div>
 
-    <!-- Centered content -->
     <div class="auth-page-wrap">
-
         <!-- Logo -->
         <div class="auth-logo-block">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" style="width: 80px; height: 80px;">
@@ -150,7 +156,7 @@
         </div>
 
         <!-- Success State -->
-        <div id="auth-success-state" style="display: none; text-align: center; padding: 3rem 0;">
+        <div id="auth-success-state" class="auth-card" style="display: none; text-align: center; padding: 3rem 1.5rem;">
             <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--color-green)" stroke-width="1.5" style="margin: 0 auto 1rem auto; display: block;">
                 <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
                 <polyline points="22 4 12 14.01 9 11.01"/>
