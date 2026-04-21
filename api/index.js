@@ -26,9 +26,17 @@ app.use(helmet({
             "font-src": ["'self'", "https://fonts.gstatic.com"],
             "img-src": ["'self'", "data:", "https://aivqwkgjdpklxxuvkxpy.supabase.co"],
             "connect-src": ["'self'", "https://aivqwkgjdpklxxuvkxpy.supabase.co", "wss://aivqwkgjdpklxxuvkxpy.supabase.co", "https://api.etherscan.io"],
+            "base-uri": ["'self'"],
+            "form-action": ["'self'"],
             "frame-ancestors": ["'none'"],
-            "object-src": ["'none'"]
+            "object-src": ["'none'"],
+            "upgrade-insecure-requests": []
         }
+    },
+    hsts: {
+        maxAge: 31536000,
+        includeSubDomains: true,
+        preload: true
     }
 }));
 app.use(cors({

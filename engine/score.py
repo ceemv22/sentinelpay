@@ -42,18 +42,21 @@ def fetch_etherscan(params, timeout=REQUEST_TIMEOUT):
         return []
 
 def fetch_all_relevant_txs(wallet, api_key):
-    # Fetch normal, internal, and ERC-20 token transfers
-    # We use sort=desc to ensure we see the LATEST activity in our risk scan
+    # OWASP S-Tier Hardening: We limit the scan depth to the latest 200 transactions.
+    # This provides a statistically significant sample for risk analysis while 
+    # preventing Resource Exhaustion (DDoS) attacks from extremely deep wallets.
     base_params = {
         "chainid": 1,
         "module": "account",
         "address": wallet,
         "sort": "desc",
+        "page": 1,
+        "offset": 200, 
         "apikey": api_key,
         "endblock": 999999999
     }
 
-    print(f"[DEBUG] fetching latest txs for {wallet[:10]}...", file=sys.stderr)
+    print(f"[DEBUG] fetching latest 200 txs for {wallet[:10]}...", file=sys.stderr)
     
     normal = fetch_etherscan({**base_params, "action": "txlist"})
     internal = fetch_etherscan({**base_params, "action": "txlistinternal"})
