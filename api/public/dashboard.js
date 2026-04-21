@@ -11,12 +11,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
-    // BRUTE FORCE CLEANUP: Wait a tick to ensure Supabase saved tokens, then wipe it completely.
-    setTimeout(() => {
-        if (window.location.hash && window.location.hash.includes('access_token')) {
-            window.location.hash = ''; // Wipes text
-            window.history.replaceState({}, document.title, window.location.pathname); // Destroys the '#'
+    // ABSOLUTE BRUTE FORCE: Repeatedly scrub the URL over 2 seconds
+    let scrubCount = 0;
+    const scrubber = setInterval(() => {
+        if (window.location.href.includes('#access_token')) {
+            window.history.replaceState(null, '', window.location.pathname);
         }
+        if (++scrubCount > 20) clearInterval(scrubber);
     }, 100);
 
     const token = session.access_token;
