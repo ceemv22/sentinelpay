@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const scrubber = setInterval(() => {
         if (window.location.hash) {
             console.log('[sentinel-dashboard] hash detected, scrubbing...');
-            window.history.replaceState(null, '', window.location.pathname + window.location.search);
+            window.history.replaceState(null, document.title, window.location.href.split('#')[0]);
         }
         if (++scrubCount > 30) clearInterval(scrubber);
     }, 100);
