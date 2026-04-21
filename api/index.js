@@ -20,6 +20,7 @@ const allowedOrigins = (process.env.ALLOWED_ORIGINS || '')
     .map(origin => origin.trim())
     .filter(origin => origin.length > 0);
 const trustProxyEnv = process.env.TRUST_PROXY;
+const redisUrl = process.env.REDIS_URL;
 
 function resolveTrustProxySetting(value) {
     if (value === undefined || value === null || value === '') {
@@ -104,14 +105,27 @@ app.use((req, res, next) => {
 app.use(express.static(path.join(__dirname, 'public'), { extensions: ['html'] }));
 
 // Redis Setup & Rate Limiter Store
-const redisUrl = process.env.REDIS_URL;
 let redisClient;
+let redisReady = false;
 
 if (redisUrl) {
     redisClient = createClient({ url: redisUrl });
-    redisClient.on('error', (err) => console.error('[redis error]', err.message));
-    redisClient.connect().catch(err => console.error('[redis connect error]', err.message));
-    console.log('[rate-limit] Redis Client connected.');
+    redisClient.on('ready', () => {
+        redisReady = true;
+        console.log('[rate-limit] Redis client ready.');
+    });
+    redisClient.on('end', () => {
+        redisReady = false;
+        console.error('[rate-limit] Redis connection ended.');
+    });
+    redisClient.on('reconnecting', () => {
+        redisReady = false;
+        console.warn('[rate-limit] Redis reconnecting.');
+    });
+    redisClient.on('error', (err) => {
+        redisReady = false;
+        console.error('[redis error]', err.message);
+    });
 } else {
     // Fallback to memory store if Redis is not configured (e.g. local testing)
     console.warn('[rate-limit] WARNING: REDIS_URL not found. Falling back to MemoryStore.');
@@ -123,6 +137,13 @@ function createStore(prefix) {
         sendCommand: (...args) => redisClient.sendCommand(args),
         prefix: prefix
     });
+}
+
+function requireRateLimitBackend(req, res, next) {
+    if (isProduction && !redisReady) {
+        return res.status(503).json({ error: 'rate limit backend unavailable', code: 503 });
+    }
+    next();
 }
 
 // PLG Unauth Limiter logic: DUAL LAYER (IP-Daily + Fingerprint-Lifetime)
@@ -215,7 +236,7 @@ async function logAudit(req, wallet, result, apiKeyId = null) {
 }
 
 // B2B Protected Endpoint
-app.post('/v1/score', limiter, requireApiKey, async (req, res) => {
+app.post('/v1/score', requireRateLimitBackend, limiter, requireApiKey, async (req, res) => {
     const { wallet } = req.body;
     if (!wallet || !/^0x[a-fA-F0-9]{40}$/.test(wallet)) {
         return res.status(400).json({ error: 'invalid wallet address format', code: 400 });
@@ -239,7 +260,7 @@ app.post('/v1/score', limiter, requireApiKey, async (req, res) => {
 });
 
 // PLG Public Endpoint (Unauth)
-app.post('/v1/public/score', consumeUnauthCredit, async (req, res) => {
+app.post('/v1/public/score', requireRateLimitBackend, consumeUnauthCredit, async (req, res) => {
     const { wallet } = req.body;
     if (!wallet || !/^0x[a-fA-F0-9]{40}$/.test(wallet)) {
         return res.status(400).json({ error: 'invalid wallet address format', code: 400 });
@@ -358,6 +379,28 @@ app.use((err, req, res, next) => {
     next(err);
 });
 
-app.listen(PORT, () => {
-    console.log(`sentinelpay API v2 running on port ${PORT}`);
+async function start() {
+    if (isProduction && !redisUrl) {
+        throw new Error('REDIS_URL must be configured in production.');
+    }
+
+    if (redisClient) {
+        try {
+            await redisClient.connect();
+        } catch (err) {
+            console.error('[redis connect error]', err.message);
+            if (isProduction) {
+                throw err;
+            }
+        }
+    }
+
+    app.listen(PORT, () => {
+        console.log(`sentinelpay API v2 running on port ${PORT}`);
+    });
+}
+
+start().catch((err) => {
+    console.error('[startup error]', err);
+    process.exit(1);
 });
