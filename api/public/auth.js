@@ -116,6 +116,26 @@ document.addEventListener('DOMContentLoaded', () => {
         }, { passive: true });
     }
 
+    // Password Eye Toggles
+    document.querySelectorAll('.pw-eye-toggle').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const targetId = btn.getAttribute('data-target');
+            const input = document.getElementById(targetId);
+            const eyeOn = btn.querySelector('.eye-on');
+            const eyeOff = btn.querySelector('.eye-off');
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                eyeOn.style.display = 'block';
+                eyeOff.style.display = 'none';
+            } else {
+                input.type = 'password';
+                eyeOn.style.display = 'none';
+                eyeOff.style.display = 'block';
+            }
+        });
+    });
+
     if (loginForm) {
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -161,7 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const { error } = await supabase.auth.signUp({ 
                 email, 
                 password,
-                options: { emailRedirectTo: window.location.origin + '/auth?verified=true' }
+                options: { emailRedirectTo: window.location.origin + '/dashboard?verified=true' }
             });
             
             if (error) {
