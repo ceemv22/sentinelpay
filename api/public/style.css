@@ -840,9 +840,12 @@ button:hover:not(:disabled) {
 @media screen and (max-width: 480px) {
     .auth-page-wrap {
         padding: 0.5rem;
-        min-height: 100dvh; /* Better viewport handling for mobile */
-        justify-content: flex-start; /* Move up slightly from dead center */
-        padding-top: 3rem; /* Leave room for topbar */
+        padding-top: 65px; /* Anchored strictly below 60px navbar + 5px breather */
+        min-height: 100dvh; 
+        justify-content: flex-start;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 
     .auth-topbar {
@@ -868,22 +871,15 @@ button:hover:not(:disabled) {
         display: none !important;
     }
 
-    .auth-page-wrap {
-        padding: 0.25rem;
-        min-height: 100dvh;
-        justify-content: flex-start;
-        padding-top: 75px; /* Enough for navbar (60px) + 15px gap to prevent 'cut off' look */
-    }
-
     .auth-card {
-        width: 96%; /* Slightly narrower for 'floating' feel */
+        width: 96%;
         max-width: 100%;
         padding: 1.5rem 1.25rem;
         margin-top: 0 !important;
-        border-radius: 16px; /* Restore full radius */
-        border: 1px solid rgba(255, 255, 255, 0.08); /* Restore full border */
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
         min-height: auto;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.4); /* Restore shadow for depth */
+        box-shadow: 0 10px 30px rgba(0,0,0,0.4);
         margin: 0 auto;
     }
 
