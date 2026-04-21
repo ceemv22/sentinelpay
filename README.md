@@ -32,25 +32,23 @@ wallet address → sentinelpay → risk score + flags → accept or reject
 
 ---
 
-## live products (phase 2.5b active)
+## live products (production ready)
 
 ### 1. public PLG tool (free risk scanner)
 check any wallet directly via our simple UI without registration at **[sentinelpay.org](https://sentinelpay.org)**.  
 features traffic-light assessment logic (red/yellow/green) with a strict IP-based rate limit.
 
-**endpoint:** `POST /v1/public/score` (strictly limited to 5 req/hour/IP)
+**endpoint:** `POST /v1/public/score` (ip-daily + fingerprint limited)
 
-### 2. B2B enterprise API
-integrate directly into your payment processor. requires active authentication via `x-api-key`.
+### 2. user dashboard & self-serve
+full self-serve portal for developers and compliance teams.  
+features:
+- **social auth**: google & x (twitter) integration via supabase.
+- **credit system**: pay-as-you-go risk scanning.
+- **scan history**: secure, idor-protected history of all processed wallets.
+- **api key management**: hashed security for b2b integrations.
 
-**endpoint:** `POST /v1/score`
-
-```bash
-curl -X POST https://sentinelpay.org/v1/score \
-  -H "Content-Type: application/json" \
-  -H "x-api-key: sp_your_api_key_here" \
-  -d '{"wallet": "0xd90e2f925DA726b50C4Ed8D0Fb90Ad053324F31b"}'
-```
+**dashboard:** `https://sentinelpay.org/dashboard`
 
 ---
 
@@ -62,12 +60,12 @@ curl -X POST https://sentinelpay.org/v1/score \
 | 30–59 | medium | manual review recommended |
 | 60–100 | high | recommend rejection |
 
-### signals (v2.5)
+### signals (v3.0)
 
 | flag | description | score impact |
 |------|-------------|-------------|
-| `sanctioned_entity` | wallet address is a direct match in our high-risk/OFAC database | +100 |
-| `mixer_interaction` | wallet interacted with Tornado Cash, Sinbad, ChipMixer or known mixers (ETH + ERC-20 token transfers) | +50 |
+| `sanctioned_entity` | wallet address is a direct match in our high-risk/ofac database | +100 |
+| `mixer_interaction` | wallet interacted with tornado cash, sinbad, chipmixer or known mixers | +50 |
 | `new_wallet` | wallet is less than 30 days old | +20 |
 | `high_velocity` | more than 50 transactions in the last 24 hours | +20 |
 | `io_imbalance` | heavily skewed inbound/outbound ratio | +10 |
@@ -76,93 +74,52 @@ curl -X POST https://sentinelpay.org/v1/score \
 
 ## tech stack
 
-- **API layer:** Node.js + Express (v5)
-- **scoring engine:** Python (rule-based heuristics via Etherscan — ETH, Internal & ERC-20 token scanning)
-- **database:** PostgreSQL (via Prisma ORM) for Audit Logging & API Auth
-- **scaling:** Redis for distributed rate-limiting
-- **frontend:** Vanilla HTML/CSS Glassmorphism UI (mobile-optimized)
-- **billing:** Stripe Checkout integration
-- **automation:** GitHub Actions (daily automated mixer database scraping)
-- **security:** Helmet, SHA-256 key hashing, sanitized errors, env-based secrets
-
----
-
-## pricing
-
-| plan | price | requests |
-|------|-------|----------|
-| starter | $99–$299 / month | 5,000 req |
-| pro | $500+ / month | 25,000 req |
-| enterprise | custom | unlimited |
-
-*phase 2 (self-serve) is currently in development. contact us for early design partner access.*
+- **auth:** supabase (jwt, google/twitter oauth)
+- **api layer:** node.js + express (v5/helmet/hsts)
+- **scoring engine:** python (rule-based heuristics via etherscan)
+- **database:** postgresql (prisma orm)
+- **scaling:** redis (distributed daily ip/fp rate-limiting)
+- **frontend:** vanilla html/css glassmorphism (mobile-optimized 100dvh)
+- **billing:** stripe checkout & webhooks
 
 ---
 
 ## roadmap
 
-**phase 1 (completed)**
-- [x] real-time wallet scoring via REST API
-- [x] four core risk signals
-- [x] basic rate limiting 
+**phase 1, 2, & 2.5 (completed)**
+- [x] real-time wallet scoring via rest api
+- [x] api key authentication (sha-256 hashed)
+- [x] stripe billing + redis rate limiting
+- [x] postgres audit logging
+- [x] 140+ origin mixer/sanctioned database
 
-**phase 2 (completed)**
-- [x] free public frontend (PLG tool) with traffic light UI
-- [x] API key authentication (hashed into DB)
-- [x] Stripe billing + webhooks integration
-- [x] Redis distributed rate limiting
-- [x] Postgres audit logging
+**phase 3 — enterprise & self-serve (completed)**
+- [x] self-serve signup + user dashboard + credit system
+- [x] google & x (twitter) social login integration
+- [x] email verification & anti-abuse fingerprinting
+- [x] atomic credit protection (race-condition free)
+- [x] s-tier security hardening (strict csp, hsts, ddos engine protection)
 
-**phase 2.5 — security hardening (completed)**
-- [x] ERC-20 token transfer scanning (closes mixer blind spot)
-- [x] descending transaction sort (prioritizes recent risk)
-- [x] API key secured via environment variables (hidden from process list)
-- [x] sanitized error responses (no internal info leakage)
-- [x] B2B endpoint rate limiting
-- [x] mobile-optimized responsive UI
-- [x] full penetration test (S-tier, 0 critical/high/medium findings)
-
-**phase 2.5b — threat intelligence (completed)**
-- [x] expanded mixer/sanctioned address database (140+ origins)
-- [x] automated daily address scraper pipeline (GitHub Actions)
-- [x] direct sanctioned entity detection logic (100/100 risk)
-
-**phase 3 (in progress)**
-- [ ] self-serve signup + user dashboard + credit system
-- [ ] google & x (twitter) social login integration
-- [ ] email verification & anti-abuse fingerprinting
-- [ ] Solana support
-- [ ] ML-based scoring layer
+**phase 4 (upcoming)**
+- [ ] solana support
+- [ ] ml-based scoring layer
+- [ ] telegram bot integration for instant alerts
 
 ---
 
-## maintenance
+## security (s-tier certified)
 
-### updating mixer database
-sentinelpay uses an automated GitHub Action to update the `data/mixers.json` every 24 hours. to trigger a manual update:
-```bash
-python scripts/update_mixers.py
-```
-this script will deduplicate and validate addresses from OFAC and Tornado Cash sources.
-
----
-
-## security
-
-sentinelpay takes security seriously:
-- all API keys are SHA-256 hashed before storage — raw keys are never persisted
-- Etherscan credentials are delivered via environment variables, never exposed in process arguments
-- rate limiting is distributed via Redis to prevent abuse across instances
-- all client-facing error messages are sanitized to prevent information disclosure
-- Helmet.js enforces strict HTTP security headers
-- full security audit conducted with 0 critical/high/medium findings
+sentinelpay is built for maximum production resilience:
+- **injection protection**: strict content-security-policy (csp). no `innerHTML` in frontend.
+- **idor protection**: every scan result is bound to a verified uuid; users cannot access each other's data.
+- **ddos protection**: redis rate-limiters (ip/fp/api) + transaction fetch limits in the scoring engine.
+- **privacy**: all api keys are hashed; cleartext keys never touch logs or databases.
+- **encryption**: forced hsts (ssl/tls) with 1-year preload.
 
 ---
 
 ## contact
 
-interested in early access or a demo?
-
-- twitter / X: [@sentinelpayorg](https://x.com/sentinelpayorg)
+- twitter / x: [@sentinelpayorg](https://x.com/sentinelpayorg)
 - github: [@ceemv22](https://github.com/ceemv22)
 - email: ceem@sentinelpay.org

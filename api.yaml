@@ -1,0 +1,133 @@
+openapi: 3.0.3
+info:
+  title: SentinelPay API
+  description: Real-time wallet risk scoring API for crypto payment flows.
+  version: 3.0.0
+  contact:
+    email: api@sentinelpay.org
+servers:
+  - url: https://sentinelpay.org
+    description: Production server
+paths:
+  /v1/public/score:
+    post:
+      summary: Public Scan (Unauthenticated)
+      description: Check a wallet address without an API key. 
+        Note: Subject to aggressive IP and Fingerprint rate limits.
+      tags:
+        - PLG
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                wallet:
+                  type: string
+                  pattern: "^0x[a-fA-F0-9]{40}$"
+                  example: "0xd90e2f925DA726b50C4Ed8D0Fb90Ad053324F31b"
+      responses:
+        '200':
+          description: Risk score results.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScoreResult'
+        '403':
+          description: Limit reached. Auth required.
+        '429':
+          description: Rate limit exceeded.
+
+  /v1/user/score:
+    post:
+      summary: Authenticated Scan (Credits)
+      description: Check a wallet address using user credits. 
+        Requires valid Supabase Bearer token.
+      tags:
+        - User
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                wallet:
+                  type: string
+                  pattern: "^0x[a-fA-F0-9]{40}$"
+      responses:
+        '200':
+          description: Risk score results.
+        '403':
+          description: Insufficient credits.
+
+  /v1/score:
+    post:
+      summary: B2B Enterprise Scan
+      description: Check a wallet address using an API Key.
+      tags:
+        - B2B
+      security:
+        - apiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                wallet:
+                  type: string
+                  pattern: "^0x[a-fA-F0-9]{40}$"
+      responses:
+        '200':
+          description: Risk score results.
+        '401':
+          description: Invalid API Key.
+
+  /v1/user/profile:
+    get:
+      summary: Get User Profile & History
+      description: List scan history and remaining credits.
+      tags:
+        - User
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: User data and history.
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    apiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+
+  schemas:
+    ScoreResult:
+      type: object
+      properties:
+        wallet:
+          type: string
+        score:
+          type: integer
+          minimum: 0
+          maximum: 100
+        category:
+          type: string
+          enum: [low, medium, high]
+        flags:
+          type: array
+          items:
+            type: string
+        timestamp:
+          type: string
+          format: date-time

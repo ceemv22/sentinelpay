@@ -139,6 +139,7 @@ vite.config.ts.timestamp-*
 
 # SentinelPay Internal & Dev Utils
 docs/pr_strategy_master.md
+docs/founder_agreement_v1.md
 Processor.cs
 ProcessorClean.cs
 remove_bg.py
