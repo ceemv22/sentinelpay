@@ -839,8 +839,10 @@ button:hover:not(:disabled) {
 /* Mobile Overrides for Auth Page */
 @media screen and (max-width: 480px) {
     .auth-page-wrap {
-        padding: 0.5rem;
-        padding-top: 60px; /* Flush with 60px navbar for maximum vertical efficiency on mobile */
+        padding: 0; /* Remove horizontal padding to ensure true screen centering */
+        padding-top: 60px; 
+        width: 100%;
+        margin: 0 auto;
         min-height: 100dvh; 
         justify-content: flex-start;
         display: flex;
@@ -872,15 +874,15 @@ button:hover:not(:disabled) {
     }
 
     .auth-card {
-        width: 96%;
+        width: 94vw; /* Constant proportion relative to screen edge */
         max-width: 100%;
         padding: 1.5rem 1.25rem;
+        margin: 0 auto !important;
         margin-top: 0 !important;
         border-radius: 16px;
         border: 1px solid rgba(255, 255, 255, 0.08);
         min-height: auto;
         box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-        margin: 0 auto;
     }
 
     .auth-top-brand.mobile-only {
