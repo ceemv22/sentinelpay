@@ -1,13 +1,8 @@
-// Consolidated Auth Logic (v7.0)
-// This file handles:
-// 1. Tab switching (Login <-> Register)
-// 2. Initial tab state via URL params (?tab=register)
-// 3. Password rules live validation
-// 4. Form submissions (Sign-in/Sign-up) via Supabase
-// 5. Social Oauth handlers
+// Consolidated Auth Logic (v8.0)
+// Features: Persistent Tab State, Clean URL, Sync'd Layouts, Fade Animations
 
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('[sentinel-auth] initializing logic v7.0...');
+    console.log('[sentinel-auth] initializing logic v8.0...');
 
     // DOM Elements
     const tabLogin = document.getElementById('tab-login');
@@ -34,57 +29,70 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch(e) { console.warn('[auth] supabase init failed:', e); }
 
     let currentTab = 'login';
+    let isTransitioning = false;
 
     function switchPanel(target, persist = true) {
-        if (currentTab === target && persist) return;
-        
-        // Toggle active tab classes
+        if ((currentTab === target && persist) || isTransitioning) return;
+        isTransitioning = true;
+
+        const outgoing = currentTab === 'login' ? panelLogin : panelRegister;
+        const incoming = target === 'login' ? panelLogin : panelRegister;
+
+        // 1. Fade out current
+        outgoing.classList.remove('active');
         tabLogin.classList.toggle('active', target === 'login');
         tabRegister.classList.toggle('active', target === 'register');
 
-        // Instant UI switch
-        if (target === 'register') {
-            panelLogin.style.display = 'none';
-            panelRegister.style.display = 'block';
-        } else {
-            panelRegister.style.display = 'none';
-            panelLogin.style.display = 'block';
-        }
+        setTimeout(() => {
+            // 2. Switch display
+            outgoing.style.display = 'none';
+            incoming.style.display = 'block';
 
-        currentTab = target;
-        if (persist) {
-            sessionStorage.setItem('sentinel_auth_tab', target);
-        }
-        console.log('[sentinel-auth] switched to:', target);
+            // 3. Trigger fade in
+            setTimeout(() => {
+                incoming.classList.add('active');
+                currentTab = target;
+                isTransitioning = false;
+                if (persist) sessionStorage.setItem('sentinel_auth_tab', target);
+                console.log('[sentinel-auth] switched to:', target);
+            }, 50);
+        }, 200);
     }
 
-    // Attach Listeners (CSP-Safe)
+    // Attach Listeners
     tabLogin.addEventListener('click', () => switchPanel('login'));
     tabRegister.addEventListener('click', () => switchPanel('register'));
 
-    // Handle Initial State (Priority: URL Param > SessionStorage > Default)
+    // Handle Initial State (URL > Session > Default)
     const params = new URLSearchParams(window.location.search);
     const storedTab = sessionStorage.getItem('sentinel_auth_tab');
     
     if (params.get('tab') === 'register') {
-        switchPanel('register');
-    } else if (storedTab) {
-        switchPanel(storedTab, false);
+        switchPanel('register', true);
+    } else if (storedTab === 'register') {
+        // Initial load needs immediate show
+        panelLogin.style.display = 'none';
+        panelLogin.classList.remove('active');
+        panelRegister.style.display = 'block';
+        panelRegister.classList.add('active');
+        tabLogin.classList.remove('active');
+        tabRegister.classList.add('active');
+        currentTab = 'register';
     }
 
     // Password Rules Live Validation
     const regPw = document.getElementById('reg-password');
-    const rules = {
-        len: document.getElementById('rule-len'),
-        upper: document.getElementById('rule-upper'),
-        num: document.getElementById('rule-num')
-    };
-    if (regPw && rules.len) {
+    if (regPw) {
+        const rules = {
+            len: document.getElementById('rule-len'),
+            upper: document.getElementById('rule-upper'),
+            num: document.getElementById('rule-num')
+        };
         regPw.addEventListener('input', (e) => {
             const val = e.target.value;
-            rules.len.classList.toggle('met', val.length >= 8);
-            rules.upper.classList.toggle('met', /[A-Z]/.test(val));
-            rules.num.classList.toggle('met', /[0-9]/.test(val));
+            if (rules.len) rules.len.classList.toggle('met', val.length >= 8);
+            if (rules.upper) rules.upper.classList.toggle('met', /[A-Z]/.test(val));
+            if (rules.num) rules.num.classList.toggle('met', /[0-9]/.test(val));
         });
     }
 
@@ -97,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Forms Submissions
+    // Sign In Logic
     const loginForm = document.getElementById('login-form');
     if (loginForm) {
         loginForm.addEventListener('submit', async (e) => {
@@ -117,13 +125,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 errorMsg.textContent = 'error: ' + error.message.toLowerCase();
                 errorMsg.style.display = 'block';
                 btn.disabled = false;
-                btn.textContent = 'sign in';
+                btn.textContent = 'login';
             } else {
                 window.location.href = '/dashboard';
             }
         });
     }
 
+    // Sign Up Logic
     const regForm = document.getElementById('register-form');
     if (regForm) {
         regForm.addEventListener('submit', async (e) => {
@@ -131,21 +140,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!supabase) return alert('Auth unavailable');
             const email = document.getElementById('reg-email').value;
             const password = document.getElementById('reg-password').value;
-            const confirm = document.getElementById('reg-confirm').value;
-            const tos = document.getElementById('reg-tos').checked;
             const btn = document.getElementById('register-submit-btn');
             const errorMsg = document.getElementById('register-error-msg');
-
-            if (password !== confirm) {
-                errorMsg.textContent = 'error: passwords do not match';
-                errorMsg.style.display = 'block';
-                btn.disabled = false; return;
-            }
-            if (!tos) {
-                errorMsg.textContent = 'error: please accept terms';
-                errorMsg.style.display = 'block';
-                btn.disabled = false; return;
-            }
 
             btn.disabled = true;
             btn.textContent = 'creating account...';
@@ -156,6 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 password,
                 options: { emailRedirectTo: window.location.origin + '/auth' }
             });
+            
             if (error) {
                 errorMsg.textContent = 'error: ' + error.message.toLowerCase();
                 errorMsg.style.display = 'block';
