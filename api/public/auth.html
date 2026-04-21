@@ -115,13 +115,15 @@
                             <label for="login-email">email</label>
                             <input type="email" id="login-email" placeholder="ceo@company.com" required autocomplete="email">
                         </div>
-                        <div class="input-group" style="margin-top: 0.8rem; position: relative;">
+                        <div class="input-group" style="margin-top: 0.8rem;">
                             <label for="login-password">password</label>
-                            <input type="password" id="login-password" placeholder="••••••••" required autocomplete="current-password" style="padding-right: 40px;">
-                            <button type="button" class="pw-eye-toggle" data-target="login-password">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="eye-off"><path d="M9.88 9.88L14.12 14.12M2 2l20 20M10.37 5.06a10.02 10.02 0 0110.13 5.34M14.21 17.66a10 10 0 01-12.21-6.16M15.48 10.48a3 3 0 00-4.01-4.01M9.06 14.94a3 3 0 004.02 4.02"></path></svg>
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="eye-on" style="display:none;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-                            </button>
+                            <div class="password-field-wrap">
+                                <input type="password" id="login-password" placeholder="••••••••" required autocomplete="current-password">
+                                <button type="button" class="pw-eye-toggle" data-target="login-password">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="eye-off"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="eye-on" style="display:none;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                                </button>
+                            </div>
                         </div>
                         
                         <p id="login-error-msg" class="error-msg" style="display: none;"></p>
@@ -156,16 +158,18 @@
                             <label for="reg-email">email</label>
                             <input type="email" id="reg-email" placeholder="ceo@company.com" required autocomplete="email">
                         </div>
-                        <div class="input-group" style="margin-top: 0.8rem; position: relative;">
+                        <div class="input-group" style="margin-top: 0.8rem;">
                             <div style="display: flex; justify-content: space-between; align-items: center;">
                                 <label for="reg-password" style="margin-bottom: 0;">password</label>
                                 <span id="pw-rules-toggle" class="pw-toggle">?</span>
                             </div>
-                            <input type="password" id="reg-password" placeholder="••••••••" required minlength="8" autocomplete="new-password" style="padding-right: 40px;">
-                            <button type="button" class="pw-eye-toggle" data-target="reg-password" style="top: 28px;">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="eye-off"><path d="M9.88 9.88L14.12 14.12M2 2l20 20M10.37 5.06a10.02 10.02 0 0110.13 5.34M14.21 17.66a10 10 0 01-12.21-6.16M15.48 10.48a3 3 0 00-4.01-4.01M9.06 14.94a3 3 0 004.02 4.02"></path></svg>
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="eye-on" style="display:none;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-                            </button>
+                            <div class="password-field-wrap">
+                                <input type="password" id="reg-password" placeholder="••••••••" required minlength="8" autocomplete="new-password">
+                                <button type="button" class="pw-eye-toggle" data-target="reg-password">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="eye-off"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="eye-on" style="display:none;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                                </button>
+                            </div>
                             <div id="pw-rules-tooltip" class="pw-tooltip">
                                 <span id="rule-len" class="rule">✗</span> min 8 characters<br>
                                 <span id="rule-upper" class="rule">✗</span> one uppercase letter<br>
@@ -185,20 +189,24 @@
         </div>
 
         <!-- Success State: Email Sent -->
-        <div id="auth-success-state" class="auth-card" style="display: none; text-align: center; padding: 3rem 1.5rem; justify-content: center;">
-            <div class="success-icon-wrap" style="margin-bottom: 2rem;">
-                <svg width="68" height="68" viewBox="0 0 24 24" fill="none" stroke="url(#neonGradientCard)" stroke-width="1" style="margin: 0 auto; filter: drop-shadow(0 0 15px rgba(0, 240, 255, 0.4));">
-                    <rect width="20" height="16" x="2" x="4" rx="2"></rect>
-                    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+        <div id="auth-success-state" class="auth-card" style="display: none; text-align: center; padding: 2.5rem; flex-direction: column;">
+            <div class="success-header-wrap" style="margin-top: 1rem;">
+                <svg width="68" height="68" viewBox="0 0 24 24" fill="none" stroke="var(--color-green)" stroke-width="1.5" style="filter: drop-shadow(0 0 12px rgba(0, 255, 150, 0.3));">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="m9 12 2 2 4-4"></path>
                 </svg>
             </div>
-            <div style="font-size: 1.85rem; font-weight: 800; letter-spacing: -1.5px; margin-bottom: 1.25rem; color: #fff; line-height: 1.1;">verify your identity.</div>
-            <p style="color: var(--text-muted); font-size: 1rem; font-family: 'JetBrains Mono', monospace; line-height: 1.6; margin-bottom: 2rem;">we've sent a secure confirmation link to your inbox. please click it to grant access to your scanner.</p>
-            <div style="padding: 1.25rem; border-radius: 12px; background: rgba(0,240,255,0.03); border: 1px dashed rgba(0,240,255,0.2); font-size: 0.8rem; color: var(--color-cyan); font-family: 'JetBrains Mono', monospace;">
-                &gt; check junk/spam folder<br>
-                &gt; link expires in 24 hours
+            
+            <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; margin-top: 3rem;">
+                <div style="font-size: 2rem; font-weight: 800; letter-spacing: -1.5px; margin-bottom: 1.5rem; color: #fff;">check your inbox.</div>
+                <p style="color: var(--text-muted); font-size: 1.05rem; font-family: 'JetBrains Mono', monospace; line-height: 1.6; max-width: 280px; margin: 0 auto;">we sent a verification link to your email. click it to activate your account.</p>
             </div>
-            <button onclick="window.location.reload()" class="auth-nav-btn" style="margin-top: 2.5rem; width: fit-content; align-self: center; background: rgba(255,255,255,0.05);">back to login</button>
+
+            <div class="pro-tip-box" style="margin-top: auto; padding: 1.25rem; border-radius: 12px; background: rgba(0,240,255,0.03); border: 1px solid rgba(0,240,255,0.1); text-align: center;">
+                <p style="font-size: 0.85rem; color: #fff; font-family: 'JetBrains Mono', monospace; margin: 0; line-height: 1.5;">
+                    <span style="color: var(--color-cyan);">pro tip:</span> check your junk folder if it doesn't arrive in 60s.
+                </p>
+            </div>
         </div>
 
         <!-- Success State: Verification Complete -->

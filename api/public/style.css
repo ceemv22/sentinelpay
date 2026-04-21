@@ -1102,16 +1102,22 @@ button:hover:not(:disabled) {
 }
 
 
-/* Password Eye Toggle */
+/* Password Eye Toggle & Wrapper */
+.password-field-wrap {
+    position: relative;
+    width: 100%;
+}
+
 .pw-eye-toggle {
     position: absolute;
     right: 12px;
-    top: 32px;
+    top: 50%;
+    transform: translateY(-50%);
     background: transparent;
     border: none;
     color: var(--text-muted);
     cursor: pointer;
-    padding: 4px;
+    padding: 8px; /* Bigger touch area */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1124,17 +1130,17 @@ button:hover:not(:disabled) {
 }
 
 .pw-eye-toggle:active {
-    transform: scale(0.9);
+    transform: translateY(-50%) scale(0.9);
 }
 
 .pw-eye-toggle svg {
     pointer-events: none;
 }
 
-/* Verification Success Enhancements */
-#auth-verified-state .success-icon-wrap svg {
-    filter: drop-shadow(0 0 10px rgba(0, 255, 255, 0.4));
-    animation: pulseCyan 2s infinite;
+/* Success Card Enhancements */
+#auth-success-state .success-header-wrap {
+    text-align: center;
+    width: 100%;
 }
 
 @keyframes pulseCyan {
