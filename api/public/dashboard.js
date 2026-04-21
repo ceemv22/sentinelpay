@@ -12,6 +12,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
+    // Clean up OAuth URL hash for a clean UX
+    if (window.location.hash) {
+        window.history.replaceState(null, '', window.location.pathname);
+    }
+
     const token = session.access_token;
     
     // 2. Setup Logout
