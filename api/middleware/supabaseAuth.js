@@ -22,6 +22,11 @@ async function requireSupabaseAuth(req, res, next) {
             return res.status(401).json({ error: 'Invalid or expired token', code: 401 });
         }
 
+        const isVerified = Boolean(user.email_confirmed_at || user.confirmed_at || user.phone_confirmed_at);
+        if (!isVerified) {
+            return res.status(403).json({ error: 'Account verification required', code: 403 });
+        }
+
         // Check if user exists in our local Prisma DB
         let dbUser = await prisma.user.findUnique({
             where: { supabaseId: user.id }

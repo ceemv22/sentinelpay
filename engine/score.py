@@ -11,6 +11,10 @@ MIXERS_FILE = DATA_DIR / "mixers.json"
 ETHERSCAN_URL = "https://api.etherscan.io/v2/api"
 REQUEST_TIMEOUT = 15
 
+
+class UpstreamDataError(Exception):
+    pass
+
 def load_mixer_addresses():
     if not MIXERS_FILE.exists():
         print(f"warning: {MIXERS_FILE} not found", file=sys.stderr)
@@ -33,13 +37,21 @@ def load_mixer_addresses():
 def fetch_etherscan(params, timeout=REQUEST_TIMEOUT):
     try:
         response = requests.get(ETHERSCAN_URL, params=params, timeout=timeout)
+        response.raise_for_status()
         data = response.json()
-        if data.get("status") != "1":
+        if data.get("status") == "1":
+            return data.get("result", [])
+
+        message = str(data.get("message", "")).lower()
+        result = data.get("result", "")
+        if "no transactions found" in message or "no records found" in str(result).lower():
             return []
-        return data.get("result", [])
+
+        raise UpstreamDataError(f"etherscan rejected request: {result or message or 'unknown error'}")
     except Exception as e:
-        print(f"[DEBUG] etherscan error: {e}", file=sys.stderr)
-        return []
+        if isinstance(e, UpstreamDataError):
+            raise
+        raise UpstreamDataError(f"etherscan error: {e}") from e
 
 def fetch_all_relevant_txs(wallet, api_key):
     # OWASP S-Tier Hardening: We limit the scan depth to the latest 200 transactions.
@@ -81,7 +93,7 @@ def get_wallet_birth_timestamp(wallet, api_key):
     res = fetch_etherscan(params)
     if res and len(res) > 0:
         return int(res[0].get("timeStamp", 0))
-    return int(time.time())
+    return None
 
 def check_mixer_interaction(wallet, normal_txs, internal_txs, token_txs):
     mixer_set = set(load_mixer_addresses())
@@ -97,6 +109,8 @@ def check_mixer_interaction(wallet, normal_txs, internal_txs, token_txs):
     return False
 
 def check_wallet_age(birth_ts):
+    if birth_ts is None:
+        return True
     age_days = (time.time() - birth_ts) / 86400
     return age_days < 30
 

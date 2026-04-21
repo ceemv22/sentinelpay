@@ -13,8 +13,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const scoreValue = document.getElementById('score-value');
     const flagsContainer = document.getElementById('flags-container');
-    const authNavBtn = document.getElementById('auth-nav-btn');
-
     // Supabase Auth and Fingerprint Init
     const supabaseUrl = 'https://aivqwkgjdpklxxuvkxpy.supabase.co';
     const supabaseKey = 'sb_publishable_bRfAssaGT6D8oFDQtPARbw_5fyYGWM6';
@@ -32,7 +30,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (session) {
                 const authContainer = document.getElementById('auth-nav-container');
                 if (authContainer) {
-                    authContainer.innerHTML = '<a href="/dashboard" class="auth-nav-btn">dashboard</a>';
+                    authContainer.replaceChildren();
+                    const dashboardLink = document.createElement('a');
+                    dashboardLink.href = '/dashboard';
+                    dashboardLink.className = 'auth-nav-btn';
+                    dashboardLink.textContent = 'dashboard';
+                    authContainer.appendChild(dashboardLink);
                 }
             }
         });
@@ -45,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
         shareBtn.classList.add('hidden');
         statusMsg.style.display = 'none';
         Object.values(lights).forEach(l => l.classList.remove('active'));
-        flagsContainer.innerHTML = '';
+        flagsContainer.replaceChildren();
         scoreValue.style.color = 'var(--text-main)';
         scoreValue.textContent = '00';
     }

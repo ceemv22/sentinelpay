@@ -42,12 +42,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         const historyContainer = document.getElementById('history-container');
         
         if (data.history.length === 0) {
+            historyContainer.replaceChildren();
             const emptyMsg = document.createElement('p');
             emptyMsg.style.cssText = 'color: var(--text-secondary); text-align: center; padding: 2rem;';
             emptyMsg.textContent = 'no scans yet. go back to the scanner to check a wallet.';
             historyContainer.appendChild(emptyMsg);
         } else {
-            historyContainer.innerHTML = ''; // clear
+            historyContainer.replaceChildren();
             
             data.history.forEach(item => {
                 const el = document.createElement('div');

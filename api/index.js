@@ -14,6 +14,11 @@ const requireSupabaseAuth = require('./middleware/supabaseAuth');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const isProduction = process.env.NODE_ENV === 'production';
+const allowedOrigins = (process.env.ALLOWED_ORIGINS || '')
+    .split(',')
+    .map(origin => origin.trim())
+    .filter(origin => origin.length > 0);
 
 app.set('trust proxy', 1);
 
@@ -21,7 +26,7 @@ app.use(helmet({
     contentSecurityPolicy: {
         directives: {
             "default-src": ["'self'"],
-            "script-src": ["'self'", "https://aivqwkgjdpklxxuvkxpy.supabase.co", "https://cdn.jsdelivr.net"],
+            "script-src": ["'self'", "https://aivqwkgjdpklxxuvkxpy.supabase.co"],
             "style-src": ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
             "font-src": ["'self'", "https://fonts.gstatic.com"],
             "img-src": ["'self'", "data:", "https://aivqwkgjdpklxxuvkxpy.supabase.co"],
@@ -41,18 +46,22 @@ app.use(helmet({
 }));
 app.use(cors({
     origin: (origin, callback) => {
-        const allowed = process.env.ALLOWED_ORIGINS?.split(',').filter(o => o.length > 0) || [];
-        if (allowed.includes('*')) {
-            if (process.env.NODE_ENV === 'production') {
+        if (allowedOrigins.includes('*')) {
+            if (isProduction) {
                 return callback(new Error('Wildcard CORS disallowed in production.'));
             }
             return callback(null, true);
         }
-        if (allowed.length === 0 || allowed.indexOf(origin) !== -1 || !origin) {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
+        if (!origin) {
+            return callback(null, true);
         }
+        if (allowedOrigins.length === 0) {
+            return callback(isProduction ? new Error('ALLOWED_ORIGINS must be configured in production.') : null, !isProduction);
+        }
+        if (allowedOrigins.indexOf(origin) !== -1) {
+            return callback(null, true);
+        }
+        callback(new Error('Not allowed by CORS'));
     },
     methods: ['POST', 'GET'],
 }));
@@ -139,10 +148,16 @@ async function consumeUnauthCredit(req, res, next) {
             next();
         } catch (err) {
             console.error('[redis auth error]', err);
-            next(); // fail open securely
+            if (isProduction) {
+                return res.status(503).json({ error: 'public scanner temporarily unavailable', code: 503 });
+            }
+            next();
         }
     } else {
-        next(); // local fallback
+        if (isProduction) {
+            return res.status(503).json({ error: 'public scanner temporarily unavailable', code: 503 });
+        }
+        next();
     }
 }
 
@@ -203,7 +218,7 @@ app.post('/v1/score', limiter, requireApiKey, async (req, res) => {
         });
     } catch (err) {
         console.error('[b2b score error]', err);
-        res.status(err.status || 500).json({ error: 'failed to process risk score', code: 500 });
+        res.status(err.status || 500).json({ error: err.error || 'failed to process risk score', code: err.code || err.status || 500 });
     }
 });
 
@@ -227,7 +242,7 @@ app.post('/v1/public/score', consumeUnauthCredit, async (req, res) => {
         });
     } catch (err) {
         console.error('[public score error]', err);
-        res.status(err.status || 500).json({ error: 'failed to process risk score', code: 500 });
+        res.status(err.status || 500).json({ error: err.error || 'failed to process risk score', code: err.code || err.status || 500 });
     }
 });
 
@@ -238,14 +253,7 @@ app.post('/v1/user/score', requireSupabaseAuth, async (req, res) => {
         return res.status(400).json({ error: 'invalid wallet address format', code: 400 });
     }
 
-    if (req.user.credits <= 0) {
-        return res.status(403).json({ error: 'insufficient credits. please upgrade your plan.', code: 403, requiresUpgrade: true });
-    }
-
     try {
-        const result = await runScoringEngine(wallet);
-        
-        // OWASP S-Tier Fix: Atomic update prevents Race Conditions for negative credits
         const updatedUser = await prisma.user.updateMany({
             where: {
                 id: req.user.id,
@@ -258,7 +266,17 @@ app.post('/v1/user/score', requireSupabaseAuth, async (req, res) => {
             return res.status(403).json({ error: 'zero credits internally. bypass thwarted.', code: 403, requiresUpgrade: true });
         }
 
-        // Only after an atomic decrement do we log the scan history
+        let result;
+        try {
+            result = await runScoringEngine(wallet);
+        } catch (err) {
+            await prisma.user.update({
+                where: { id: req.user.id },
+                data: { credits: { increment: 1 } }
+            }).catch(refundErr => console.error('[credit refund error]', refundErr));
+            throw err;
+        }
+
         await prisma.scanHistory.create({
             data: {
                 userId: req.user.id,
@@ -281,7 +299,7 @@ app.post('/v1/user/score', requireSupabaseAuth, async (req, res) => {
         });
     } catch (err) {
         console.error('[user score error]', err);
-        res.status(err.status || 500).json({ error: 'failed to process risk score', code: 500 });
+        res.status(err.status || 500).json({ error: err.error || 'failed to process risk score', code: err.code || err.status || 500 });
     }
 });
 
@@ -291,7 +309,7 @@ app.get('/v1/user/profile', requireSupabaseAuth, async (req, res) => {
         const user = await prisma.user.findUnique({
             where: { id: req.user.id },
             include: {
-                history: {
+                scanHistory: {
                     orderBy: { timestamp: 'desc' },
                     take: 50
                 }
@@ -305,7 +323,7 @@ app.get('/v1/user/profile', requireSupabaseAuth, async (req, res) => {
         res.json({
             email: user.email,
             credits: user.credits,
-            history: user.history
+            history: user.scanHistory
         });
     } catch (err) {
         console.error('[profile error]', err);

@@ -39,11 +39,12 @@ function runScoringEngine(wallet) {
             try {
                 const result = JSON.parse(output.trim());
                 if (result.error) {
-                    return reject({ status: 500, error: result.error, code: 500 });
+                    const isUpstreamError = typeof result.error === 'string' && result.error.toLowerCase().includes('etherscan');
+                    return reject({ status: isUpstreamError ? 503 : 500, error: result.error, code: isUpstreamError ? 503 : 500 });
                 }
                 resolve(result);
             } catch (e) {
-                console.error('[parse error]', e.message, '| raw output:', output);
+                console.error('[parse error]', e.message, '| raw output:', output, '| stderr:', errorOutput);
                 reject({ status: 500, error: 'scoring engine returned invalid response', code: 500 });
             }
         });
