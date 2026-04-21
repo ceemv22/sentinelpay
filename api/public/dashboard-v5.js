@@ -16,11 +16,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     // ABSOLUTE BRUTE FORCE: Repeatedly scrub the URL over 2 seconds
     let scrubCount = 0;
     const scrubber = setInterval(() => {
-        if (window.location.href.includes('#access_token')) {
+        if (window.location.hash) {
             console.log('[sentinel-dashboard] hash detected, scrubbing...');
-            window.history.replaceState(null, '', window.location.pathname);
+            window.history.replaceState(null, '', window.location.pathname + window.location.search);
         }
-        if (++scrubCount > 20) clearInterval(scrubber);
+        if (++scrubCount > 30) clearInterval(scrubber);
     }, 100);
 
     const token = session.access_token;
