@@ -183,4 +183,9 @@ document.addEventListener('DOMContentLoaded', () => {
             pupil.style.transform = `translate(${moveX}px, ${moveY}px)`;
         });
     }
+    // Navigation persistence logic
+    const loginNav = document.getElementById('nav-login-btn');
+    const registerNav = document.getElementById('nav-register-btn');
+    if (loginNav) loginNav.addEventListener('click', () => sessionStorage.setItem('sentinel_auth_tab', 'login'));
+    if (registerNav) registerNav.addEventListener('click', () => sessionStorage.setItem('sentinel_auth_tab', 'register'));
 });

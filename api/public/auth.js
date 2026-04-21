@@ -35,8 +35,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let currentTab = 'login';
 
-    function switchPanel(target) {
-        if (currentTab === target) return;
+    function switchPanel(target, persist = true) {
+        if (currentTab === target && persist) return;
         
         // Toggle active tab classes
         tabLogin.classList.toggle('active', target === 'login');
@@ -52,6 +52,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         currentTab = target;
+        if (persist) {
+            sessionStorage.setItem('sentinel_auth_tab', target);
+        }
         console.log('[sentinel-auth] switched to:', target);
     }
 
@@ -59,10 +62,14 @@ document.addEventListener('DOMContentLoaded', () => {
     tabLogin.addEventListener('click', () => switchPanel('login'));
     tabRegister.addEventListener('click', () => switchPanel('register'));
 
-    // Handle URL params
+    // Handle Initial State (Priority: URL Param > SessionStorage > Default)
     const params = new URLSearchParams(window.location.search);
+    const storedTab = sessionStorage.getItem('sentinel_auth_tab');
+    
     if (params.get('tab') === 'register') {
         switchPanel('register');
+    } else if (storedTab) {
+        switchPanel(storedTab, false);
     }
 
     // Password Rules Live Validation
