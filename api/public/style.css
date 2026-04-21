@@ -438,7 +438,23 @@ button:hover:not(:disabled) {
 }
 
 /* Auth Page specific styling */
-.navbar {
+.desktop-only { display: flex !important; }
+.mobile-only { display: none !important; }
+
+@media screen and (max-width: 480px) {
+    .desktop-only { display: none !important; }
+    .mobile-only { display: flex !important; }
+}
+
+.auth-center-logo {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2rem;
+    filter: drop-shadow(0 0 20px rgba(0, 255, 255, 0.15));
+    animation: fadeIn 0.8s ease-out;
+}
+
+.auth-topbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -846,6 +862,10 @@ button:hover:not(:disabled) {
         display: flex !important;
         align-items: center;
         height: 100%;
+    }
+
+    .auth-center-logo.desktop-only {
+        display: none !important;
     }
 
     .auth-page-wrap {
