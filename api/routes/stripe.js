@@ -68,7 +68,7 @@ router.post('/checkout', checkoutJson, requireSupabaseAuth, async (req, res) => 
 });
 
 // Webhook to provision API Keys
-router.post('/webhook', express.raw({type: 'application/json'}), async (req, res) => {
+router.post('/webhook', express.raw({type: 'application/json', limit: '100kb'}), async (req, res) => {
     const signature = req.headers['stripe-signature'];
     let event;
 
