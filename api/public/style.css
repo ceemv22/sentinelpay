@@ -840,7 +840,7 @@ button:hover:not(:disabled) {
 @media screen and (max-width: 480px) {
     .auth-page-wrap {
         padding: 0.5rem;
-        padding-top: 65px; /* Anchored strictly below 60px navbar + 5px breather */
+        padding-top: 60px; /* Flush with 60px navbar for maximum vertical efficiency on mobile */
         min-height: 100dvh; 
         justify-content: flex-start;
         display: flex;
