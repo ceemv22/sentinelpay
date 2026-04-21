@@ -831,7 +831,7 @@ button:hover:not(:disabled) {
 
     .auth-topbar {
         padding: 0 1.25rem;
-        height: 60px; /* Force consistent height */
+        height: 60px;
         background: rgba(5, 5, 5, 0.9);
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
@@ -839,7 +839,13 @@ button:hover:not(:disabled) {
         pointer-events: auto;
         display: flex;
         align-items: center;
-        justify-content: flex-end;
+        justify-content: space-between; /* Logo Left, Back Right */
+    }
+
+    .auth-top-logo.mobile-only {
+        display: flex !important;
+        align-items: center;
+        opacity: 0.9;
     }
 
     .auth-page-wrap {
