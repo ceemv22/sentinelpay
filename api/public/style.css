@@ -1102,23 +1102,25 @@ button:hover:not(:disabled) {
 }
 
 
-/* Password Eye Toggle & Wrapper (The Final Fix) */
+/* --- THE DEFINITIVE DESKTOP PASS-EYE FIX --- */
+/* Lock the wrapper as a relative anchor */
 .password-field-wrap {
     position: relative !important;
-    display: block !important;
+    display: flex !important; /* Ensure it stays in flow with input */
+    align-items: center !important;
     width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
 }
 
+/* Ensure input field has space for the icon */
 .password-field-wrap input {
+    flex: 1 !important;
     width: 100% !important;
-    padding-right: 48px !important; /* Space for the eye icon */
+    padding-right: 48px !important; 
 }
 
-/* Using high specificity + all:unset to kill any white pill button leakage */
+/* High-specificity reset for the span toggle (not a button anymore) */
 #auth-panel .pw-eye-toggle,
-.pw-eye-toggle {
+span.pw-eye-toggle {
     all: unset !important;
     position: absolute !important;
     right: 14px !important;
@@ -1131,26 +1133,24 @@ button:hover:not(:disabled) {
     width: 24px !important;
     height: 24px !important;
     color: var(--text-muted) !important;
-    z-index: 20 !important;
+    z-index: 50 !important;
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
     transition: color 0.2s ease !important;
 }
 
 .pw-eye-toggle:hover {
     color: #fff !important;
-    background: transparent !important;
-}
-
-.pw-eye-toggle:active {
-    transform: translateY(-50%) scale(0.9) !important;
 }
 
 .pw-eye-toggle svg {
     pointer-events: none !important;
     display: block !important;
 }
+/* ------------------------------------------ */
 
 /* Success Card Enhancements */
 #auth-success-state .success-header-wrap {
