@@ -852,18 +852,19 @@ button:hover:not(:disabled) {
         padding: 0.25rem;
         min-height: 100dvh;
         justify-content: flex-start;
-        padding-top: 60px; /* Lock to navbar height */
+        padding-top: 75px; /* Enough for navbar (60px) + 15px gap to prevent 'cut off' look */
     }
 
     .auth-card {
-        width: 100%;
+        width: 96%; /* Slightly narrower for 'floating' feel */
         max-width: 100%;
-        padding: 1.25rem 1rem;
-        margin-top: 5px !important;
-        border-radius: 0 0 16px 16px; /* Match screen better */
-        border-top: none; /* Flow directly from navbar */
+        padding: 1.5rem 1.25rem;
+        margin-top: 0 !important;
+        border-radius: 16px; /* Restore full radius */
+        border: 1px solid rgba(255, 255, 255, 0.08); /* Restore full border */
         min-height: auto;
-        box-shadow: none; /* Cleaner look for top-aligned */
+        box-shadow: 0 10px 30px rgba(0,0,0,0.4); /* Restore shadow for depth */
+        margin: 0 auto;
     }
 
     .auth-top-brand.mobile-only {
