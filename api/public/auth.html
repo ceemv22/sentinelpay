@@ -81,10 +81,10 @@
         </div>
 
         <!-- Auth Card -->
-        <div class="auth-card" id="auth-panel">
+        <div class="auth-card" id="auth-panel" style="position: relative; z-index: 500;">
             <div class="auth-tabs">
-                <button class="auth-tab active" id="tab-login" style="position: relative; z-index: 1000; pointer-events: auto;">login</button>
-                <button class="auth-tab" id="tab-register" style="position: relative; z-index: 1000; pointer-events: auto;">register</button>
+                <button class="auth-tab active" id="tab-login" onclick="window.switchManual('login')" style="cursor: pointer; position: relative; z-index: 1000; pointer-events: auto;">login</button>
+                <button class="auth-tab" id="tab-register" onclick="window.switchManual('register')" style="cursor: pointer; position: relative; z-index: 1000; pointer-events: auto;">register</button>
             </div>
 
             <div class="auth-panels-container">

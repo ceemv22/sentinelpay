@@ -32,31 +32,33 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentTab = 'login';
     let isTransitioning = false;
 
+    // GLOBAL FALLBACK for Tab Switching
+    window.switchManual = (target) => {
+        if (isTransitioning) return;
+        switchPanel(target);
+    };
+
     function switchPanel(target, persist = true) {
-        if ((currentTab === target && persist) || isTransitioning) return;
+        if (currentTab === target && persist) return;
         isTransitioning = true;
 
         const outgoing = currentTab === 'login' ? panelLogin : panelRegister;
         const incoming = target === 'login' ? panelLogin : panelRegister;
 
-        // 1. Fade out current
+        // 1. Instantly swap display to be responsive
+        outgoing.style.display = 'none';
         outgoing.classList.remove('active');
+        incoming.style.display = 'block';
+        
         tabLogin.classList.toggle('active', target === 'login');
         tabRegister.classList.toggle('active', target === 'register');
 
         setTimeout(() => {
-            // 2. Switch visibility
-            outgoing.style.display = 'none';
-            incoming.style.display = 'block';
-
-            // 3. Trigger fade in
-            setTimeout(() => {
-                incoming.classList.add('active');
-                currentTab = target;
-                isTransitioning = false;
-                if (persist) sessionStorage.setItem('sentinel_auth_tab', target);
-            }, 30);
-        }, 150);
+            incoming.classList.add('active');
+            currentTab = target;
+            isTransitioning = false;
+            if (persist) sessionStorage.setItem('sentinel_auth_tab', target);
+        }, 10);
     }
 
     // Attach Listeners
