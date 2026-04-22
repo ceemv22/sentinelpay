@@ -779,11 +779,12 @@ button:hover:not(:disabled) {
     transform: translateY(5px) scale(0.98);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    pointer-events: none; /* Prevents flickering when mouse moves over tooltip */
+    pointer-events: auto; /* Allows hovering over the tooltip itself */
 }
 
-/* Show on hover of parent group */
-.input-group:hover .pw-tooltip {
+/* Show tooltip ONLY when hovering the icon specifically or the tooltip itself */
+.pw-toggle:hover + .pw-tooltip,
+.pw-tooltip:hover {
     opacity: 1;
     visibility: visible;
     transform: translateY(0) scale(1);
