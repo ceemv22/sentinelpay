@@ -189,8 +189,63 @@
         </div>
 
         <!-- Success State: Email Sent -->
-        <div id="auth-success-state" style="display: none;">
-            <div class="success-header-wrap">
+        <style>
+            #auth-success-state {
+                display: none;
+                flex-direction: column !important;
+                align-items: center !important;
+                justify-content: center !important;
+                text-align: center !important;
+                padding: 3.5rem 2.5rem !important;
+                min-height: 520px !important;
+                width: 100% !important;
+                max-width: 420px !important;
+                margin: 0 auto !important;
+                background: rgba(10, 12, 15, 0.98) !important;
+                backdrop-filter: blur(25px) !important;
+                -webkit-backdrop-filter: blur(25px) !important;
+                border: 1px solid rgba(255, 255, 255, 0.1) !important;
+                border-radius: 20px !important;
+                box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8) !important;
+                position: relative !important;
+                z-index: 100 !important;
+            }
+            .success-title-new {
+                font-size: 2.2rem !important;
+                font-weight: 800 !important;
+                letter-spacing: -1.5px !important;
+                color: #fff !important;
+                margin-bottom: 1.5rem !important;
+                font-family: 'Space Grotesk', sans-serif !important;
+                text-transform: lowercase !important;
+            }
+            .success-subtitle-new {
+                color: #a0a0a0 !important;
+                font-size: 0.85rem !important;
+                font-family: 'JetBrains Mono', monospace !important;
+                line-height: 1.8 !important;
+                max-width: 280px !important;
+                margin: 0 auto 2.5rem auto !important;
+            }
+            .pro-tip-footer-new {
+                margin-top: auto !important;
+                padding: 1.25rem !important;
+                border-radius: 12px !important;
+                background: rgba(255, 255, 255, 0.02) !important;
+                border: 1px solid rgba(255, 255, 255, 0.05) !important;
+                width: 100% !important;
+                font-size: 0.78rem !important;
+                color: rgba(255, 255, 255, 0.4) !important;
+                font-family: 'JetBrains Mono', monospace !important;
+            }
+            .tip-label {
+                color: #00f0ff !important;
+                font-weight: 700 !important;
+            }
+        </style>
+
+        <div id="auth-success-state">
+            <div class="success-header-wrap" style="margin-bottom: 2rem; filter: drop-shadow(0 0 15px rgba(0, 255, 136, 0.3));">
                 <svg width="68" height="68" viewBox="0 0 24 24" fill="none" stroke="var(--color-green)" stroke-width="1.5">
                     <circle cx="12" cy="12" r="10"></circle>
                     <path d="m9 12 2 2 4-4"></path>
@@ -198,12 +253,12 @@
             </div>
             
             <div class="success-body">
-                <h2 class="success-title">check your inbox.</h2>
-                <p class="success-subtitle">we sent a verification link to your email. click it to activate your account.</p>
+                <h2 class="success-title-new">check your inbox.</h2>
+                <p class="success-subtitle-new">we sent a verification link to your email. click it to activate your account.</p>
             </div>
 
-            <div class="pro-tip-footer">
-                <span class="pro-tip-label">pro tip:</span> check your junk folder if it doesn't arrive in 60s.
+            <div class="pro-tip-footer-new">
+                <span class="tip-label">pro tip:</span> check your junk folder if it doesn't arrive in 60s.
             </div>
         </div>
 
