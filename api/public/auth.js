@@ -192,9 +192,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const { error } = await supabase.auth.signUp({ 
                 email, 
                 password,
-                options: { emailRedirectTo: window.location.origin + '/dashboard?verified=true' }
             });
-            
+            if (error) {
+                errorMsg.textContent = 'error: ' + error.message.toLowerCase();
+                errorMsg.style.display = 'block';
+                btn.disabled = false;
+                btn.textContent = 'create account';
             } else {
                 successState.style.display = 'flex';
                 authPanel.style.display = 'none';
