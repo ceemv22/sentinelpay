@@ -189,23 +189,21 @@
         </div>
 
         <!-- Success State: Email Sent -->
-        <div id="auth-success-state" class="auth-card" style="display: none; text-align: center; padding: 2.5rem; flex-direction: column;">
-            <div class="success-header-wrap" style="margin-top: 1rem;">
-                <svg width="68" height="68" viewBox="0 0 24 24" fill="none" stroke="var(--color-green)" stroke-width="1.5" style="filter: drop-shadow(0 0 12px rgba(0, 255, 150, 0.3));">
+        <div id="auth-success-state" class="auth-card" style="display: none;">
+            <div class="success-header-wrap">
+                <svg width="68" height="68" viewBox="0 0 24 24" fill="none" stroke="var(--color-green)" stroke-width="1.5">
                     <circle cx="12" cy="12" r="10"></circle>
                     <path d="m9 12 2 2 4-4"></path>
                 </svg>
             </div>
             
-            <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; margin-top: 3rem;">
-                <div style="font-size: 2rem; font-weight: 800; letter-spacing: -1.5px; margin-bottom: 1.5rem; color: #fff;">check your inbox.</div>
-                <p style="color: var(--text-muted); font-size: 1.05rem; font-family: 'JetBrains Mono', monospace; line-height: 1.6; max-width: 280px; margin: 0 auto;">we sent a verification link to your email. click it to activate your account.</p>
+            <div class="success-body">
+                <h2 class="success-title">check your inbox.</h2>
+                <p class="success-subtitle">we sent a verification link to your email. click it to activate your account.</p>
             </div>
 
-            <div class="pro-tip-box" style="margin-top: auto; padding: 1.25rem; border-radius: 12px; background: rgba(0,240,255,0.03); border: 1px solid rgba(0,240,255,0.1); text-align: center;">
-                <p style="font-size: 0.85rem; color: #fff; font-family: 'JetBrains Mono', monospace; margin: 0; line-height: 1.5;">
-                    <span style="color: var(--color-cyan);">pro tip:</span> check your junk folder if it doesn't arrive in 60s.
-                </p>
+            <div class="pro-tip-footer">
+                <span class="pro-tip-label">pro tip:</span> check your junk folder if it doesn't arrive in 60s.
             </div>
         </div>
 

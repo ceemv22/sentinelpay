@@ -1161,14 +1161,69 @@ button:hover:not(:disabled) {
 /* --- Deleted broken version from bottom --- */
 
 
-/* Success Card Enhancements */
-#auth-success-state .success-header-wrap {
-    text-align: center;
-    width: 100%;
+/* Final Success State Polish (Web3 Style) */
+#auth-success-state {
+    text-align: center !important;
+    padding: 3.5rem 2.5rem !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    min-height: 540px !important; /* Match auth card height */
 }
 
-@keyframes pulseCyan {
-    0% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.05); opacity: 0.8; }
-    100% { transform: scale(1); opacity: 1; }
+.success-header-wrap {
+    margin-top: 1rem !important;
+    margin-bottom: 2.5rem !important;
+    filter: drop-shadow(0 0 20px rgba(0, 255, 136, 0.2)) !important;
 }
+
+.success-body {
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    margin-bottom: 2rem !important;
+}
+
+.success-title {
+    font-size: 2rem !important;
+    font-weight: 800 !important;
+    letter-spacing: -1.5px !important;
+    margin-bottom: 1.25rem !important;
+    color: #fff !important;
+    font-family: 'Inter', sans-serif !important;
+}
+
+.success-subtitle {
+    color: var(--text-muted) !important;
+    font-size: 0.85rem !important; /* Smaller technical text */
+    font-family: 'JetBrains Mono', monospace !important;
+    line-height: 1.8 !important;
+    max-width: 280px !important;
+    margin: 0 auto !important;
+    letter-spacing: 0.3px !important;
+}
+
+.pro-tip-footer {
+    margin-top: auto !important;
+    padding: 1rem !important;
+    border-radius: 10px !important;
+    background: rgba(255, 255, 255, 0.02) !important;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    width: 100% !important;
+}
+
+.pro-tip-label {
+    color: var(--color-cyan) !important;
+    font-weight: 700 !important;
+    text-transform: lowercase !important;
+    font-family: 'JetBrains Mono', monospace !important;
+}
+
+.pro-tip-footer, .pro-tip-footer span {
+    font-size: 0.78rem !important;
+    color: rgba(255, 255, 255, 0.5) !important;
+    font-family: 'JetBrains Mono', monospace !important;
+}
+
