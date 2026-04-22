@@ -1223,6 +1223,26 @@ button:hover:not(:disabled) {
 
 /* --- Deleted broken version from bottom --- */
 
+/* --- Auth Panels & Tab Logic --- */
+.auth-panels-container {
+    display: grid;
+    position: relative;
+    width: 100%;
+}
+
+.auth-panel-content {
+    grid-area: 1 / 1;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 100%;
+}
+
+.auth-panel-content.active {
+    display: block;
+    opacity: 1;
+    z-index: 2;
+}
 
 /* --- Success CSS Moved to Top --- */
 
