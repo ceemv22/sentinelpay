@@ -1102,23 +1102,23 @@ button:hover:not(:disabled) {
 }
 
 
-/* --- THE DEFINITIVE DESKTOP PASS-EYE FIX --- */
-/* Lock the wrapper as a relative anchor */
+/* --- BRUTAL DESKTOP FIX (Staging) --- */
+/* Relative anchor for the toggle */
 .password-field-wrap {
     position: relative !important;
-    display: flex !important; /* Ensure it stays in flow with input */
-    align-items: center !important;
+    display: block !important;
     width: 100% !important;
+    height: auto !important;
 }
 
-/* Ensure input field has space for the icon */
+/* Force padding on the input to always accommodate the eye icon */
 .password-field-wrap input {
-    flex: 1 !important;
+    padding-right: 48px !important;
     width: 100% !important;
-    padding-right: 48px !important; 
+    box-sizing: border-box !important;
 }
 
-/* High-specificity reset for the span toggle (not a button anymore) */
+/* Absolute lock for the span toggle */
 #auth-panel .pw-eye-toggle,
 span.pw-eye-toggle {
     all: unset !important;
@@ -1137,8 +1137,6 @@ span.pw-eye-toggle {
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
-    padding: 0 !important;
-    margin: 0 !important;
     transition: color 0.2s ease !important;
 }
 
@@ -1150,7 +1148,7 @@ span.pw-eye-toggle {
     pointer-events: none !important;
     display: block !important;
 }
-/* ------------------------------------------ */
+/* ------------------------------------ */
 
 /* Success Card Enhancements */
 #auth-success-state .success-header-wrap {
