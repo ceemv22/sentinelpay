@@ -1102,23 +1102,26 @@ button:hover:not(:disabled) {
 }
 
 
-/* --- BRUTAL DESKTOP FIX (Staging) --- */
-/* Relative anchor for the toggle */
+/* --- BRUTAL DESKTOP FIX v2 (Staging) --- */
+/* Lock the wrapper with flex for internal alignment */
 .password-field-wrap {
     position: relative !important;
-    display: block !important;
+    display: flex !important;
+    align-items: center !important;
     width: 100% !important;
-    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
-/* Force padding on the input to always accommodate the eye icon */
+/* Ensure input field has space and no conflicting margins */
 .password-field-wrap input {
-    padding-right: 48px !important;
+    flex: 1 !important;
     width: 100% !important;
-    box-sizing: border-box !important;
+    padding-right: 42px !important; 
+    margin: 0 !important;
 }
 
-/* Absolute lock for the span toggle */
+/* High-specificity reset for the span toggle (Smaler version) */
 #auth-panel .pw-eye-toggle,
 span.pw-eye-toggle {
     all: unset !important;
@@ -1130,8 +1133,8 @@ span.pw-eye-toggle {
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    width: 24px !important;
-    height: 24px !important;
+    width: 20px !important;
+    height: 20px !important;
     color: var(--text-muted) !important;
     z-index: 50 !important;
     background: transparent !important;
@@ -1145,6 +1148,8 @@ span.pw-eye-toggle {
 }
 
 .pw-eye-toggle svg {
+    width: 16px !important; /* Smaller icon as requested */
+    height: 16px !important;
     pointer-events: none !important;
     display: block !important;
 }
