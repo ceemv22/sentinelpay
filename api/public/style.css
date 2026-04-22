@@ -762,24 +762,32 @@ button:hover:not(:disabled) {
 .pw-tooltip {
     opacity: 0;
     visibility: hidden;
-    position: absolute; /* Ensures it doesn't push elements down */
-    width: 100%;
-    z-index: 100;
-    font-size: 0.72rem;
-    color: var(--text-muted);
-    font-family: 'JetBrains Mono', monospace;
-    padding: 1rem;
-    background: rgba(5, 5, 5, 0.9);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 12px;
-    margin-top: 0.5rem;
-    line-height: 1.8;
-    transform: translateY(5px) scale(0.98);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    pointer-events: auto; /* Allows hovering over the tooltip itself */
+    position: absolute !important;
+    right: 0 !important;
+    top: 28px !important; /* Perfectly aligned below the '?' */
+    width: 220px !important;
+    z-index: 1000 !important;
+    padding: 1.25rem !important;
+    
+    /* SentinelPay Glass System */
+    background: rgba(8, 10, 12, 0.95) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(0, 240, 255, 0.15) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(0, 240, 255, 0.05) !important;
+    
+    /* Typography */
+    color: #a0a0a0 !important;
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 0.72rem !important;
+    line-height: 2 !important;
+    text-align: left !important;
+    
+    /* Animation */
+    transform: translateY(10px) scale(0.95) !important;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    pointer-events: auto !important;
 }
 
 /* Show tooltip ONLY when hovering the icon specifically or the tooltip itself */
