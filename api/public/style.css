@@ -10,6 +10,68 @@
     --neon-blue: #00f0ff;
 }
 
+
+/* --- THE FINAL SUCCESS SCREEN FIX (v5) --- */
+#auth-success-state {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    padding: 3.5rem 2.5rem !important;
+    min-height: 540px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+.success-header-wrap {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100% !important;
+    margin-bottom: 2rem !important;
+    filter: drop-shadow(0 0 20px rgba(0, 255, 136, 0.3)) !important;
+}
+
+.success-body {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex: 1 !important;
+    width: 100% !important;
+    margin-bottom: 3rem !important;
+}
+
+.success-title {
+    font-size: 2.2rem !important;
+    font-weight: 800 !important;
+    letter-spacing: -1.5px !important;
+    color: #fff !important;
+    margin-bottom: 1.5rem !important;
+    font-family: 'Inter', sans-serif !important;
+}
+
+.success-subtitle {
+    color: var(--text-muted) !important;
+    font-size: 0.85rem !important;
+    font-family: 'JetBrains Mono', monospace !important;
+    line-height: 1.8 !important;
+    max-width: 280px !important;
+    margin: 0 auto !important;
+    letter-spacing: 0.3px !important;
+}
+
+.pro-tip-footer {
+    margin-top: auto !important;
+    padding: 1.25rem !important;
+    border-radius: 12px !important;
+    background: rgba(255, 255, 255, 0.02) !important;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    width: 100% !important;
+}
+/* ------------------------------------------- */
+
 /* --- THE FINAL DESKTOP EYE-FIX (Moved to Top for Priority) --- */
 .password-field-wrap {
     position: relative !important;
@@ -1160,74 +1222,7 @@ button:hover:not(:disabled) {
 
 /* --- Deleted broken version from bottom --- */
 
-/* Final Success State Polish (v4 - The Real Fix) */
-#auth-success-state {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
-    text-align: center !important;
-    padding: 3.5rem 2rem !important;
-    min-height: 540px !important;
-}
 
-.success-header-wrap {
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-    width: 100% !important;
-    margin-bottom: 2rem !important;
-    filter: drop-shadow(0 0 20px rgba(0, 255, 136, 0.3)) !important;
-}
+/* --- Success CSS Moved to Top --- */
 
-.success-body {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
-    flex: 1 !important;
-    width: 100% !important;
-    margin-bottom: 3rem !important;
-}
-
-.success-title {
-    font-size: 2.2rem !important; /* Back to big impact */
-    font-weight: 800 !important;
-    letter-spacing: -1.5px !important;
-    color: #fff !important;
-    margin-bottom: 1.5rem !important;
-    font-family: 'Inter', sans-serif !important;
-}
-
-.success-subtitle {
-    color: var(--text-muted) !important;
-    font-size: 0.85rem !important; /* Technical sized text */
-    font-family: 'JetBrains Mono', monospace !important;
-    line-height: 1.8 !important;
-    max-width: 300px !important;
-    margin: 0 auto !important;
-    letter-spacing: 0.3px !important;
-}
-
-.pro-tip-footer {
-    margin-top: auto !important; /* Anchors to bottom */
-    padding: 1.25rem !important;
-    border-radius: 12px !important;
-    background: rgba(255, 255, 255, 0.02) !important;
-    border: 1px solid rgba(255, 255, 255, 0.05) !important;
-    width: 100% !important;
-}
-
-.pro-tip-label {
-    color: var(--color-cyan) !important;
-    font-weight: 700 !important;
-    font-family: 'JetBrains Mono', monospace !important;
-    text-transform: lowercase !important;
-}
-
-.pro-tip-footer, .pro-tip-footer span {
-    font-size: 0.78rem !important;
-    color: rgba(255, 255, 255, 0.4) !important;
-    font-family: 'JetBrains Mono', monospace !important;
-}
 
