@@ -93,9 +93,18 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         regPw.addEventListener('input', (e) => {
             const val = e.target.value;
-            if (rules.len) rules.len.classList.toggle('met', val.length >= 8);
-            if (rules.upper) rules.upper.classList.toggle('met', /[A-Z]/.test(val));
-            if (rules.num) rules.num.classList.toggle('met', /[0-9]/.test(val));
+            
+            const validate = (el, condition) => {
+                if (el) {
+                    el.classList.toggle('met', condition);
+                    el.textContent = condition ? '✓' : '✕';
+                    el.style.color = condition ? 'var(--color-green)' : 'var(--color-red)';
+                }
+            };
+
+            validate(rules.len, val.length >= 8);
+            validate(rules.upper, /[A-Z]/.test(val));
+            validate(rules.num, /[0-9]/.test(val));
         });
     }
 

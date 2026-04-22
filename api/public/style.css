@@ -801,6 +801,9 @@ button:hover:not(:disabled) {
 .rule {
     color: var(--color-red);
     margin-right: 0.5rem;
+    display: inline-block;
+    width: 14px; /* Fixed width to prevent text jumping */
+    text-align: center;
 }
 
 .rule.met {
