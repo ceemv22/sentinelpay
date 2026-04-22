@@ -83,8 +83,8 @@
         <!-- Auth Card -->
         <div class="auth-card" id="auth-panel">
             <div class="auth-tabs">
-                <button class="auth-tab active" id="tab-login">login</button>
-                <button class="auth-tab" id="tab-register">register</button>
+                <button class="auth-tab active" id="tab-login" style="position: relative; z-index: 1000; pointer-events: auto;">login</button>
+                <button class="auth-tab" id="tab-register" style="position: relative; z-index: 1000; pointer-events: auto;">register</button>
             </div>
 
             <div class="auth-panels-container">
@@ -189,7 +189,7 @@
         </div>
 
         <!-- Success State: Email Sent -->
-        <div id="auth-success-state" class="auth-card" style="display: none;">
+        <div id="auth-success-state" style="display: none;">
             <div class="success-header-wrap">
                 <svg width="68" height="68" viewBox="0 0 24 24" fill="none" stroke="var(--color-green)" stroke-width="1.5">
                     <circle cx="12" cy="12" r="10"></circle>

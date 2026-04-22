@@ -11,67 +11,7 @@
 }
 
 
-/* --- THE FINAL SUCCESS SCREEN FIX (v5) --- */
-#auth-success-state {
-    display: none; /* Hidden by default - shown by JS */
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
-    text-align: center !important;
-    padding: 3.5rem 2.5rem !important;
-    min-height: 540px !important;
-    width: 100% !important;
-    box-sizing: border-box !important;
-}
-
-.success-header-wrap {
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-    width: 100% !important;
-    margin-bottom: 2rem !important;
-    filter: drop-shadow(0 0 20px rgba(0, 255, 136, 0.3)) !important;
-}
-
-.success-body {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
-    flex: 1 !important;
-    width: 100% !important;
-    margin-bottom: 3rem !important;
-}
-
-.success-title {
-    font-size: 2.2rem !important;
-    font-weight: 800 !important;
-    letter-spacing: -1.5px !important;
-    color: #fff !important;
-    margin-bottom: 1.5rem !important;
-    font-family: 'Space Grotesk', sans-serif !important; /* Official SentinelPay font */
-    text-transform: lowercase !important;
-}
-
-.success-subtitle {
-    color: var(--text-muted) !important;
-    font-size: 0.85rem !important;
-    font-family: 'JetBrains Mono', monospace !important;
-    line-height: 1.8 !important;
-    max-width: 280px !important;
-    margin: 0 auto !important;
-    letter-spacing: 0.3px !important;
-}
-
-.pro-tip-footer {
-    margin-top: auto !important;
-    padding: 1.25rem !important;
-    border-radius: 12px !important;
-    background: rgba(255, 255, 255, 0.02) !important;
-    border: 1px solid rgba(255, 255, 255, 0.05) !important;
-    width: 100% !important;
-}
-/* ------------------------------------------- */
+/* --- SUCCESS LOGIC MOVED TO BOTTOM FOR ISOLATION --- */
 
 /* --- THE FINAL DESKTOP EYE-FIX (Moved to Top for Priority) --- */
 .password-field-wrap {
@@ -1244,6 +1184,74 @@ button:hover:not(:disabled) {
     z-index: 2;
 }
 
-/* --- Success CSS Moved to Top --- */
+/* --- THE FINAL SUCCESS SCREEN FIX (v6 - Nuclear Isolation) --- */
+#auth-success-state {
+    display: none; 
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    padding: 2.5rem !important;
+    min-height: 520px !important;
+    width: 100% !important;
+    max-width: 420px !important;
+    margin: 0 auto !important;
+    box-sizing: border-box !important;
+    background: rgba(15, 15, 15, 0.98) !important;
+    backdrop-filter: blur(25px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 20px !important;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4) !important;
+    position: relative !important;
+    z-index: 1 !important;
+    pointer-events: none; /* Initially non-blocking */
+}
 
+#auth-success-state .success-header-wrap {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100% !important;
+    margin-top: 1rem !important;
+    margin-bottom: 2rem !important;
+    filter: drop-shadow(0 0 20px rgba(0, 255, 136, 0.3)) !important;
+}
+
+#auth-success-state .success-body {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex: 1 !important;
+    width: 100% !important;
+}
+
+#auth-success-state .success-title {
+    font-size: 2.2rem !important;
+    font-weight: 800 !important;
+    letter-spacing: -1.5px !important;
+    color: #fff !important;
+    margin-bottom: 1.5rem !important;
+    font-family: 'Space Grotesk', sans-serif !important;
+    text-transform: lowercase !important;
+}
+
+#auth-success-state .success-subtitle {
+    color: var(--text-muted) !important;
+    font-size: 0.85rem !important;
+    font-family: 'JetBrains Mono', monospace !important;
+    line-height: 1.8 !important;
+    max-width: 280px !important;
+    margin: 0 auto !important;
+}
+
+#auth-success-state .pro-tip-footer {
+    margin-top: auto !important;
+    padding: 1.25rem !important;
+    border-radius: 12px !important;
+    background: rgba(255, 255, 255, 0.02) !important;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    width: 100% !important;
+}
+/* ------------------------------------------- */
 
