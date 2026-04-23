@@ -3,59 +3,73 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Handshake | SentinelPay</title>
+    <title>Handshake | SentinelPay Core</title>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
 </head>
 <body style="margin: 0; padding: 0; background-color: #050505; color: #ffffff; font-family: 'JetBrains Mono', 'Courier New', monospace; -webkit-font-smoothing: antialiased;">
-    <div style="background-color: #050505; padding: 80px 20px; text-align: center;">
+    <div style="background-color: #050505; padding: 80px 20px;">
         
-        <!-- MINIMALIST SHIELD EYE LOGO -->
+        <!-- S-TIER CENTER LOGO (SHIELD + EYE) -->
         <table align="center" border="0" cellpadding="0" cellspacing="0" style="margin-bottom: 60px;">
             <tr>
                 <td align="center">
-                    <svg width="60" height="60" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Shield -->
-                        <path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z" fill="none" stroke="#00f0ff" stroke-width="3"/>
-                        <!-- Eye Outer -->
-                        <path d="M60 45 C45 45 35 60 35 60 C35 60 45 75 60 75 C75 75 85 60 85 60 C85 60 75 45 60 45 Z" fill="none" stroke="#00f0ff" stroke-width="1.5"/>
-                        <!-- Pupil -->
-                        <circle cx="60" cy="60" r="5" fill="#00f0ff"/>
-                        <!-- Glowing Dot (Eye) -->
-                        <circle cx="60" cy="60" r="2" fill="#ffffff" style="opacity: 0.8;"/>
+                    <svg width="64" height="64" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="eyeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#00f0ff;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#a020f0;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                        <!-- Official Shield -->
+                        <path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z" fill="none" stroke="url(#eyeGrad)" stroke-width="3.5"/>
+                        <!-- The Eye -->
+                        <path d="M60 45 C45 45 35 60 35 60 C35 60 45 75 60 75 C75 75 85 60 85 60 C85 60 75 45 60 45 Z" fill="none" stroke="url(#eyeGrad)" stroke-width="2"/>
+                        <circle cx="60" cy="60" r="6" fill="url(#eyeGrad)"/>
+                        <circle cx="60" cy="60" r="2" fill="#ffffff"/>
                     </svg>
                 </td>
             </tr>
         </table>
 
-        <!-- MINIMALIST CONTENT -->
-        <table align="center" border="0" cellpadding="0" cellspacing="0" style="max-width: 400px; width: 100%;">
+        <!-- SENTINEL CORE CARD -->
+        <table align="center" border="0" cellpadding="0" cellspacing="0" style="max-width: 480px; width: 100%; background-color: #000000; border: 1px solid rgba(255, 255, 255, 0.08); border-left: 4px solid #00f0ff; border-radius: 4px;">
             <tr>
-                <td align="center">
-                    <div style="font-size: 11px; color: #00f0ff; letter-spacing: 3px; font-weight: 700; margin-bottom: 30px; text-transform: uppercase;">[ verification.required ]</div>
+                <td style="padding: 40px;">
+                    <!-- HEADER -->
+                    <div style="font-size: 11px; color: #444; letter-spacing: 2.5px; font-weight: 700; margin-bottom: 25px; text-transform: uppercase;">[ security.handshake.v2 ]</div>
                     
-                    <div style="font-size: 18px; line-height: 1.6; color: #ffffff; margin-bottom: 50px; font-weight: 400; text-transform: lowercase; letter-spacing: -0.5px;">
-                        handshake initiated. authorize this email to bridge your analyst profile to the sentinelpay engine.
+                    <h1 style="font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 800; letter-spacing: -1px; margin: 0 0 30px 0; color: #ffffff; text-transform: lowercase;">verify analyst identity.</h1>
+                    
+                    <!-- BODY -->
+                    <p style="font-family: 'JetBrains Mono', monospace; font-size: 14px; line-height: 1.8; color: #888888; margin: 0 0 45px 0; text-transform: lowercase;">
+                        A synchronization request was initiated. Verify your signature to link this address to the SentinelPay scanning engine.
+                    </p>
+
+                    <!-- ACTION BUTTON (DASHBOARD STYLE) -->
+                    <div style="margin-bottom: 50px;">
+                        <a href="{{ .ConfirmationURL }}" style="background-color: #ffffff; color: #000000; padding: 20px 40px; text-decoration: none; font-weight: 800; font-size: 14px; font-family: 'JetBrains Mono', monospace; text-transform: lowercase; display: inline-block; box-shadow: 0 10px 30px rgba(0, 240, 255, 0.1);">
+                            confirm_signature
+                        </a>
                     </div>
 
-                    <!-- MINIMALIST ACTION BUTTON -->
-                    <div style="margin-bottom: 60px;">
-                        <a href="{{ .ConfirmationURL }}" style="display: inline-block; background-color: #00f0ff; color: #000000; padding: 18px 40px; text-decoration: none; font-weight: 800; font-size: 13px; text-transform: lowercase; border-radius: 2px;">confirm_signature</a>
-                    </div>
-
-                    <!-- TERMINAL STATUS -->
-                    <div style="font-size: 10px; color: #222; text-transform: uppercase; letter-spacing: 2px; line-height: 2;">
-                        id: 0x{{ .TokenHash }}<br>
-                        origin: sentinelpay_v2<br>
-                        status: pending_handshake
+                    <!-- TECH DATA (HISTORY ITEM STYLE) -->
+                    <div style="background-color: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); padding: 15px 20px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #333; text-transform: lowercase;">
+                        <span style="color: #00f0ff;">></span> id: 0x{{ .TokenHash }}<br>
+                        <span style="color: #a020f0;">></span> node: s-tier_primary
                     </div>
                 </td>
             </tr>
         </table>
 
         <!-- FOOTER -->
-        <div style="margin-top: 100px; font-size: 9px; color: #111; text-transform: uppercase; letter-spacing: 1px;">
-            automated cyber-security identity system
-        </div>
+        <table align="center" border="0" cellpadding="0" cellspacing="0" style="max-width: 480px; width: 100%; margin-top: 50px;">
+            <tr>
+                <td align="left" style="font-family: 'JetBrains Mono', monospace; font-size: 9px; color: #222; text-transform: uppercase; letter-spacing: 1px; line-height: 2;">
+                    automated detection system // 0xAF22<br>
+                    sentinelpay_core_v2.4
+                </td>
+            </tr>
+        </table>
     </div>
 </body>
 </html>
