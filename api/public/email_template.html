@@ -1,79 +1,104 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Verify your SentinelPay access</title>
+    <style>
+        /* Fallback for fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;800&display=swap');
+        
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100% !important;
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+        }
+
+        @media only screen and (max-width: 600px) {
+            .container {
+                width: 95% !important;
+                padding: 20px !important;
+            }
+            .title {
+                font-size: 24px !important;
+            }
+        }
+    </style>
 </head>
-<body style="margin: 0; padding: 0; background-color: #050505; font-family: 'Inter', -apple-system, sans-serif; color: #ffffff; -webkit-font-smoothing: antialiased;">
-    <div style="width: 100%; background-color: #050505; padding: 40px 0;">
-        <!--[if mso]>
-        <center>
-        <table><tr><td width="600">
-        <![endif]-->
-        <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; background-color: #0a0c0f; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden;">
+<body style="margin: 0; padding: 0; background-color: #050505; color: #ffffff; font-family: 'Inter', -apple-system, sans-serif;">
+    <div style="background-color: #050505; background-image: radial-gradient(circle at 10% 10%, rgba(160, 32, 240, 0.05) 0%, transparent 40%), radial-gradient(circle at 90% 90%, rgba(0, 240, 255, 0.05) 0%, transparent 40%); padding: 60px 0;">
+        
+        <!-- MAIN CARD -->
+        <table align="center" border="0" cellpadding="0" cellspacing="0" class="container" style="max-width: 540px; width: 100%; background-color: #0a0c0f; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 24px; overflow: hidden; box-shadow: 0 40px 100px rgba(0,0,0,0.8);">
             
-            <!-- HEADER / LOGO -->
+            <!-- CYBER GRID SIMULATION HEADER -->
             <tr>
-                <td align="center" style="padding: 50px 40px 30px 40px;">
-                    <div style="margin-bottom: 20px;">
-                        <!-- Shield Logo Representation -->
-                        <div style="width: 64px; height: 64px; margin: 0 auto; border: 2px solid #00f0ff; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: rgba(0, 240, 255, 0.05);">
-                            <span style="color: #00f0ff; font-size: 32px;">🛡️</span>
-                        </div>
+                <td align="center" style="padding: 50px 40px 30px 40px; background-image: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px); background-size: 20px 20px;">
+                    <div style="margin-bottom: 24px;">
+                        <!-- AUTH LOGO -->
+                        <svg width="68" height="68" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#00ffff;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#a020f0;stop-opacity:1" />
+                                </linearGradient>
+                            </defs>
+                            <path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z" fill="none" stroke="url(#shieldGrad)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                            <circle cx="60" cy="60" r="6" fill="url(#shieldGrad)"/>
+                        </svg>
                     </div>
-                    <div style="font-family: 'Space Grotesk', 'Inter', sans-serif; font-size: 24px; font-weight: 700; letter-spacing: -1.5px; color: #ffffff; text-transform: lowercase;">sentinelpay</div>
+                    <div style="font-family: 'Space Grotesk', 'Inter', sans-serif; font-size: 22px; font-weight: 700; letter-spacing: -1.2px; color: #ffffff; text-transform: lowercase;">sentinelpay</div>
                 </td>
             </tr>
 
-            <!-- CONTENT -->
+            <!-- CONTENT BODY -->
             <tr>
-                <td align="center" style="padding: 0 50px 40px 50px;">
-                    <h1 style="font-family: 'Space Grotesk', 'Inter', sans-serif; font-size: 28px; font-weight: 700; letter-spacing: -1.5px; margin-bottom: 20px; color: #ffffff; text-transform: lowercase;">granting system access.</h1>
+                <td align="center" style="padding: 0 45px 40px 45px;">
+                    <div style="height: 1px; width: 60px; background: linear-gradient(90deg, transparent, #00f0ff, transparent); margin-bottom: 40px;"></div>
                     
-                    <p style="font-size: 16px; line-height: 1.7; color: #a0a0a0; margin-bottom: 35px; font-family: 'Inter', sans-serif;">You requested access to the SentinelPay Security Engine. For security reasons, we require a signature check before activating your analyst dashboard.</p>
+                    <h1 class="title" style="font-family: 'Space Grotesk', 'Inter', sans-serif; font-size: 32px; font-weight: 700; letter-spacing: -2px; margin: 0 0 24px 0; color: #ffffff; text-transform: lowercase; line-height: 1.1;">granting system access.</h1>
                     
-                    <!-- NEON BUTTON -->
+                    <p style="font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.8; color: #999999; margin: 0 0 40px 0; max-width: 380px;">We've detected an initialization request for your analyst dashboard. For security clearance, we require a final signature check to link this email.</p>
+                    
+                    <!-- NEON TRIGGER BUTTON -->
                     <div style="margin-bottom: 45px;">
-                        <!--[if mso]>
-                        <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="{{ .ConfirmationURL }}" style="height:54px;v-text-anchor:middle;width:220px;" arcsize="100%" strokecolor="#00f0ff" fillcolor="#00f0ff">
-                        <w:anchorlock/>
-                        <center style="color:#ffffff;font-family:sans-serif;font-size:16px;font-weight:bold;">confirm identity</center>
-                        </v:roundrect>
-                        <![endif]-->
-                        <a href="{{ .ConfirmationURL }}" style="background-color: #00f0ff; background-image: linear-gradient(135deg, #00f0ff 0%, #a020f0 100%); color: #ffffff; padding: 18px 45px; text-decoration: none; border-radius: 50px; font-weight: 800; font-size: 16px; display: inline-block; font-family: 'Inter', sans-serif; text-transform: lowercase;">confirm identity</a>
+                        <a href="{{ .ConfirmationURL }}" style="background-color: #00f0ff; background: linear-gradient(135deg, #00f0ff 0%, #a020f0 100%); color: #ffffff; padding: 20px 48px; text-decoration: none; border-radius: 50px; font-weight: 800; font-size: 16px; display: inline-block; font-family: 'Inter', sans-serif; text-transform: lowercase; box-shadow: 0 10px 30px rgba(0, 240, 255, 0.2); letter-spacing: 0.5px;">confirm identity</a>
                     </div>
                     
-                    <!-- TERMINAL LOG -->
-                    <div style="background-color: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 20px; margin-bottom: 30px; text-align: left; font-family: 'Courier New', Courier, monospace; font-size: 13px; line-height: 1.6;">
-                        <div style="color: #00f0ff; opacity: 0.8;">> status: initialization_pending</div>
-                        <div style="color: #a020f0;">> security_level: s-tier</div>
-                        <div style="color: #6b6b6b;">> encryption: aes-256-gcm</div>
+                    <!-- TECHNICAL READOUT (TERMINAL) -->
+                    <div style="background-color: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 24px; margin-bottom: 40px; text-align: left; font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 13px; line-height: 1.8;">
+                        <div style="color: #00f0ff; margin-bottom: 6px;"><span style="opacity: 0.5;">></span> status: <span style="font-weight: 700;">init_pending</span></div>
+                        <div style="color: #a020f0; margin-bottom: 6px;"><span style="opacity: 0.5;">></span> security: <span style="font-weight: 700;">s-tier_assigned</span></div>
+                        <div style="color: #6b6b6b;"><span style="opacity: 0.5;">></span> auth_method: legacy_email_signature</div>
                     </div>
-                </td>
-            </tr>
 
-            <!-- PRO TIP BOX -->
-            <tr>
-                <td style="padding: 0 40px 40px 40px;">
-                    <div style="background-color: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 20px; font-family: 'Courier New', Courier, monospace; font-size: 13px; color: rgba(255,255,255,0.4); text-align: center;">
-                        <span style="color: #00f0ff; font-weight: 700;">pro tip:</span> check your junk folder if it doesn't arrive in 60s.
+                    <!-- PRO TIP SECTION (Like the App) -->
+                    <div style="background-color: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 14px; padding: 20px; font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 12px; color: rgba(255,255,255,0.4); text-align: center; line-height: 1.6;">
+                        <span style="color: #00f0ff; font-weight: 700;">pro tip:</span> check your junk folder if the handshake doesn't complete in 60s.
                     </div>
                 </td>
             </tr>
 
             <!-- FOOTER -->
             <tr>
-                <td align="center" style="padding: 0 40px 40px 40px; font-family: 'Courier New', Courier, monospace; font-size: 11px; color: #444444; text-transform: lowercase;">
-                    &copy; 2026 SentinelPay Security Engine. all rights reserved.<br>
-                    automated cyber-security screening system.
+                <td align="center" style="padding: 0 40px 45px 40px; font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 11px; color: #333333; text-transform: lowercase; letter-spacing: 0.5px;">
+                    sentinelpay security core &copy; 2026<br>
+                    automated identity verification system v2.4
                 </td>
             </tr>
         </table>
-        <!--[if mso]>
-        </td></tr></table>
-        </center>
-        <![endif]-->
+
+        <!-- SOCIAL / RE-AUTH (Simple) -->
+        <table align="center" border="0" cellpadding="0" cellspacing="0" style="max-width: 540px; width: 100%; margin-top: 30px;">
+            <tr>
+                <td align="center" style="font-family: 'Inter', sans-serif; font-size: 12px; color: #555555;">
+                    If you didn't request this access, no action is required.<br>
+                    Your account remains protected by our encryption core.
+                </td>
+            </tr>
+        </table>
     </div>
 </body>
 </html>
