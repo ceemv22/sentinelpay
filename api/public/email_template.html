@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify your SentinelPay access</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #050505; font-family: 'Inter', -apple-system, sans-serif; color: #ffffff; -webkit-font-smoothing: antialiased;">
+    <div style="width: 100%; background-color: #050505; padding: 40px 0;">
+        <!--[if mso]>
+        <center>
+        <table><tr><td width="600">
+        <![endif]-->
+        <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; background-color: #0a0c0f; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden;">
+            
+            <!-- HEADER / LOGO -->
+            <tr>
+                <td align="center" style="padding: 50px 40px 30px 40px;">
+                    <div style="margin-bottom: 20px;">
+                        <!-- Shield Logo Representation -->
+                        <div style="width: 64px; height: 64px; margin: 0 auto; border: 2px solid #00f0ff; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: rgba(0, 240, 255, 0.05);">
+                            <span style="color: #00f0ff; font-size: 32px;">🛡️</span>
+                        </div>
+                    </div>
+                    <div style="font-family: 'Space Grotesk', 'Inter', sans-serif; font-size: 24px; font-weight: 700; letter-spacing: -1.5px; color: #ffffff; text-transform: lowercase;">sentinelpay</div>
+                </td>
+            </tr>
+
+            <!-- CONTENT -->
+            <tr>
+                <td align="center" style="padding: 0 50px 40px 50px;">
+                    <h1 style="font-family: 'Space Grotesk', 'Inter', sans-serif; font-size: 28px; font-weight: 700; letter-spacing: -1.5px; margin-bottom: 20px; color: #ffffff; text-transform: lowercase;">granting system access.</h1>
+                    
+                    <p style="font-size: 16px; line-height: 1.7; color: #a0a0a0; margin-bottom: 35px; font-family: 'Inter', sans-serif;">You requested access to the SentinelPay Security Engine. For security reasons, we require a signature check before activating your analyst dashboard.</p>
+                    
+                    <!-- NEON BUTTON -->
+                    <div style="margin-bottom: 45px;">
+                        <!--[if mso]>
+                        <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="{{ .ConfirmationURL }}" style="height:54px;v-text-anchor:middle;width:220px;" arcsize="100%" strokecolor="#00f0ff" fillcolor="#00f0ff">
+                        <w:anchorlock/>
+                        <center style="color:#ffffff;font-family:sans-serif;font-size:16px;font-weight:bold;">confirm identity</center>
+                        </v:roundrect>
+                        <![endif]-->
+                        <a href="{{ .ConfirmationURL }}" style="background-color: #00f0ff; background-image: linear-gradient(135deg, #00f0ff 0%, #a020f0 100%); color: #ffffff; padding: 18px 45px; text-decoration: none; border-radius: 50px; font-weight: 800; font-size: 16px; display: inline-block; font-family: 'Inter', sans-serif; text-transform: lowercase;">confirm identity</a>
+                    </div>
+                    
+                    <!-- TERMINAL LOG -->
+                    <div style="background-color: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 20px; margin-bottom: 30px; text-align: left; font-family: 'Courier New', Courier, monospace; font-size: 13px; line-height: 1.6;">
+                        <div style="color: #00f0ff; opacity: 0.8;">> status: initialization_pending</div>
+                        <div style="color: #a020f0;">> security_level: s-tier</div>
+                        <div style="color: #6b6b6b;">> encryption: aes-256-gcm</div>
+                    </div>
+                </td>
+            </tr>
+
+            <!-- PRO TIP BOX -->
+            <tr>
+                <td style="padding: 0 40px 40px 40px;">
+                    <div style="background-color: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 20px; font-family: 'Courier New', Courier, monospace; font-size: 13px; color: rgba(255,255,255,0.4); text-align: center;">
+                        <span style="color: #00f0ff; font-weight: 700;">pro tip:</span> check your junk folder if it doesn't arrive in 60s.
+                    </div>
+                </td>
+            </tr>
+
+            <!-- FOOTER -->
+            <tr>
+                <td align="center" style="padding: 0 40px 40px 40px; font-family: 'Courier New', Courier, monospace; font-size: 11px; color: #444444; text-transform: lowercase;">
+                    &copy; 2026 SentinelPay Security Engine. all rights reserved.<br>
+                    automated cyber-security screening system.
+                </td>
+            </tr>
+        </table>
+        <!--[if mso]>
+        </td></tr></table>
+        </center>
+        <![endif]-->
+    </div>
+</body>
+</html>
