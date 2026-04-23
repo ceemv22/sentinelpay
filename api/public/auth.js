@@ -200,7 +200,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 btn.textContent = 'create account';
             } else {
                 successState.style.display = 'flex';
-                authPanel.style.display = 'none';
+                if (authPanel) authPanel.style.display = 'none';
+                
+                // UX Fix: Scroll to top instantly so users see the success message (crucial for mobile)
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         });
     }
