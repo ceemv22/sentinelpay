@@ -9,60 +9,45 @@
 <body style="margin: 0; padding: 0; background-color: #050505; color: #ffffff; font-family: 'JetBrains Mono', 'Courier New', monospace; -webkit-font-smoothing: antialiased;">
     <div style="background-color: #050505; padding: 80px 20px; text-align: center;">
         
-        <!-- AUTHENTIC LOGO -->
+        <!-- LOGO SECTION (PNG FOR COMPATIBILITY) -->
         <table align="center" border="0" cellpadding="0" cellspacing="0" style="margin-bottom: 50px;">
             <tr>
                 <td align="center">
-                    <div style="width: 80px; height: 80px;">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="100%" height="100%">
-                            <defs>
-                                <linearGradient id="neonGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                    <stop offset="0%" stop-color="#00ffff" />
-                                    <stop offset="100%" stop-color="#a020f0" />
-                                </linearGradient>
-                                <filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%">
-                                    <feGaussianBlur stdDeviation="3.5" result="coloredBlur"/>
-                                    <feMerge>
-                                        <feMergeNode in="coloredBlur"/>
-                                        <feMergeNode in="SourceGraphic"/>
-                                    </feMerge>
-                                </filter>
-                            </defs>
-                            <g filter="url(#neonGlow)" fill="none" stroke="url(#neonGradient)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z" />
-                                <path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z" />
-                                <circle cx="60" cy="60" r="6" />
-                                <circle cx="60" cy="60" r="2" fill="url(#neonGradient)" stroke="none"/>
-                            </g>
-                        </svg>
-                    </div>
+                    <!-- ACTION: Upload the generated PNG to your storage and replace LOGO_URL_HERE with the link -->
+                    <img src="LOGO_URL_HERE" alt="SentinelPay" width="80" height="80" style="display: block; border: 0;">
                 </td>
             </tr>
         </table>
 
-        <!-- SERIOUS CONTENT -->
+        <!-- CORE MESSAGE -->
         <table align="center" border="0" cellpadding="0" cellspacing="0" style="max-width: 440px; width: 100%; background-color: #000000; border: 1px solid #111; border-radius: 4px;">
             <tr>
                 <td style="padding: 40px; text-align: center;">
                     <h1 style="font-family: 'JetBrains Mono', monospace; font-size: 20px; font-weight: 700; margin: 0 0 20px 0; color: #ffffff; text-transform: lowercase; letter-spacing: -1px;">verify email.</h1>
                     
                     <p style="font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.6; color: #666666; margin: 0 0 40px 0; text-transform: lowercase;">
-                        Click the button below to confirm your account and activate your SentinelPay profile.
+                        Click the button below to confirm your email and activate your security analyst profile.
                     </p>
 
-                    <div style="margin-bottom: 30px;">
+                    <!-- ACTION BUTTON -->
+                    <div style="margin-bottom: 40px;">
                         <a href="{{ .ConfirmationURL }}" style="display: inline-block; background-color: #ffffff; color: #000000; padding: 18px 30px; text-decoration: none; font-weight: 700; font-size: 13px; font-family: 'JetBrains Mono', monospace; text-transform: lowercase;">
                             [ verify email ]
                         </a>
                     </div>
 
-                    <div style="font-size: 10px; color: #1a1a1a; text-transform: uppercase; letter-spacing: 2px; margin-top: 20px;">
-                        project: sentinelpay_v2<br>
-                        status: pending
+                    <!-- TECH DATA SUB-BLOCK -->
+                    <div style="font-size: 10px; color: #1a1a1a; text-transform: uppercase; letter-spacing: 2px;">
+                        handshake_v2 // status: active
                     </div>
                 </td>
             </tr>
         </table>
+
+        <!-- SAFETY DISCLAIMER -->
+        <div style="max-width: 440px; margin: 30px auto 0 auto; text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #333; line-height: 1.6;">
+            If you did not request this email, you can safely ignore it. Your account is protected and no action has been taken at this time.
+        </div>
 
         <div style="margin-top: 80px; font-family: 'JetBrains Mono', monospace; font-size: 9px; color: #111; text-transform: uppercase; letter-spacing: 1px;">
             sentinelpay core. 2026.
