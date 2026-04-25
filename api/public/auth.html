@@ -188,102 +188,51 @@
             </div>
         </div>
 
-        <!-- Success State: Email Sent -->
-        <style>
-            #auth-success-state {
-                display: none;
-                flex-direction: column !important;
-                align-items: center !important;
-                justify-content: center !important;
-                text-align: center !important;
-                padding: 3.5rem 2.5rem !important;
-                min-height: 520px !important;
-                width: 100% !important;
-                max-width: 420px !important;
-                margin: 0 auto !important;
-                background: rgba(10, 12, 15, 0.98) !important;
-                backdrop-filter: blur(25px) !important;
-                -webkit-backdrop-filter: blur(25px) !important;
-                border: 1px solid rgba(255, 255, 255, 0.1) !important;
-                border-radius: 20px !important;
-                box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8) !important;
-                position: relative !important;
-                z-index: 100 !important;
-            }
-            .success-title-new {
-                font-size: 2.25rem !important;
-                font-weight: 700 !important;
-                letter-spacing: -1.85px !important;
-                color: #fff !important;
-                margin-bottom: 1.25rem !important;
-                font-family: 'Space Grotesk', sans-serif !important;
-                text-transform: lowercase !important;
-                line-height: 1.05 !important;
-            }
-            .success-subtitle-new {
-                color: #a0a0a0 !important;
-                font-size: 0.85rem !important;
-                font-family: 'JetBrains Mono', monospace !important;
-                line-height: 1.8 !important;
-                max-width: 280px !important;
-                margin: 0 auto 2.5rem auto !important;
-            }
-            .pro-tip-footer-new {
-                margin-top: auto !important;
-                padding: 1.25rem !important;
-                border-radius: 12px !important;
-                background: rgba(255, 255, 255, 0.02) !important;
-                border: 1px solid rgba(255, 255, 255, 0.05) !important;
-                width: 100% !important;
-                font-size: 0.78rem !important;
-                color: rgba(255, 255, 255, 0.4) !important;
-                font-family: 'JetBrains Mono', monospace !important;
-            }
-            .tip-label {
-                color: #00f0ff !important;
-                font-weight: 700 !important;
-            }
-
-            /* MOBILE OPTIMIZATIONS (v12) */
-            @media (max-width: 480px) {
-                #auth-success-state {
-                    padding: 2.5rem 1.5rem !important;
-                    min-height: 460px !important;
-                    width: 90% !important;
-                    margin: 0 auto !important;
-                }
-                .success-title-new {
-                    font-size: 1.8rem !important;
-                    letter-spacing: -1.2px !important;
-                    margin-bottom: 1rem !important;
-                }
-                .success-subtitle-new {
-                    font-size: 0.8rem !important;
-                    margin-bottom: 2rem !important;
-                    max-width: 240px !important;
-                }
-                .pro-tip-footer-new {
-                    padding: 1rem !important;
-                    font-size: 0.72rem !important;
-                }
-            }
-        </style>
-
-        <div id="auth-success-state">
-            <div class="success-header-wrap" style="margin-bottom: 1.25rem; filter: drop-shadow(0 0 15px rgba(0, 255, 136, 0.3));">
-                <svg width="68" height="68" viewBox="0 0 24 24" fill="none" stroke="var(--color-green)" stroke-width="1.5">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <path d="m9 12 2 2 4-4"></path>
+        <!-- Success State: Email Sent (S-Tier Edition) -->
+        <div id="auth-success-state" style="display: none;">
+            <!-- Glowing Success Shield -->
+            <div class="success-shield-wrap" style="margin-bottom: 2.5rem; position: relative;">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" style="width: 100px; height: 100px; filter: drop-shadow(0 0 20px rgba(0, 255, 136, 0.4));">
+                    <defs>
+                        <linearGradient id="successGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#00ff88" />
+                            <stop offset="100%" stop-color="#00f0ff" />
+                        </linearGradient>
+                    </defs>
+                    <g fill="none" stroke="url(#successGradient)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z" />
+                        <path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z" />
+                        <circle cx="60" cy="60" r="6" />
+                        <circle cx="60" cy="60" r="2" fill="url(#successGradient)" stroke="none"/>
+                        <!-- Small success pulse ring -->
+                        <circle cx="60" cy="60" r="12" stroke-opacity="0.3">
+                            <animate attributeName="r" from="12" to="25" dur="1.5s" repeatCount="indefinite" />
+                            <animate attributeName="stroke-opacity" from="0.3" to="0" dur="1.5s" repeatCount="indefinite" />
+                        </circle>
+                    </g>
                 </svg>
             </div>
             
             <div class="success-body">
-                <h2 class="success-title-new">check your inbox.</h2>
-                <p class="success-subtitle-new">we sent a verification link to your email. click it to activate your account.</p>
+                <h2 class="success-title-new" style="margin-bottom: 1rem;">check.inbox.</h2>
+                <p class="success-subtitle-new" style="color: rgba(255,255,255,0.5); font-size: 0.9rem; margin-bottom: 3rem;">we've dispatched a secure verification link. <br>confirm identity to bridge your account.</p>
             </div>
 
-            <div class="pro-tip-footer-new">
-                <span class="tip-label">pro tip:</span> check your junk folder if it doesn't arrive in 60s.
+            <!-- System Logs Footer (Technical Polish) -->
+            <div class="pro-tip-footer-new" style="text-align: left; padding: 1.5rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px;">
+                <div style="font-size: 10px; color: var(--color-green); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 5px;">[ network_status: online ]</div>
+                <div style="font-size: 10px; color: rgba(255,255,255,0.2); font-family: 'JetBrains Mono', monospace; line-height: 1.5;">
+                    > AUTH_EVENT: DISPATCH_SUCCESS<br>
+                    > TARGET_NODE: {{USER_EMAIL}}<br>
+                    > STATUS: WAITING_FOR_HANDSHAKE
+                </div>
+            </div>
+            
+            <!-- Resend Action -->
+            <div style="margin-top: 2rem;">
+                <button onclick="window.location.reload()" style="background: transparent; color: rgba(255,255,255,0.3); border: 1px solid rgba(255,255,255,0.1); padding: 10px 20px; font-size: 0.7rem; cursor: pointer; text-transform: lowercase;">
+                    [ did not receive? try again ]
+                </button>
             </div>
         </div>
 

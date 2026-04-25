@@ -199,10 +199,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 btn.disabled = false;
                 btn.textContent = 'create account';
             } else {
+                // Dynamically inject email into success message logs
+                const successMsg = successState.innerHTML;
+                successState.innerHTML = successMsg.replace('{{USER_EMAIL}}', email.toLowerCase());
+                
                 successState.style.display = 'flex';
                 if (authPanel) authPanel.style.display = 'none';
                 
-                // UX Fix: Scroll to top instantly so users see the success message (crucial for mobile)
+                // Hide center logo if it's already redundant with the success shield
+                const centerLogo = document.querySelector('.auth-center-logo');
+                if (centerLogo) centerLogo.style.display = 'none';
+                
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         });
