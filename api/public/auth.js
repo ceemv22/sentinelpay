@@ -1,8 +1,8 @@
-// Consolidated Auth Logic (v9.0)
-// Features: Persistent Tab State, Clean URL, Sync'd Layouts, Fade Animations, Bulletproof Resend Cooldown
+// Consolidated Auth Logic (v11.0)
+// Features: Persistent Tab State, Clean URL, Sync'd Layouts, Fade Animations, Internalized Button Timer
 
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('[sentinel-auth] initializing logic v9.0...');
+    console.log('[sentinel-auth] initializing logic v11.0...');
 
     // DOM Elements
     const tabLogin = document.getElementById('tab-login');
@@ -125,33 +125,29 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // --- BULLETPROOF RESEND PROTECTION ---
+    // --- BULLETPROOF RESEND PROTECTION (v2 - Integrated Button Text) ---
     let resendTimer = null;
     const startResendCooldown = (remainingSec) => {
         const resendBtn = document.getElementById('resend-btn');
-        const timerWrap = document.getElementById('resend-timer');
-        const secondsEl = document.getElementById('cooldown-seconds');
-        
-        if (!resendBtn || !timerWrap || !secondsEl) return;
+        if (!resendBtn) return;
 
         clearInterval(resendTimer);
         resendBtn.disabled = true;
-        resendBtn.style.opacity = '0.3';
+        resendBtn.style.opacity = '0.35';
         resendBtn.style.cursor = 'not-allowed';
-        timerWrap.style.display = 'block';
         
         let timeLeft = remainingSec;
-        secondsEl.textContent = timeLeft;
+        resendBtn.textContent = `available again in ${timeLeft}s`;
 
         resendTimer = setInterval(() => {
             timeLeft--;
-            secondsEl.textContent = timeLeft;
+            resendBtn.textContent = `available again in ${timeLeft}s`;
             if (timeLeft <= 0) {
                 clearInterval(resendTimer);
                 resendBtn.disabled = false;
                 resendBtn.style.opacity = '1';
                 resendBtn.style.cursor = 'pointer';
-                timerWrap.style.display = 'none';
+                resendBtn.textContent = 'resend email';
                 localStorage.removeItem('sentinel_resend_unlock');
             }
         }, 1000);
@@ -166,10 +162,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     window.handleResend = async () => {
-        const email = document.getElementById('reg-email').value;
+        const emailInput = document.getElementById('reg-email');
         const resendBtn = document.getElementById('resend-btn');
-        if (!email || !supabase || resendBtn.disabled) return;
+        if (!emailInput || !supabase || resendBtn.disabled) return;
 
+        const email = emailInput.value;
         resendBtn.disabled = true;
         resendBtn.textContent = 'sending...';
 
@@ -184,7 +181,6 @@ document.addEventListener('DOMContentLoaded', () => {
             resendBtn.disabled = false;
             resendBtn.textContent = 'resend email';
         } else {
-            resendBtn.textContent = 'resend email';
             // Lock for 60 seconds
             const unlockTimestamp = Date.now() + 60000;
             localStorage.setItem('sentinel_resend_unlock', unlockTimestamp);
@@ -249,7 +245,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (centerLogo) centerLogo.style.display = 'none';
                 window.scrollTo({ top: 0, behavior: 'smooth' });
                 
-                // Initialize cooldown on first send too (to prevent instant spam)
                 const unlockTimestamp = Date.now() + 60000;
                 localStorage.setItem('sentinel_resend_unlock', unlockTimestamp);
                 startResendCooldown(60);

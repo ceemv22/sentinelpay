@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>sentinelpay | auth</title>
     <meta name="description" content="Login or register for SentinelPay to unlock deep scanning and API access.">
-    <meta name="theme-color" content="#050505">
+    <meta name="theme-color" content="#040404">
     <link rel="icon" type="image/svg+xml" href="logo.svg">
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=10.0">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=JetBrains+Mono:wght@400;700;800&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=11.0">
     <script src="lib/supabase.js"></script>
 </head>
 <body>
@@ -188,9 +188,9 @@
             </div>
         </div>
 
-        <!-- Success State: Email Sent (S-Tier Lockdown Edition) -->
+        <!-- Success State: Email Sent (S-Tier Lockdown Edition v2) -->
         <div id="auth-success-state" class="auth-card" style="display: none; flex-direction: column; text-align: center; min-height: 540px; padding: 3rem 2.5rem;">
-            <!-- Sentinel Custom Checkmark (Signature Style) -->
+            <!-- Sentinel Custom Checkmark -->
             <div class="success-icon-wrap" style="flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;">
                 <div style="margin-bottom: 2rem; filter: drop-shadow(0 0 20px rgba(0, 240, 255, 0.25));">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" style="width: 100px; height: 100px;">
@@ -209,22 +209,19 @@
                     </svg>
                 </div>
                 
-                <h2 style="font-size: 2.25rem; font-weight: 700; letter-spacing: -1.5px; color: #fff; margin-bottom: 1rem; font-family: 'Space Grotesk', sans-serif; text-transform: lowercase;">check inbox</h2>
+                <h2 style="font-size: 2.25rem; font-weight: 800; letter-spacing: -1.75px; color: #fff; margin-bottom: 1rem; font-family: 'JetBrains Mono', monospace; text-transform: lowercase;">check inbox</h2>
                 <p style="color: rgba(255,255,255,0.4); font-size: 0.9rem; font-family: 'JetBrains Mono', monospace; line-height: 1.8; max-width: 280px; margin: 0 auto;">we've dispatched a secure verification link to verify your identity.</p>
             </div>
 
             <!-- Hardened Sticky Footer (No-Shift Layout) -->
             <div id="resend-anchor" style="min-height: 100px; display: flex; flex-direction: column; justify-content: flex-end; align-items: center;">
                 <div id="resend-wrap" style="width: 100%;">
-                    <button id="resend-btn" onclick="window.handleResend()" style="background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.1); padding: 12px 24px; border-radius: 50px; font-size: 0.72rem; cursor: pointer; font-family: 'JetBrains Mono', monospace; transition: all 0.3s ease; display: inline-block; width: auto;">
+                    <!-- UX Enhancement: Timer integrated into button text -->
+                    <button id="resend-btn" onclick="window.handleResend()" style="background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.1); padding: 14px 28px; border-radius: 12px; font-size: 0.72rem; cursor: pointer; font-family: 'JetBrains Mono', monospace; transition: all 0.3s ease; display: inline-block; min-width: 200px;">
                         resend email
                     </button>
-                    <!-- Fixed height container to prevent layout shifting -->
-                    <div style="height: 30px; margin-top: 1.25rem;">
-                        <div id="resend-timer" style="font-size: 11px; color: rgba(255,255,255,0.2); font-family: 'JetBrains Mono', monospace; display: none;">
-                            available again in <span id="cooldown-seconds">60</span>s
-                        </div>
-                    </div>
+                    <!-- Visual spacer to ensure height stability -->
+                    <div style="height: 20px; margin-top: 1rem;"></div>
                 </div>
             </div>
         </div>
@@ -245,7 +242,7 @@
     </div>
 
     <!-- External Logic -->
-    <script src="auth.js?v=10.0"></script>
-    <script src="eye-track.js?v=10.0"></script>
+    <script src="auth.js?v=11.0"></script>
+    <script src="eye-track.js?v=11.0"></script>
 </body>
 </html>
