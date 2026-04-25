@@ -1,8 +1,8 @@
-// Consolidated Auth Logic (v11.0)
-// Features: Persistent Tab State, Clean URL, Sync'd Layouts, Fade Animations, Internalized Button Timer
+// Consolidated Auth Logic (v12.0)
+// Features: Persistent Tab State, Clean URL, Sync'd Layouts, Bulletproof Resend with Persistence
 
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('[sentinel-auth] initializing logic v11.0...');
+    console.log('[sentinel-auth] initializing logic v12.0...');
 
     // DOM Elements
     const tabLogin = document.getElementById('tab-login');
@@ -32,7 +32,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentTab = 'login';
     let isTransitioning = false;
 
-    // GLOBAL FALLBACK for Tab Switching
     window.switchManual = (target) => {
         if (isTransitioning) return;
         switchPanel(target);
@@ -41,17 +40,13 @@ document.addEventListener('DOMContentLoaded', () => {
     function switchPanel(target, persist = true) {
         if (currentTab === target && persist) return;
         isTransitioning = true;
-
         const outgoing = currentTab === 'login' ? panelLogin : panelRegister;
         const incoming = target === 'login' ? panelLogin : panelRegister;
-
         outgoing.style.display = 'none';
         outgoing.classList.remove('active');
         incoming.style.display = 'block';
-        
         tabLogin.classList.toggle('active', target === 'login');
         tabRegister.classList.toggle('active', target === 'register');
-
         setTimeout(() => {
             incoming.classList.add('active');
             currentTab = target;
@@ -60,14 +55,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 10);
     }
 
-    // Attach Listeners
     tabLogin.addEventListener('click', () => switchPanel('login'));
     tabRegister.addEventListener('click', () => switchPanel('register'));
 
-    // Handle Initial State
     const params = new URLSearchParams(window.location.search);
     const storedTab = sessionStorage.getItem('sentinel_auth_tab');
-    
     if (params.get('verified') === 'true') {
         if (authPanel) authPanel.style.display = 'none';
         if (verifiedState) verifiedState.style.display = 'flex';
@@ -83,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
         currentTab = 'register';
     }
 
-    // Password Rules Live Validation
+    // Password Rules
     const regPw = document.getElementById('reg-password');
     if (regPw) {
         const rules = {
@@ -106,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Password Eye Toggles
+    // Eye Toggles
     document.querySelectorAll('.pw-eye-toggle').forEach(btn => {
         btn.addEventListener('click', () => {
             const targetId = btn.getAttribute('data-target');
@@ -125,20 +117,17 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // --- BULLETPROOF RESEND PROTECTION (v2 - Integrated Button Text) ---
+    // --- ENHANCED RESEND LOGIC (v12.0) ---
     let resendTimer = null;
     const startResendCooldown = (remainingSec) => {
         const resendBtn = document.getElementById('resend-btn');
         if (!resendBtn) return;
-
         clearInterval(resendTimer);
         resendBtn.disabled = true;
         resendBtn.style.opacity = '0.35';
         resendBtn.style.cursor = 'not-allowed';
-        
         let timeLeft = remainingSec;
         resendBtn.textContent = `available again in ${timeLeft}s`;
-
         resendTimer = setInterval(() => {
             timeLeft--;
             resendBtn.textContent = `available again in ${timeLeft}s`;
@@ -153,7 +142,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 1000);
     };
 
-    // Check for existing cooldown on load
     const unlockAt = localStorage.getItem('sentinel_resend_unlock');
     if (unlockAt) {
         const remaining = Math.ceil((parseInt(unlockAt) - Date.now()) / 1000);
@@ -162,11 +150,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     window.handleResend = async () => {
-        const emailInput = document.getElementById('reg-email');
+        // Fallback to sessionStorage to ensure email is never lost
+        const email = sessionStorage.getItem('sentinel_pending_email') || document.getElementById('reg-email').value;
         const resendBtn = document.getElementById('resend-btn');
-        if (!emailInput || !supabase || resendBtn.disabled) return;
+        if (!email || !supabase || resendBtn.disabled) {
+            console.warn('[auth] resend blocked: missing email or disabled btn');
+            return;
+        }
 
-        const email = emailInput.value;
         resendBtn.disabled = true;
         resendBtn.textContent = 'sending...';
 
@@ -177,32 +168,34 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         if (error) {
-            alert('Error: ' + error.message);
-            resendBtn.disabled = false;
-            resendBtn.textContent = 'resend email';
+            console.error('[auth] resend error:', error.message);
+            resendBtn.textContent = 'error: retry in 5s';
+            setTimeout(() => {
+                resendBtn.disabled = false;
+                resendBtn.textContent = 'resend email';
+            }, 5000);
         } else {
-            // Lock for 60 seconds
-            const unlockTimestamp = Date.now() + 60000;
-            localStorage.setItem('sentinel_resend_unlock', unlockTimestamp);
-            startResendCooldown(60);
+            resendBtn.textContent = 'email sent!';
+            setTimeout(() => {
+                const unlockTimestamp = Date.now() + 60000;
+                localStorage.setItem('sentinel_resend_unlock', unlockTimestamp);
+                startResendCooldown(60);
+            }, 1000);
         }
     };
 
-    // Sign In Logic
+    // Forms
     const loginForm = document.getElementById('login-form');
     if (loginForm) {
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            if (!supabase) return alert('Auth unavailable');
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
             const btn = document.getElementById('login-submit-btn');
             const errorMsg = document.getElementById('login-error-msg');
-
             btn.disabled = true;
             btn.textContent = 'authenticating...';
             errorMsg.style.display = 'none';
-
             const { error } = await supabase.auth.signInWithPassword({ email, password });
             if (error) {
                 let msg = error.message.toLowerCase();
@@ -217,21 +210,17 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Sign Up Logic
     const regForm = document.getElementById('register-form');
     if (regForm) {
         regForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            if (!supabase) return alert('Auth unavailable');
             const email = document.getElementById('reg-email').value;
             const password = document.getElementById('reg-password').value;
             const btn = document.getElementById('register-submit-btn');
             const errorMsg = document.getElementById('register-error-msg');
-
             btn.disabled = true;
             btn.textContent = 'creating account...';
             errorMsg.style.display = 'none';
-
             const { error } = await supabase.auth.signUp({ email, password });
             if (error) {
                 errorMsg.textContent = 'error: ' + error.message.toLowerCase();
@@ -239,12 +228,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 btn.disabled = false;
                 btn.textContent = 'create account';
             } else {
+                // PERSIST EMAIL for Resend functionality
+                sessionStorage.setItem('sentinel_pending_email', email);
+                
                 successState.style.display = 'flex';
                 if (authPanel) authPanel.style.display = 'none';
                 const centerLogo = document.querySelector('.auth-center-logo');
                 if (centerLogo) centerLogo.style.display = 'none';
                 window.scrollTo({ top: 0, behavior: 'smooth' });
-                
                 const unlockTimestamp = Date.now() + 60000;
                 localStorage.setItem('sentinel_resend_unlock', unlockTimestamp);
                 startResendCooldown(60);
@@ -252,13 +243,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Socials
     const redirectUrl = window.location.origin + '/dashboard';
     ['btn-google', 'btn-google-reg', 'btn-x', 'btn-x-reg'].forEach(id => {
         const b = document.getElementById(id);
         if (b) {
             b.addEventListener('click', async () => {
-                if (!supabase) return alert('Auth unavailable');
                 const provider = id.includes('google') ? 'google' : 'twitter';
                 await supabase.auth.signInWithOAuth({
                     provider,
@@ -267,6 +256,4 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     });
-
-    console.log('[sentinel-auth] initialization complete.');
 });
