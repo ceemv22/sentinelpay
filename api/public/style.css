@@ -896,9 +896,9 @@ button:hover:not(:disabled) {
 }
 
 /* Mobile Overrides for Auth Page */
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 600px) {
     .auth-page-wrap {
-        padding: 0; /* Remove horizontal padding to ensure true screen centering */
+        padding: 0; 
         padding-top: 60px; 
         width: 100%;
         margin: 0 auto;
@@ -907,6 +907,31 @@ button:hover:not(:disabled) {
         display: flex;
         flex-direction: column;
         align-items: center;
+    }
+
+    .auth-card,
+    #auth-success-state,
+    #auth-verified-state {
+        width: 95vw !important; 
+        max-width: 100% !important;
+        padding: 1.5rem 1.25rem !important;
+        margin: 0 auto !important;
+        margin-top: 0 !important;
+        border-radius: 16px !important;
+        min-height: auto !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        text-align: center !important;
+    }
+
+    .success-subtitle-new {
+        max-width: 100% !important;
+        padding: 0 1rem;
+    }
+
+    .auth-top-brand.mobile-only {
+        display: none !important;
     }
 
     .auth-topbar {
@@ -929,26 +954,6 @@ button:hover:not(:disabled) {
     }
 
     .auth-center-logo.desktop-only {
-        display: none !important;
-    }
-
-    .auth-card,
-    #auth-success-state,
-    #auth-verified-state {
-        width: 94vw; 
-        max-width: 100%;
-        padding: 1.5rem 1.25rem !important;
-        margin: 0 auto !important;
-        margin-top: 0 !important;
-        border-radius: 16px;
-        min-height: auto;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-    }
-
-    .auth-top-brand.mobile-only {
         display: none !important;
     }
 
@@ -999,11 +1004,11 @@ button:hover:not(:disabled) {
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: 2.5rem;
-    min-height: 540px;
     width: 100%;
     max-width: 420px;
     margin: 0 auto;
+    padding: 2.25rem;
+    min-height: 540px;
     background: rgba(10, 12, 15, 0.7);
     backdrop-filter: blur(25px);
     -webkit-backdrop-filter: blur(25px);
