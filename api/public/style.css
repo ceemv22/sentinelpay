@@ -932,16 +932,20 @@ button:hover:not(:disabled) {
         display: none !important;
     }
 
-    .auth-card {
-        width: 94vw; /* Constant proportion relative to screen edge */
+    .auth-card,
+    #auth-success-state,
+    #auth-verified-state {
+        width: 94vw; 
         max-width: 100%;
-        padding: 1.5rem 1.25rem;
+        padding: 1.5rem 1.25rem !important;
         margin: 0 auto !important;
         margin-top: 0 !important;
         border-radius: 16px;
-        border: 1px solid rgba(255, 255, 255, 0.08);
         min-height: auto;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
     }
 
     .auth-top-brand.mobile-only {
@@ -988,13 +992,14 @@ button:hover:not(:disabled) {
 }
 
 /* --- S-TIER SUCCESS STATE (v15.5 - RECONSTRUCTED) --- */
-#auth-success-state {
+#auth-success-state,
+#auth-verified-state {
     display: none;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: 3.5rem 2.5rem;
+    padding: 2.5rem;
     min-height: 540px;
     width: 100%;
     max-width: 420px;
