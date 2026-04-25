@@ -1,8 +1,8 @@
-// Consolidated Auth Logic (v8.0)
-// Features: Persistent Tab State, Clean URL, Sync'd Layouts, Fade Animations
+// Consolidated Auth Logic (v9.0)
+// Features: Persistent Tab State, Clean URL, Sync'd Layouts, Fade Animations, Bulletproof Resend Cooldown
 
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('[sentinel-auth] initializing logic v8.0...');
+    console.log('[sentinel-auth] initializing logic v9.0...');
 
     // DOM Elements
     const tabLogin = document.getElementById('tab-login');
@@ -45,7 +45,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const outgoing = currentTab === 'login' ? panelLogin : panelRegister;
         const incoming = target === 'login' ? panelLogin : panelRegister;
 
-        // 1. Instantly swap display to be responsive
         outgoing.style.display = 'none';
         outgoing.classList.remove('active');
         incoming.style.display = 'block';
@@ -65,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
     tabLogin.addEventListener('click', () => switchPanel('login'));
     tabRegister.addEventListener('click', () => switchPanel('register'));
 
-    // Handle Initial State (URL > Session > Default)
+    // Handle Initial State
     const params = new URLSearchParams(window.location.search);
     const storedTab = sessionStorage.getItem('sentinel_auth_tab');
     
@@ -75,7 +74,6 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (params.get('tab') === 'register') {
         switchPanel('register', true);
     } else if (storedTab === 'register') {
-        // Initial load needs immediate show
         panelLogin.style.display = 'none';
         panelLogin.classList.remove('active');
         panelRegister.style.display = 'block';
@@ -95,7 +93,6 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         regPw.addEventListener('input', (e) => {
             const val = e.target.value;
-            
             const validate = (el, condition) => {
                 if (el) {
                     el.classList.toggle('met', condition);
@@ -103,28 +100,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     el.style.color = condition ? 'var(--color-green)' : 'var(--color-red)';
                 }
             };
-
             validate(rules.len, val.length >= 8);
             validate(rules.upper, /[A-Z]/.test(val));
             validate(rules.num, /[0-9]/.test(val));
         });
-    }
-
-    // Sign In Logic
-    const loginForm = document.getElementById('login-form');
-    
-    // Mobile Touch Toggle for Rules (Standard for touch devices)
-    const pwToggle = document.getElementById('pw-rules-toggle');
-    const pwTooltip = document.getElementById('pw-rules-tooltip');
-    if (pwToggle && pwTooltip) {
-        pwToggle.style.pointerEvents = 'auto'; // Ensure clickable
-        pwToggle.addEventListener('touchstart', (e) => {
-            e.stopPropagation();
-            const isVisible = window.getComputedStyle(pwTooltip).visibility === 'visible';
-            pwTooltip.style.visibility = isVisible ? 'hidden' : 'visible';
-            pwTooltip.style.opacity = isVisible ? '0' : '1';
-            pwTooltip.style.transform = isVisible ? 'translateY(5px) scale(0.98)' : 'translateY(0) scale(1)';
-        }, { passive: true });
     }
 
     // Password Eye Toggles
@@ -134,7 +113,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const input = document.getElementById(targetId);
             const eyeOn = btn.querySelector('.eye-on');
             const eyeOff = btn.querySelector('.eye-off');
-
             if (input.type === 'password') {
                 input.type = 'text';
                 eyeOn.style.display = 'block';
@@ -147,6 +125,75 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // --- BULLETPROOF RESEND PROTECTION ---
+    let resendTimer = null;
+    const startResendCooldown = (remainingSec) => {
+        const resendBtn = document.getElementById('resend-btn');
+        const timerWrap = document.getElementById('resend-timer');
+        const secondsEl = document.getElementById('cooldown-seconds');
+        
+        if (!resendBtn || !timerWrap || !secondsEl) return;
+
+        clearInterval(resendTimer);
+        resendBtn.disabled = true;
+        resendBtn.style.opacity = '0.3';
+        resendBtn.style.cursor = 'not-allowed';
+        timerWrap.style.display = 'block';
+        
+        let timeLeft = remainingSec;
+        secondsEl.textContent = timeLeft;
+
+        resendTimer = setInterval(() => {
+            timeLeft--;
+            secondsEl.textContent = timeLeft;
+            if (timeLeft <= 0) {
+                clearInterval(resendTimer);
+                resendBtn.disabled = false;
+                resendBtn.style.opacity = '1';
+                resendBtn.style.cursor = 'pointer';
+                timerWrap.style.display = 'none';
+                localStorage.removeItem('sentinel_resend_unlock');
+            }
+        }, 1000);
+    };
+
+    // Check for existing cooldown on load
+    const unlockAt = localStorage.getItem('sentinel_resend_unlock');
+    if (unlockAt) {
+        const remaining = Math.ceil((parseInt(unlockAt) - Date.now()) / 1000);
+        if (remaining > 0) startResendCooldown(remaining);
+        else localStorage.removeItem('sentinel_resend_unlock');
+    }
+
+    window.handleResend = async () => {
+        const email = document.getElementById('reg-email').value;
+        const resendBtn = document.getElementById('resend-btn');
+        if (!email || !supabase || resendBtn.disabled) return;
+
+        resendBtn.disabled = true;
+        resendBtn.textContent = 'sending...';
+
+        const { error } = await supabase.auth.resend({
+            type: 'signup',
+            email: email,
+            options: { emailRedirectTo: window.location.origin + '/auth?verified=true' }
+        });
+
+        if (error) {
+            alert('Error: ' + error.message);
+            resendBtn.disabled = false;
+            resendBtn.textContent = 'resend email';
+        } else {
+            resendBtn.textContent = 'resend email';
+            // Lock for 60 seconds
+            const unlockTimestamp = Date.now() + 60000;
+            localStorage.setItem('sentinel_resend_unlock', unlockTimestamp);
+            startResendCooldown(60);
+        }
+    };
+
+    // Sign In Logic
+    const loginForm = document.getElementById('login-form');
     if (loginForm) {
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -189,28 +236,23 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.textContent = 'creating account...';
             errorMsg.style.display = 'none';
 
-            const { error } = await supabase.auth.signUp({ 
-                email, 
-                password,
-            });
+            const { error } = await supabase.auth.signUp({ email, password });
             if (error) {
                 errorMsg.textContent = 'error: ' + error.message.toLowerCase();
                 errorMsg.style.display = 'block';
                 btn.disabled = false;
                 btn.textContent = 'create account';
             } else {
-                // Dynamically inject email into success message logs
-                const successMsg = successState.innerHTML;
-                successState.innerHTML = successMsg.replace('{{USER_EMAIL}}', email.toLowerCase());
-                
                 successState.style.display = 'flex';
                 if (authPanel) authPanel.style.display = 'none';
-                
-                // Hide center logo if it's already redundant with the success shield
                 const centerLogo = document.querySelector('.auth-center-logo');
                 if (centerLogo) centerLogo.style.display = 'none';
-                
                 window.scrollTo({ top: 0, behavior: 'smooth' });
+                
+                // Initialize cooldown on first send too (to prevent instant spam)
+                const unlockTimestamp = Date.now() + 60000;
+                localStorage.setItem('sentinel_resend_unlock', unlockTimestamp);
+                startResendCooldown(60);
             }
         });
     }

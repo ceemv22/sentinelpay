@@ -188,51 +188,40 @@
             </div>
         </div>
 
-        <!-- Success State: Email Sent (S-Tier Edition) -->
+        <!-- Success State: Email Sent (S-Tier Minimalist Edition) -->
         <div id="auth-success-state" style="display: none;">
-            <!-- Glowing Success Shield -->
-            <div class="success-shield-wrap" style="margin-bottom: 2.5rem; position: relative;">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" style="width: 100px; height: 100px; filter: drop-shadow(0 0 20px rgba(0, 255, 136, 0.4));">
+            <!-- Simple Breathing Shield -->
+            <div class="success-shield-wrap" style="margin-bottom: 2rem;">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" style="width: 80px; height: 80px;">
                     <defs>
-                        <linearGradient id="successGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stop-color="#00ff88" />
-                            <stop offset="100%" stop-color="#00f0ff" />
+                        <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#00f0ff" />
+                            <stop offset="100%" stop-color="#a020f0" />
                         </linearGradient>
                     </defs>
-                    <g fill="none" stroke="url(#successGradient)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z" />
+                    <g fill="none" stroke="url(#shieldGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z" style="opacity: 0.8;" />
                         <path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z" />
-                        <circle cx="60" cy="60" r="6" />
-                        <circle cx="60" cy="60" r="2" fill="url(#successGradient)" stroke="none"/>
-                        <!-- Small success pulse ring -->
-                        <circle cx="60" cy="60" r="12" stroke-opacity="0.3">
-                            <animate attributeName="r" from="12" to="25" dur="1.5s" repeatCount="indefinite" />
-                            <animate attributeName="stroke-opacity" from="0.3" to="0" dur="1.5s" repeatCount="indefinite" />
+                        <circle cx="60" cy="60" r="4" fill="url(#shieldGrad)" stroke="none">
+                            <animate attributeName="opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite" />
                         </circle>
                     </g>
                 </svg>
             </div>
             
-            <div class="success-body">
-                <h2 class="success-title-new" style="margin-bottom: 1rem;">check.inbox.</h2>
-                <p class="success-subtitle-new" style="color: rgba(255,255,255,0.5); font-size: 0.9rem; margin-bottom: 3rem;">we've dispatched a secure verification link. <br>confirm identity to bridge your account.</p>
+            <div class="success-body" style="margin-bottom: 2.5rem;">
+                <h2 style="font-size: 1.75rem; font-weight: 700; letter-spacing: -0.5px; color: #fff; margin-bottom: 1rem; font-family: 'Inter', sans-serif; text-transform: lowercase;">check inbox</h2>
+                <p style="color: rgba(255,255,255,0.4); font-size: 0.9rem; font-family: 'JetBrains Mono', monospace; line-height: 1.6; max-width: 260px; margin: 0 auto;">we've sent a secure verification link to your email.</p>
             </div>
 
-            <!-- System Logs Footer (Technical Polish) -->
-            <div class="pro-tip-footer-new" style="text-align: left; padding: 1.5rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px;">
-                <div style="font-size: 10px; color: var(--color-green); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 5px;">[ network_status: online ]</div>
-                <div style="font-size: 10px; color: rgba(255,255,255,0.2); font-family: 'JetBrains Mono', monospace; line-height: 1.5;">
-                    > AUTH_EVENT: DISPATCH_SUCCESS<br>
-                    > TARGET_NODE: {{USER_EMAIL}}<br>
-                    > STATUS: WAITING_FOR_HANDSHAKE
-                </div>
-            </div>
-            
-            <!-- Resend Action -->
-            <div style="margin-top: 2rem;">
-                <button onclick="window.location.reload()" style="background: transparent; color: rgba(255,255,255,0.3); border: 1px solid rgba(255,255,255,0.1); padding: 10px 20px; font-size: 0.7rem; cursor: pointer; text-transform: lowercase;">
-                    [ did not receive? try again ]
+            <!-- Hardened Resend Section -->
+            <div id="resend-wrap" style="margin-top: 1rem;">
+                <button id="resend-btn" onclick="window.handleResend()" style="background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.1); padding: 12px 24px; border-radius: 50px; font-size: 0.72rem; cursor: pointer; font-family: 'JetBrains Mono', monospace; transition: all 0.3s ease;">
+                    resend email
                 </button>
+                <div id="resend-timer" style="margin-top: 1rem; font-size: 11px; color: rgba(255,255,255,0.2); font-family: 'JetBrains Mono', monospace; display: none;">
+                    available again in <span id="cooldown-seconds">60</span>s
+                </div>
             </div>
         </div>
 
