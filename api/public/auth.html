@@ -83,8 +83,8 @@
         <!-- Auth Card -->
         <div class="auth-card" id="auth-panel" style="position: relative; z-index: 500;">
             <div class="auth-tabs">
-                <button class="auth-tab active" id="tab-login" onclick="window.switchManual('login')" style="cursor: pointer; position: relative; z-index: 1000; pointer-events: auto;">login</button>
-                <button class="auth-tab" id="tab-register" onclick="window.switchManual('register')" style="cursor: pointer; position: relative; z-index: 1000; pointer-events: auto;">register</button>
+                <button class="auth-tab active" id="tab-login" style="cursor: pointer; position: relative; z-index: 1000; pointer-events: auto;">login</button>
+                <button class="auth-tab" id="tab-register" style="cursor: pointer; position: relative; z-index: 1000; pointer-events: auto;">register</button>
             </div>
 
             <div class="auth-panels-container">
@@ -217,7 +217,7 @@
             <div id="resend-anchor" style="min-height: 100px; display: flex; flex-direction: column; justify-content: flex-end; align-items: center;">
                 <div id="resend-wrap" style="width: 100%;">
                     <!-- UX Enhancement: Timer integrated into button text -->
-                    <button id="resend-btn" onclick="window.handleResend()" style="background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.1); padding: 14px 28px; border-radius: 12px; font-size: 0.72rem; cursor: pointer; font-family: 'JetBrains Mono', monospace; transition: all 0.3s ease; display: inline-block; min-width: 200px;">
+                    <button id="resend-btn" style="background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.1); padding: 14px 28px; border-radius: 12px; font-size: 0.72rem; cursor: pointer; font-family: 'JetBrains Mono', monospace; transition: all 0.3s ease; display: inline-block; min-width: 200px;">
                         resend email
                     </button>
                     <!-- Visual spacer to ensure height stability -->
@@ -236,7 +236,7 @@
             </div>
             <div style="font-size: 1.5rem; font-weight: 800; letter-spacing: -1px; margin-bottom: 1rem; color: #fff;">identity verified.</div>
             <p style="color: var(--text-muted); font-size: 0.95rem; font-family: 'JetBrains Mono', monospace; line-height: 1.6;">your account is now active. you can proceed to the dashboard.</p>
-            <button onclick="window.location.href='/dashboard'" class="submit-btn" style="margin-top: 2rem;">go to dashboard</button>
+            <button id="verified-dashboard-btn" class="submit-btn" style="margin-top: 2rem;">go to dashboard</button>
         </div>
 
     </div>

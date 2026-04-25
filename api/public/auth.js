@@ -1,46 +1,36 @@
-// SentinelPay Auth Core (v16.1 - UNSTOPPABLE INTERACTIVITY)
-// Features: Global Scope Enforcement, Dynamic DOM Discovery, Resilience v16.1
+// SentinelPay Auth Core (v16.2 - CSP ULTIMATE STABILITY)
+// Features: No-Inline Policy, Self-Healing Listeners, Atomic State Management
 
-// 1. GLOBAL UI HANDLERS (Defined first and outside all blocks)
+// 1. GLOBAL UI HANDLERS (Defined for reference but listeners attached in DOMContentLoaded)
 window.switchManual = (target) => {
-    console.log('[auth] manual switch triggered ->', target);
-    
-    // Find elements dynamically to avoid closure/null issues
+    console.log('[auth] navigating to ->', target);
     const panelLogin = document.getElementById('panel-login');
     const panelRegister = document.getElementById('panel-register');
     const tabLogin = document.getElementById('tab-login');
     const tabRegister = document.getElementById('tab-register');
 
-    if (!panelLogin || !panelRegister) {
-        console.error('[auth] panels missing in DOM');
-        return;
-    }
+    if (!panelLogin || !panelRegister) return;
 
-    // Toggle active state
     if (target === 'login') {
         panelRegister.classList.remove('active');
         panelRegister.style.display = 'none';
-        
         panelLogin.style.display = 'block';
         setTimeout(() => panelLogin.classList.add('active'), 10);
     } else {
         panelLogin.classList.remove('active');
         panelLogin.style.display = 'none';
-        
         panelRegister.style.display = 'block';
         setTimeout(() => panelRegister.classList.add('active'), 10);
     }
 
-    // Update Tab Visuals
     if (tabLogin && tabRegister) {
         tabLogin.classList.toggle('active', target === 'login');
         tabRegister.classList.toggle('active', target === 'register');
     }
-
     sessionStorage.setItem('sentinel_auth_tab', target);
 };
 
-// 2. SUPABASE & RESEND LOGIC (Stabilized)
+// 2. SUPABASE SUBSYSTEM
 const supabaseUrl = 'https://aivqwkgjdpklxxuvkxpy.supabase.co';
 const supabaseKey = 'sb_publishable_bRfAssaGT6D8oFDQtPARbw_5fyYGWM6';
 let supabaseClient = null;
@@ -54,7 +44,7 @@ const getSupabase = () => {
     return null;
 };
 
-// DISPATCHER
+// 3. RESEND SUBSYSTEM
 let resendTimer = null;
 const startResendCooldown = (remainingSec) => {
     const resendBtn = document.getElementById('resend-btn');
@@ -80,15 +70,18 @@ const startResendCooldown = (remainingSec) => {
     }, 1000);
 };
 
-window.handleResend = async () => {
+window.handleResendHandshake = async () => {
+    console.log('[auth] executing resend handshake...');
     const s = getSupabase();
     const resendBtn = document.getElementById('resend-btn');
     const email = sessionStorage.getItem('sentinel_pending_email');
 
-    if (!email || !s || resendBtn.disabled) return;
+    if (!email || !s || (resendBtn && resendBtn.disabled)) return;
 
-    resendBtn.disabled = true;
-    resendBtn.textContent = 'dispatching...';
+    if (resendBtn) {
+        resendBtn.disabled = true;
+        resendBtn.textContent = 'dispatching...';
+    }
 
     try {
         const { error } = await s.auth.resend({
@@ -96,36 +89,46 @@ window.handleResend = async () => {
             options: { emailRedirectTo: window.location.origin + '/auth?verified=true' }
         });
         if (error) {
-            resendBtn.textContent = 'error: locked';
-            setTimeout(() => { resendBtn.disabled = false; resendBtn.textContent = 'resend email'; }, 3000);
+            console.error('[auth] resend error:', error.message);
+            if (resendBtn) { resendBtn.textContent = 'error: wait'; setTimeout(() => { resendBtn.disabled = false; resendBtn.textContent = 'resend email'; }, 3000); }
         } else {
-            resendBtn.textContent = 'email sent!';
+            if (resendBtn) resendBtn.textContent = 'email sent!';
             const unlockTimestamp = Date.now() + 60000;
             localStorage.setItem('sentinel_resend_unlock', unlockTimestamp);
             setTimeout(() => startResendCooldown(60), 1500);
         }
-    } catch (err) { console.error('[auth] resend fault'); }
+    } catch (err) { console.error('[auth] resend critical fault'); }
 };
 
-// 3. BOOTSTRAP (Events & Initialization)
+// 4. CORE INITIALIZATION
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('[auth] initialization v16.1 starting...');
     getSupabase();
 
-    // Check Persistent State
+    // CSP-COMPLIANT EVENT BINDINGS
+    const bind = (id, func) => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('click', func);
+    };
+
+    bind('tab-login', () => window.switchManual('login'));
+    bind('tab-register', () => window.switchManual('register'));
+    bind('resend-btn', () => window.handleResendHandshake());
+    bind('verified-dashboard-btn', () => { window.location.href = '/dashboard'; });
+
+    // Restore Tab State
     const storedTab = sessionStorage.getItem('sentinel_auth_tab');
     if (storedTab === 'register') {
         window.switchManual('register');
     }
 
-    // Cooldown restore
+    // Restore Cooldown
     const unlockAt = localStorage.getItem('sentinel_resend_unlock');
     if (unlockAt) {
         const remaining = Math.ceil((parseInt(unlockAt) - Date.now()) / 1000);
         if (remaining > 0) startResendCooldown(remaining);
     }
 
-    // Verified Link Check
+    // URL Verification Check
     const params = new URLSearchParams(window.location.search);
     if (params.get('verified') === 'true') {
         const authPanel = document.getElementById('auth-panel');
@@ -134,7 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (verifiedState) verifiedState.style.display = 'flex';
     }
 
-    // Form Event Listeners
+    // Form Handling
     const regForm = document.getElementById('register-form');
     if (regForm) {
         regForm.addEventListener('submit', async (e) => {
@@ -144,8 +147,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const password = document.getElementById('reg-password').value;
             const btn = document.getElementById('register-submit-btn');
             const errorMsg = document.getElementById('register-error-msg');
+            
             btn.disabled = true;
-            btn.textContent = 'processing...';
+            btn.textContent = 'creating account...';
+            errorMsg.style.display = 'none';
+
             const { error } = await s.auth.signUp({ email, password });
             if (error) {
                 errorMsg.textContent = 'error: ' + error.message.toLowerCase();
@@ -177,8 +183,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const password = document.getElementById('login-password').value;
             const btn = document.getElementById('login-submit-btn');
             const errorMsg = document.getElementById('login-error-msg');
+            
             btn.disabled = true;
             btn.textContent = 'verifying...';
+            errorMsg.style.display = 'none';
+
             const { error } = await s.auth.signInWithPassword({ email, password });
             if (error) {
                 errorMsg.textContent = 'error: ' + error.message.toLowerCase();
@@ -191,7 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // EYE Toggle RESTORE
+    // Password Eye Toggles
     document.querySelectorAll('.pw-eye-toggle').forEach(btn => {
         btn.addEventListener('click', () => {
             const input = document.getElementById(btn.getAttribute('data-target'));
@@ -209,7 +218,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Socials
+    // Social Setup (Already CSP-compliant)
     const redirectUrl = window.location.origin + '/dashboard';
     ['btn-google', 'btn-google-reg', 'btn-x', 'btn-x-reg'].forEach(id => {
         const b = document.getElementById(id);
@@ -222,5 +231,24 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    console.log('[auth] stabilization v16.1 complete.');
+    // Password Rules Real-time
+    const regPw = document.getElementById('reg-password');
+    if (regPw) {
+        regPw.addEventListener('input', (e) => {
+            const val = e.target.value;
+            const validate = (id, cond) => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.classList.toggle('met', cond);
+                    el.textContent = cond ? '✓' : '✕';
+                    el.style.color = cond ? 'var(--color-green)' : 'var(--color-red)';
+                }
+            };
+            validate('rule-len', val.length >= 8);
+            validate('rule-upper', /[A-Z]/.test(val));
+            validate('rule-num', /[0-9]/.test(val));
+        });
+    }
+
+    console.log('[auth] CSP-compliant system v16.2 ready.');
 });
