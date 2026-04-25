@@ -8,7 +8,7 @@
     <meta name="theme-color" content="#050505">
     <link rel="icon" type="image/svg+xml" href="logo.svg">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=9.0">
+    <link rel="stylesheet" href="style.css?v=10.0">
     <script src="lib/supabase.js"></script>
 </head>
 <body>
@@ -188,41 +188,43 @@
             </div>
         </div>
 
-        <!-- Success State: Email Sent (S-Tier Minimalist Edition + Signature Tracking Eye) -->
-        <div id="auth-success-state" class="auth-card" style="display: none; text-align: center; justify-content: center; align-items: center; min-height: 540px;">
-            <!-- Signature Sentinel Eye (with Eye-Tracking) -->
-            <div class="success-shield-wrap" style="margin-bottom: 2.5rem; filter: drop-shadow(0 0 20px rgba(0, 240, 255, 0.2));">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" style="width: 100px; height: 100px;">
-                    <defs>
-                        <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stop-color="#00f0ff" />
-                            <stop offset="100%" stop-color="#a020f0" />
-                        </linearGradient>
-                    </defs>
-                    <g fill="none" stroke="url(#shieldGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z" style="opacity: 0.8;" />
-                        <path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z" />
-                        <!-- INTERACTIVE PUPIL -->
-                        <g class="eye-pupil" style="transition: transform 0.1s ease-out;">
-                          <circle cx="60" cy="60" r="6" />
-                          <circle cx="60" cy="60" r="2" fill="url(#shieldGrad)" stroke="none"/>
+        <!-- Success State: Email Sent (S-Tier Lockdown Edition) -->
+        <div id="auth-success-state" class="auth-card" style="display: none; flex-direction: column; text-align: center; min-height: 540px; padding: 3rem 2.5rem;">
+            <!-- Sentinel Custom Checkmark (Signature Style) -->
+            <div class="success-icon-wrap" style="flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                <div style="margin-bottom: 2rem; filter: drop-shadow(0 0 20px rgba(0, 240, 255, 0.25));">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" style="width: 100px; height: 100px;">
+                        <defs>
+                            <linearGradient id="checkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#00f0ff" />
+                                <stop offset="100%" stop-color="#a020f0" />
+                            </linearGradient>
+                        </defs>
+                        <g fill="none" stroke="url(#checkGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z" style="opacity: 0.25;" />
+                            <path d="M45 60 L55 70 L75 50" stroke-width="4">
+                                <animate attributeName="stroke-dasharray" from="0, 50" to="50, 0" dur="0.8s" fill="freeze" />
+                            </path>
                         </g>
-                    </g>
-                </svg>
-            </div>
-            
-            <div class="success-body" style="margin-bottom: 2.5rem;">
-                <h2 style="font-size: 1.75rem; font-weight: 700; letter-spacing: -0.5px; color: #fff; margin-bottom: 1rem; font-family: 'Inter', sans-serif; text-transform: lowercase;">check inbox</h2>
+                    </svg>
+                </div>
+                
+                <h2 style="font-size: 2.25rem; font-weight: 700; letter-spacing: -1.5px; color: #fff; margin-bottom: 1rem; font-family: 'Space Grotesk', sans-serif; text-transform: lowercase;">check inbox</h2>
                 <p style="color: rgba(255,255,255,0.4); font-size: 0.9rem; font-family: 'JetBrains Mono', monospace; line-height: 1.8; max-width: 280px; margin: 0 auto;">we've dispatched a secure verification link to verify your identity.</p>
             </div>
 
-            <!-- Hardened Resend Section -->
-            <div id="resend-wrap" style="width: 100%;">
-                <button id="resend-btn" onclick="window.handleResend()" style="background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.1); padding: 12px 24px; border-radius: 50px; font-size: 0.72rem; cursor: pointer; font-family: 'JetBrains Mono', monospace; transition: all 0.3s ease; width: auto; display: inline-block;">
-                    resend email
-                </button>
-                <div id="resend-timer" style="margin-top: 1.25rem; font-size: 11px; color: rgba(255,255,255,0.2); font-family: 'JetBrains Mono', monospace; display: none;">
-                    available again in <span id="cooldown-seconds">60</span>s
+            <!-- Hardened Sticky Footer (No-Shift Layout) -->
+            <div id="resend-anchor" style="min-height: 100px; display: flex; flex-direction: column; justify-content: flex-end; align-items: center;">
+                <div id="resend-wrap" style="width: 100%;">
+                    <button id="resend-btn" onclick="window.handleResend()" style="background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.1); padding: 12px 24px; border-radius: 50px; font-size: 0.72rem; cursor: pointer; font-family: 'JetBrains Mono', monospace; transition: all 0.3s ease; display: inline-block; width: auto;">
+                        resend email
+                    </button>
+                    <!-- Fixed height container to prevent layout shifting -->
+                    <div style="height: 30px; margin-top: 1.25rem;">
+                        <div id="resend-timer" style="font-size: 11px; color: rgba(255,255,255,0.2); font-family: 'JetBrains Mono', monospace; display: none;">
+                            available again in <span id="cooldown-seconds">60</span>s
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -243,7 +245,7 @@
     </div>
 
     <!-- External Logic -->
-    <script src="auth.js?v=9.0"></script>
-    <script src="eye-track.js?v=9.0"></script>
+    <script src="auth.js?v=10.0"></script>
+    <script src="eye-track.js?v=10.0"></script>
 </body>
 </html>
