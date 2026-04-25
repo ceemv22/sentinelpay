@@ -27,21 +27,19 @@ async function requireSupabaseAuth(req, res, next) {
             return res.status(403).json({ error: 'Account verification required', code: 403 });
         }
 
-        // Check if user exists in our local Prisma DB
-        let dbUser = await prisma.user.findUnique({
-            where: { supabaseId: user.id }
+        // Atomic S-Tier Sync: Use upsert to handle race conditions during first-time sync
+        const dbUser = await prisma.user.upsert({
+            where: { supabaseId: user.id },
+            update: { email: user.email }, // Keep email in sync
+            create: {
+                supabaseId: user.id,
+                email: user.email,
+                credits: 5 // Default for verified accounts
+            }
         });
 
         if (!dbUser) {
-            // First time this user makes an API call, sync them to our db
-            dbUser = await prisma.user.create({
-                data: {
-                    supabaseId: user.id,
-                    email: user.email,
-                    credits: 5 // Default for verified accounts
-                }
-            });
-            console.log(`[auth] Synced new user from Supabase: ${user.email}`);
+             throw new Error('failed to synchronize user data');
         }
 
         req.user = dbUser;

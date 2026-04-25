@@ -55,7 +55,9 @@ router.post('/checkout', checkoutJson, requireSupabaseAuth, async (req, res) => 
             success_url: `${appBaseUrl}/success.html?session_id={CHECKOUT_SESSION_ID}`,
             cancel_url: `${appBaseUrl}/cancel.html`,
             metadata: {
+                type: plan.includes('credits') ? 'credits' : 'subscription',
                 plan,
+                amount: plan.includes('10') ? '10' : (plan.includes('100') ? '100' : '0'),
                 userId: req.user.id
             }
         });
@@ -92,19 +94,30 @@ router.post('/webhook', express.raw({type: 'application/json', limit: '100kb'}),
                     throw new Error('Stripe session missing userId metadata');
                 }
 
-                const rawKey = 'sp_' + crypto.randomBytes(32).toString('hex');
-                const keyHash = crypto.createHash('sha256').update(rawKey).digest('hex');
-
-                await tx.apiKey.create({
-                    data: {
-                        keyHash,
-                        userId,
-                        stripeCustomerId: session.customer,
-                        plan: session.metadata?.plan || 'starter'
+                if (session.metadata?.type === 'credits') {
+                    const amount = parseInt(session.metadata?.amount || '0');
+                    if (amount > 0) {
+                        await tx.user.update({
+                            where: { id: userId },
+                            data: { credits: { increment: amount } }
+                        });
+                        console.log(`[billing] Provisioned ${amount} credits for user ${userId}`);
                     }
-                });
+                } else {
+                    const rawKey = 'sp_' + crypto.randomBytes(32).toString('hex');
+                    const keyHash = crypto.createHash('sha256').update(rawKey).digest('hex');
 
-                console.log(`[billing] Successfully provisioned API access for user ${userId}`);
+                    await tx.apiKey.create({
+                        data: {
+                            keyHash,
+                            userId,
+                            stripeCustomerId: session.customer,
+                            plan: session.metadata?.plan || 'starter'
+                        }
+                    });
+
+                    console.log(`[billing] Successfully provisioned API access for user ${userId}`);
+                }
             }
 
             if (event.type === 'customer.subscription.deleted') {

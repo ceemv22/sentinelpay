@@ -258,7 +258,7 @@ async function logAudit(req, wallet, result, apiKeyId = null) {
 // B2B Protected Endpoint
 app.post('/v1/score', requireRateLimitBackend, limiter, requireApiKey, async (req, res) => {
     const { wallet } = req.body;
-    if (!wallet || !/^0x[a-fA-F0-9]{40}$/.test(wallet)) {
+    if (!wallet || wallet.length > 128 || !/^0x[a-fA-F0-9]{40}$/.test(wallet)) {
         return res.status(400).json({ error: 'invalid wallet address format', code: 400 });
     }
 
@@ -282,7 +282,7 @@ app.post('/v1/score', requireRateLimitBackend, limiter, requireApiKey, async (re
 // PLG Public Endpoint (Unauth)
 app.post('/v1/public/score', requireRateLimitBackend, consumeUnauthCredit, async (req, res) => {
     const { wallet } = req.body;
-    if (!wallet || !/^0x[a-fA-F0-9]{40}$/.test(wallet)) {
+    if (!wallet || wallet.length > 128 || !/^0x[a-fA-F0-9]{40}$/.test(wallet)) {
         return res.status(400).json({ error: 'invalid wallet address format', code: 400 });
     }
 
@@ -306,7 +306,7 @@ app.post('/v1/public/score', requireRateLimitBackend, consumeUnauthCredit, async
 // PLG Auth Endpoint (Logged In Users with Credits)
 app.post('/v1/user/score', requireSupabaseAuth, async (req, res) => {
     const { wallet } = req.body;
-    if (!wallet || !/^0x[a-fA-F0-9]{40}$/.test(wallet)) {
+    if (!wallet || wallet.length > 128 || !/^0x[a-fA-F0-9]{40}$/.test(wallet)) {
         return res.status(400).json({ error: 'invalid wallet address format', code: 400 });
     }
 

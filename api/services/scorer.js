@@ -3,6 +3,10 @@ const path = require('path');
 
 function runScoringEngine(wallet) {
     return new Promise((resolve, reject) => {
+        if (!wallet || wallet.length > 128) {
+            return reject({ status: 400, error: 'invalid wallet length', code: 400 });
+        }
+        
         const apiKey = process.env.ETHERSCAN_API_KEY;
         if (!apiKey) {
             return reject({ status: 500, error: 'ETHERSCAN_API_KEY not configured', code: 500 });
