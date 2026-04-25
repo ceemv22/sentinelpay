@@ -1,160 +1,140 @@
-// SentinelPay Auth Core (v16.0 - SURGICAL STABILITY)
-// Features: Closure-Safe Supabase, Atomic Resend, Restored Tab Logic
+// SentinelPay Auth Core (v16.1 - UNSTOPPABLE INTERACTIVITY)
+// Features: Global Scope Enforcement, Dynamic DOM Discovery, Resilience v16.1
 
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('[sentinel-auth] initializing stabilized logic v16.0...');
-
-    // 1. SUPABASE CORE CONFIG
-    const supabaseUrl = 'https://aivqwkgjdpklxxuvkxpy.supabase.co';
-    const supabaseKey = 'sb_publishable_bRfAssaGT6D8oFDQtPARbw_5fyYGWM6';
-    let supabase = null;
-
-    // Helper to ensure supabase is always ready
-    const getSupabase = () => {
-        if (supabase) return supabase;
-        if (window.supabase) {
-            supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-            console.log('[auth] supabase client initialized.');
-            return supabase;
-        }
-        console.error('[auth] supabase library not found in window.');
-        return null;
-    };
-
-    // Initial check
-    getSupabase();
-
-    // 2. TAB SYSTEM (Restored & Stabilized)
-    const tabLogin = document.getElementById('tab-login');
-    const tabRegister = document.getElementById('tab-register');
+// 1. GLOBAL UI HANDLERS (Defined first and outside all blocks)
+window.switchManual = (target) => {
+    console.log('[auth] manual switch triggered ->', target);
+    
+    // Find elements dynamically to avoid closure/null issues
     const panelLogin = document.getElementById('panel-login');
     const panelRegister = document.getElementById('panel-register');
-    const authPanel = document.getElementById('auth-panel');
-    const successState = document.getElementById('auth-success-state');
-    const verifiedState = document.getElementById('auth-verified-state');
+    const tabLogin = document.getElementById('tab-login');
+    const tabRegister = document.getElementById('tab-register');
 
-    let currentTab = 'login';
-    let isTransitioning = false;
+    if (!panelLogin || !panelRegister) {
+        console.error('[auth] panels missing in DOM');
+        return;
+    }
 
-    window.switchManual = (target) => {
-        if (isTransitioning || !panelLogin || !panelRegister) return;
-        if (currentTab === target) return;
+    // Toggle active state
+    if (target === 'login') {
+        panelRegister.classList.remove('active');
+        panelRegister.style.display = 'none';
         
-        isTransitioning = true;
-        const outgoing = currentTab === 'login' ? panelLogin : panelRegister;
-        const incoming = target === 'login' ? panelLogin : panelRegister;
-
-        outgoing.style.display = 'none';
-        outgoing.classList.remove('active');
+        panelLogin.style.display = 'block';
+        setTimeout(() => panelLogin.classList.add('active'), 10);
+    } else {
+        panelLogin.classList.remove('active');
+        panelLogin.style.display = 'none';
         
-        incoming.style.display = 'block';
+        panelRegister.style.display = 'block';
+        setTimeout(() => panelRegister.classList.add('active'), 10);
+    }
+
+    // Update Tab Visuals
+    if (tabLogin && tabRegister) {
         tabLogin.classList.toggle('active', target === 'login');
         tabRegister.classList.toggle('active', target === 'register');
+    }
 
-        setTimeout(() => {
-            incoming.classList.add('active');
-            currentTab = target;
-            isTransitioning = false;
-            sessionStorage.setItem('sentinel_auth_tab', target);
-        }, 10);
-    };
+    sessionStorage.setItem('sentinel_auth_tab', target);
+};
 
-    // 3. ENHANCED RESEND HANDSHAKE (The Fix)
-    let resendTimer = null;
-    const startResendCooldown = (remainingSec) => {
-        const resendBtn = document.getElementById('resend-btn');
-        if (!resendBtn) return;
-        
-        clearInterval(resendTimer);
-        resendBtn.disabled = true;
-        resendBtn.style.opacity = '0.35';
-        resendBtn.style.cursor = 'not-allowed';
-        
-        let timeLeft = remainingSec;
-        resendBtn.textContent = `available again in ${timeLeft}s`;
+// 2. SUPABASE & RESEND LOGIC (Stabilized)
+const supabaseUrl = 'https://aivqwkgjdpklxxuvkxpy.supabase.co';
+const supabaseKey = 'sb_publishable_bRfAssaGT6D8oFDQtPARbw_5fyYGWM6';
+let supabaseClient = null;
 
-        resendTimer = setInterval(() => {
-            timeLeft--;
-            if (timeLeft <= 0) {
-                clearInterval(resendTimer);
-                resendBtn.disabled = false;
-                resendBtn.style.opacity = '1';
-                resendBtn.style.cursor = 'pointer';
-                resendBtn.textContent = 'resend email';
-                localStorage.removeItem('sentinel_resend_unlock');
-            } else {
-                resendBtn.textContent = `available again in ${timeLeft}s`;
-            }
-        }, 1000);
-    };
+const getSupabase = () => {
+    if (supabaseClient) return supabaseClient;
+    if (window.supabase) {
+        supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+        return supabaseClient;
+    }
+    return null;
+};
 
-    window.handleResend = async () => {
-        console.log('[auth] resend handshake starting...');
-        const s = getSupabase();
-        const resendBtn = document.getElementById('resend-btn');
-        const email = sessionStorage.getItem('sentinel_pending_email') || (document.getElementById('reg-email') ? document.getElementById('reg-email').value : null);
+// DISPATCHER
+let resendTimer = null;
+const startResendCooldown = (remainingSec) => {
+    const resendBtn = document.getElementById('resend-btn');
+    if (!resendBtn) return;
+    
+    clearInterval(resendTimer);
+    resendBtn.disabled = true;
+    resendBtn.style.opacity = '0.35';
+    let timeLeft = remainingSec;
+    resendBtn.textContent = `available again in ${timeLeft}s`;
 
-        if (!email) {
-            console.error('[auth] resend failed: email session lost.');
-            alert('Session expired. Please register again.');
-            return;
-        }
-
-        if (!s) {
-            console.error('[auth] resend failed: supabase client unavailable.');
-            return;
-        }
-
-        if (resendBtn.disabled) return;
-
-        resendBtn.disabled = true;
-        resendBtn.textContent = 'dispatching...';
-
-        try {
-            const { error } = await s.auth.resend({
-                type: 'signup',
-                email: email,
-                options: { emailRedirectTo: window.location.origin + '/auth?verified=true' }
-            });
-
-            if (error) {
-                console.error('[auth] resend error:', error.message);
-                resendBtn.textContent = 'error: security lock';
-                setTimeout(() => {
-                    resendBtn.disabled = false;
-                    resendBtn.textContent = 'resend email';
-                }, 3000);
-            } else {
-                console.log('[auth] resend successful.');
-                resendBtn.textContent = 'email sent!';
-                const unlockTimestamp = Date.now() + 60000;
-                localStorage.setItem('sentinel_resend_unlock', unlockTimestamp);
-                setTimeout(() => startResendCooldown(60), 1500);
-            }
-        } catch (err) {
-            console.error('[auth] terminal error:', err);
+    resendTimer = setInterval(() => {
+        timeLeft--;
+        if (timeLeft <= 0) {
+            clearInterval(resendTimer);
             resendBtn.disabled = false;
+            resendBtn.style.opacity = '1';
             resendBtn.textContent = 'resend email';
+            localStorage.removeItem('sentinel_resend_unlock');
+        } else {
+            resendBtn.textContent = `available again in ${timeLeft}s`;
         }
-    };
+    }, 1000);
+};
 
-    // 4. RESTORED STATE & FORMS
+window.handleResend = async () => {
+    const s = getSupabase();
+    const resendBtn = document.getElementById('resend-btn');
+    const email = sessionStorage.getItem('sentinel_pending_email');
+
+    if (!email || !s || resendBtn.disabled) return;
+
+    resendBtn.disabled = true;
+    resendBtn.textContent = 'dispatching...';
+
+    try {
+        const { error } = await s.auth.resend({
+            type: 'signup', email: email,
+            options: { emailRedirectTo: window.location.origin + '/auth?verified=true' }
+        });
+        if (error) {
+            resendBtn.textContent = 'error: locked';
+            setTimeout(() => { resendBtn.disabled = false; resendBtn.textContent = 'resend email'; }, 3000);
+        } else {
+            resendBtn.textContent = 'email sent!';
+            const unlockTimestamp = Date.now() + 60000;
+            localStorage.setItem('sentinel_resend_unlock', unlockTimestamp);
+            setTimeout(() => startResendCooldown(60), 1500);
+        }
+    } catch (err) { console.error('[auth] resend fault'); }
+};
+
+// 3. BOOTSTRAP (Events & Initialization)
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('[auth] initialization v16.1 starting...');
+    getSupabase();
+
+    // Check Persistent State
+    const storedTab = sessionStorage.getItem('sentinel_auth_tab');
+    if (storedTab === 'register') {
+        window.switchManual('register');
+    }
+
+    // Cooldown restore
     const unlockAt = localStorage.getItem('sentinel_resend_unlock');
     if (unlockAt) {
         const remaining = Math.ceil((parseInt(unlockAt) - Date.now()) / 1000);
         if (remaining > 0) startResendCooldown(remaining);
-        else localStorage.removeItem('sentinel_resend_unlock');
     }
 
+    // Verified Link Check
     const params = new URLSearchParams(window.location.search);
     if (params.get('verified') === 'true') {
+        const authPanel = document.getElementById('auth-panel');
+        const verifiedState = document.getElementById('auth-verified-state');
         if (authPanel) authPanel.style.display = 'none';
         if (verifiedState) verifiedState.style.display = 'flex';
-    } else if (sessionStorage.getItem('sentinel_auth_tab') === 'register') {
-        window.switchManual('register');
     }
 
-    // Forms
+    // Form Event Listeners
     const regForm = document.getElementById('register-form');
     if (regForm) {
         regForm.addEventListener('submit', async (e) => {
@@ -164,11 +144,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const password = document.getElementById('reg-password').value;
             const btn = document.getElementById('register-submit-btn');
             const errorMsg = document.getElementById('register-error-msg');
-
             btn.disabled = true;
-            btn.textContent = 'creating account...';
-            errorMsg.style.display = 'none';
-
+            btn.textContent = 'processing...';
             const { error } = await s.auth.signUp({ email, password });
             if (error) {
                 errorMsg.textContent = 'error: ' + error.message.toLowerCase();
@@ -177,7 +154,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 btn.textContent = 'create account';
             } else {
                 sessionStorage.setItem('sentinel_pending_email', email);
-                successState.style.display = 'flex';
+                const successState = document.getElementById('auth-success-state');
+                const authPanel = document.getElementById('auth-panel');
+                if (successState) successState.style.display = 'flex';
                 if (authPanel) authPanel.style.display = 'none';
                 const centerLogo = document.querySelector('.auth-center-logo');
                 if (centerLogo) centerLogo.style.display = 'none';
@@ -198,16 +177,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const password = document.getElementById('login-password').value;
             const btn = document.getElementById('login-submit-btn');
             const errorMsg = document.getElementById('login-error-msg');
-
             btn.disabled = true;
-            btn.textContent = 'verifying identity...';
-            errorMsg.style.display = 'none';
-
+            btn.textContent = 'verifying...';
             const { error } = await s.auth.signInWithPassword({ email, password });
             if (error) {
-                let msg = error.message.toLowerCase();
-                if (msg.includes('confirm')) msg = 'verify your identity first.';
-                errorMsg.textContent = 'error: ' + msg;
+                errorMsg.textContent = 'error: ' + error.message.toLowerCase();
                 errorMsg.style.display = 'block';
                 btn.disabled = false;
                 btn.textContent = 'login';
@@ -217,7 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Toggles & Socials (Restored)
+    // EYE Toggle RESTORE
     document.querySelectorAll('.pw-eye-toggle').forEach(btn => {
         btn.addEventListener('click', () => {
             const input = document.getElementById(btn.getAttribute('data-target'));
@@ -235,6 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // Socials
     const redirectUrl = window.location.origin + '/dashboard';
     ['btn-google', 'btn-google-reg', 'btn-x', 'btn-x-reg'].forEach(id => {
         const b = document.getElementById(id);
@@ -247,24 +222,5 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Password Rules
-    const regPw = document.getElementById('reg-password');
-    if (regPw) {
-        regPw.addEventListener('input', (e) => {
-            const val = e.target.value;
-            const validate = (id, cond) => {
-                const el = document.getElementById(id);
-                if (el) {
-                    el.classList.toggle('met', cond);
-                    el.textContent = cond ? '✓' : '✕';
-                    el.style.color = cond ? 'var(--color-green)' : 'var(--color-red)';
-                }
-            };
-            validate('rule-len', val.length >= 8);
-            validate('rule-upper', /[A-Z]/.test(val));
-            validate('rule-num', /[0-9]/.test(val));
-        });
-    }
-
-    console.log('[auth] stabilized logic v16.0 ready.');
+    console.log('[auth] stabilization v16.1 complete.');
 });
