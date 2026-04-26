@@ -949,8 +949,8 @@ button:hover:not(:disabled) {
     position: absolute;
     top: 0.5rem;
     right: 0.5rem;
-    background: transparent;
-    border: none;
+    background: transparent !important;
+    border: none !important;
     color: var(--text-muted);
     font-size: 1.25rem;
     cursor: pointer;
@@ -958,10 +958,19 @@ button:hover:not(:disabled) {
     line-height: 1;
     font-family: inherit;
     z-index: 1001;
+    outline: none !important;
+    box-shadow: none !important;
+    transform: none !important;
+    transition: none !important;
 }
 
-.modal-close-btn:hover {
-    color: #fff; /* Simpler, clean hover instead of neon glow */
+.modal-close-btn:hover, .modal-close-btn:focus, .modal-close-btn:active {
+    color: #fff !important;
+    background: transparent !important;
+    text-shadow: none !important;
+    transform: none !important;
+    outline: none !important;
+    box-shadow: none !important;
 }
 
 /* Mobile Overrides for Auth Page */
@@ -1038,12 +1047,13 @@ button:hover:not(:disabled) {
         line-height: 1.6;
     }
 
-    /* Mobile modal close explicitly forced to top right corner */
+    /* Mobile modal close explicitly forced to top right corner of the *viewport* */
     .modal-close-btn {
-        top: 0rem !important;
-        right: 0.1rem !important;
+        position: fixed !important;
+        top: 20px !important;
+        right: 20px !important;
         padding: 1rem !important;
-        font-size: 1.25rem !important;
+        font-size: 1.5rem !important;
     }
 }
 
