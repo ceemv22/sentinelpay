@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,33 +8,40 @@
     <!-- Use standard system monospace as fallback, import JetBrains Mono for modern clients -->
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
 </head>
-<body style="margin: 0; padding: 0; background-color: #050505; color: #ffffff; font-family: 'JetBrains Mono', 'Courier New', monospace; -webkit-font-smoothing: antialiased;">
+
+<body
+    style="margin: 0; padding: 0; background-color: #050505; color: #ffffff; font-family: 'JetBrains Mono', 'Courier New', monospace; -webkit-font-smoothing: antialiased;">
     <div style="background-color: #050505; padding: 100px 20px; text-align: center;">
-        
+
         <!-- THE LOGO (Minimal & Iconic) -->
         <table align="center" border="0" cellpadding="0" cellspacing="0" style="margin-bottom: 50px;">
             <tr>
                 <td align="center">
-                    <img src="https://sentinelpay.org/logo.png" alt="SentinelPay" width="64" height="64" style="display: block; border: 0;">
+                    <img src="https://sentinelpay.org/logo.png" alt="SentinelPay" width="64" height="64"
+                        style="display: block; border: 0;">
                 </td>
             </tr>
         </table>
 
         <!-- THE CORE CARD -->
-        <table align="center" border="0" cellpadding="0" cellspacing="0" style="max-width: 420px; width: 100%; border-top: 1px solid rgba(255,255,255,0.05);">
+        <table align="center" border="0" cellpadding="0" cellspacing="0"
+            style="max-width: 420px; width: 100%; border-top: 1px solid rgba(255,255,255,0.05);">
             <tr>
                 <td style="padding: 40px 0;">
-                    <div style="font-size: 11px; color: #00f0ff; letter-spacing: 3px; font-weight: 700; margin-bottom: 25px; text-transform: uppercase; opacity: 0.8;">// access.recovery</div>
-                    
-                    <h1 style="font-family: 'JetBrains Mono', monospace; font-size: 24px; font-weight: 800; letter-spacing: -1.5px; margin: 0 0 25px 0; color: #ffffff; text-transform: lowercase;">reset password.</h1>
-                    
-                    <p style="font-family: 'JetBrains Mono', monospace; font-size: 14px; line-height: 1.6; color: #777777; margin: 0 0 45px 0; text-transform: lowercase;">
-                        A recovery request was triggered for your profile. Complete the secure handshake to reset your access to the SentinelPay scanning core.
+                    <h1
+                        style="font-family: 'JetBrains Mono', monospace; font-size: 24px; font-weight: 800; letter-spacing: -1.5px; margin: 0 0 25px 0; color: #ffffff; text-transform: lowercase;">
+                        reset password.</h1>
+
+                    <p
+                        style="font-family: 'JetBrains Mono', monospace; font-size: 14px; line-height: 1.6; color: #777777; margin: 0 0 45px 0; text-transform: lowercase;">
+                        A recovery request was triggered for your profile. Complete the secure handshake to reset your
+                        access to the SentinelPay scanning core.
                     </p>
 
                     <!-- THE ACTION (S-TIER BUTTON) -->
                     <div style="margin-bottom: 45px;">
-                        <a href="{{ .ConfirmationURL }}" style="background-color: #ffffff; color: #000000; padding: 20px 40px; text-decoration: none; font-weight: 800; font-size: 13px; font-family: 'JetBrains Mono', monospace; text-transform: lowercase; display: inline-block; box-shadow: 0 8px 24px rgba(0, 240, 255, 0.15);">
+                        <a href="{{ .ConfirmationURL }}"
+                            style="background-color: #ffffff; color: #000000; padding: 20px 40px; text-decoration: none; font-weight: 800; font-size: 13px; font-family: 'JetBrains Mono', monospace; text-transform: lowercase; display: inline-block; box-shadow: 0 8px 24px rgba(0, 240, 255, 0.15);">
                             reset password
                         </a>
                     </div>
@@ -42,13 +50,14 @@
         </table>
 
         <!-- THE FOOTER (Minimalist Tech) -->
-        <div style="max-width: 420px; margin: 0 auto; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.03); text-align: left;">
-            <div style="font-size: 10px; font-family: 'JetBrains Mono', monospace; color: #222; text-transform: uppercase; letter-spacing: 1px; line-height: 1.8;">
-                sentinelpay_core_v2.5 // automated_recovery<br>
-                status: recovery_pending<br>
+        <div
+            style="max-width: 420px; margin: 0 auto; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.03); text-align: left;">
+            <div
+                style="font-size: 10px; font-family: 'JetBrains Mono', monospace; color: #222; text-transform: uppercase; letter-spacing: 1px; line-height: 1.8;">
                 if you did not request this, ignore.
             </div>
         </div>
     </div>
 </body>
+
 </html>
