@@ -248,6 +248,8 @@ document.addEventListener('DOMContentLoaded', () => {
             validate('rule-upper', /[A-Z]/.test(val));
             validate('rule-num', /[0-9]/.test(val));
         });
+    }
+
     // Forgot Password Modal UI Logic
     const forgotPwTrigger = document.getElementById('forgot-pw-trigger');
     const forgotPwModal = document.getElementById('forgot-pw-modal');
