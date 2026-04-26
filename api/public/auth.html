@@ -8,7 +8,7 @@
     <meta name="theme-color" content="#040404">
     <link rel="icon" type="image/svg+xml" href="logo.svg">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=JetBrains+Mono:wght@400;700;800&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=11.2">
+    <link rel="stylesheet" href="style.css?v=11.3">
     <script src="lib/supabase.js"></script>
 </head>
 <body>
@@ -240,6 +240,25 @@
             <button id="verified-dashboard-btn" class="submit-btn" style="margin-top: 2rem;">go to dashboard</button>
         </div>
 
+    </div>
+
+    <!-- Forgot Password Modal -->
+    <div id="forgot-pw-modal" class="modal-overlay">
+        <div class="auth-card modal-content" style="position: relative; z-index: 1000;">
+            <button id="close-forgot-pw-btn" class="modal-close-btn">✕</button>
+            <h2 style="font-size: 1.5rem; font-weight: 800; letter-spacing: -1px; margin-bottom: 0.5rem; color: #fff; font-family: 'Space Grotesk', sans-serif; text-transform: lowercase;">reset password.</h2>
+            <p style="color: var(--text-muted); font-size: 0.85rem; font-family: 'JetBrains Mono', monospace; line-height: 1.6; margin-bottom: 2rem; max-width: 90%;">enter your email and we'll send you a secure link to reset your access.</p>
+            
+            <form id="forgot-pw-form" class="auth-form" style="width: 100%; display: flex; flex-direction: column;">
+                <div class="input-group">
+                    <label for="forgot-pw-email">email</label>
+                    <input type="email" id="forgot-pw-email" placeholder="john.doe@example.com" required autocomplete="email">
+                </div>
+                
+                <p id="forgot-pw-error-msg" class="error-msg" style="display: none;"></p>
+                <button type="submit" id="forgot-pw-submit-btn" class="submit-btn" style="margin-top: 1.5rem;">send reset link</button>
+            </form>
+        </div>
     </div>
 
     <!-- External Logic -->

@@ -248,6 +248,46 @@ document.addEventListener('DOMContentLoaded', () => {
             validate('rule-upper', /[A-Z]/.test(val));
             validate('rule-num', /[0-9]/.test(val));
         });
+    // Forgot Password Modal UI Logic
+    const forgotPwTrigger = document.getElementById('forgot-pw-trigger');
+    const forgotPwModal = document.getElementById('forgot-pw-modal');
+    const closeForgotPwBtn = document.getElementById('close-forgot-pw-btn');
+    const forgotPwForm = document.getElementById('forgot-pw-form');
+
+    if (forgotPwTrigger && forgotPwModal && closeForgotPwBtn) {
+        forgotPwTrigger.addEventListener('click', (e) => {
+            e.preventDefault();
+            forgotPwModal.style.display = 'flex';
+            setTimeout(() => forgotPwModal.classList.add('active'), 10);
+        });
+
+        const hideForgotModal = () => {
+            forgotPwModal.classList.remove('active');
+            setTimeout(() => forgotPwModal.style.display = 'none', 300);
+        };
+
+        closeForgotPwBtn.addEventListener('click', hideForgotModal);
+        
+        // Close on background click
+        forgotPwModal.addEventListener('click', (e) => {
+            if (e.target === forgotPwModal) {
+                hideForgotModal();
+            }
+        });
+        
+        if (forgotPwForm) {
+            forgotPwForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                // Send logic will go here
+                const btn = document.getElementById('forgot-pw-submit-btn');
+                btn.textContent = 'sending logic coming soon...';
+                btn.disabled = true;
+                setTimeout(() => {
+                    btn.textContent = 'send reset link';
+                    btn.disabled = false;
+                }, 2000);
+            });
+        }
     }
 
     console.log('[auth] CSP-compliant system v16.2 ready.');
