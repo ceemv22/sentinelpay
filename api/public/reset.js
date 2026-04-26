@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         // Clean URL: Remove the heavy Supabase hash tokens for a premium experience
         if (window.location.hash) {
-            window.history.replaceState(null, null, window.location.pathname);
+            window.history.replaceState(null, null, window.location.href.split('#')[0]);
         }
     } else {
         console.warn('[reset] invalid or expired recovery bridge.');
@@ -83,6 +83,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                 // Success
                 if (introText) introText.style.display = 'none';
                 form.style.display = 'none';
+                
+                // Hide the tab header for a cleaner success view
+                const tabs = document.querySelector('.auth-tabs');
+                if (tabs) tabs.style.display = 'none';
+                
                 document.getElementById('reset-success-state').style.display = 'flex';
                 
                 // Clean up session immediately for security
