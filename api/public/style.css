@@ -716,6 +716,24 @@ button:hover:not(:disabled) {
     text-align: left;
 }
 
+.auth-form .forgot-pw-link {
+    display: inline-block;
+    text-align: right;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    margin-top: 0.25rem;
+    padding-right: 2px;
+    transition: color 0.3s ease, text-shadow 0.3s ease;
+    align-self: flex-end;
+}
+
+.auth-form .forgot-pw-link:hover {
+    color: var(--neon-blue);
+    text-shadow: 0 0 8px rgba(0, 240, 255, 0.4);
+}
+
 .auth-agreement {
     margin: 1.5rem 0;
     font-size: 0.72rem;
