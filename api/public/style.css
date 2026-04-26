@@ -919,10 +919,6 @@ button:hover:not(:disabled) {
         margin-top: 0 !important;
         border-radius: 16px !important;
         min-height: auto !important;
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: center !important;
-        text-align: center !important;
     }
 
     .success-subtitle-new {
