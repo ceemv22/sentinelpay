@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         // Clean URL: Remove the heavy Supabase hash tokens for a premium experience
         if (window.location.hash) {
-            window.history.replaceState(null, null, window.location.href.split('#')[0]);
+            window.history.replaceState(null, document.title, window.location.pathname);
         }
     } else {
         console.warn('[reset] invalid or expired recovery bridge.');
