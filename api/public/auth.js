@@ -46,56 +46,87 @@ const getSupabase = () => {
 
 // 3. RESEND SUBSYSTEM
 let resendTimer = null;
-const startResendCooldown = (remainingSec) => {
-    const resendBtn = document.getElementById('resend-btn');
-    if (!resendBtn) return;
-    
-    clearInterval(resendTimer);
-    resendBtn.disabled = true;
-    resendBtn.style.opacity = '0.35';
-    let timeLeft = remainingSec;
-    resendBtn.textContent = `available again in ${timeLeft}s`;
+let forgotResendTimer = null;
 
-    resendTimer = setInterval(() => {
+const startCooldown = (btnId, timerVar, unlockKey, remainingSec) => {
+    const btn = document.getElementById(btnId);
+    if (!btn) return;
+    
+    if (btnId === 'resend-btn') {
+        clearInterval(resendTimer);
+    } else {
+        clearInterval(forgotResendTimer);
+    }
+
+    btn.disabled = true;
+    btn.style.opacity = '0.35';
+    let timeLeft = remainingSec;
+    btn.textContent = `available again in ${timeLeft}s`;
+
+    const tick = () => {
         timeLeft--;
         if (timeLeft <= 0) {
-            clearInterval(resendTimer);
-            resendBtn.disabled = false;
-            resendBtn.style.opacity = '1';
-            resendBtn.textContent = 'resend email';
-            localStorage.removeItem('sentinel_resend_unlock');
+            if (btnId === 'resend-btn') clearInterval(resendTimer);
+            else clearInterval(forgotResendTimer);
+            
+            btn.disabled = false;
+            btn.style.opacity = '1';
+            btn.textContent = 'resend email';
+            localStorage.removeItem(unlockKey);
         } else {
-            resendBtn.textContent = `available again in ${timeLeft}s`;
+            btn.textContent = `available again in ${timeLeft}s`;
         }
-    }, 1000);
+    };
+
+    if (btnId === 'resend-btn') resendTimer = setInterval(tick, 1000);
+    else forgotResendTimer = setInterval(tick, 1000);
 };
 
-window.handleResendHandshake = async () => {
-    console.log('[auth] executing resend handshake...');
+window.handleResendHandshake = async (type = 'signup') => {
+    console.log(`[auth] executing resend handshake for ${type}...`);
     const s = getSupabase();
-    const resendBtn = document.getElementById('resend-btn');
-    const email = sessionStorage.getItem('sentinel_pending_email');
+    const btnId = type === 'signup' ? 'resend-btn' : 'forgot-resend-btn';
+    const btn = document.getElementById(btnId);
+    const emailKey = type === 'signup' ? 'sentinel_pending_email' : 'sentinel_forgot_email';
+    const unlockKey = type === 'signup' ? 'sentinel_resend_unlock' : 'sentinel_forgot_resend_unlock';
+    const email = sessionStorage.getItem(emailKey);
 
-    if (!email || !s || (resendBtn && resendBtn.disabled)) return;
+    if (!email || !s || (btn && btn.disabled)) return;
 
-    if (resendBtn) {
-        resendBtn.disabled = true;
-        resendBtn.textContent = 'dispatching...';
+    if (btn) {
+        btn.disabled = true;
+        btn.textContent = 'dispatching...';
     }
 
     try {
-        const { error } = await s.auth.resend({
-            type: 'signup', email: email,
-            options: { emailRedirectTo: window.location.origin + '/auth?verified=true' }
-        });
+        let result;
+        if (type === 'signup') {
+            result = await s.auth.resend({
+                type: 'signup', email: email,
+                options: { emailRedirectTo: window.location.origin + '/auth?verified=true' }
+            });
+        } else {
+            result = await s.auth.resetPasswordForEmail(email, {
+                redirectTo: window.location.origin + '/dashboard',
+            });
+        }
+
+        const { error } = result;
+
         if (error) {
             console.error('[auth] resend error:', error.message);
-            if (resendBtn) { resendBtn.textContent = 'error: wait'; setTimeout(() => { resendBtn.disabled = false; resendBtn.textContent = 'resend email'; }, 3000); }
+            if (btn) { 
+                btn.textContent = 'error: wait'; 
+                setTimeout(() => { 
+                    btn.disabled = false; 
+                    btn.textContent = 'resend email'; 
+                }, 3000); 
+            }
         } else {
-            if (resendBtn) resendBtn.textContent = 'email sent!';
+            if (btn) btn.textContent = 'email sent!';
             const unlockTimestamp = Date.now() + 60000;
-            localStorage.setItem('sentinel_resend_unlock', unlockTimestamp);
-            setTimeout(() => startResendCooldown(60), 1500);
+            localStorage.setItem(unlockKey, unlockTimestamp);
+            setTimeout(() => startCooldown(btnId, type === 'signup' ? resendTimer : forgotResendTimer, unlockKey, 60), 1500);
         }
     } catch (err) { console.error('[auth] resend critical fault'); }
 };
@@ -112,7 +143,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     bind('tab-login', () => window.switchManual('login'));
     bind('tab-register', () => window.switchManual('register'));
-    bind('resend-btn', () => window.handleResendHandshake());
+    bind('resend-btn', () => window.handleResendHandshake('signup'));
+    bind('forgot-resend-btn', () => window.handleResendHandshake('forgot'));
     bind('verified-dashboard-btn', () => { window.location.href = '/dashboard'; });
 
     // Restore Tab State
@@ -121,12 +153,16 @@ document.addEventListener('DOMContentLoaded', () => {
         window.switchManual('register');
     }
 
-    // Restore Cooldown
-    const unlockAt = localStorage.getItem('sentinel_resend_unlock');
-    if (unlockAt) {
-        const remaining = Math.ceil((parseInt(unlockAt) - Date.now()) / 1000);
-        if (remaining > 0) startResendCooldown(remaining);
-    }
+    // Restore Cooldowns
+    const restoreCooldown = (unlockKey, btnId, timerVar) => {
+        const unlockAt = localStorage.getItem(unlockKey);
+        if (unlockAt) {
+            const remaining = Math.ceil((parseInt(unlockAt) - Date.now()) / 1000);
+            if (remaining > 0) startCooldown(btnId, timerVar, unlockKey, remaining);
+        }
+    };
+    restoreCooldown('sentinel_resend_unlock', 'resend-btn', resendTimer);
+    restoreCooldown('sentinel_forgot_resend_unlock', 'forgot-resend-btn', forgotResendTimer);
 
     // URL Verification Check
     const params = new URLSearchParams(window.location.search);
@@ -321,8 +357,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     btn.textContent = 'send reset link';
                     btn.disabled = false;
                 } else {
+                    sessionStorage.setItem('sentinel_forgot_email', emailInput);
                     stateForm.style.display = 'none';
                     stateSuccess.style.display = 'flex';
+                    
+                    const unlockTimestamp = Date.now() + 60000;
+                    localStorage.setItem('sentinel_forgot_resend_unlock', unlockTimestamp);
+                    startCooldown('forgot-resend-btn', forgotResendTimer, 'sentinel_forgot_resend_unlock', 60);
                 }
             });
         }
