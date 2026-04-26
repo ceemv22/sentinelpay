@@ -348,7 +348,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const s = getSupabase();
                 const { error } = await s.auth.resetPasswordForEmail(emailInput, {
-                    redirectTo: window.location.origin + '/dashboard',
+                    redirectTo: window.location.origin + '/reset',
                 });
 
                 if (error) {
