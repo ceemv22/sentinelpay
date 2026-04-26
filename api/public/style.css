@@ -1047,13 +1047,9 @@ button:hover:not(:disabled) {
         line-height: 1.6;
     }
 
-    /* Mobile modal close explicitly forced to top right corner of the *viewport* */
+    /* Mobile modal close button hidden as requested */
     .modal-close-btn {
-        position: fixed !important;
-        top: 20px !important;
-        right: 20px !important;
-        padding: 1rem !important;
-        font-size: 1.5rem !important;
+        display: none !important;
     }
 }
 
