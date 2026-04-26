@@ -2,33 +2,67 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secure Reset | SentinelPay</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>sentinelpay | reset</title>
     <meta name="theme-color" content="#040404">
     <link rel="icon" type="image/svg+xml" href="logo.svg">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=JetBrains+Mono:wght@400;700;800&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css?v=11.8">
     <script src="lib/supabase.js"></script>
 </head>
-<body class="auth-page">
-    <div class="auth-page-wrap">
-        <div class="auth-center-logo desktop-only" style="margin-bottom: 2rem;">
-            <img src="https://sentinelpay.org/logo.png" alt="SentinelPay" width="60" height="60">
+<body style="min-height: 100vh; overflow-x: hidden;">
+
+    <div class="cyber-grid"></div>
+    <div class="glow-orb"></div>
+
+    <!-- Fixed Top Bar Consistency -->
+    <div class="auth-topbar">
+        <div class="auth-top-logo mobile-only">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" style="width: 32px; height: 32px;">
+              <defs>
+                <linearGradient id="neonGradientNav" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#00ffff" />
+                  <stop offset="100%" stop-color="#a020f0" />
+                </linearGradient>
+                <filter id="neonGlowNav" x="-50%" y="-50%" width="200%" height="200%">
+                  <feGaussianBlur stdDeviation="3.5" result="coloredBlur"/>
+                  <feMerge>
+                    <feMergeNode in="coloredBlur"/>
+                    <feMergeNode in="SourceGraphic"/>
+                  </feMerge>
+                </filter>
+              </defs>
+              <g filter="url(#neonGlowNav)" fill="none" stroke="url(#neonGradientNav)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z" />
+                <path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z" />
+                <g class="eye-pupil" style="transition: transform 0.1s ease-out;">
+                  <circle cx="60" cy="60" r="6" />
+                  <circle cx="60" cy="60" r="2" fill="url(#neonGradientNav)" stroke="none"/>
+                </g>
+              </g>
+            </svg>
+        </div>
+        <a href="/auth" class="auth-nav-btn" style="background: transparent; border-color: rgba(255,255,255,0.1); color: var(--text-muted);">back to login</a>
+    </div>
+
+    <div class="auth-page-wrap" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 2rem 0;">
+        <div class="auth-center-logo desktop-only" style="margin-bottom: 2.5rem; filter: drop-shadow(0 0 15px rgba(0,240,255,0.2));">
+            <img src="https://sentinelpay.org/logo.png" alt="SentinelPay" width="70" height="70">
         </div>
 
-        <div id="reset-panel" class="auth-card active" style="min-height: auto; padding: 2.5rem 2.25rem;">
+        <div id="reset-panel" class="auth-card active" style="min-height: auto; align-self: center; margin: 0 auto;">
             <div class="auth-tabs" style="margin-bottom: 2rem;">
-                <button class="auth-tab active" style="width: 100%; cursor: default; pointer-events: none;">update password</button>
+                <button class="auth-tab active" style="width: 100%; cursor: default; pointer-events: none;">update security credentials</button>
             </div>
             
-            <p id="reset-intro-text" style="color: var(--text-muted); font-size: 0.85rem; font-family: 'JetBrains Mono', monospace; line-height: 1.6; margin-bottom: 2rem; width: 100%; text-align: center;">
-                unauthorized access detected. establish a new security handshake by updating your credentials.
+            <p id="reset-intro-text" style="color: var(--text-muted); font-size: 0.82rem; font-family: 'JetBrains Mono', monospace; line-height: 1.8; margin-bottom: 2.5rem; width: 100%; text-align: center; max-width: 340px; margin-left: auto; margin-right: auto;">
+                Bridge established. Refresh your security handshake by establishing new S-Tier credentials for the scanning core.
             </p>
 
-            <form id="reset-password-form" class="auth-form" style="display: none;">
+            <form id="reset-password-form" class="auth-form" style="display: none; flex-direction: column;">
                 <div class="input-group">
                     <div style="display: flex; justify-content: space-between; align-items: center; position: relative;">
-                        <label for="new-password" style="margin-bottom: 0;">new password</label>
+                        <label for="new-password" style="margin-bottom: 0;">new security key</label>
                         <span id="pw-rules-toggle" class="pw-toggle">?</span>
                         <div id="pw-rules-tooltip" class="pw-tooltip">
                             <span id="rule-len" class="rule">✕</span> min 8 characters<br>
@@ -46,7 +80,7 @@
                 </div>
 
                 <div class="input-group" style="margin-top: 1.5rem;">
-                    <label for="confirm-password">confirm new password</label>
+                    <label for="confirm-password">confirm security key</label>
                     <div class="password-field-wrap">
                         <input type="password" id="confirm-password" placeholder="••••••••" required minlength="8" autocomplete="new-password">
                         <span class="pw-eye-toggle" role="button" data-target="confirm-password">
@@ -57,40 +91,40 @@
                 </div>
                 
                 <p id="reset-error-msg" class="error-msg" style="display: none;"></p>
-                <button type="submit" id="reset-submit-btn" class="submit-btn" style="margin-top: 2rem;">update security key</button>
+                <button type="submit" id="reset-submit-btn" class="submit-btn" style="margin-top: 2.5rem;">finalize handshake</button>
             </form>
 
-            <div id="reset-invalid-state" style="display: none; text-align: center;">
-                <p style="color: var(--color-red); font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; margin-bottom: 2rem;">session expired or invalid recovery link.</p>
-                <button onclick="window.location.href='/auth'" class="submit-btn">back to login</button>
+            <div id="reset-invalid-state" style="display: none; text-align: center; padding: 2rem 0;">
+                <p style="color: var(--color-red); font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; line-height: 1.8; margin-bottom: 2rem; text-transform: lowercase;">critical error: recovery handshake expired or signature is invalid.</p>
+                <button onclick="window.location.href='/auth'" class="submit-btn">re-trigger handshake</button>
             </div>
 
             <!-- Success State -->
-            <div id="reset-success-state" style="display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; width: 100%; min-height: 260px;">
-                <div class="success-icon-wrap" style="margin-bottom: 1.5rem; filter: drop-shadow(0 0 20px rgba(0, 240, 255, 0.25)); display: flex; justify-content: center;">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" style="width: 80px; height: 80px;">
+            <div id="reset-success-state" style="display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; width: 100%; min-height: 300px;">
+                <div class="success-icon-wrap" style="margin-bottom: 2rem; filter: drop-shadow(0 0 20px rgba(0, 240, 255, 0.25)); display: flex; justify-content: center;">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" style="width: 90px; height: 90px;">
                         <defs>
                             <linearGradient id="checkGradReset" x1="0%" y1="0%" x2="100%" y2="100%">
                                 <stop offset="0%" stop-color="#00f0ff" />
                                 <stop offset="100%" stop-color="#a020f0" />
                             </linearGradient>
                         </defs>
-                        <g fill="none" stroke="url(#checkGradReset)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                        <g fill="none" stroke="url(#checkGradReset)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z" style="opacity: 0.25;" />
-                            <path d="M45 60 L55 70 L75 50" stroke-width="4">
+                            <path d="M45 60 L55 70 L75 50" stroke-width="4.5">
                                 <animate attributeName="stroke-dasharray" from="0, 50" to="50, 0" dur="0.8s" fill="freeze" />
                             </path>
                         </g>
                     </svg>
                 </div>
-                <h2 style="font-size: 1.8rem; font-weight: 800; letter-spacing: -1.75px; color: #fff; margin-bottom: 0.8rem; font-family: 'JetBrains Mono', monospace; text-transform: lowercase;">password updated.</h2>
-                <p style="color: rgba(255,255,255,0.4); font-size: 0.85rem; font-family: 'JetBrains Mono', monospace; line-height: 1.8; max-width: 250px; margin: 0 auto; margin-bottom: 2rem;">your security credentials have been refreshed.</p>
-                <button id="reset-login-btn" class="submit-btn">login to continue</button>
+                <h2 style="font-size: 2rem; font-weight: 800; letter-spacing: -1.75px; color: #fff; margin-bottom: 0.8rem; font-family: 'JetBrains Mono', monospace; text-transform: lowercase;">identity secured.</h2>
+                <p style="color: rgba(255,255,255,0.4); font-size: 0.9rem; font-family: 'JetBrains Mono', monospace; line-height: 1.8; max-width: 280px; margin: 0 auto; margin-bottom: 2.5rem; text-transform: lowercase;">Security key successfully rotated. Proceed to secure scanner core.</p>
+                <button id="reset-login-btn" class="submit-btn">return to core</button>
             </div>
         </div>
     </div>
 
-    <script src="reset.js?v=11.0"></script>
-    <script src="eye-track.js?v=11.0"></script>
+    <script src="reset.js?v=11.1"></script>
+    <script src="eye-track.js?v=11.1"></script>
 </body>
 </html>

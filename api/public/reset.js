@@ -24,6 +24,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (session) {
         console.log('[reset] recovery session validated.');
         form.style.display = 'flex';
+        
+        // Clean URL: Remove the heavy Supabase hash tokens for a premium experience
+        if (window.location.hash) {
+            window.history.replaceState(null, null, window.location.pathname);
+        }
     } else {
         console.warn('[reset] invalid or expired recovery bridge.');
         if (introText) introText.style.display = 'none';
