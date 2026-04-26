@@ -265,7 +265,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const hideForgotModal = () => {
             forgotPwModal.classList.remove('active');
-            setTimeout(() => forgotPwModal.style.display = 'none', 300);
+            setTimeout(() => {
+                forgotPwModal.style.display = 'none';
+                
+                // Reset state quietly when hidden
+                const stateForm = document.getElementById('forgot-pw-state-form');
+                const stateSuccess = document.getElementById('forgot-pw-state-success');
+                const btn = document.getElementById('forgot-pw-submit-btn');
+                const errorMsg = document.getElementById('forgot-pw-error-msg');
+                
+                if (stateForm && stateSuccess) {
+                    stateForm.style.display = 'flex';
+                    stateSuccess.style.display = 'none';
+                    if (forgotPwForm) forgotPwForm.reset();
+                    if (btn) {
+                        btn.textContent = 'send reset link';
+                        btn.disabled = false;
+                    }
+                    if (errorMsg) errorMsg.style.display = 'none';
+                }
+            }, 300);
         };
 
         closeForgotPwBtn.addEventListener('click', hideForgotModal);
@@ -278,16 +297,33 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         
         if (forgotPwForm) {
-            forgotPwForm.addEventListener('submit', (e) => {
+            forgotPwForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
-                // Send logic will go here
+                
                 const btn = document.getElementById('forgot-pw-submit-btn');
-                btn.textContent = 'sending logic coming soon...';
+                const errorMsg = document.getElementById('forgot-pw-error-msg');
+                const emailInput = document.getElementById('forgot-pw-email').value;
+                const stateForm = document.getElementById('forgot-pw-state-form');
+                const stateSuccess = document.getElementById('forgot-pw-state-success');
+                
+                btn.textContent = 'sending...';
                 btn.disabled = true;
-                setTimeout(() => {
+                errorMsg.style.display = 'none';
+
+                const s = getSupabase();
+                const { error } = await s.auth.resetPasswordForEmail(emailInput, {
+                    redirectTo: window.location.origin + '/dashboard',
+                });
+
+                if (error) {
+                    errorMsg.textContent = 'error: ' + error.message.toLowerCase();
+                    errorMsg.style.display = 'block';
                     btn.textContent = 'send reset link';
                     btn.disabled = false;
-                }, 2000);
+                } else {
+                    stateForm.style.display = 'none';
+                    stateSuccess.style.display = 'flex';
+                }
             });
         }
     }

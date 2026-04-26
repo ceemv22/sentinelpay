@@ -244,27 +244,53 @@
 
     <!-- Forgot Password Modal -->
     <div id="forgot-pw-modal" class="modal-overlay">
-        <div class="auth-card modal-content" style="position: relative; z-index: 1000;">
+        <div class="auth-card modal-content" style="position: relative; z-index: 1000; display: flex; flex-direction: column;">
             <button id="close-forgot-pw-btn" class="modal-close-btn">✕</button>
-            <div class="auth-tabs" style="margin-bottom: 2rem;">
-                <button class="auth-tab active" style="width: 100%; cursor: default; pointer-events: none;">reset password</button>
-            </div>
-            <p style="color: var(--text-muted); font-size: 0.85rem; font-family: 'JetBrains Mono', monospace; line-height: 1.6; margin-bottom: 2rem; width: 100%; text-align: center;">enter your email and we'll send you a secure link to reset your access.</p>
             
-            <form id="forgot-pw-form" class="auth-form" style="width: 100%; display: flex; flex-direction: column;">
-                <div class="input-group">
-                    <label for="forgot-pw-email">email</label>
-                    <input type="email" id="forgot-pw-email" placeholder="john.doe@example.com" required autocomplete="email">
+            <!-- Default Form State -->
+            <div id="forgot-pw-state-form" style="display: flex; flex-direction: column; width: 100%;">
+                <div class="auth-tabs" style="margin-bottom: 2rem;">
+                    <button class="auth-tab active" style="width: 100%; cursor: default; pointer-events: none;">reset password</button>
                 </div>
+                <p style="color: var(--text-muted); font-size: 0.85rem; font-family: 'JetBrains Mono', monospace; line-height: 1.6; margin-bottom: 2rem; width: 100%; text-align: center;">enter your email and we'll send you a secure link to reset your access.</p>
                 
-                <p id="forgot-pw-error-msg" class="error-msg" style="display: none;"></p>
-                <button type="submit" id="forgot-pw-submit-btn" class="submit-btn" style="margin-top: 1.5rem;">send reset link</button>
-            </form>
+                <form id="forgot-pw-form" class="auth-form" style="width: 100%; display: flex; flex-direction: column;">
+                    <div class="input-group">
+                        <label for="forgot-pw-email">email</label>
+                        <input type="email" id="forgot-pw-email" placeholder="john.doe@example.com" required autocomplete="email">
+                    </div>
+                    
+                    <p id="forgot-pw-error-msg" class="error-msg" style="display: none;"></p>
+                    <button type="submit" id="forgot-pw-submit-btn" class="submit-btn" style="margin-top: 1.5rem;">send reset link</button>
+                </form>
+            </div>
+
+            <!-- Success State: Recovery Email Sent -->
+            <div id="forgot-pw-state-success" style="display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; width: 100%; min-height: 260px;">
+                <div class="success-icon-wrap" style="margin-bottom: 1.5rem; filter: drop-shadow(0 0 20px rgba(0, 240, 255, 0.25)); display: flex; justify-content: center;">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" style="width: 80px; height: 80px;">
+                        <defs>
+                            <linearGradient id="checkGradReset" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#00f0ff" />
+                                <stop offset="100%" stop-color="#a020f0" />
+                            </linearGradient>
+                        </defs>
+                        <g fill="none" stroke="url(#checkGradReset)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z" style="opacity: 0.25;" />
+                            <path d="M45 60 L55 70 L75 50" stroke-width="4">
+                                <animate attributeName="stroke-dasharray" from="0, 50" to="50, 0" dur="0.8s" fill="freeze" />
+                            </path>
+                        </g>
+                    </svg>
+                </div>
+                <h2 style="font-size: 1.8rem; font-weight: 800; letter-spacing: -1.75px; color: #fff; margin-bottom: 0.8rem; font-family: 'JetBrains Mono', monospace; text-transform: lowercase;">check inbox</h2>
+                <p style="color: rgba(255,255,255,0.4); font-size: 0.85rem; font-family: 'JetBrains Mono', monospace; line-height: 1.8; max-width: 250px; margin: 0 auto;">we've dispatched a secure recovery link to your email.</p>
+            </div>
         </div>
     </div>
 
     <!-- External Logic -->
-    <script src="auth.js?v=11.0"></script>
+    <script src="auth.js?v=11.9"></script>
     <script src="eye-track.js?v=11.0"></script>
 </body>
 </html>
