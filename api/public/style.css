@@ -954,7 +954,6 @@ button:hover:not(:disabled) {
     color: var(--text-muted);
     font-size: 1.25rem;
     cursor: pointer;
-    transition: color 0.2s ease, text-shadow 0.2s ease;
     padding: 0.5rem;
     line-height: 1;
     font-family: inherit;
@@ -962,8 +961,7 @@ button:hover:not(:disabled) {
 }
 
 .modal-close-btn:hover {
-    color: var(--neon-blue);
-    text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+    color: #fff; /* Simpler, clean hover instead of neon glow */
 }
 
 /* Mobile Overrides for Auth Page */
@@ -1038,6 +1036,14 @@ button:hover:not(:disabled) {
         padding: 0 0.5rem;
         margin: 1.25rem 0;
         line-height: 1.6;
+    }
+
+    /* Mobile modal close explicitly forced to top right corner */
+    .modal-close-btn {
+        top: 0rem !important;
+        right: 0.1rem !important;
+        padding: 1rem !important;
+        font-size: 1.25rem !important;
     }
 }
 
