@@ -938,6 +938,7 @@ button:hover:not(:disabled) {
 .modal-content {
     transform: translateY(20px) scale(0.95);
     transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    min-height: auto !important; /* Removes the 540px empty space inherited from login card */
 }
 
 .modal-overlay.active .modal-content {
@@ -946,8 +947,8 @@ button:hover:not(:disabled) {
 
 .modal-close-btn {
     position: absolute;
-    top: 1.25rem;
-    right: 1.25rem;
+    top: 0.5rem;
+    right: 0.5rem;
     background: transparent;
     border: none;
     color: var(--text-muted);
