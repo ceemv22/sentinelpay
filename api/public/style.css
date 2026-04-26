@@ -938,9 +938,6 @@ button:hover:not(:disabled) {
 .modal-content {
     transform: translateY(20px) scale(0.95);
     transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    padding: 2.5rem 2.25rem !important; /* Override standard auth-card padding */
-    max-width: 420px;
-    width: 95vw;
 }
 
 .modal-overlay.active .modal-content {
@@ -960,6 +957,7 @@ button:hover:not(:disabled) {
     padding: 0.5rem;
     line-height: 1;
     font-family: inherit;
+    z-index: 1001;
 }
 
 .modal-close-btn:hover {

@@ -8,7 +8,7 @@
     <meta name="theme-color" content="#040404">
     <link rel="icon" type="image/svg+xml" href="logo.svg">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=JetBrains+Mono:wght@400;700;800&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=11.3">
+    <link rel="stylesheet" href="style.css?v=11.4">
     <script src="lib/supabase.js"></script>
 </head>
 <body>
@@ -246,8 +246,10 @@
     <div id="forgot-pw-modal" class="modal-overlay">
         <div class="auth-card modal-content" style="position: relative; z-index: 1000;">
             <button id="close-forgot-pw-btn" class="modal-close-btn">✕</button>
-            <h2 style="font-size: 1.5rem; font-weight: 800; letter-spacing: -1px; margin-bottom: 0.5rem; color: #fff; font-family: 'Space Grotesk', sans-serif; text-transform: lowercase;">reset password.</h2>
-            <p style="color: var(--text-muted); font-size: 0.85rem; font-family: 'JetBrains Mono', monospace; line-height: 1.6; margin-bottom: 2rem; max-width: 90%;">enter your email and we'll send you a secure link to reset your access.</p>
+            <div class="auth-tabs" style="margin-bottom: 2rem;">
+                <button class="auth-tab active" style="width: 100%; cursor: default; pointer-events: none;">reset password</button>
+            </div>
+            <p style="color: var(--text-muted); font-size: 0.85rem; font-family: 'JetBrains Mono', monospace; line-height: 1.6; margin-bottom: 2rem; width: 100%; text-align: center;">enter your email and we'll send you a secure link to reset your access.</p>
             
             <form id="forgot-pw-form" class="auth-form" style="width: 100%; display: flex; flex-direction: column;">
                 <div class="input-group">
