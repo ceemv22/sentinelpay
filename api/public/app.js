@@ -1,4 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // 0. ULTIMATE HASH SCRUBBER (Aggressively kills # trailing fragments)
+    const scrubHash = () => {
+        if (window.location.href.indexOf('#') > -1) {
+            window.history.replaceState(null, document.title, window.location.href.split('#')[0]);
+        }
+    };
+    
+    // Immediate + Interval scrub to capture all racing states
+    scrubHash();
+    let scrubInterval = setInterval(scrubHash, 50);
+    setTimeout(() => clearInterval(scrubInterval), 5000);
+
     const input = document.getElementById('wallet-input');
     const btn = document.getElementById('scan-btn');
     const shareBtn = document.getElementById('share-btn');
@@ -26,6 +38,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (supabaseClient) {
         supabaseClient.auth.getSession().then(({ data: { session } }) => {
+            // Scrub hash AFTER Supabase has read the token from the URL
+            scrubHash();
+
             cachedSession = session;
             if (session) {
                 const authContainer = document.getElementById('auth-nav-container');

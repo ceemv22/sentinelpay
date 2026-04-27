@@ -2,14 +2,17 @@ const supabaseUrl = 'https://aivqwkgjdpklxxuvkxpy.supabase.co';
 const supabaseKey = 'sb_publishable_bRfAssaGT6D8oFDQtPARbw_5fyYGWM6';
 const sentinelAuth = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-// 0. ULTIMATE HASH SCRUBBER (Only call this AFTER session is confirmed)
+// 0. ULTIMATE HASH SCRUBBER (Aggressively kills # trailing fragments)
 const scrubHash = () => {
-    if (window.location.href.includes('#')) {
-        console.log('[sentinel-dashboard] hash detected, scrubbing...');
-        // Standard most compatible way to remove fragment without reload
-        window.history.replaceState(null, document.title, window.location.pathname + window.location.search);
+    if (window.location.href.indexOf('#') > -1) {
+        window.history.replaceState(null, document.title, window.location.href.split('#')[0]);
     }
 };
+
+// Immediate + Interval scrub to capture all racing states
+scrubHash();
+let scrubInterval = setInterval(scrubHash, 50);
+setTimeout(() => clearInterval(scrubInterval), 5000);
 
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('[sentinel-dashboard] v-final loader active');
@@ -29,13 +32,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     // 2. NOW it is safe to scrub the URL
     scrubHash();
 
-    // Extra safety: keep scrubbing for a few seconds if it reappears
-    let scrubCount = 0;
-    const scrubber = setInterval(() => {
-        scrubHash();
-        if (++scrubCount > 20) clearInterval(scrubber);
-    }, 200);
-
     const token = session.access_token;
     
     // 3. Setup Logout
@@ -52,6 +48,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (revealBtn) {
         revealBtn.addEventListener('click', () => {
             alert('creating b2b keys coming in phase 3');
+        });
+    }
+
+    const buyBtn = document.getElementById('btn-buy-credits');
+    if (buyBtn) {
+        buyBtn.addEventListener('click', () => {
+            alert('stripe integration coming in phase 3');
         });
     }
 

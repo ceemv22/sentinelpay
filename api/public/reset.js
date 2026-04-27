@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     const cleanURL = () => {
         if (window.location.href.indexOf('#') > -1) {
-            window.history.replaceState('', document.title, window.location.pathname);
+            window.history.replaceState(null, document.title, window.location.href.split('#')[0]);
         }
     };
 
