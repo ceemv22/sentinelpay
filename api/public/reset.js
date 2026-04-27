@@ -21,15 +21,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Check for recovery session
     const { data: { session }, error: sessionError } = await supabase.auth.getSession();
     
+    const cleanURL = () => {
+        if (window.location.href.indexOf('#') > -1) {
+            window.history.replaceState('', document.title, window.location.pathname);
+        }
+    };
+
+    // Clean URL: Multi-phase scrub to win the race against third-party scripts
+    cleanURL();
+    [50, 150, 300, 500, 1000, 2000].forEach(t => setTimeout(cleanURL, t));
+
     if (session) {
         console.log('[reset] recovery session validated.');
         form.style.display = 'flex';
-        
-        // Clean URL: Hard Reload Scrub (Bulletproof)
-        if (window.location.hash) {
-            window.location.replace(window.location.pathname);
-            return;
-        }
     } else {
         console.warn('[reset] invalid or expired recovery bridge.');
         if (introText) introText.style.display = 'none';
