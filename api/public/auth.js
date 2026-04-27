@@ -140,12 +140,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
     
-    // Immediate + Interval scrub to capture all racing states
-    scrubHash();
-    let scrubInterval = setInterval(scrubHash, 50);
-    setTimeout(() => clearInterval(scrubInterval), 5000);
-
-    getSupabase();
+    const s = getSupabase();
+    if (s) {
+        s.auth.getSession().then(() => {
+            scrubHash();
+            let scrubInterval = setInterval(scrubHash, 50);
+            setTimeout(() => clearInterval(scrubInterval), 3000);
+        });
+    }
 
     // CSP-COMPLIANT EVENT BINDINGS
     const bind = (id, func) => {

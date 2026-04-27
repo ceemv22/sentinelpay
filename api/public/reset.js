@@ -27,13 +27,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     };
 
-    // Clean URL: Multi-phase scrub to win the race against third-party scripts
-    cleanURL();
-    [50, 150, 300, 500, 1000, 2000].forEach(t => setTimeout(cleanURL, t));
-
     if (session) {
         console.log('[reset] recovery session validated.');
         form.style.display = 'flex';
+        // Clean URL: Multi-phase scrub to win the race against third-party scripts
+        cleanURL();
+        let resetScrubInterval = setInterval(cleanURL, 50);
+        setTimeout(() => clearInterval(resetScrubInterval), 3000);
     } else {
         console.warn('[reset] invalid or expired recovery bridge.');
         if (introText) introText.style.display = 'none';

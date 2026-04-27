@@ -9,10 +9,7 @@ const scrubHash = () => {
     }
 };
 
-// Immediate + Interval scrub to capture all racing states
-scrubHash();
-let scrubInterval = setInterval(scrubHash, 50);
-setTimeout(() => clearInterval(scrubInterval), 5000);
+// The scrubber function is defined above; execution moved inside DOMContentLoaded after session validation.
 
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('[sentinel-dashboard] v-final loader active');
@@ -31,6 +28,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // 2. NOW it is safe to scrub the URL
     scrubHash();
+    let dashScrubInterval = setInterval(scrubHash, 50);
+    setTimeout(() => clearInterval(dashScrubInterval), 3000);
 
     const token = session.access_token;
     

@@ -5,11 +5,6 @@ document.addEventListener('DOMContentLoaded', () => {
             window.history.replaceState(null, document.title, window.location.href.split('#')[0]);
         }
     };
-    
-    // Immediate + Interval scrub to capture all racing states
-    scrubHash();
-    let scrubInterval = setInterval(scrubHash, 50);
-    setTimeout(() => clearInterval(scrubInterval), 5000);
 
     const input = document.getElementById('wallet-input');
     const btn = document.getElementById('scan-btn');
@@ -40,6 +35,8 @@ document.addEventListener('DOMContentLoaded', () => {
         supabaseClient.auth.getSession().then(({ data: { session } }) => {
             // Scrub hash AFTER Supabase has read the token from the URL
             scrubHash();
+            let appScrubInterval = setInterval(scrubHash, 50);
+            setTimeout(() => clearInterval(appScrubInterval), 3000);
 
             cachedSession = session;
             if (session) {
