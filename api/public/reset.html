@@ -39,6 +39,8 @@
                   <circle cx="60" cy="60" r="6" />
                   <circle cx="60" cy="60" r="2" fill="url(#neonGradientNav)" stroke="none"/>
                 </g>
+                <path d="M60 15 V 30" stroke-width="2" opacity="0.6"/>
+                <path d="M60 90 V 105" stroke-width="2" opacity="0.6"/>
               </g>
             </svg>
         </div>
@@ -46,11 +48,37 @@
     </div>
 
     <div class="auth-page-wrap" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 2rem 0;">
-        <div class="auth-center-logo desktop-only" style="margin-bottom: 2.5rem; filter: drop-shadow(0 0 15px rgba(0,240,255,0.2));">
-            <img src="https://sentinelpay.org/logo.png" alt="SentinelPay" width="70" height="70">
+        
+        <!-- Interactive Center Logo (Desktop Only) -->
+        <div class="auth-center-logo desktop-only" style="margin-bottom: 2rem;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" style="width: 80px; height: 80px;">
+              <defs>
+                <linearGradient id="neonGradientCard" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#00ffff" />
+                  <stop offset="100%" stop-color="#a020f0" />
+                </linearGradient>
+                <filter id="neonGlowCard" x="-50%" y="-50%" width="200%" height="200%">
+                  <feGaussianBlur stdDeviation="3.5" result="coloredBlur"/>
+                  <feMerge>
+                    <feMergeNode in="coloredBlur"/>
+                    <feMergeNode in="SourceGraphic"/>
+                  </feMerge>
+                </filter>
+              </defs>
+              <g filter="url(#neonGlowCard)" fill="none" stroke="url(#neonGradientCard)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z" />
+                <path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z" />
+                <g class="eye-pupil" style="transition: transform 0.1s ease-out;">
+                  <circle cx="60" cy="60" r="6" />
+                  <circle cx="60" cy="60" r="2" fill="url(#neonGradientCard)" stroke="none"/>
+                </g>
+                <path d="M60 15 V 30" stroke-width="2" opacity="0.6"/>
+                <path d="M60 90 V 105" stroke-width="2" opacity="0.6"/>
+              </g>
+            </svg>
         </div>
 
-        <div id="reset-panel" class="auth-card active" style="min-height: auto; align-self: center; margin: 0 auto;">
+        <div id="reset-panel" class="auth-card active" style="min-height: auto; align-self: center; margin: 0 auto; position: relative; z-index: 500;">
             <div class="auth-tabs" style="margin-bottom: 2rem;">
                 <button class="auth-tab active" style="width: 100%; cursor: default; pointer-events: none;">update password</button>
             </div>
