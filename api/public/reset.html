@@ -47,8 +47,7 @@
         <a href="/auth" class="auth-nav-btn" style="background: transparent; border-color: rgba(255,255,255,0.1); color: var(--text-muted);">back to login</a>
     </div>
 
-    <div class="auth-page-wrap" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 2rem 0;">
-        
+    <div class="auth-page-wrap">
         <!-- Interactive Center Logo (Desktop Only) -->
         <div class="auth-center-logo desktop-only" style="margin-bottom: 2rem;">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" style="width: 80px; height: 80px;">
@@ -78,8 +77,8 @@
             </svg>
         </div>
 
-        <div id="reset-panel" class="auth-card active" style="min-height: auto; align-self: center; margin: 0 auto; position: relative; z-index: 500;">
-            <div class="auth-tabs" style="margin-bottom: 2rem;">
+        <div id="reset-panel" class="auth-card active" style="min-height: 480px; align-self: center; margin: 0 auto; position: relative; z-index: 500; display: flex; flex-direction: column;">
+            <div class="auth-tabs" id="reset-tabs" style="margin-bottom: 2rem;">
                 <button class="auth-tab active" style="width: 100%; cursor: default; pointer-events: none;">update password</button>
             </div>
             
@@ -87,7 +86,7 @@
                 enter your new security credentials below to regain access to your profile.
             </p>
 
-            <form id="reset-password-form" class="auth-form" style="display: none; flex-direction: column;">
+            <form id="reset-password-form" class="auth-form" style="display: none; flex-direction: column; flex: 1;">
                 <div class="input-group">
                     <div style="display: flex; justify-content: space-between; align-items: center; position: relative;">
                         <label for="new-password" style="margin-bottom: 0;">new password</label>
@@ -119,10 +118,11 @@
                 </div>
                 
                 <p id="reset-error-msg" class="error-msg" style="display: none;"></p>
+                <div style="flex: 1;"></div>
                 <button type="submit" id="reset-submit-btn" class="submit-btn" style="margin-top: 2.5rem;">update password</button>
             </form>
 
-            <div id="reset-invalid-state" style="display: none; flex-direction: column; text-align: center; width: 100%; min-height: 280px; align-items: center;">
+            <div id="reset-invalid-state" style="display: none; flex-direction: column; text-align: center; width: 100%; flex: 1; align-items: center;">
                 <div style="flex: 1; display: flex; align-items: center; justify-content: center; width: 100%;">
                     <p style="color: var(--color-red); font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; line-height: 1.8; text-transform: lowercase; max-width: 250px; margin: 0;">recovery link expired or invalid.</p>
                 </div>
@@ -130,7 +130,7 @@
             </div>
 
             <!-- Success State -->
-            <div id="reset-success-state" style="display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; width: 100%; min-height: 300px;">
+            <div id="reset-success-state" style="display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; width: 100%; flex: 1;">
                 <div class="success-icon-wrap" style="margin-bottom: 2rem; filter: drop-shadow(0 0 20px rgba(0, 240, 255, 0.25)); display: flex; justify-content: center;">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" style="width: 90px; height: 90px;">
                         <defs>
@@ -149,12 +149,13 @@
                 </div>
                 <h2 style="font-size: 2rem; font-weight: 800; letter-spacing: -1.75px; color: #fff; margin-bottom: 0.8rem; font-family: 'JetBrains Mono', monospace; text-transform: lowercase;">password updated</h2>
                 <p style="color: rgba(255,255,255,0.4); font-size: 0.9rem; font-family: 'JetBrains Mono', monospace; line-height: 1.8; max-width: 280px; margin: 0 auto; margin-bottom: 2.5rem; text-transform: lowercase;">your credentials has been updated successfully. you can now return to core.</p>
-                <button id="reset-login-btn" class="submit-btn">back to login</button>
+                <div style="flex: 1;"></div>
+                <button id="reset-login-btn" class="submit-btn" style="width: 100%;">back to login</button>
             </div>
         </div>
     </div>
 
-    <script src="reset.js?v=11.5"></script>
+    <script src="reset.js?v=11.6"></script>
     <script src="eye-track.js?v=11.0"></script>
 </body>
 </html>

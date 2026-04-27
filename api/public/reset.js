@@ -106,17 +106,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     const loginBtn = document.getElementById('reset-login-btn');
     const backToLoginInvalidBtn = document.getElementById('back-to-login-invalid');
     
-    if (loginBtn) {
-        loginBtn.addEventListener('click', () => {
-            window.location.href = '/auth';
-        });
-    }
+    const goBack = () => {
+        console.log('[reset] navigating back to auth...');
+        window.location.href = '/auth';
+    };
 
-    if (backToLoginInvalidBtn) {
-        backToLoginInvalidBtn.addEventListener('click', () => {
-            window.location.href = '/auth';
-        });
-    }
+    if (loginBtn) loginBtn.addEventListener('click', goBack);
+    if (backToLoginInvalidBtn) backToLoginInvalidBtn.addEventListener('click', goBack);
 
     // Tooltip logic
     const toggle = document.getElementById('pw-rules-toggle');
