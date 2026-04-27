@@ -37,7 +37,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     } else {
         console.warn('[reset] invalid or expired recovery bridge.');
         if (introText) introText.style.display = 'none';
-        if (invalidState) invalidState.style.display = 'block';
+        if (invalidState) {
+            invalidState.style.display = 'flex';
+        }
     }
 
     // Password Eye Toggles
