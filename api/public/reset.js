@@ -25,15 +25,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.log('[reset] recovery session validated.');
         form.style.display = 'flex';
         
-        // Clean URL: Hyper-aggressive removal of Supabase hash tokens
-        setTimeout(() => {
-            if (window.location.hash || window.location.href.indexOf('#') > -1) {
-                // Dual-method replacement to force browser address bar update
-                window.history.replaceState(null, document.title, window.location.pathname);
-                window.history.pushState(null, document.title, window.location.pathname);
-                window.history.back();
-            }
-        }, 2000);
+        // Clean URL: Hard Reload Scrub (Bulletproof)
+        if (window.location.hash) {
+            window.location.replace(window.location.pathname);
+            return;
+        }
     } else {
         console.warn('[reset] invalid or expired recovery bridge.');
         if (introText) introText.style.display = 'none';
