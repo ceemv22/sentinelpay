@@ -102,8 +102,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     const loginBtn = document.getElementById('reset-login-btn');
+    const backToLoginInvalidBtn = document.getElementById('back-to-login-invalid');
+    
     if (loginBtn) {
         loginBtn.addEventListener('click', () => {
+            window.location.href = '/auth';
+        });
+    }
+
+    if (backToLoginInvalidBtn) {
+        backToLoginInvalidBtn.addEventListener('click', () => {
             window.location.href = '/auth';
         });
     }
