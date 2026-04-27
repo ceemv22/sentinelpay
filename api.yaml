@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   title: SentinelPay API
   description: Real-time wallet risk scoring API for crypto payment flows.
-  version: 3.0.0
+  version: 3.6.0
   contact:
     email: api@sentinelpay.org
 servers:

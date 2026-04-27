@@ -97,6 +97,7 @@ features:
 - [x] google & x (twitter) social login integration
 - [x] email verification & anti-abuse fingerprinting
 - [x] atomic credit protection (race-condition free)
+- [x] S-TIER Password Recovery Flow (Validated 2026-04-27)
 - [x] s-tier security hardening (strict csp, hsts, ddos engine protection)
 
 **phase 4 (upcoming)**

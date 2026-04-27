@@ -25,7 +25,7 @@ info:
     - **User**: Requires `Authorization: Bearer <jwt-token>` (Supabase Auth).
     - **Public**: No authentication (Traffic-limited).
 
-  version: 3.0.0
+  version: 3.6.0
   contact:
     name: sentinelpay
     url: https://sentinelpay.org
