@@ -122,9 +122,11 @@
                 <button type="submit" id="reset-submit-btn" class="submit-btn" style="margin-top: 2.5rem;">update password</button>
             </form>
 
-            <div id="reset-invalid-state" style="display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; width: 100%; min-height: 320px; position: relative;">
-                <p style="color: var(--color-red); font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; line-height: 1.8; text-transform: lowercase; max-width: 250px; margin: 0; transform: translateY(-20px);">recovery link expired or invalid.</p>
-                <button id="back-to-login-invalid" class="submit-btn" style="position: absolute; bottom: 0; left: 0; width: 100%;">back to login</button>
+            <div id="reset-invalid-state" style="display: none; flex-direction: column; align-items: center; text-align: center; width: 100%; min-height: 300px;">
+                <div style="flex: 1;"></div>
+                <p style="color: var(--color-red); font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; line-height: 1.8; text-transform: lowercase; max-width: 250px; margin: 0;">recovery link expired or invalid.</p>
+                <div style="flex: 1;"></div>
+                <button id="back-to-login-invalid" class="submit-btn" style="width: 100%;">back to login</button>
             </div>
 
             <!-- Success State -->
