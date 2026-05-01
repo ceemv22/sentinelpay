@@ -238,7 +238,7 @@ header {
 .input-group {
     display: flex;
     gap: 1rem;
-    margin-bottom: 0;
+    margin-bottom: 1rem;
 }
 
 input {
@@ -565,10 +565,10 @@ button:hover:not(:disabled) {
 .auth-panels-container {
     position: relative;
     flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    overflow-y: auto;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+    align-items: start;
 }
 
 .auth-tabs {
@@ -673,8 +673,7 @@ button:hover:not(:disabled) {
 }
 
 .auth-panel-content.active {
-    display: flex;
-    flex-direction: column;
+    display: block;
     opacity: 1;
     z-index: 2;
 }
