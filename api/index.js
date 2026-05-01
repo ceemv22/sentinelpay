@@ -74,10 +74,12 @@ app.use(helmet({
             "frame-ancestors": ["'none'"],
             "object-src": ["'none'"],
             "upgrade-insecure-requests": [],
-            "worker-src": ["'self'", "blob:"]
+            "worker-src": ["'self'", "blob:"],
+            "trusted-types": ["*", "'allow-duplicates'"]
         }
     },
     crossOriginEmbedderPolicy: false,
+    crossOriginResourcePolicy: { policy: "cross-origin" },
     hsts: {
         maxAge: 31536000,
         includeSubDomains: true,
@@ -241,6 +243,7 @@ async function consumeUnauthCredit(req, res, next) {
 }
 
 // B2B API Limiter
+
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000,
     max: 30,
