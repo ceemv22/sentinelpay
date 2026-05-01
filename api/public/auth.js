@@ -251,7 +251,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const { error } = await s.auth.signInWithPassword({ email, password });
             if (error) {
-                errorMsg.textContent = 'error: ' + error.message.toLowerCase();
+                errorMsg.textContent = 'error: wrong credentials';
                 errorMsg.style.display = 'block';
                 btn.disabled = false;
                 btn.textContent = 'login';
