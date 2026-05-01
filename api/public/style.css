@@ -1142,6 +1142,12 @@ button:hover:not(:disabled) {
     margin-top: 0;
 }
 
+/* Inside auth forms, use tighter margin (2rem is for the public scanner homepage) */
+.auth-form .cf-turnstile,
+.auth-card .cf-turnstile {
+    margin-top: 1.2rem;
+}
+
 /* ==========================================================================
    RESET PAGE STATES (Desktop UI Polish)
    ========================================================================== */
@@ -1250,6 +1256,6 @@ button:hover:not(:disabled) {
    ========================================================================== */
 @media (min-width: 601px) {
     .auth-card {
-        min-height: 680px;
+        min-height: 720px;
     }
 }
