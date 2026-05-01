@@ -213,8 +213,23 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.textContent = 'creating account...';
             errorMsg.style.display = 'none';
 
-            const { error } = await s.auth.signUp({ email, password });
+            const turnstileToken = document.querySelector('#turnstile-register [name="cf-turnstile-response"]')?.value;
+            if (!turnstileToken) {
+                errorMsg.textContent = 'error: please complete the security captcha.';
+                errorMsg.style.display = 'block';
+                btn.disabled = false;
+                btn.textContent = 'create account';
+                return;
+            }
+
+            const { error } = await s.auth.signUp({ 
+                email, 
+                password,
+                options: { captchaToken: turnstileToken }
+            });
+            
             if (error) {
+                if (window.turnstile) window.turnstile.reset('#turnstile-register');
                 errorMsg.textContent = 'error: ' + error.message.toLowerCase();
                 errorMsg.style.display = 'block';
                 btn.disabled = false;
@@ -249,8 +264,23 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.textContent = 'verifying...';
             errorMsg.style.display = 'none';
 
-            const { error } = await s.auth.signInWithPassword({ email, password });
+            const turnstileToken = document.querySelector('#turnstile-login [name="cf-turnstile-response"]')?.value;
+            if (!turnstileToken) {
+                errorMsg.textContent = 'error: please complete the security captcha.';
+                errorMsg.style.display = 'block';
+                btn.disabled = false;
+                btn.textContent = 'login';
+                return;
+            }
+
+            const { error } = await s.auth.signInWithPassword({ 
+                email, 
+                password,
+                options: { captchaToken: turnstileToken }
+            });
+            
             if (error) {
+                if (window.turnstile) window.turnstile.reset('#turnstile-login');
                 errorMsg.textContent = 'error: wrong credentials';
                 errorMsg.style.display = 'block';
                 btn.disabled = false;
@@ -371,12 +401,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 btn.disabled = true;
                 errorMsg.style.display = 'none';
 
+                const turnstileToken = document.querySelector('#turnstile-forgot [name="cf-turnstile-response"]')?.value;
+                if (!turnstileToken) {
+                    errorMsg.textContent = 'error: please complete the security captcha.';
+                    errorMsg.style.display = 'block';
+                    btn.textContent = 'send reset link';
+                    btn.disabled = false;
+                    return;
+                }
+
                 const s = getSupabase();
                 const { error } = await s.auth.resetPasswordForEmail(emailInput, {
                     redirectTo: window.location.origin + '/reset',
+                    captchaToken: turnstileToken
                 });
 
                 if (error) {
+                    if (window.turnstile) window.turnstile.reset('#turnstile-forgot');
                     errorMsg.textContent = 'error: ' + error.message.toLowerCase();
                     errorMsg.style.display = 'block';
                     btn.textContent = 'send reset link';

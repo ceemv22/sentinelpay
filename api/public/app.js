@@ -139,11 +139,30 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers['Authorization'] = `Bearer ${cachedSession.access_token}`;
             }
 
+            let bodyData = { wallet };
+            
+            // Only public score needs turnstile token
+            if (!cachedSession) {
+                const turnstileToken = document.querySelector('[name="cf-turnstile-response"]')?.value;
+                if (!turnstileToken) {
+                    showError('error: please complete the security captcha.');
+                    btn.disabled = false;
+                    btn.textContent = 'scan wallet';
+                    return;
+                }
+                bodyData['cf-turnstile-response'] = turnstileToken;
+            }
+
             const response = await fetch(endpoint, {
                 method: 'POST',
                 headers: headers,
-                body: JSON.stringify({ wallet })
+                body: JSON.stringify(bodyData)
             });
+
+            // Reset turnstile after attempt
+            if (!cachedSession && window.turnstile) {
+                window.turnstile.reset();
+            }
 
             const data = await response.json();
 

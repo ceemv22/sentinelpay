@@ -50,11 +50,12 @@ app.use(helmet({
     contentSecurityPolicy: {
         directives: {
             "default-src": ["'self'"],
-            "script-src": ["'self'", "https://aivqwkgjdpklxxuvkxpy.supabase.co"],
+            "script-src": ["'self'", "https://aivqwkgjdpklxxuvkxpy.supabase.co", "https://challenges.cloudflare.com"],
             "style-src": ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
             "font-src": ["'self'", "https://fonts.gstatic.com"],
             "img-src": ["'self'", "data:", "https://aivqwkgjdpklxxuvkxpy.supabase.co"],
             "connect-src": ["'self'", "https://aivqwkgjdpklxxuvkxpy.supabase.co", "wss://aivqwkgjdpklxxuvkxpy.supabase.co", "https://api.etherscan.io"],
+            "frame-src": ["'self'", "https://challenges.cloudflare.com"],
             "base-uri": ["'self'"],
             "form-action": ["'self'"],
             "frame-ancestors": ["'none'"],
@@ -255,6 +256,50 @@ async function logAudit(req, wallet, result, apiKeyId = null) {
     }
 }
 
+// CAPTCHA Middleware (Cloudflare Turnstile)
+async function verifyTurnstile(req, res, next) {
+    const token = req.body['cf-turnstile-response'];
+    const ip = req.ip || req.connection.remoteAddress;
+    const secret = process.env.TURNSTILE_SECRET_KEY;
+
+    if (!secret) {
+        if (isProduction) {
+            console.error('[turnstile] Missing TURNSTILE_SECRET_KEY in production!');
+            return res.status(500).json({ error: 'captcha configuration error', code: 500 });
+        }
+        // Bypass in dev if no secret configured
+        return next();
+    }
+
+    if (!token) {
+        return res.status(403).json({ error: 'captcha verification required', code: 403, requiresAuth: true });
+    }
+
+    try {
+        const formData = new URLSearchParams();
+        formData.append('secret', secret);
+        formData.append('response', token);
+        formData.append('remoteip', ip);
+
+        const verifyRes = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+            method: 'POST',
+            body: formData,
+        });
+
+        const outcome = await verifyRes.json();
+        
+        if (outcome.success) {
+            return next();
+        } else {
+            console.warn(`[turnstile] verification failed for IP ${ip}:`, outcome['error-codes']);
+            return res.status(403).json({ error: 'captcha verification failed', code: 403, requiresAuth: true });
+        }
+    } catch (err) {
+        console.error('[turnstile error]', err);
+        return res.status(500).json({ error: 'failed to verify captcha', code: 500 });
+    }
+}
+
 // B2B Protected Endpoint
 app.post('/v1/score', requireRateLimitBackend, limiter, requireApiKey, async (req, res) => {
     const { wallet } = req.body;
@@ -280,7 +325,7 @@ app.post('/v1/score', requireRateLimitBackend, limiter, requireApiKey, async (re
 });
 
 // PLG Public Endpoint (Unauth)
-app.post('/v1/public/score', requireRateLimitBackend, consumeUnauthCredit, async (req, res) => {
+app.post('/v1/public/score', requireRateLimitBackend, consumeUnauthCredit, verifyTurnstile, async (req, res) => {
     const { wallet } = req.body;
     if (!wallet || wallet.length > 128 || !/^0x[a-fA-F0-9]{40}$/.test(wallet)) {
         return res.status(400).json({ error: 'invalid wallet address format', code: 400 });
