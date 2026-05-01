@@ -557,7 +557,7 @@ button:hover:not(:disabled) {
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 16px;
     box-shadow: 0 40px 80px -15px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-    min-height: 540px; /* Locked and optimized for 420px width */
+    min-height: 640px; /* Updated for Turnstile widget height (~65px) */
     display: flex;
     flex-direction: column;
 }
@@ -1121,6 +1121,25 @@ button:hover:not(:disabled) {
     max-width: 280px !important;
     margin: 0 auto 2.5rem auto !important;
     font-size: 0.85rem !important;
+}
+
+/* ==========================================================================
+   CLOUDFLARE TURNSTILE WIDGET LAYOUT
+   ========================================================================== */
+
+/* Reserve consistent vertical space so the widget doesn't cause layout shift */
+.cf-turnstile {
+    min-height: 65px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+/* Collapse gracefully if widget hasn't loaded yet */
+.cf-turnstile:empty {
+    min-height: 0;
+    margin-top: 0;
 }
 
 /* ==========================================================================
