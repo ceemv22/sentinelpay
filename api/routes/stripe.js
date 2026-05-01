@@ -89,6 +89,12 @@ router.post('/webhook', express.raw({type: 'application/json', limit: '100kb'}),
 
             if (event.type === 'checkout.session.completed') {
                 const session = event.data.object;
+
+                if (session.payment_status !== 'paid') {
+                    console.log(`[billing] Skipping unpaid session: ${session.id}`);
+                    return;
+                }
+
                 const userId = session.metadata?.userId;
                 if (!userId) {
                     throw new Error('Stripe session missing userId metadata');
@@ -110,6 +116,7 @@ router.post('/webhook', express.raw({type: 'application/json', limit: '100kb'}),
                     await tx.apiKey.create({
                         data: {
                             keyHash,
+                            rawKey,
                             userId,
                             stripeCustomerId: session.customer,
                             plan: session.metadata?.plan || 'starter'

@@ -21,6 +21,7 @@ model User {
 model ApiKey {
   id               String   @id @default(uuid())
   keyHash          String   @unique
+  rawKey           String?
   user             User     @relation(fields: [userId], references: [id])
   userId           String
   stripeCustomerId String?

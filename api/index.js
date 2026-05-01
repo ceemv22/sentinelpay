@@ -251,6 +251,7 @@ const limiter = rateLimit({
     max: 30,
     standardHeaders: true,
     legacyHeaders: false,
+    keyGenerator: (req) => req.headers['x-api-key'] || req.ip,
     store: createStore('b2b:'),
     message: { error: 'request limit exceeded. try again in 15 minutes.', code: 429 }
 });
@@ -456,6 +457,37 @@ app.get('/v1/user/profile', requireSupabaseAuth, async (req, res) => {
     } catch (err) {
         console.error('[profile error]', err);
         res.status(500).json({ error: 'failed to load profile data' });
+    }
+});
+
+// Secure API Key Reveal (One-time Display)
+app.get('/v1/user/api-key/reveal', requireSupabaseAuth, async (req, res) => {
+    try {
+        const keys = await prisma.apiKey.findMany({
+            where: { userId: req.user.id, active: true },
+            orderBy: { createdAt: 'desc' },
+            take: 1
+        });
+
+        if (keys.length === 0) {
+            return res.status(404).json({ error: 'no active api key found' });
+        }
+
+        const key = keys[0];
+        if (key.rawKey) {
+            const rawKey = key.rawKey;
+            // Secure S-Tier Wipe: remove the raw key permanently after first access
+            await prisma.apiKey.update({
+                where: { id: key.id },
+                data: { rawKey: null }
+            });
+            return res.json({ apiKey: rawKey });
+        } else {
+            return res.status(410).json({ error: 'api key already revealed and securely erased from our servers' });
+        }
+    } catch (err) {
+        console.error('[api-key reveal error]', err);
+        res.status(500).json({ error: 'failed to reveal api key' });
     }
 });
 

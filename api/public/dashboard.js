@@ -28,6 +28,38 @@ document.addEventListener('DOMContentLoaded', async () => {
         window.location.href = '/';
     });
 
+    // 2.5 Setup API Key Reveal
+    document.getElementById('btn-reveal-key').addEventListener('click', async () => {
+        try {
+            const btn = document.getElementById('btn-reveal-key');
+            btn.textContent = 'revealing...';
+            btn.disabled = true;
+
+            const res = await fetch('/v1/user/api-key/reveal', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const result = await res.json();
+            
+            if (res.ok && result.apiKey) {
+                document.getElementById('api-key-display').textContent = result.apiKey;
+                btn.style.display = 'none';
+                if (window.showToast) window.showToast('API Key revealed! Save it securely, it will NOT be shown again.', 'success');
+                else alert('API Key revealed! Save it securely, it will NOT be shown again.');
+            } else {
+                if (window.showToast) window.showToast(result.error || 'Failed to reveal key', 'error');
+                else alert(result.error || 'Failed to reveal key');
+                btn.textContent = 'reveal';
+                btn.disabled = false;
+            }
+        } catch (err) {
+            console.error(err);
+            if (window.showToast) window.showToast('Network error revealing key', 'error');
+            else alert('Network error revealing key');
+            document.getElementById('btn-reveal-key').textContent = 'reveal';
+            document.getElementById('btn-reveal-key').disabled = false;
+        }
+    });
+
     // 3. Fetch Dashboard Data
     try {
         const response = await fetch('/v1/user/profile', {

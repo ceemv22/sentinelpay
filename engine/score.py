@@ -54,16 +54,15 @@ def fetch_etherscan(params, timeout=REQUEST_TIMEOUT):
         raise UpstreamDataError(f"etherscan error: {e}") from e
 
 def fetch_all_relevant_txs(wallet, api_key):
-    # OWASP S-Tier Hardening: We limit the scan depth to the latest 200 transactions.
-    # This provides a statistically significant sample for risk analysis while 
-    # preventing Resource Exhaustion (DDoS) attacks from extremely deep wallets.
+    # OWASP S-Tier Hardening: We increase the scan depth to the max 10000 transactions.
+    # This prevents Transaction Flooding (Evasion) attacks where attackers wash their history.
     base_params = {
         "chainid": 1,
         "module": "account",
         "address": wallet,
         "sort": "desc",
         "page": 1,
-        "offset": 200, 
+        "offset": 10000, 
         "apikey": api_key,
         "endblock": 999999999
     }
@@ -104,8 +103,19 @@ def check_mixer_interaction(wallet, normal_txs, internal_txs, token_txs):
         for tx in tx_list:
             to_addr = tx.get("to", "").lower()
             from_addr = tx.get("from", "").lower()
-            if to_addr in mixer_set or from_addr in mixer_set:
+            
+            # S-Tier: Outbound to mixer is always flagged
+            if to_addr in mixer_set:
                 return True
+                
+            # S-Tier: Inbound from mixer is flagged only if value > 10000 wei (prevents dusting attacks)
+            if from_addr in mixer_set:
+                try:
+                    value = int(tx.get("value", "0"))
+                    if value > 10000:
+                        return True
+                except ValueError:
+                    pass
     return False
 
 def check_wallet_age(birth_ts):
