@@ -122,15 +122,15 @@
                 <button type="submit" id="reset-submit-btn" class="submit-btn" style="margin-top: 2.5rem;">update password</button>
             </form>
 
-            <div id="reset-invalid-state" style="display: none; flex-direction: column; align-items: center; text-align: center; width: 100%; min-height: 250px;">
+            <div id="reset-invalid-state" class="reset-state-window" style="display: none; flex-direction: column; align-items: center; text-align: center; width: 100%;">
                 <div style="flex: 1; display: flex; align-items: center; justify-content: center; width: 100%;">
                     <p style="color: var(--color-red); font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; line-height: 1.8; text-transform: lowercase; max-width: 250px; margin: 0;">recovery link expired or invalid.</p>
                 </div>
-                <button id="back-to-login-invalid" class="submit-btn" style="width: 100%; margin-top: auto;">back to login</button>
+                <button id="back-to-login-invalid" class="submit-btn reset-state-btn" style="width: 100%; margin-top: auto;">back to login</button>
             </div>
 
             <!-- Success State -->
-            <div id="reset-success-state" style="display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; width: 100%; min-height: 250px;">
+            <div id="reset-success-state" class="reset-state-window" style="display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; width: 100%;">
                 <div class="success-icon-wrap" style="margin-bottom: 2rem; filter: drop-shadow(0 0 20px rgba(0, 240, 255, 0.25)); display: flex; justify-content: center;">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" style="width: 90px; height: 90px;">
                         <defs>
@@ -149,7 +149,7 @@
                 </div>
                 <h2 style="font-size: 2rem; font-weight: 800; letter-spacing: -1.75px; color: #fff; margin-bottom: 0.8rem; font-family: 'JetBrains Mono', monospace; text-transform: lowercase;">password updated</h2>
                 <p style="color: rgba(255,255,255,0.4); font-size: 0.9rem; font-family: 'JetBrains Mono', monospace; line-height: 1.8; max-width: 280px; margin: 0 auto; margin-bottom: 2.5rem; text-transform: lowercase;">your credentials has been updated successfully. you can now return to core.</p>
-                <button id="reset-login-btn" class="submit-btn" style="width: 100%; margin-top: auto;">back to login</button>
+                <button id="reset-login-btn" class="submit-btn reset-state-btn" style="width: 100%; margin-top: auto;">back to login</button>
             </div>
         </div>
     </div>

@@ -1124,6 +1124,28 @@ button:hover:not(:disabled) {
 }
 
 /* ==========================================================================
+   RESET PAGE STATES (Desktop UI Polish)
+   ========================================================================== */
+
+.reset-state-window {
+    min-height: 250px;
+}
+
+@media (min-width: 769px) {
+    .reset-state-window {
+        flex: 1;
+        justify-content: center;
+        padding-top: 1rem;
+    }
+    .reset-state-btn {
+        max-width: 280px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        margin-bottom: 0.5rem !important;
+    }
+}
+
+/* ==========================================================================
    TOAST NOTIFICATIONS (Phase 5 - S-Tier UX)
    ========================================================================== */
 
