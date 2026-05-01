@@ -739,16 +739,15 @@ button:hover:not(:disabled) {
 .auth-agreement {
     margin: 1.5rem 0;
     font-size: 0.72rem;
-    color: rgba(255, 255, 255, 0.4); /* Subtler non-link text */
+    color: rgba(255, 255, 255, 0.4);
     font-family: 'JetBrains Mono', monospace;
     line-height: 1.8;
     text-align: center;
-    width: 100% !important;
-    max-width: 100% !important;
-    min-height: 2.8rem;
-    display: block !important;
+    width: 100%;
     box-sizing: border-box;
-    padding: 0 1.25rem;
+    padding: 0 1rem;
+    white-space: normal;
+    word-wrap: break-word;
 }
 
 .auth-agreement a {
@@ -1057,26 +1056,7 @@ button:hover:not(:disabled) {
 }
 
 
-/* --- Auth Panels & Tab Logic --- */
-.auth-panels-container {
-    display: grid;
-    position: relative;
-    width: 100%;
-}
 
-.auth-panel-content {
-    grid-area: 1 / 1;
-    display: none;
-    opacity: 0;
-    transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    width: 100%;
-}
-
-.auth-panel-content.active {
-    display: block;
-    opacity: 1;
-    z-index: 2;
-}
 
 /* --- S-TIER SUCCESS STATE (v15.5 - RECONSTRUCTED) --- */
 #auth-success-state,
