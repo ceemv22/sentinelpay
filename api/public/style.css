@@ -557,7 +557,7 @@ button:hover:not(:disabled) {
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 16px;
     box-shadow: 0 40px 80px -15px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-    min-height: 640px; /* Updated for Turnstile widget height (~65px) */
+    min-height: 540px; /* Locked and optimized for 420px width */
     display: flex;
     flex-direction: column;
 }
@@ -568,7 +568,7 @@ button:hover:not(:disabled) {
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: 1fr;
-    align-items: start;
+    align-items: center;
 }
 
 .auth-tabs {
@@ -1241,5 +1241,15 @@ button:hover:not(:disabled) {
     }
     .sentinel-toast.show {
         transform: translateY(0);
+    }
+}
+
+/* ==========================================================================
+   AUTH CARD — DESKTOP TURNSTILE ACCOMMODATION
+   Only affects desktop (>600px). Mobile has min-height: auto !important
+   ========================================================================== */
+@media (min-width: 601px) {
+    .auth-card {
+        min-height: 680px;
     }
 }
