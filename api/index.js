@@ -56,7 +56,8 @@ app.use(helmet({
                 "'unsafe-eval'", 
                 "https://aivqwkgjdpklxxuvkxpy.supabase.co", 
                 "https://challenges.cloudflare.com",
-                "blob:"
+                "blob:",
+                "about:"
             ],
             "style-src": ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
             "font-src": ["'self'", "https://fonts.gstatic.com"],
@@ -68,7 +69,7 @@ app.use(helmet({
                 "https://api.etherscan.io",
                 "https://challenges.cloudflare.com"
             ],
-            "frame-src": ["'self'", "https://challenges.cloudflare.com"],
+            "frame-src": ["'self'", "https://challenges.cloudflare.com", "blob:", "about:"],
             "base-uri": ["'self'"],
             "form-action": ["'self'"],
             "frame-ancestors": ["'none'"],
@@ -80,6 +81,7 @@ app.use(helmet({
     },
     crossOriginEmbedderPolicy: false,
     crossOriginResourcePolicy: { policy: "cross-origin" },
+    crossOriginOpenerPolicy: false,
     hsts: {
         maxAge: 31536000,
         includeSubDomains: true,
@@ -87,9 +89,9 @@ app.use(helmet({
     }
 }));
 
-// Suppress Permissions Policy warnings from Cloudflare scripts
+// Suppress Permissions Policy warnings from Cloudflare and third-party scripts
 app.use((req, res, next) => {
-    res.setHeader('Permissions-Policy', 'xr-spatial-tracking=(), interest-cohort=()');
+    res.setHeader('Permissions-Policy', 'xr-spatial-tracking=*, camera=(), microphone=(), geolocation=(), interest-cohort=()');
     next();
 });
 app.use(cors({
