@@ -1254,11 +1254,7 @@ button:hover:not(:disabled) {
 }
 
 /* ==========================================================================
-   AUTH CARD — DESKTOP TURNSTILE ACCOMMODATION
-   Only affects desktop (>600px). Mobile has min-height: auto !important
+   AUTH CARD — DESKTOP BASELINE
+   Mobile has min-height: auto !important in its own media query.
+   Turnstile is interaction-only (invisible), so no extra height needed.
    ========================================================================== */
-@media (min-width: 601px) {
-    .auth-card {
-        min-height: 720px;
-    }
-}
