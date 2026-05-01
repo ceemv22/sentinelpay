@@ -45,8 +45,34 @@ document.addEventListener('DOMContentLoaded', async () => {
     // CSP Fix: Setup Reveal Key Button
     const revealBtn = document.getElementById('btn-reveal-key');
     if (revealBtn) {
-        revealBtn.addEventListener('click', () => {
-            if (window.SentinelToast) window.SentinelToast.show('Creating B2B keys coming in Phase 3', 'info');
+        revealBtn.addEventListener('click', async () => {
+            try {
+                revealBtn.textContent = 'revealing...';
+                revealBtn.disabled = true;
+
+                const res = await fetch('/v1/user/api-key/reveal', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const result = await res.json();
+                
+                if (res.ok && result.apiKey) {
+                    document.getElementById('api-key-display').textContent = result.apiKey;
+                    revealBtn.style.display = 'none';
+                    if (window.SentinelToast) window.SentinelToast.show('API Key revealed! Save it securely, it will NOT be shown again.', 'success');
+                    else alert('API Key revealed! Save it securely, it will NOT be shown again.');
+                } else {
+                    if (window.SentinelToast) window.SentinelToast.show(result.error || 'Failed to reveal key', 'error');
+                    else alert(result.error || 'Failed to reveal key');
+                    revealBtn.textContent = 'reveal';
+                    revealBtn.disabled = false;
+                }
+            } catch (err) {
+                console.error(err);
+                if (window.SentinelToast) window.SentinelToast.show('Network error revealing key', 'error');
+                else alert('Network error revealing key');
+                revealBtn.textContent = 'reveal';
+                revealBtn.disabled = false;
+            }
         });
     }
 
