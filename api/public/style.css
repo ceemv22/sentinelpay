@@ -710,7 +710,6 @@ button:hover:not(:disabled) {
     font-size: 0.72rem;
     color: var(--text-muted);
     text-transform: lowercase;
-    margin-left: 2px;
     margin-bottom: 0.5rem;
     letter-spacing: 0.5px;
     text-align: left;
@@ -881,11 +880,12 @@ button:hover:not(:disabled) {
     position: relative;
     z-index: 10;
     width: 100%;
-    max-width: 420px;
+    /* No max-width here to allow the child auth-card to breathe */
     padding: 2rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center; /* Explicitly center children horizontally */
     min-height: 100vh;
 }
 
@@ -1130,10 +1130,11 @@ button:hover:not(:disabled) {
 /* Reserve consistent vertical space so the widget doesn't cause layout shift */
 .cf-turnstile {
     min-height: 65px;
+    width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 2rem; /* More breathing room on desktop between input row and CAPTCHA */
+    margin-top: 2rem;
 }
 
 /* Collapse gracefully if widget hasn't loaded yet */
@@ -1142,13 +1143,16 @@ button:hover:not(:disabled) {
     margin-top: 0;
 }
 
-/* Inside auth forms — interaction-only mode: zero footprint when invisible */
+/* Inside auth forms - interaction-only mode: zero footprint when invisible */
 .auth-form .cf-turnstile,
 .auth-card .cf-turnstile {
     min-height: 0;
     margin-top: 0;
     height: 0;
+    width: 100%;
     overflow: hidden;
+    display: flex;
+    justify-content: center;
 }
 
 /* When Cloudflare injects an iframe (challenge required), expand gracefully */
@@ -1164,6 +1168,7 @@ button:hover:not(:disabled) {
     align-items: center;
     animation: turnstileFadeIn 0.3s ease-out;
 }
+
 
 @keyframes turnstileFadeIn {
     from { opacity: 0; transform: translateY(-6px); }

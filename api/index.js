@@ -50,25 +50,46 @@ app.use(helmet({
     contentSecurityPolicy: {
         directives: {
             "default-src": ["'self'"],
-            "script-src": ["'self'", "https://aivqwkgjdpklxxuvkxpy.supabase.co", "https://challenges.cloudflare.com"],
+            "script-src": [
+                "'self'", 
+                "'unsafe-inline'", 
+                "'unsafe-eval'", 
+                "https://aivqwkgjdpklxxuvkxpy.supabase.co", 
+                "https://challenges.cloudflare.com",
+                "blob:"
+            ],
             "style-src": ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
             "font-src": ["'self'", "https://fonts.gstatic.com"],
             "img-src": ["'self'", "data:", "https://aivqwkgjdpklxxuvkxpy.supabase.co"],
-            "connect-src": ["'self'", "https://aivqwkgjdpklxxuvkxpy.supabase.co", "wss://aivqwkgjdpklxxuvkxpy.supabase.co", "https://api.etherscan.io"],
+            "connect-src": [
+                "'self'", 
+                "https://aivqwkgjdpklxxuvkxpy.supabase.co", 
+                "wss://aivqwkgjdpklxxuvkxpy.supabase.co", 
+                "https://api.etherscan.io",
+                "https://challenges.cloudflare.com"
+            ],
             "frame-src": ["'self'", "https://challenges.cloudflare.com"],
             "base-uri": ["'self'"],
             "form-action": ["'self'"],
             "frame-ancestors": ["'none'"],
             "object-src": ["'none'"],
-            "upgrade-insecure-requests": []
+            "upgrade-insecure-requests": [],
+            "worker-src": ["'self'", "blob:"]
         }
     },
+    crossOriginEmbedderPolicy: false,
     hsts: {
         maxAge: 31536000,
         includeSubDomains: true,
         preload: true
     }
 }));
+
+// Suppress Permissions Policy warnings from Cloudflare scripts
+app.use((req, res, next) => {
+    res.setHeader('Permissions-Policy', 'xr-spatial-tracking=(), interest-cohort=()');
+    next();
+});
 app.use(cors({
     origin: (origin, callback) => {
         if (allowedOrigins.includes('*')) {
