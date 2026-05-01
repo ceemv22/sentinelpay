@@ -46,14 +46,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     const revealBtn = document.getElementById('btn-reveal-key');
     if (revealBtn) {
         revealBtn.addEventListener('click', () => {
-            alert('creating b2b keys coming in phase 3');
+            if (window.SentinelToast) window.SentinelToast.show('Creating B2B keys coming in Phase 3', 'info');
         });
     }
 
     const buyBtn = document.getElementById('btn-buy-credits');
     if (buyBtn) {
         buyBtn.addEventListener('click', () => {
-            alert('stripe integration coming in phase 3');
+            if (window.SentinelToast) window.SentinelToast.show('Stripe connection offline. Phase 3 rollout pending.', 'info');
         });
     }
 

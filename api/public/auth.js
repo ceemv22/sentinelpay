@@ -133,6 +133,17 @@ window.handleResendHandshake = async (type = 'signup') => {
 
 // 4. CORE INITIALIZATION
 document.addEventListener('DOMContentLoaded', () => {
+    // Intercept Double-Verification Errors before scrubbing
+    const interceptAuthErrors = () => {
+        const hash = window.location.hash;
+        if (hash && hash.includes('error_description=Email+link+is+invalid+or+has+expired')) {
+            if (window.SentinelToast) {
+                window.SentinelToast.show("Verification link expired or already used. Please login.", "warning");
+            }
+        }
+    };
+    interceptAuthErrors();
+
     // 0. ULTIMATE HASH SCRUBBER (Aggressively kills # trailing fragments)
     const scrubHash = () => {
         if (window.location.href.indexOf('#') > -1) {

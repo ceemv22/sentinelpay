@@ -1122,3 +1122,83 @@ button:hover:not(:disabled) {
     margin: 0 auto 2.5rem auto !important;
     font-size: 0.85rem !important;
 }
+
+/* ==========================================================================
+   TOAST NOTIFICATIONS (Phase 5 - S-Tier UX)
+   ========================================================================== */
+
+.sentinel-toast-container {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 99999;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    pointer-events: none; /* Let clicks pass through empty areas */
+}
+
+.sentinel-toast {
+    background: rgba(10, 12, 15, 0.85);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 1rem 1.5rem;
+    color: #fff;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    transform: translateX(120%);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s;
+    opacity: 0;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    pointer-events: auto; /* Re-enable clicks for the toast itself */
+    max-width: 380px;
+}
+
+.sentinel-toast.show {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.sentinel-toast .toast-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+.sentinel-toast .toast-message {
+    line-height: 1.5;
+}
+
+.sentinel-toast.error, .sentinel-toast.warning { border-color: rgba(255, 51, 51, 0.3); }
+.sentinel-toast.error .toast-icon, .sentinel-toast.warning .toast-icon { color: var(--color-red); }
+
+.sentinel-toast.success { border-color: rgba(0, 255, 136, 0.3); }
+.sentinel-toast.success .toast-icon { color: var(--color-green); }
+
+.sentinel-toast.info { border-color: rgba(0, 213, 255, 0.3); }
+.sentinel-toast.info .toast-icon { color: var(--color-blue); }
+
+@media (max-width: 480px) {
+    .sentinel-toast-container {
+        bottom: auto;
+        top: 1rem;
+        right: 1rem;
+        left: 1rem;
+        align-items: center;
+    }
+    .sentinel-toast {
+        transform: translateY(-120%);
+        width: 100%;
+        max-width: none;
+        padding: 0.85rem 1.25rem;
+        font-size: 0.8rem;
+    }
+    .sentinel-toast.show {
+        transform: translateY(0);
+    }
+}
