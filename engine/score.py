@@ -108,11 +108,11 @@ def check_mixer_interaction(wallet, normal_txs, internal_txs, token_txs):
             if to_addr in mixer_set:
                 return True
                 
-            # S-Tier: Inbound from mixer is flagged only if value > 10000 wei (prevents dusting attacks)
+            # S-Tier: Inbound from mixer is flagged only if value > 0.001 ETH (prevents dusting attacks)
             if from_addr in mixer_set:
                 try:
                     value = int(tx.get("value", "0"))
-                    if value > 10000:
+                    if value > 1000000000000000: # 0.001 ETH in wei
                         return True
                 except ValueError:
                     pass
