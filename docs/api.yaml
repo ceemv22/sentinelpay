@@ -1,29 +1,29 @@
 openapi: 3.0.0
 info:
-  title: sentinelpay risk scoring API
+  title: sentinelpay risk scoring api
   description: |
     ## real-time pre-deposit wallet risk evaluation
-    **S-TIER SECURITY CERTIFIED (Audit 2026-04-21)**
+    **s-tier security certified**
 
     sentinelpay is a lightweight risk decision layer for crypto payment flows.
     it scores wallet addresses before funds are accepted, helping platforms reject
     deposits from malicious actors, mixer funds, and sanctioned addresses.
 
     ### phase 3.0 capabilities
-    - heuristics-based scoring across ETH, internal, and ERC-20 token transfers
+    - heuristics-based scoring across eth, internal, and erc-20 token transfers
     - four core risk signals with descending-priority risk analysis
-    - authenticated B2B API (API Keys) + User API (Supabase Bearer JWT)
-    - designed for high-risk verticals (crypto casinos, OTC desks)
+    - authenticated b2b api (api keys) + user api (supabase bearer jwt)
+    - designed for high-risk verticals (crypto casinos, otc desks)
 
     ### rate limits
-    - **B2B API**: 30 requests per 15 minutes per IP (authenticated via x-api-key)
-    - **Public API**: Strictly rate-limited via Dual-Layer Fingerprinting (3 free scans)
-    - **User API**: Credit-based (decrementing on verify)
+    - **b2b api**: 30 requests per 15 minutes per ip (authenticated via x-api-key)
+    - **public api**: strictly rate-limited via dual-layer fingerprinting (3 free scans)
+    - **user api**: credit-based (decrementing on verify)
 
     ### authentication
-    - **B2B**: Requires `x-api-key` header (SHA-256 hashed).
-    - **User**: Requires `Authorization: Bearer <jwt-token>` (Supabase Auth).
-    - **Public**: No authentication (Traffic-limited).
+    - **b2b**: requires `x-api-key` header (sha-256 hashed).
+    - **user**: requires `authorization: bearer <jwt-token>` (supabase auth).
+    - **public**: no authentication (traffic-limited).
 
   version: 3.6.0
   contact:
@@ -44,7 +44,7 @@ servers:
 paths:
   /score:
     post:
-      summary: [B2B] score a wallet address (API Key)
+      summary: [b2b] score a wallet address (api key)
       description: requires valid x-api-key.
       security:
         - ApiKeyAuth: []
@@ -68,8 +68,8 @@ paths:
 
   /user/score:
     post:
-      summary: [User] score a wallet address (Bearer JWT)
-      description: consumes 1 credit. requires Bearer token.
+      summary: [user] score a wallet address (bearer jwt)
+      description: consumes 1 credit. requires bearer token.
       security:
         - BearerAuth: []
       tags:
@@ -109,7 +109,7 @@ paths:
 
   /public/score:
     post:
-      summary: [Public] free risk scan
+      summary: [public] free risk scan
       description: no auth required. strictly rate limited.
       tags:
         - scoring

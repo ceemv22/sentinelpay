@@ -6,11 +6,11 @@
 
 **live at: [sentinelpay.org](https://sentinelpay.org)**
 
-**real-time wallet risk scoring API for crypto payment flows**
+**real-time wallet risk scoring api for crypto payment flows**
 
-score a wallet address before you accept a deposit. one API call returns a risk score, category, and flags — so you can reject bad funds before they hit your platform.
+score a wallet address before you accept a deposit. one api call returns a risk score, category, and flags — so you can reject bad funds before they hit your platform.
 
-built for crypto casinos, high-risk payment platforms, OTC desks, and onchain marketplaces.
+built for crypto casinos, high-risk payment platforms, otc desks, and onchain marketplaces.
 
 ---
 
@@ -24,7 +24,7 @@ the result: financial exposure, compliance risk, and operational overhead.
 
 ## the solution
 
-sentinelpay sits between the wallet and the deposit acceptance. one POST request, instant decision.
+sentinelpay sits between the wallet and the deposit acceptance. one post request, instant decision.
 
 ```
 wallet address → sentinelpay → risk score + flags → accept or reject
@@ -34,11 +34,11 @@ wallet address → sentinelpay → risk score + flags → accept or reject
 
 ## live products (production ready)
 
-### 1. public PLG tool (free risk scanner)
-check any wallet directly via our simple UI without registration at **[sentinelpay.org](https://sentinelpay.org)**.  
-features traffic-light assessment logic (red/yellow/green) with a strict IP-based rate limit.
+### 1. public plg tool (free risk scanner)
+check any wallet directly via our simple ui without registration at **[sentinelpay.org](https://sentinelpay.org)**.  
+features traffic-light assessment logic (red/yellow/green) with a strict ip-based rate limit.
 
-**endpoint:** `POST /v1/public/score` (ip-daily + fingerprint limited)
+**endpoint:** `post /v1/public/score` (ip-daily + fingerprint limited)
 
 ### 2. user dashboard & self-serve
 full self-serve portal for developers and compliance teams.  
@@ -86,19 +86,23 @@ features:
 
 ## roadmap
 
-**phase 2, 2.5 & Security Audit (completed)**
+**phase 2, 2.5 & security audit (completed)**
 - [x] real-time wallet scoring via rest api
 - [x] api key authentication (sha-256 hashed)
 - [x] stripe billing + redis rate limiting
 - [x] postgres audit logging
 - [x] 140+ origin mixer/sanctioned database
-- [x] S-TIER SECURITY CERTIFICATION (Audit confirmed 2026-04-21)
+- [x] s-tier security certification
 - [x] self-serve signup + user dashboard + credit system
 - [x] google & x (twitter) social login integration
 - [x] email verification & anti-abuse fingerprinting
 - [x] atomic credit protection (race-condition free)
-- [x] S-TIER Password Recovery Flow (Validated 2026-04-27)
+- [x] s-tier password recovery flow
 - [x] s-tier security hardening (strict csp, hsts, ddos engine protection)
+- [x] transaction flooding evasion patched
+- [x] dusting attack mitigation applied (0.001 eth threshold)
+- [x] api key sinkhole (one-time reveal)
+- [x] smart contract data poisoning patched
 
 **phase 4 (upcoming)**
 - [ ] solana support
@@ -110,7 +114,7 @@ features:
 ## security (s-tier certified)
 
 sentinelpay is built for maximum production resilience:
-- **injection protection**: strict content-security-policy (csp). no `innerHTML` in frontend.
+- **injection protection**: strict content-security-policy (csp). no `innerhtml` in frontend.
 - **idor protection**: every scan result is bound to a verified uuid; users cannot access each other's data.
 - **ddos protection**: redis rate-limiters (ip/fp/api) + transaction fetch limits in the scoring engine.
 - **privacy**: all api keys are hashed; cleartext keys never touch logs or databases.
