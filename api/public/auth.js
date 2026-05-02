@@ -242,19 +242,36 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            const { error } = await s.auth.signUp({ 
+            const { data, error } = await s.auth.signUp({ 
                 email, 
                 password,
                 options: { captchaToken: turnstileToken }
             });
             
-            if (error) {
+            // Supabase returns a fake user with no identities when email is already taken
+            const isExistingUser = !error && data?.user && data.user.identities?.length === 0;
+
+            if (error || isExistingUser) {
                 if (window.turnstile && window.turnstileRegWidgetId !== undefined) {
                     window.turnstile.remove(window.turnstileRegWidgetId);
                     window.turnstileRegWidgetId = undefined;
                     window.explicitRegToken = null;
                 }
-                errorMsg.textContent = 'error: ' + error.message.toLowerCase();
+
+                let msg = 'error: ';
+                if (isExistingUser) {
+                    // Check if the existing account might be OAuth-based
+                    msg += 'this email is already registered. if you signed up with google or x, use the social login buttons instead.';
+                } else {
+                    const raw = error.message.toLowerCase();
+                    if (raw.includes('already registered') || raw.includes('already been registered')) {
+                        msg += 'this email is already registered. try logging in instead.';
+                    } else {
+                        msg += raw;
+                    }
+                }
+
+                errorMsg.textContent = msg;
                 errorMsg.style.display = 'block';
                 btn.disabled = false;
                 btn.textContent = 'create account';
