@@ -210,7 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 800);
 
         } catch (err) {
-            showError(`[err_code]: ${err.message}`);
+            showError(err.message);
         } finally {
             btn.disabled = false;
             btn.textContent = 'scan wallet';
