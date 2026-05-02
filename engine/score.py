@@ -143,8 +143,14 @@ def check_inbound_outbound_imbalance(wallet, normal_txs):
 def calculate_score_and_flags(wallet, api_key):
     flags = []
     score = 0
+    history_incomplete = False
 
     normal_txs, internal_txs, token_txs = fetch_all_relevant_txs(wallet, api_key)
+    
+    # Check if we hit the 10k limit on any list (Etherscan's hard cap)
+    # If we did, the history is incomplete and could be an evasion attempt.
+    if len(normal_txs) >= 10000 or len(internal_txs) >= 10000 or len(token_txs) >= 10000:
+        history_incomplete = True
     
     # Check if the address ITSELF is sanctioned or a known mixer/scammer
     mixer_set = set(load_mixer_addresses())
@@ -173,7 +179,7 @@ def calculate_score_and_flags(wallet, api_key):
     score = min(score, 100)
     category = "high" if score >= 60 else ("medium" if score >= 30 else "low")
     
-    return score, category, flags
+    return score, category, flags, history_incomplete
 
 def main():
     if len(sys.argv) != 2:
@@ -192,8 +198,13 @@ def main():
         sys.exit(1)
 
     try:
-        score, category, flags = calculate_score_and_flags(wallet, api_key)
-        print(json.dumps({"score": score, "category": category, "flags": flags}))
+        score, category, flags, history_incomplete = calculate_score_and_flags(wallet, api_key)
+        print(json.dumps({
+            "score": score, 
+            "category": category, 
+            "flags": flags,
+            "history_incomplete": history_incomplete
+        }))
     except Exception as e:
         print(json.dumps({"error": f"scoring failed: {str(e)}"}))
         sys.exit(1)

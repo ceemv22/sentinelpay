@@ -16,6 +16,7 @@ require('dotenv').config();
 
 const { runScoringEngine } = require('./services/scorer');
 const prisma = require('./services/db');
+const { decrypt } = require('./services/crypto');
 const requireApiKey = require('./middleware/auth');
 const requireSupabaseAuth = require('./middleware/supabaseAuth');
 
@@ -463,28 +464,40 @@ app.get('/v1/user/profile', requireSupabaseAuth, async (req, res) => {
 // Secure API Key Reveal (One-time Display)
 app.get('/v1/user/api-key/reveal', requireSupabaseAuth, async (req, res) => {
     try {
-        const keys = await prisma.apiKey.findMany({
-            where: { userId: req.user.id, active: true },
-            orderBy: { createdAt: 'desc' },
-            take: 1
+        const result = await prisma.$transaction(async (tx) => {
+            const keys = await tx.apiKey.findMany({
+                where: { userId: req.user.id, active: true },
+                orderBy: { createdAt: 'desc' },
+                take: 1
+            });
+
+            if (keys.length === 0) {
+                return { status: 404, data: { error: 'no active api key found' } };
+            }
+
+            const key = keys[0];
+            if (key.rawKey) {
+                // Decrypt the key before showing it
+                let decryptedKey;
+                try {
+                    decryptedKey = decrypt(key.rawKey);
+                } catch (e) {
+                    console.error('[decrypt error]', e);
+                    return { status: 500, data: { error: 'failed to decrypt key' } };
+                }
+
+                // Secure S-Tier Wipe: remove the raw key permanently after first access
+                await tx.apiKey.update({
+                    where: { id: key.id },
+                    data: { rawKey: null }
+                });
+                return { status: 200, data: { apiKey: decryptedKey } };
+            } else {
+                return { status: 410, data: { error: 'api key already revealed and securely erased from our servers' } };
+            }
         });
 
-        if (keys.length === 0) {
-            return res.status(404).json({ error: 'no active api key found' });
-        }
-
-        const key = keys[0];
-        if (key.rawKey) {
-            const rawKey = key.rawKey;
-            // Secure S-Tier Wipe: remove the raw key permanently after first access
-            await prisma.apiKey.update({
-                where: { id: key.id },
-                data: { rawKey: null }
-            });
-            return res.json({ apiKey: rawKey });
-        } else {
-            return res.status(410).json({ error: 'api key already revealed and securely erased from our servers' });
-        }
+        res.status(result.status).json(result.data);
     } catch (err) {
         console.error('[api-key reveal error]', err);
         res.status(500).json({ error: 'failed to reveal api key' });

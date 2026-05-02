@@ -70,6 +70,8 @@ router.post('/checkout', checkoutJson, requireSupabaseAuth, async (req, res) => 
 });
 
 // Webhook to provision API Keys
+const { encrypt } = require('../services/crypto');
+
 router.post('/webhook', express.raw({type: 'application/json', limit: '100kb'}), async (req, res) => {
     const signature = req.headers['stripe-signature'];
     let event;
@@ -116,7 +118,7 @@ router.post('/webhook', express.raw({type: 'application/json', limit: '100kb'}),
                     await tx.apiKey.create({
                         data: {
                             keyHash,
-                            rawKey,
+                            rawKey: encrypt(rawKey),
                             userId,
                             stripeCustomerId: session.customer,
                             plan: session.metadata?.plan || 'starter'
