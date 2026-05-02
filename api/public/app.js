@@ -124,6 +124,31 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        let bodyData = { wallet };
+
+        if (!cachedSession) {
+            const turnstileToken = document.querySelector('[name="cf-turnstile-response"]')?.value;
+            
+            // If no token, render the CAPTCHA and halt execution
+            if (!turnstileToken) {
+                if (!window.turnstileScannerWidgetId && window.turnstile) {
+                    btn.disabled = true;
+                    btn.textContent = 'please solve captcha...';
+                    window.turnstileScannerWidgetId = window.turnstile.render('#turnstile-scanner', {
+                        sitekey: '0x4AAAAAADGpMozD1QOtWPkP',
+                        theme: 'dark',
+                        callback: function(token) {
+                            btn.disabled = false;
+                            btn.textContent = 'scan wallet';
+                            btn.click(); // Auto-trigger the scan once solved
+                        }
+                    });
+                }
+                return; // Wait for user to solve CAPTCHA
+            }
+            bodyData['cf-turnstile-response'] = turnstileToken;
+        }
+
         resetUI();
         btn.disabled = true;
         btn.textContent = 'scanning...';
@@ -139,20 +164,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers['Authorization'] = `Bearer ${cachedSession.access_token}`;
             }
 
-            let bodyData = { wallet };
-            
-            // Only public score needs turnstile token
-            if (!cachedSession) {
-                const turnstileToken = document.querySelector('[name="cf-turnstile-response"]')?.value;
-                if (!turnstileToken) {
-                    showError('error: please complete the security captcha.');
-                    btn.disabled = false;
-                    btn.textContent = 'scan wallet';
-                    return;
-                }
-                bodyData['cf-turnstile-response'] = turnstileToken;
-            }
-
             const response = await fetch(endpoint, {
                 method: 'POST',
                 headers: headers,
@@ -160,8 +171,8 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             // Reset turnstile after attempt
-            if (!cachedSession && window.turnstile) {
-                window.turnstile.reset();
+            if (!cachedSession && window.turnstile && window.turnstileScannerWidgetId !== undefined) {
+                window.turnstile.reset(window.turnstileScannerWidgetId);
             }
 
             const data = await response.json();

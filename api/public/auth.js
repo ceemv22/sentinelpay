@@ -215,10 +215,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const turnstileToken = document.querySelector('#turnstile-register [name="cf-turnstile-response"]')?.value;
             if (!turnstileToken) {
-                errorMsg.textContent = 'error: please complete the security captcha.';
-                errorMsg.style.display = 'block';
-                btn.disabled = false;
-                btn.textContent = 'create account';
+                if (!window.turnstileRegWidgetId && window.turnstile) {
+                    btn.textContent = 'please solve captcha...';
+                    window.turnstileRegWidgetId = window.turnstile.render('#turnstile-register', {
+                        sitekey: '0x4AAAAAADGpMozD1QOtWPkP',
+                        theme: 'dark',
+                        callback: function() {
+                            btn.disabled = false;
+                            btn.click();
+                        }
+                    });
+                }
                 return;
             }
 
@@ -229,7 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             
             if (error) {
-                if (window.turnstile) window.turnstile.reset('#turnstile-register');
+                if (window.turnstile && window.turnstileRegWidgetId !== undefined) window.turnstile.reset(window.turnstileRegWidgetId);
                 errorMsg.textContent = 'error: ' + error.message.toLowerCase();
                 errorMsg.style.display = 'block';
                 btn.disabled = false;
@@ -266,10 +273,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const turnstileToken = document.querySelector('#turnstile-login [name="cf-turnstile-response"]')?.value;
             if (!turnstileToken) {
-                errorMsg.textContent = 'error: please complete the security captcha.';
-                errorMsg.style.display = 'block';
-                btn.disabled = false;
-                btn.textContent = 'login';
+                if (!window.turnstileLoginWidgetId && window.turnstile) {
+                    btn.textContent = 'please solve captcha...';
+                    window.turnstileLoginWidgetId = window.turnstile.render('#turnstile-login', {
+                        sitekey: '0x4AAAAAADGpMozD1QOtWPkP',
+                        theme: 'dark',
+                        callback: function() {
+                            btn.disabled = false;
+                            btn.click();
+                        }
+                    });
+                }
                 return;
             }
 
@@ -280,7 +294,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             
             if (error) {
-                if (window.turnstile) window.turnstile.reset('#turnstile-login');
+                if (window.turnstile && window.turnstileLoginWidgetId !== undefined) window.turnstile.reset(window.turnstileLoginWidgetId);
                 errorMsg.textContent = 'error: wrong credentials';
                 errorMsg.style.display = 'block';
                 btn.disabled = false;
@@ -403,10 +417,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const turnstileToken = document.querySelector('#turnstile-forgot [name="cf-turnstile-response"]')?.value;
                 if (!turnstileToken) {
-                    errorMsg.textContent = 'error: please complete the security captcha.';
-                    errorMsg.style.display = 'block';
-                    btn.textContent = 'send reset link';
-                    btn.disabled = false;
+                    if (!window.turnstileForgotWidgetId && window.turnstile) {
+                        btn.textContent = 'please solve captcha...';
+                        window.turnstileForgotWidgetId = window.turnstile.render('#turnstile-forgot', {
+                            sitekey: '0x4AAAAAADGpMozD1QOtWPkP',
+                            theme: 'dark',
+                            callback: function() {
+                                btn.disabled = false;
+                                btn.click();
+                            }
+                        });
+                    }
                     return;
                 }
 
@@ -417,7 +438,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
                 if (error) {
-                    if (window.turnstile) window.turnstile.reset('#turnstile-forgot');
+                    if (window.turnstile && window.turnstileForgotWidgetId !== undefined) window.turnstile.reset(window.turnstileForgotWidgetId);
                     errorMsg.textContent = 'error: ' + error.message.toLowerCase();
                     errorMsg.style.display = 'block';
                     btn.textContent = 'send reset link';
