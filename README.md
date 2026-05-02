@@ -19,7 +19,7 @@
 
 ---
 
-## ⚡ the protocol
+## the protocol
 
 most crypto platforms evaluate risk retroactively. by the time a wallet is flagged, the deposit has already settled, triggering compliance breaches, frozen exchange accounts, and operational nightmares. 
 
@@ -46,7 +46,7 @@ sequenceDiagram
 
 ---
 
-## 🚀 integration (b2b)
+## integration (b2b)
 
 integration takes less than 5 minutes. grab your api key from the [dashboard](https://sentinelpay.org/dashboard) and inject it into your payment flow.
 
@@ -70,7 +70,7 @@ curl -X POST https://sentinelpay.org/v1/score \
 
 ---
 
-## 🛡️ risk vectors (v3.0)
+## risk vectors (v3.0)
 
 our proprietary engine analyzes deep historical data across eth, internal, and erc-20 token transfers.
 
@@ -86,7 +86,7 @@ our proprietary engine analyzes deep historical data across eth, internal, and e
 
 ---
 
-## 🔒 enterprise security (s-tier certified)
+## enterprise security (s-tier certified)
 
 we handle the security so you can handle the volume. sentinelpay is subjected to rigorous internal penetration testing.
 
@@ -97,7 +97,7 @@ we handle the security so you can handle the volume. sentinelpay is subjected to
 
 ---
 
-## 💻 self-hosting & local development
+## self-hosting & local development
 
 want to run the engine locally or contribute?
 
@@ -123,7 +123,7 @@ npm run dev
 
 ---
 
-## 🌐 ecosystem
+## ecosystem
 
 | platform | link |
 |----------|------|
@@ -133,8 +133,3 @@ npm run dev
 | **x / twitter** | [@sentinelpayorg](https://x.com/sentinelpayorg) |
 
 ---
-
-<p align="center">
-  built for the future of on-chain compliance. <br>
-  &copy; 2026 sentinelpay. all rights reserved.
-</p>
