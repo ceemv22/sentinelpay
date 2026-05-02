@@ -213,6 +213,18 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.textContent = 'creating account...';
             errorMsg.style.display = 'none';
 
+            const isLenMet = password.length >= 8;
+            const isUpperMet = /[A-Z]/.test(password);
+            const isNumMet = /[0-9]/.test(password);
+
+            if (!isLenMet || !isUpperMet || !isNumMet) {
+                errorMsg.textContent = 'error: password does not meet security requirements.';
+                errorMsg.style.display = 'block';
+                btn.disabled = false;
+                btn.textContent = 'create account';
+                return;
+            }
+
             const turnstileToken = window.explicitRegToken || document.querySelector('#turnstile-register [name="cf-turnstile-response"]')?.value;
             if (!turnstileToken) {
                 if (!window.turnstileRegWidgetId && window.turnstile) {

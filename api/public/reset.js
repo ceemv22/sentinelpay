@@ -75,6 +75,16 @@ document.addEventListener('DOMContentLoaded', async () => {
                 return;
             }
 
+            const isLenMet = pw.length >= 8;
+            const isUpperMet = /[A-Z]/.test(pw);
+            const isNumMet = /[0-9]/.test(pw);
+
+            if (!isLenMet || !isUpperMet || !isNumMet) {
+                errorMsg.textContent = 'error: password does not meet security requirements.';
+                errorMsg.style.display = 'block';
+                return;
+            }
+
             btn.disabled = true;
             btn.textContent = 'updating key...';
             errorMsg.style.display = 'none';
