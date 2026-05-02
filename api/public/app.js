@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let bodyData = { wallet };
 
         if (!cachedSession) {
-            const turnstileToken = document.querySelector('[name="cf-turnstile-response"]')?.value;
+            const turnstileToken = window.explicitScannerToken || document.querySelector('[name="cf-turnstile-response"]')?.value;
             
             // If no token, render the CAPTCHA and halt execution
             if (!turnstileToken) {
@@ -138,6 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         sitekey: '0x4AAAAAADGpMozD1QOtWPkP',
                         theme: 'dark',
                         callback: function(token) {
+                            window.explicitScannerToken = token;
                             btn.disabled = false;
                             btn.textContent = 'scan wallet';
                             btn.click(); // Auto-trigger the scan once solved
@@ -170,9 +171,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify(bodyData)
             });
 
-            // Reset turnstile after attempt
+            // Remove turnstile after attempt to prevent infinite looping
             if (!cachedSession && window.turnstile && window.turnstileScannerWidgetId !== undefined) {
-                window.turnstile.reset(window.turnstileScannerWidgetId);
+                window.turnstile.remove(window.turnstileScannerWidgetId);
+                window.turnstileScannerWidgetId = undefined;
+                window.explicitScannerToken = null;
             }
 
             const data = await response.json();

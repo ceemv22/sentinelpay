@@ -213,14 +213,15 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.textContent = 'creating account...';
             errorMsg.style.display = 'none';
 
-            const turnstileToken = document.querySelector('#turnstile-register [name="cf-turnstile-response"]')?.value;
+            const turnstileToken = window.explicitRegToken || document.querySelector('#turnstile-register [name="cf-turnstile-response"]')?.value;
             if (!turnstileToken) {
                 if (!window.turnstileRegWidgetId && window.turnstile) {
                     btn.textContent = 'please solve captcha...';
                     window.turnstileRegWidgetId = window.turnstile.render('#turnstile-register', {
                         sitekey: '0x4AAAAAADGpMozD1QOtWPkP',
                         theme: 'dark',
-                        callback: function() {
+                        callback: function(token) {
+                            window.explicitRegToken = token;
                             btn.disabled = false;
                             btn.click();
                         }
@@ -236,7 +237,11 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             
             if (error) {
-                if (window.turnstile && window.turnstileRegWidgetId !== undefined) window.turnstile.reset(window.turnstileRegWidgetId);
+                if (window.turnstile && window.turnstileRegWidgetId !== undefined) {
+                    window.turnstile.remove(window.turnstileRegWidgetId);
+                    window.turnstileRegWidgetId = undefined;
+                    window.explicitRegToken = null;
+                }
                 errorMsg.textContent = 'error: ' + error.message.toLowerCase();
                 errorMsg.style.display = 'block';
                 btn.disabled = false;
@@ -271,14 +276,15 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.textContent = 'verifying...';
             errorMsg.style.display = 'none';
 
-            const turnstileToken = document.querySelector('#turnstile-login [name="cf-turnstile-response"]')?.value;
+            const turnstileToken = window.explicitLoginToken || document.querySelector('#turnstile-login [name="cf-turnstile-response"]')?.value;
             if (!turnstileToken) {
                 if (!window.turnstileLoginWidgetId && window.turnstile) {
                     btn.textContent = 'please solve captcha...';
                     window.turnstileLoginWidgetId = window.turnstile.render('#turnstile-login', {
                         sitekey: '0x4AAAAAADGpMozD1QOtWPkP',
                         theme: 'dark',
-                        callback: function() {
+                        callback: function(token) {
+                            window.explicitLoginToken = token;
                             btn.disabled = false;
                             btn.click();
                         }
@@ -294,7 +300,11 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             
             if (error) {
-                if (window.turnstile && window.turnstileLoginWidgetId !== undefined) window.turnstile.reset(window.turnstileLoginWidgetId);
+                if (window.turnstile && window.turnstileLoginWidgetId !== undefined) {
+                    window.turnstile.remove(window.turnstileLoginWidgetId);
+                    window.turnstileLoginWidgetId = undefined;
+                    window.explicitLoginToken = null;
+                }
                 errorMsg.textContent = 'error: wrong credentials';
                 errorMsg.style.display = 'block';
                 btn.disabled = false;
@@ -415,14 +425,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 btn.disabled = true;
                 errorMsg.style.display = 'none';
 
-                const turnstileToken = document.querySelector('#turnstile-forgot [name="cf-turnstile-response"]')?.value;
+                const turnstileToken = window.explicitForgotToken || document.querySelector('#turnstile-forgot [name="cf-turnstile-response"]')?.value;
                 if (!turnstileToken) {
                     if (!window.turnstileForgotWidgetId && window.turnstile) {
                         btn.textContent = 'please solve captcha...';
                         window.turnstileForgotWidgetId = window.turnstile.render('#turnstile-forgot', {
                             sitekey: '0x4AAAAAADGpMozD1QOtWPkP',
                             theme: 'dark',
-                            callback: function() {
+                            callback: function(token) {
+                                window.explicitForgotToken = token;
                                 btn.disabled = false;
                                 btn.click();
                             }
@@ -438,7 +449,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
                 if (error) {
-                    if (window.turnstile && window.turnstileForgotWidgetId !== undefined) window.turnstile.reset(window.turnstileForgotWidgetId);
+                    if (window.turnstile && window.turnstileForgotWidgetId !== undefined) {
+                        window.turnstile.remove(window.turnstileForgotWidgetId);
+                        window.turnstileForgotWidgetId = undefined;
+                        window.explicitForgotToken = null;
+                    }
                     errorMsg.textContent = 'error: ' + error.message.toLowerCase();
                     errorMsg.style.display = 'block';
                     btn.textContent = 'send reset link';
