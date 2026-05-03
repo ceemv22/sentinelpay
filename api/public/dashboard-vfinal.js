@@ -27,9 +27,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // 2. NOW it is safe to scrub the URL
-    scrubHash();
-    let dashScrubInterval = setInterval(scrubHash, 50);
-    setTimeout(() => clearInterval(dashScrubInterval), 3000);
+    setTimeout(scrubHash, 500);
+    // Aggressive interval removed to prevent race conditions with Supabase token processing.
 
     const token = session.access_token;
     

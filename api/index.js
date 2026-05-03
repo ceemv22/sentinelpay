@@ -78,8 +78,7 @@ app.use(helmet({
             "frame-ancestors": ["'none'"],
             "object-src": ["'none'"],
             "upgrade-insecure-requests": [],
-            "worker-src": ["'self'", "blob:"],
-            "trusted-types": ["*", "'allow-duplicates'"]
+            "worker-src": ["'self'", "blob:"]
         }
     },
     crossOriginEmbedderPolicy: false,

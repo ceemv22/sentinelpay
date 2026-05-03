@@ -158,12 +158,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
     
-    const s = getSupabase();
     if (s) {
         s.auth.getSession().then(() => {
-            scrubHash();
-            let scrubInterval = setInterval(scrubHash, 50);
-            setTimeout(() => clearInterval(scrubInterval), 3000);
+            // Give Supabase a moment to process the hash before we scrub it
+            setTimeout(scrubHash, 500);
         });
     }
 
@@ -255,16 +253,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 options: { captchaToken: turnstileToken }
             });
             
+            // Clear token and reset widget
+            window.explicitRegToken = null;
+            if (window.turnstile && window.turnstileRegWidgetId !== undefined) {
+                window.turnstile.reset(window.turnstileRegWidgetId);
+            }
+
             // Supabase returns a fake user with no identities when email is already taken
             const isExistingUser = !error && data?.user && data.user.identities?.length === 0;
 
             if (error || isExistingUser) {
-                if (window.turnstile && window.turnstileRegWidgetId !== undefined) {
-                    window.turnstile.remove(window.turnstileRegWidgetId);
-                    window.turnstileRegWidgetId = undefined;
-                    window.explicitRegToken = null;
-                }
-
                 let msg = 'error: ';
                 if (isExistingUser) {
                     // Check if the existing account might be OAuth-based
@@ -335,12 +333,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 options: { captchaToken: turnstileToken }
             });
             
+            // Clear token and reset widget
+            window.explicitLoginToken = null;
+            if (window.turnstile && window.turnstileLoginWidgetId !== undefined) {
+                window.turnstile.reset(window.turnstileLoginWidgetId);
+            }
+
             if (error) {
-                if (window.turnstile && window.turnstileLoginWidgetId !== undefined) {
-                    window.turnstile.remove(window.turnstileLoginWidgetId);
-                    window.turnstileLoginWidgetId = undefined;
-                    window.explicitLoginToken = null;
-                }
                 errorMsg.textContent = 'error: wrong credentials';
                 errorMsg.style.display = 'block';
                 btn.disabled = false;
@@ -484,12 +483,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     captchaToken: turnstileToken
                 });
 
+                // Clear the token after attempt to prevent reuse (S-Tier practice)
+                window.explicitForgotToken = null;
+                if (window.turnstile && window.turnstileForgotWidgetId !== undefined) {
+                    window.turnstile.reset(window.turnstileForgotWidgetId);
+                }
+
                 if (error) {
-                    if (window.turnstile && window.turnstileForgotWidgetId !== undefined) {
-                        window.turnstile.remove(window.turnstileForgotWidgetId);
-                        window.turnstileForgotWidgetId = undefined;
-                        window.explicitForgotToken = null;
-                    }
                     errorMsg.textContent = 'error: ' + error.message.toLowerCase();
                     errorMsg.style.display = 'block';
                     btn.textContent = 'send reset link';
