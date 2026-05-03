@@ -235,8 +235,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (hash.includes('register')) {
         window.switchManual('register');
+        // Instantly scrub hash for a clean URL
+        window.history.replaceState(null, document.title, window.location.pathname);
     } else if (hash.includes('login')) {
         window.switchManual('login');
+        // Instantly scrub hash for a clean URL
+        window.history.replaceState(null, document.title, window.location.pathname);
     } else if (lastTab) {
         window.switchManual(lastTab);
     }
