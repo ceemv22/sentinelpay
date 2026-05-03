@@ -42,9 +42,6 @@ function resolveTrustProxySetting(value) {
 }
 
 const trustProxySetting = resolveTrustProxySetting(trustProxyEnv);
-if (isProduction && trustProxySetting === undefined) {
-    throw new Error('TRUST_PROXY must be explicitly configured in production.');
-}
 app.set('trust proxy', trustProxySetting === undefined ? 1 : trustProxySetting);
 app.use(helmet({
     contentSecurityPolicy: {
@@ -52,8 +49,13 @@ app.use(helmet({
             "default-src": ["'self'"],
             "script-src": [
                 "'self'", 
+                "'unsafe-inline'", 
+                "'unsafe-eval'", 
                 "https://aivqwkgjdpklxxuvkxpy.supabase.co", 
                 "https://challenges.cloudflare.com",
+                "https://accounts.google.com",
+                "https://twitter.com",
+                "https://x.com",
                 "blob:",
                 "about:"
             ],
@@ -65,11 +67,14 @@ app.use(helmet({
                 "https://aivqwkgjdpklxxuvkxpy.supabase.co", 
                 "wss://aivqwkgjdpklxxuvkxpy.supabase.co", 
                 "https://api.etherscan.io",
-                "https://challenges.cloudflare.com"
+                "https://challenges.cloudflare.com",
+                "https://accounts.google.com",
+                "https://twitter.com",
+                "https://x.com"
             ],
-            "frame-src": ["'self'", "https://challenges.cloudflare.com", "blob:", "about:"],
+            "frame-src": ["'self'", "https://challenges.cloudflare.com", "https://aivqwkgjdpklxxuvkxpy.supabase.co", "blob:", "about:"],
             "base-uri": ["'self'"],
-            "form-action": ["'self'"],
+            "form-action": ["'self'", "https://aivqwkgjdpklxxuvkxpy.supabase.co", "https://accounts.google.com", "https://twitter.com", "https://x.com"],
             "frame-ancestors": ["'none'"],
             "object-src": ["'none'"],
             "upgrade-insecure-requests": [],
