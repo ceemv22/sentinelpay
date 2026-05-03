@@ -102,8 +102,16 @@ router.post('/webhook', express.raw({type: 'application/json', limit: '100kb'}),
                     throw new Error('Stripe session missing userId metadata');
                 }
 
+                const PLAN_CREDIT_MAPPING = {
+                    'credits_10': 10,
+                    'credits_100': 100,
+                    'starter': 0,
+                    'pro': 0
+                };
+
+                const plan = session.metadata?.plan;
                 if (session.metadata?.type === 'credits') {
-                    const amount = parseInt(session.metadata?.amount || '0');
+                    const amount = PLAN_CREDIT_MAPPING[plan] || 0;
                     if (amount > 0) {
                         await tx.user.update({
                             where: { id: userId },

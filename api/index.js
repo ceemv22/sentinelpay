@@ -43,6 +43,12 @@ function resolveTrustProxySetting(value) {
 
 const trustProxySetting = resolveTrustProxySetting(trustProxyEnv);
 app.set('trust proxy', trustProxySetting === undefined ? 1 : trustProxySetting);
+
+// S-Tier IP Resolver: Prioritize Cloudflare verified IP
+app.use((req, res, next) => {
+    req.realIp = req.headers['cf-connecting-ip'] || req.ip;
+    next();
+});
 app.use(helmet({
     contentSecurityPolicy: {
         directives: {
@@ -205,7 +211,7 @@ async function consumeUnauthCredit(req, res, next) {
         try {
             // LAYER 1: IP Rate Limiting (Prevent bot nets from refreshing fingerprints infinitely)
             // 20 scans per IP per day maximum for unauthenticated users
-            const ipKey = `ip_limit:${ip}`;
+            const ipKey = `ip_limit:${req.realIp}`;
             const ipUsage = await redisClient.incr(ipKey);
             if (ipUsage === 1) await redisClient.expire(ipKey, 86400); // 24 hours TTL
             
@@ -217,14 +223,19 @@ async function consumeUnauthCredit(req, res, next) {
             if (fingerprint) {
                 const fpKey = `unauth:fp:${fingerprint}`;
                 const fpUsage = await redisClient.incr(fpKey);
+                // Protection: Expire fingerprints after 30 days to prevent Redis memory bloat
+                if (fpUsage === 1) await redisClient.expire(fpKey, 2592000); 
+                
                 if (fpUsage > 3) {
                     await redisClient.decr(fpKey); // Keep accurate
                     return res.status(403).json({ error: 'free limit reached. please register.', code: 403, requiresAuth: true });
                 }
             } else {
                 // If they block headers/fingerprints, we bind them aggressively to IP (3 lifetime per IP)
-                const strictIpKey = `strict:ip:${ip}`;
+                const strictIpKey = `strict:ip:${req.realIp}`;
                 const strictIpUsage = await redisClient.incr(strictIpKey);
+                if (strictIpUsage === 1) await redisClient.expire(strictIpKey, 2592000);
+
                 if (strictIpUsage > 3) {
                     await redisClient.decr(strictIpKey);
                     return res.status(403).json({ error: 'ip limit reached. please register.', code: 403, requiresAuth: true });
@@ -254,9 +265,10 @@ const limiter = rateLimit({
     standardHeaders: true,
     legacyHeaders: false,
     keyGenerator: (req) => {
-        return req.headers['x-api-key'] || req.ip;
+        // Now using verified ID from requireApiKey middleware
+        return req.apiKey ? `key:${req.apiKey.id}` : `ip:${req.realIp}`;
     },
-    validate: false, // Bypass all strict validation checks for environment compatibility
+    validate: false, 
     store: createStore('b2b:'),
     message: { error: 'request limit exceeded. try again in 15 minutes.', code: 429 }
 });
@@ -333,7 +345,7 @@ async function verifyTurnstile(req, res, next) {
 }
 
 // B2B Protected Endpoint
-app.post('/v1/score', requireRateLimitBackend, limiter, requireApiKey, async (req, res) => {
+app.post('/v1/score', requireRateLimitBackend, requireApiKey, limiter, async (req, res) => {
     const { wallet } = req.body;
     if (!wallet || wallet.length > 128 || !/^0x[a-fA-F0-9]{40}$/.test(wallet)) {
         return res.status(400).json({ error: 'invalid wallet address format', code: 400 });
@@ -348,6 +360,7 @@ app.post('/v1/score', requireRateLimitBackend, limiter, requireApiKey, async (re
             score: result.score,
             category: result.category,
             flags: result.flags,
+            history_incomplete: result.history_incomplete || false,
             timestamp: new Date().toISOString()
         });
     } catch (err) {
@@ -372,6 +385,7 @@ app.post('/v1/public/score', requireRateLimitBackend, consumeUnauthCredit, verif
             score: result.score,
             category: result.category,
             flags: result.flags,
+            history_incomplete: result.history_incomplete || false,
             timestamp: new Date().toISOString()
         });
     } catch (err) {
@@ -428,7 +442,8 @@ app.post('/v1/user/score', requireSupabaseAuth, async (req, res) => {
             score: result.score,
             category: result.category,
             flags: result.flags,
-            creditsRemaining: req.user.credits - 1, // Will represent state accurately before next DB pull
+            history_incomplete: result.history_incomplete || false,
+            creditsRemaining: req.user.credits - 1, 
             timestamp: new Date().toISOString()
         });
     } catch (err) {

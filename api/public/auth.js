@@ -98,6 +98,43 @@ window.handleResendHandshake = async (type = 'signup') => {
 
     if (!email || (btn && btn.disabled)) return;
 
+    // CAPTCHA Logic for Resend
+    const tokenKey = type === 'signup' ? 'explicitRegToken' : 'explicitForgotToken';
+    const token = window[tokenKey];
+
+    if (!token) {
+        if (btn) {
+            btn.disabled = true;
+            btn.textContent = 'solve captcha...';
+        }
+        const targetId = type === 'signup' ? '#turnstile-register' : '#turnstile-forgot';
+        
+        // Show the panel if it was hidden (for forgot password)
+        const forgotStateForm = document.getElementById('forgot-pw-state-form');
+        const forgotStateSuccess = document.getElementById('forgot-pw-state-success');
+        if (type === 'forgot' && forgotStateForm && forgotStateSuccess) {
+            forgotStateSuccess.style.display = 'none';
+            forgotStateForm.style.display = 'block';
+        }
+
+        if (window[`turnstile${type === 'signup' ? 'Reg' : 'Forgot'}WidgetId`] === undefined) {
+            window[`turnstile${type === 'signup' ? 'Reg' : 'Forgot'}WidgetId`] = window.turnstile.render(targetId, {
+                sitekey: '0x4AAAAAADGpMozD1QOtWPkP',
+                theme: 'dark',
+                callback: (t) => {
+                    window[tokenKey] = t;
+                    if (btn) {
+                        btn.disabled = false;
+                        btn.click();
+                    }
+                }
+            });
+        } else {
+            window.turnstile.reset(window[`turnstile${type === 'signup' ? 'Reg' : 'Forgot'}WidgetId`]);
+        }
+        return;
+    }
+
     if (btn) {
         btn.disabled = true;
         btn.textContent = 'sending...';
@@ -105,8 +142,12 @@ window.handleResendHandshake = async (type = 'signup') => {
 
     try {
         const { error } = type === 'signup' 
-            ? await s.auth.resend({ type: 'signup', email, options: { emailRedirectTo: window.location.origin + '/auth?verified=true' } })
-            : await s.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin + '/dashboard' });
+            ? await s.auth.resend({ type: 'signup', email, options: { captchaToken: token, emailRedirectTo: window.location.origin + '/auth?verified=true' } })
+            : await s.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin + '/reset', captchaToken: token });
+
+        // Cleanup
+        window[tokenKey] = null;
+        window.turnstile.reset(window[`turnstile${type === 'signup' ? 'Reg' : 'Forgot'}WidgetId`]);
 
         if (error) {
             if (btn) {

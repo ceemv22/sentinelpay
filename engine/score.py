@@ -130,11 +130,15 @@ def check_high_velocity(normal_txs):
     return len(recent) > 50
 
 def check_inbound_outbound_imbalance(wallet, normal_txs):
-    if not normal_txs: return False
+    if not normal_txs or len(normal_txs) < 10: 
+        return False # Too little data to judge fairly
     wallet_lower = wallet.lower()
     inbound = sum(1 for tx in normal_txs if tx.get("to", "").lower() == wallet_lower)
     outbound = sum(1 for tx in normal_txs if tx.get("from", "").lower() == wallet_lower)
-    if inbound == 0 or outbound == 0: return True
+    
+    if inbound == 0 or outbound == 0: 
+        return True # Still risky if they have 10+ txs but all are one-way
+    
     ratio = max(inbound, outbound) / min(inbound, outbound)
     return ratio > 10
 
