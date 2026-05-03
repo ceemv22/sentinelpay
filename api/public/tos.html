@@ -119,12 +119,17 @@
 
     <div class="tos-container">
         <div class="tos-card">
-            <div class="tos-header">
-                <h1 class="tos-title">terms of service</h1>
-                <p class="tos-meta">last updated: may 03, 2026</p>
+            <div class="tos-header" style="display: flex; justify-content: space-between; align-items: flex-end;">
+                <div>
+                    <h1 class="tos-title">terms of service</h1>
+                    <p class="tos-meta">last updated: may 03, 2026</p>
+                </div>
+                <button id="download-tos" class="auth-nav-btn" style="background: rgba(0, 240, 255, 0.05); border-color: rgba(0, 240, 255, 0.2); color: var(--neon-blue); padding: 0.6rem 1.2rem; font-size: 0.75rem;">
+                    download as .txt
+                </button>
             </div>
 
-            <div class="tos-body">
+            <div class="tos-body" id="tos-content-body">
                 <div class="tos-section">
                     <h2>01. agreement to terms</h2>
                     <p>by accessing or using the sentinelpay security platform and api services, you agree to be bound by these terms of service. if you do not agree to these terms, you must immediately cease all use of the platform.</p>
@@ -184,5 +189,28 @@
     </div>
 
     <script src="eye-track.js"></script>
+    <script>
+        document.getElementById('download-tos').onclick = () => {
+            const body = document.getElementById('tos-content-body');
+            let text = "SENTINELPAY - TERMS OF SERVICE\n";
+            text += "Last Updated: May 03, 2026\n\n";
+            
+            body.querySelectorAll('.tos-section').forEach(section => {
+                const title = section.querySelector('h2').innerText;
+                const content = section.innerText.replace(title, '').trim();
+                text += `${title.toUpperCase()}\n${content}\n\n`;
+            });
+            
+            text += "\n© 2026 SentinelPay. All rights reserved.";
+            
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'sentinelpay-terms-of-service.txt';
+            a.click();
+            window.URL.revokeObjectURL(url);
+        };
+    </script>
 </body>
 </html>
