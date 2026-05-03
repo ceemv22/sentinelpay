@@ -18,15 +18,23 @@ function encrypt(text) {
     
     const tag = cipher.getAuthTag();
     
-    // Format: iv:tag:encrypted
-    return `${iv.toString('hex')}:${tag.toString('hex')}:${encrypted}`;
+    // Format: v1:iv:tag:encrypted (S-Tier versioning for future-proof rotation)
+    return `v1:${iv.toString('hex')}:${tag.toString('hex')}:${encrypted}`;
 }
 
 function decrypt(encryptedText) {
     if (!KEY) {
         throw new Error('MASTER_ENCRYPTION_KEY not set');
     }
-    const [ivHex, tagHex, encrypted] = encryptedText.split(':');
+    
+    // Handle versioned prefix
+    if (!encryptedText.startsWith('v1:')) {
+        throw new Error('Unsupported encryption version or legacy format');
+    }
+    
+    const parts = encryptedText.split(':');
+    const [version, ivHex, tagHex, encrypted] = parts;
+    
     if (!ivHex || !tagHex || !encrypted) {
         throw new Error('Invalid encrypted text format');
     }

@@ -482,7 +482,7 @@ app.get('/v1/user/api-key/reveal', requireSupabaseAuth, async (req, res) => {
                 try {
                     decryptedKey = decrypt(key.rawKey);
                 } catch (e) {
-                    console.error('[decrypt error]', e);
+                    console.error('[reveal-error] decryption failed. possible key mismatch or corrupted payload.');
                     return { status: 500, data: { error: 'failed to decrypt key' } };
                 }
 
