@@ -229,14 +229,13 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
-    // Tab Auto-Switch (based on mode param or session)
-    const urlParams = new URLSearchParams(window.location.search);
-    const mode = urlParams.get('mode');
+    // Tab Auto-Switch (based on URL hash or session)
+    const hash = window.location.hash.toLowerCase();
     const lastTab = sessionStorage.getItem('sentinel_auth_tab');
 
-    if (mode === 'register') {
+    if (hash.includes('register')) {
         window.switchManual('register');
-    } else if (mode === 'login') {
+    } else if (hash.includes('login')) {
         window.switchManual('login');
     } else if (lastTab) {
         window.switchManual(lastTab);
