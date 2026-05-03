@@ -1047,6 +1047,22 @@ button:hover:not(:disabled) {
         padding: 0 0.5rem;
         margin: 1.25rem 0;
         line-height: 1.6;
+        font-size: 0.72rem;
+        color: rgba(255,255,255,0.4);
+        font-family: 'JetBrains Mono', monospace;
+        text-align: center;
+    }
+    
+    .auth-agreement a {
+        color: rgba(255,255,255,0.6);
+        text-decoration: none;
+        transition: color 0.2s ease;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .auth-agreement a:hover {
+        color: var(--neon-blue);
+        border-color: var(--neon-blue);
     }
 
     /* Mobile modal close button hidden as requested */
