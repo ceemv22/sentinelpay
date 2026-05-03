@@ -1,4 +1,4 @@
-// SentinelPay Auth Core (v17.1 - ULTIMATE RECOVERY)
+// SentinelPay Auth Core (v17.2 - ULTIMATE RECOVERY)
 // Features: Zero-Trust Scripting, Explicit Scoping, Atomic Event Binding
 
 // 1. GLOBAL UI HANDLERS
@@ -147,7 +147,7 @@ window.handleResendHandshake = async (type = 'signup') => {
 
         // Cleanup
         window[tokenKey] = null;
-        window.turnstile.reset(window[`turnstile${type === 'signup' ? 'Reg' : 'Forgot'}WidgetId`]);
+        if (window.turnstile) window.turnstile.reset(window[`turnstile${type === 'signup' ? 'Reg' : 'Forgot'}WidgetId`]);
 
         if (error) {
             if (btn) {
@@ -165,7 +165,7 @@ window.handleResendHandshake = async (type = 'signup') => {
 
 // 4. CORE INITIALIZATION
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('[sentinel-auth] initializing v17.1...');
+    console.log('[sentinel-auth] initializing v17.2...');
     
     const s = getSupabase();
     const scrubHash = () => {
@@ -198,6 +198,32 @@ document.addEventListener('DOMContentLoaded', () => {
     bind('resend-btn', () => window.handleResendHandshake('signup'));
     bind('forgot-resend-btn', () => window.handleResendHandshake('forgot'));
     bind('verified-dashboard-btn', () => window.location.href = '/dashboard');
+
+    // Password Rules Toggle & Real-time Validation
+    const rulesToggle = document.getElementById('pw-rules-toggle');
+    const rulesTooltip = document.getElementById('pw-rules-tooltip');
+    if (rulesToggle && rulesTooltip) {
+        rulesToggle.addEventListener('mouseenter', () => rulesTooltip.classList.add('visible'));
+        rulesToggle.addEventListener('mouseleave', () => rulesTooltip.classList.remove('visible'));
+    }
+
+    const regPw = document.getElementById('reg-password');
+    if (regPw) {
+        regPw.addEventListener('input', (e) => {
+            const val = e.target.value;
+            const validate = (id, cond) => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.classList.toggle('met', cond);
+                    el.textContent = cond ? '✓' : '✕';
+                    el.style.color = cond ? 'var(--color-green)' : 'var(--color-red)';
+                }
+            };
+            validate('rule-len', val.length >= 8);
+            validate('rule-upper', /[A-Z]/.test(val));
+            validate('rule-num', /[0-9]/.test(val));
+        });
+    }
 
     // Restore Tab
     const storedTab = sessionStorage.getItem('sentinel_auth_tab');
@@ -266,7 +292,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (!window.explicitRegToken) {
                 btn.disabled = true;
-                btn.textContent = 'please solve captcha...';
+                btn.textContent = 'solve captcha...';
                 if (window.turnstileRegWidgetId === undefined) {
                     window.turnstileRegWidgetId = renderTurnstile('#turnstile-register', 'register');
                 } else {
@@ -314,7 +340,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (!window.explicitLoginToken) {
                 btn.disabled = true;
-                btn.textContent = 'please solve captcha...';
+                btn.textContent = 'solve captcha...';
                 if (window.turnstileLoginWidgetId === undefined) {
                     window.turnstileLoginWidgetId = renderTurnstile('#turnstile-login', 'login');
                 } else {
@@ -350,6 +376,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (b) {
             b.addEventListener('click', async () => {
                 const s = getSupabase();
+                b.disabled = true;
+                b.textContent = 'connecting...';
                 const provider = id.includes('google') ? 'google' : 'twitter';
                 await s.auth.signInWithOAuth({ provider, options: { redirectTo: redirectUrl } });
             });
@@ -364,12 +392,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const eyeOff = btn.querySelector('.eye-off');
             if (input.type === 'password') {
                 input.type = 'text';
-                eyeOn.style.display = 'block';
-                eyeOff.style.display = 'none';
+                eyeOn.style.setProperty('display', 'block', 'important');
+                eyeOff.style.setProperty('display', 'none', 'important');
             } else {
                 input.type = 'password';
-                eyeOn.style.display = 'none';
-                eyeOff.style.display = 'block';
+                eyeOn.style.setProperty('display', 'none', 'important');
+                eyeOff.style.setProperty('display', 'block', 'important');
             }
         });
     });
@@ -383,6 +411,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (trigger && modal && closeBtn) {
         trigger.addEventListener('click', (e) => {
             e.preventDefault();
+            // Reset Modal State
+            document.getElementById('forgot-pw-state-form').style.display = 'block';
+            document.getElementById('forgot-pw-state-success').style.display = 'none';
             modal.style.display = 'flex';
             setTimeout(() => modal.classList.add('active'), 10);
         });
@@ -405,7 +436,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (!window.explicitForgotToken) {
                     btn.disabled = true;
-                    btn.textContent = 'please solve captcha...';
+                    btn.textContent = 'solve captcha...';
                     if (window.turnstileForgotWidgetId === undefined) {
                         window.turnstileForgotWidgetId = renderTurnstile('#turnstile-forgot', 'forgot');
                     } else {
