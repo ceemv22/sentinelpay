@@ -530,9 +530,15 @@ async function start() {
             }
         }
     }
+    
+    // Catch-all: serve 404 page
+    app.get('*', (req, res) => {
+        res.status(404).sendFile(path.join(__dirname, 'public', '404.html'));
+    });
 
+    const PORT = process.env.PORT || 3000;
     app.listen(PORT, () => {
-        console.log(`sentinelpay API v2 running on port ${PORT}`);
+        console.log(`[sentinel-api] server active on port ${PORT}`);
     });
 }
 
