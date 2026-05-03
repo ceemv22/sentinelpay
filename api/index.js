@@ -99,10 +99,19 @@ app.use(helmet({
 const supabaseProxy = createProxyMiddleware({
     target: 'https://aivqwkgjdpklxxuvkxpy.supabase.co',
     changeOrigin: true,
+    secure: true,
+    xfwd: true,
     logLevel: 'error',
     onProxyRes: (proxyRes, req, res) => {
-        // Standard security hardening for proxy responses
+        // OWASP Hardening: Secure headers
         delete proxyRes.headers['x-powered-by'];
+        
+        // S-Tier Branding: Rewrite redirects to keep the user on our domain
+        if (proxyRes.headers['location']) {
+            const originalUrl = 'aivqwkgjdpklxxuvkxpy.supabase.co';
+            const customUrl = 'api.sentinelpay.org';
+            proxyRes.headers['location'] = proxyRes.headers['location'].replace(originalUrl, customUrl);
+        }
     }
 });
 
