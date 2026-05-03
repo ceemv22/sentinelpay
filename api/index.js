@@ -12,6 +12,7 @@ const rateLimit = require('express-rate-limit');
 const { RedisStore } = require('rate-limit-redis');
 const { createClient } = require('redis');
 const helmet = require('helmet');
+const { createProxyMiddleware } = require('http-proxy-middleware');
 require('dotenv').config();
 
 const { runScoringEngine } = require('./services/scorer');
@@ -92,6 +93,21 @@ app.use(helmet({
         preload: true
     }
 }));
+
+// 1. SUPABASE PROXY (Branding & White-labeling)
+// OWASP S-Tier: Transparently proxying auth/rest requests to hide Supabase ID from frontend
+const supabaseProxy = createProxyMiddleware({
+    target: 'https://aivqwkgjdpklxxuvkxpy.supabase.co',
+    changeOrigin: true,
+    logLevel: 'error',
+    onProxyRes: (proxyRes, req, res) => {
+        // Standard security hardening for proxy responses
+        delete proxyRes.headers['x-powered-by'];
+    }
+});
+
+app.use('/auth/v1', supabaseProxy);
+app.use('/rest/v1', supabaseProxy);
 
 // Suppress Permissions Policy warnings from Cloudflare and third-party scripts
 app.use((req, res, next) => {
