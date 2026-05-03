@@ -1054,7 +1054,7 @@ button:hover:not(:disabled) {
     }
     
     .auth-agreement a {
-        color: rgba(255,255,255,0.6);
+        color: var(--neon-blue);
         text-decoration: none;
         transition: color 0.2s ease;
         border-bottom: 1px solid rgba(255,255,255,0.1);
