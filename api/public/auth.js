@@ -31,14 +31,25 @@ window.switchManual = (target) => {
 };
 
 // 2. SUPABASE SUBSYSTEM
-const supabaseUrl = 'https://aivqwkgjdpklxxuvkxpy.supabase.co';
+// S-Tier Security: Using dynamic domain mapping for white-label OAuth visibility
+const supabaseUrl = window.location.hostname.includes('sentinelpay.org') 
+    ? 'https://api.sentinelpay.org' // Your custom domain once DNS is ready
+    : 'https://aivqwkgjdpklxxuvkxpy.supabase.co';
+
 const supabaseKey = 'sb_publishable_bRfAssaGT6D8oFDQtPARbw_5fyYGWM6';
 let supabaseClient = null;
 
 const getSupabase = () => {
     if (supabaseClient) return supabaseClient;
     if (window.supabase) {
-        supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+        supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey, {
+            auth: {
+                flowType: 'pkce', // OWASP S-Tier: Proof Key for Code Exchange enabled
+                autoRefreshToken: true,
+                persistSession: true,
+                detectSessionInUrl: true
+            }
+        });
         return supabaseClient;
     }
     return null;

@@ -56,17 +56,20 @@ app.use(helmet({
                 "'unsafe-inline'", 
                 "'unsafe-eval'", 
                 "https://aivqwkgjdpklxxuvkxpy.supabase.co", 
+                "https://api.sentinelpay.org",
                 "https://challenges.cloudflare.com",
                 "blob:",
                 "about:"
             ],
             "style-src": ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
             "font-src": ["'self'", "https://fonts.gstatic.com"],
-            "img-src": ["'self'", "data:", "https://aivqwkgjdpklxxuvkxpy.supabase.co"],
+            "img-src": ["'self'", "data:", "https://aivqwkgjdpklxxuvkxpy.supabase.co", "https://api.sentinelpay.org"],
             "connect-src": [
                 "'self'", 
                 "https://aivqwkgjdpklxxuvkxpy.supabase.co", 
                 "wss://aivqwkgjdpklxxuvkxpy.supabase.co", 
+                "https://api.sentinelpay.org",
+                "wss://api.sentinelpay.org",
                 "https://api.etherscan.io",
                 "https://challenges.cloudflare.com"
             ],
@@ -84,7 +87,7 @@ app.use(helmet({
     crossOriginResourcePolicy: { policy: "cross-origin" },
     crossOriginOpenerPolicy: false,
     hsts: {
-        maxAge: 31536000,
+        maxAge: 63072000, // 2 years - S-Tier Recommendation
         includeSubDomains: true,
         preload: true
     }
