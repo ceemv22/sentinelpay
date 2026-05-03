@@ -5,7 +5,14 @@ let s = null;
 const getSupabase = () => {
     if (s) return s;
     if (window.supabase) {
-        s = window.supabase.createClient(supabaseUrl, supabaseKey);
+        s = window.supabase.createClient(supabaseUrl, supabaseKey, {
+            auth: {
+                flowType: 'pkce',
+                autoRefreshToken: true,
+                persistSession: true,
+                detectSessionInUrl: true
+            }
+        });
         return s;
     }
     return null;

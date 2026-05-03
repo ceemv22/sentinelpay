@@ -51,11 +51,11 @@ app.use(helmet({
                 "'self'", 
                 "'unsafe-inline'", 
                 "'unsafe-eval'", 
-                "https://aivqwkgjdpklxxuvkxpy.supabase.co", 
+                "https://*.supabase.co", 
                 "https://challenges.cloudflare.com",
                 "https://accounts.google.com",
-                "https://twitter.com",
-                "https://x.com",
+                "https://*.twitter.com",
+                "https://*.x.com",
                 "blob:",
                 "about:"
             ],
@@ -64,13 +64,13 @@ app.use(helmet({
             "img-src": ["'self'", "data:", "https://aivqwkgjdpklxxuvkxpy.supabase.co"],
             "connect-src": [
                 "'self'", 
-                "https://aivqwkgjdpklxxuvkxpy.supabase.co", 
-                "wss://aivqwkgjdpklxxuvkxpy.supabase.co", 
+                "https://*.supabase.co", 
+                "wss://*.supabase.co", 
                 "https://api.etherscan.io",
                 "https://challenges.cloudflare.com",
                 "https://accounts.google.com",
-                "https://twitter.com",
-                "https://x.com"
+                "https://*.twitter.com",
+                "https://*.x.com"
             ],
             "frame-src": ["'self'", "https://challenges.cloudflare.com", "https://aivqwkgjdpklxxuvkxpy.supabase.co", "blob:", "about:"],
             "base-uri": ["'self'"],

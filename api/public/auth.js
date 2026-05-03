@@ -135,10 +135,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (s) {
         s.auth.onAuthStateChange((event, session) => {
-            if (event === 'SIGNED_IN') {
-                console.log('[auth] session established, waiting to scrub hash...');
-                setTimeout(scrubHash, 1000); // 1s delay for max stability
+            if (session) {
+                console.log('[auth] session established (event: ' + event + '), waiting to scrub hash...');
+                setTimeout(scrubHash, 1500); 
             }
+        });
+        // Fallback for immediate scrub if session already exists
+        s.auth.getSession().then(({ data: { session } }) => {
+            if (session) setTimeout(scrubHash, 1500);
         });
     }
 
