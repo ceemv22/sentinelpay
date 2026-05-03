@@ -411,15 +411,25 @@ document.addEventListener('DOMContentLoaded', () => {
     if (trigger && modal && closeBtn) {
         trigger.addEventListener('click', (e) => {
             e.preventDefault();
-            // Reset Modal State
+            // Reset Modal State & Captcha
+            window.explicitForgotToken = null;
             document.getElementById('forgot-pw-state-form').style.display = 'block';
             document.getElementById('forgot-pw-state-success').style.display = 'none';
+            
+            if (window.turnstile && window.turnstileForgotWidgetId !== undefined) {
+                window.turnstile.reset(window.turnstileForgotWidgetId);
+            }
+
             modal.style.display = 'flex';
             setTimeout(() => modal.classList.add('active'), 10);
         });
 
         const hideModal = () => {
             modal.classList.remove('active');
+            window.explicitForgotToken = null;
+            if (window.turnstile && window.turnstileForgotWidgetId !== undefined) {
+                window.turnstile.reset(window.turnstileForgotWidgetId);
+            }
             setTimeout(() => { modal.style.display = 'none'; }, 300);
         };
 
