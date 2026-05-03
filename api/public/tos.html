@@ -7,107 +7,66 @@
     <meta name="theme-color" content="#040404">
     <link rel="icon" type="image/svg+xml" href="logo.svg">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=JetBrains+Mono:wght@400;700;800&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=11.9">
+    <link rel="stylesheet" href="style.css?v=12.0">
     <style>
-        .tos-card-wrap {
-            animation: authFadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-            width: 100%;
-            max-width: 850px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 500;
-            /* Match the 'Center' of the 540px Login Card + Logo overlap */
-            padding-top: calc(50vh - 335px); 
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .tos-container {
-            max-height: 60vh;
+        /* S-Tier ToS Masterpiece v2.0 (Pixel-Sync Edition) */
+        .tos-scroll-area {
+            max-height: 380px; /* Perfectly calculated to fit within the 540px locked card height */
             overflow-y: auto;
-            padding-right: 2rem;
-            margin-top: 2rem;
+            padding-right: 1.5rem;
             scrollbar-width: thin;
             scrollbar-color: var(--neon-blue) rgba(255,255,255,0.02);
+            mask-image: linear-gradient(to bottom, black 90%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black 90%, transparent 100%);
         }
-        .tos-container::-webkit-scrollbar {
-            width: 3px;
+        .tos-scroll-area::-webkit-scrollbar {
+            width: 2px;
         }
-        .tos-container::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.01);
-        }
-        .tos-container::-webkit-scrollbar-thumb {
+        .tos-scroll-area::-webkit-scrollbar-thumb {
             background: var(--neon-blue);
             box-shadow: 0 0 10px var(--neon-blue);
         }
-        .tos-section {
-            margin-bottom: 3.5rem;
-            opacity: 0.85;
-            transition: opacity 0.3s ease;
+        .legal-section {
+            margin-bottom: 2.5rem;
         }
-        .tos-section:hover {
-            opacity: 1;
-        }
-        .tos-section h2 {
+        .legal-section h2 {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.9rem;
-            font-weight: 700;
+            font-size: 0.8rem;
             color: var(--neon-blue);
-            margin-bottom: 1.25rem;
+            margin-bottom: 1rem;
             text-transform: lowercase;
             letter-spacing: 1px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
         }
-        .tos-section h2::before {
-            content: ">";
-            opacity: 0.5;
-        }
-        .tos-section p, .tos-section li {
+        .legal-section p, .legal-section li {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.82rem;
-            line-height: 2;
+            font-size: 0.78rem;
+            line-height: 1.8;
             color: rgba(255,255,255,0.5);
             text-transform: lowercase;
+            margin-bottom: 0.8rem;
         }
-        .tos-section ul {
+        .legal-section ul {
             list-style: none;
-            margin-top: 1rem;
+            padding-left: 0;
         }
-        .tos-section li {
-            margin-bottom: 0.75rem;
-            padding-left: 1.5rem;
+        .legal-section li {
+            padding-left: 1rem;
             position: relative;
         }
-        .tos-section li::after {
-            content: "";
+        .legal-section li::before {
+            content: ">";
             position: absolute;
             left: 0;
-            top: 12px;
-            width: 4px;
-            height: 4px;
-            background: var(--neon-blue);
-            border-radius: 50%;
-            box-shadow: 0 0 8px var(--neon-blue);
-        }
-        .tos-header-title {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 3rem;
-            font-weight: 800;
-            letter-spacing: -2.5px;
-            color: #fff;
-            margin-bottom: 0.5rem;
-            text-transform: lowercase;
-            line-height: 1;
+            color: var(--neon-blue);
+            opacity: 0.6;
         }
     </style>
 </head>
-<body style="min-height: 100vh; overflow-y: auto; display: block !important;">
+<body style="min-height: 100vh; overflow-x: hidden;">
     <div class="cyber-grid"></div>
     <div class="glow-orb"></div>
 
-    <!-- Fixed Nav (Consistency with Auth) -->
+    <!-- Exact Navigation Mirror -->
     <div class="auth-topbar">
         <div class="auth-top-logo mobile-only">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" style="width: 32px; height: 32px;">
@@ -120,16 +79,18 @@
         <a href="/auth" class="auth-nav-btn" style="background: transparent; border-color: rgba(255,255,255,0.1); color: var(--text-muted);">back to portal</a>
     </div>
 
-    <div class="tos-card-wrap">
-        <!-- Interactive Center Logo (Identical to Auth) -->
-        <div class="auth-center-logo desktop-only" style="margin: 0;">
+    <!-- 1:1 Layout Engine Match -->
+    <div class="auth-page-wrap">
+        
+        <!-- Exact Logo Copy-Paste -->
+        <div class="auth-center-logo desktop-only">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" style="width: 80px; height: 80px; margin-bottom: -10px;">
               <defs>
-                <linearGradient id="neonGradientCard" x1="0%" y1="0%" x2="100%" y2="100%">
+                <linearGradient id="neonGradientCardTOS" x1="0%" y1="0%" x2="100%" y2="100%">
                   <stop offset="0%" stop-color="#00ffff" />
                   <stop offset="100%" stop-color="#a020f0" />
                 </linearGradient>
-                <filter id="neonGlowCard" x="-50%" y="-50%" width="200%" height="200%">
+                <filter id="neonGlowCardTOS" x="-50%" y="-50%" width="200%" height="200%">
                   <feGaussianBlur stdDeviation="3.5" result="coloredBlur"/>
                   <feMerge>
                     <feMergeNode in="coloredBlur"/>
@@ -137,12 +98,12 @@
                   </feMerge>
                 </filter>
               </defs>
-              <g filter="url(#neonGlowCard)" fill="none" stroke="url(#neonGradientCard)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+              <g filter="url(#neonGlowCardTOS)" fill="none" stroke="url(#neonGradientCardTOS)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z" />
                 <path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z" />
                 <g class="eye-pupil" style="transition: transform 0.1s ease-out;">
                   <circle cx="60" cy="60" r="6" />
-                  <circle cx="60" cy="60" r="2" fill="url(#neonGradientCard)" stroke="none"/>
+                  <circle cx="60" cy="60" r="2" fill="url(#neonGradientCardTOS)" stroke="none"/>
                 </g>
                 <path d="M60 15 V 30" stroke-width="2" opacity="0.6"/>
                 <path d="M60 90 V 105" stroke-width="2" opacity="0.6"/>
@@ -150,58 +111,57 @@
             </svg>
         </div>
 
-        <div class="auth-card active" style="padding: 3.5rem; border-radius: 16px; background: rgba(10, 12, 15, 0.75); max-width: 900px; min-height: auto;">
-            <div style="margin-bottom: 3rem;">
-                <h1 class="tos-header-title">legal_protocol</h1>
-                <p style="color: rgba(255,255,255,0.3); font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; text-transform: lowercase;">revision 1.0.4 // standard business agreement</p>
+        <!-- 1:1 Card Engine (Width override to 500px for ToS readability, but vertical centering is locked) -->
+        <div class="auth-card active" style="max-width: 500px; min-height: 540px; max-height: 540px; position: relative; z-index: 500; display: flex; flex-direction: column;">
+            <div class="auth-tabs" style="margin-bottom: 2rem;">
+                <button class="auth-tab active" style="cursor: default; pointer-events: none; width: 100%;">legal_protocol</button>
             </div>
 
-            <div class="tos-container">
-                <div class="tos-section">
-                    <h2>01. terminal_access</h2>
-                    <p>by establishing a connection to sentinelpay security nodes, you acknowledge and agree to comply with the operational protocols outlined in this document. unauthorized access attempts or exploitation of api infrastructure will result in immediate termination of service and permanent blacklisting of associated wallet addresses.</p>
+            <div class="tos-scroll-area">
+                <div class="legal-section">
+                    <h2>> terminal_access_</h2>
+                    <p>by establishing a connection to sentinelpay security nodes, you acknowledge and agree to comply with the operational protocols outlined in this document. unauthorized access attempts or exploitation of api infrastructure will result in immediate termination of service.</p>
                 </div>
 
-                <div class="tos-section">
-                    <h2>02. service_integrity</h2>
-                    <p>sentinelpay provides high-fidelity risk analysis through its proprietary scoring engine. while we strive for 100% precision, all outputs are probabilistic security assessments. the service is provided on an "as-available" basis. we do not guarantee uninterrupted node connectivity during high-load periods or network upgrades.</p>
+                <div class="legal-section">
+                    <h2>> service_integrity_</h2>
+                    <p>sentinelpay provides high-fidelity risk analysis through its proprietary scoring engine. while we strive for 100% precision, all outputs are probabilistic security assessments provided on an "as-available" basis.</p>
                 </div>
 
-                <div class="tos-section">
-                    <h2>03. operational_limits</h2>
-                    <p>users are prohibited from executing the following sequences:</p>
+                <div class="legal-section">
+                    <h2>> operational_limits_</h2>
                     <ul>
-                        <li>reverse-engineering scoring weights or private security heuristics.</li>
-                        <li>flood-attacks or any method designed to disrupt api response latency.</li>
-                        <li>using the scanner to facilitate fraudulent or malicious smart contract deployments.</li>
-                        <li>multiplexing api keys across unauthorized enterprise environments.</li>
+                        <li>no reverse-engineering scoring heuristics.</li>
+                        <li>no flood-attacks on api endpoints.</li>
+                        <li>no usage for illegal smart contract deployments.</li>
+                        <li>no sharing of private api credentials.</li>
                     </ul>
                 </div>
 
-                <div class="tos-section">
-                    <h2>04. credit_economics</h2>
-                    <p>all transactions involving sentinelpay credits are final. credits represent prepayed compute resources and hold no cash value. refunds are only processed in cases of documented system-wide failure exceeding 72 hours of downtime, at the sole discretion of sentinelpay core.</p>
+                <div class="legal-section">
+                    <h2>> economics_</h2>
+                    <p>all credit transactions are final. credits represent compute resources and hold no cash value. refunds are only processed in cases of prolonged system failure.</p>
                 </div>
 
-                <div class="tos-section">
-                    <h2>05. liability_shield</h2>
-                    <p>sentinelpay and its developers shall not be liable for any financial impact, lost assets, or smart contract failures resulting from the use or misuse of our scoring data. you are solely responsible for verifying transaction security before signing any data with your private keys.</p>
+                <div class="legal-section">
+                    <h2>> liability_shield_</h2>
+                    <p>sentinelpay and its developers shall not be liable for any financial impact, lost assets, or smart contract failures resulting from the use of our data. verify everything.</p>
                 </div>
 
-                <div class="tos-section">
-                    <h2>06. data_privacy</h2>
-                    <p>we adhere to a zero-knowledge data retention policy for public scanners. for registered business clients, we collect only the essential metadata required for billing and security auditing. we never sell or distribute client data to third-party analytics firms.</p>
+                <div class="legal-section">
+                    <h2>> privacy_policy_</h2>
+                    <p>zero-knowledge retention for public scans. essential metadata only for registered business clients. we never sell your data.</p>
                 </div>
 
-                <div class="tos-section">
-                    <h2>07. jurisdictional_law</h2>
-                    <p>this agreement is governed by the laws of the republic of croatia. any disputes arising from the use of sentinelpay services shall be resolved within the competent court system of croatia, following standard european commercial protocols.</p>
+                <div class="legal-section">
+                    <h2>> governing_law_</h2>
+                    <p>governed by the laws of the republic of croatia. disputes shall be settled within the competent court system of croatia.</p>
                 </div>
             </div>
 
-            <div style="margin-top: 3.5rem; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 2rem; display: flex; justify-content: space-between; align-items: center;">
-                <div style="color: rgba(255,255,255,0.2); font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; text-transform: lowercase;">&copy; 2026 sentinelpay // all rights reserved.</div>
-                <div style="color: var(--neon-blue); font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; font-weight: 700; text-transform: lowercase;">status: active_</div>
+            <div style="margin-top: auto; border-top: 1px dashed rgba(255,255,255,0.05); padding-top: 1rem; display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: rgba(255,255,255,0.2);">v1.0.4 // croatia</span>
+                <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--neon-blue);">status: verified_</span>
             </div>
         </div>
     </div>
