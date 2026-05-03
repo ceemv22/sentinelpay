@@ -14,78 +14,98 @@ const scrubHash = () => {
     if (window.location.href.indexOf('#') > -1) {
         window.history.replaceState(null, document.title, window.location.href.split('#')[0]);
     }
+    // Also scrub ?code if it exists after a delay
+    if (window.location.search.includes('code=')) {
+        const newUrl = window.location.origin + window.location.pathname;
+        window.history.replaceState(null, document.title, newUrl);
+    }
 };
 
 document.addEventListener('DOMContentLoaded', async () => {
-    console.log('[sentinel-dashboard] v-final loader active');
+    console.log('[sentinel-dashboard] v-final loader active (v17.3)');
     
-    // 1. Setup Auth Listener
+    let isInitialized = false;
+
+    // 1. Setup Auth Listener (S-Tier Patient Flow)
     sentinelAuth.auth.onAuthStateChange(async (event, session) => {
         console.log('[sentinel-dashboard] auth event:', event, !!session);
         
         if (session) {
-            // Give Supabase a moment to fully hydrate before scrubbing
-            setTimeout(scrubHash, 1500);
-            renderDashboard(session);
+            if (!isInitialized) {
+                isInitialized = true;
+                setTimeout(scrubHash, 2000); // Wait longer before scrubbing to ensure session stability
+                renderDashboard(session);
+            }
             return;
         }
 
-        // Only redirect if we are SURE there is no session and no incoming auth code
-        if (event === 'SIGNED_OUT' || (!session && event === 'INITIAL_SESSION')) {
+        // Only redirect if we are 100% sure there is no session AND no incoming code
+        if (event === 'SIGNED_OUT') {
             const hasAuthParams = 
                 window.location.search.includes('code=') || 
                 window.location.hash.includes('access_token=') || 
                 window.location.hash.includes('code=');
 
             if (!hasAuthParams) {
-                console.warn('[sentinel-dashboard] truly no session, redirecting');
+                console.warn('[sentinel-dashboard] truly signed out, redirecting');
                 window.location.href = '/auth';
             } else {
-                console.log('[sentinel-dashboard] auth params detected, waiting for exchange...');
+                console.log('[sentinel-dashboard] SIGNED_OUT event ignored due to active OAuth redirect params');
             }
         }
     });
 
     // 2. Immediate Session Check with PKCE Awareness
-    const { data: { session: initialSession } } = await sentinelAuth.auth.getSession();
-    if (initialSession) {
-        renderDashboard(initialSession);
-    } else {
-        // Wait up to 3 seconds for PKCE exchange if we see a code in URL
-        const isAuthRedirect = window.location.search.includes('code=') || window.location.hash.includes('access_token=');
-        if (isAuthRedirect) {
-            console.log('[sentinel-dashboard] redirect detected, holding for hydration...');
-            setTimeout(async () => {
-                const { data: { session: retrySession } } = await sentinelAuth.auth.getSession();
-                if (retrySession) {
-                    renderDashboard(retrySession);
-                } else {
-                    console.warn('[sentinel-dashboard] PKCE exchange timed out');
-                    window.location.href = '/auth';
-                }
-            }, 3000);
+    try {
+        const { data: { session: initialSession } } = await sentinelAuth.auth.getSession();
+        if (initialSession) {
+            isInitialized = true;
+            renderDashboard(initialSession);
+            setTimeout(scrubHash, 2000);
         } else {
-            // No session and not a redirect -> instant auth bounce
-            setTimeout(async () => {
-                const { data: { session: finalCheck } } = await sentinelAuth.auth.getSession();
-                if (!finalCheck) window.location.href = '/auth';
-            }, 1000);
+            // Wait up to 5 seconds for PKCE exchange if we see a code in URL
+            const isAuthRedirect = window.location.search.includes('code=') || window.location.hash.includes('access_token=');
+            
+            if (isAuthRedirect) {
+                console.log('[sentinel-dashboard] redirect detected, holding for hydration (5s timeout)...');
+                setTimeout(async () => {
+                    const { data: { session: retrySession } } = await sentinelAuth.auth.getSession();
+                    if (retrySession) {
+                        if (!isInitialized) {
+                            isInitialized = true;
+                            renderDashboard(retrySession);
+                            setTimeout(scrubHash, 2000);
+                        }
+                    } else {
+                        console.warn('[sentinel-dashboard] PKCE exchange timed out after 5s');
+                        window.location.href = '/auth';
+                    }
+                }, 5000);
+            } else {
+                // No session and not a redirect -> give it 1.5s then bounce
+                setTimeout(async () => {
+                    const { data: { session: finalCheck } } = await sentinelAuth.auth.getSession();
+                    if (!finalCheck && !isInitialized) {
+                        console.warn('[sentinel-dashboard] no session detected, bouncing to auth');
+                        window.location.href = '/auth';
+                    }
+                }, 1500);
+            }
         }
+    } catch (err) {
+        console.error('[sentinel-dashboard] session check failed', err);
     }
 
     async function renderDashboard(session) {
-        if (window.dashboardRendered) return;
-        window.dashboardRendered = true;
-        
         const token = session.access_token;
         
         // 3. Setup Logout
         const logoutBtn = document.getElementById('btn-logout');
         if (logoutBtn) {
-            logoutBtn.addEventListener('click', async () => {
+            logoutBtn.onclick = async () => {
                 await sentinelAuth.auth.signOut();
                 window.location.href = '/';
-            });
+            };
         }
 
         // Setup UI
@@ -97,7 +117,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     function setupRevealKey(token) {
         const revealBtn = document.getElementById('btn-reveal-key');
         if (revealBtn) {
-            revealBtn.addEventListener('click', async () => {
+            revealBtn.onclick = async () => {
                 try {
                     revealBtn.textContent = 'revealing...';
                     revealBtn.disabled = true;
@@ -121,16 +141,16 @@ document.addEventListener('DOMContentLoaded', async () => {
                     revealBtn.textContent = 'reveal';
                     revealBtn.disabled = false;
                 }
-            });
+            };
         }
     }
 
     function setupBuyCredits() {
         const buyBtn = document.getElementById('btn-buy-credits');
         if (buyBtn) {
-            buyBtn.addEventListener('click', () => {
+            buyBtn.onclick = () => {
                 if (window.SentinelToast) window.SentinelToast.show('Stripe connection offline. Phase 3 pending.', 'info');
-            });
+            };
         }
     }
 
@@ -148,36 +168,39 @@ document.addEventListener('DOMContentLoaded', async () => {
             document.getElementById('credit-count').textContent = data.credits;
 
             const historyContainer = document.getElementById('history-container');
-            historyContainer.replaceChildren();
+            if (historyContainer) {
+                historyContainer.replaceChildren();
 
-            if (data.history.length === 0) {
-                const emptyMsg = document.createElement('p');
-                emptyMsg.style.cssText = 'color: var(--text-secondary); text-align: center; padding: 2rem;';
-                emptyMsg.textContent = 'no scans yet.';
-                historyContainer.appendChild(emptyMsg);
-            } else {
-                data.history.forEach(item => {
-                    const el = document.createElement('div');
-                    el.className = `history-item ${item.category}`;
-                    
-                    const dateRaw = new Date(item.timestamp);
-                    const dateStr = dateRaw.toLocaleDateString() + ' ' + dateRaw.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                    
-                    el.innerHTML = `
-                        <div style="display:flex; flex-direction: column; gap: 0.25rem;">
-                            <strong style="color: var(--text)">${item.wallet}</strong>
-                            <span style="color: var(--text-secondary); font-size: 0.75rem;">${dateStr}</span>
-                        </div>
-                        <div style="display: flex; gap: 1rem; align-items: center;">
-                            <span style="background: rgba(255,255,255,0.1); padding: 0.2rem 0.6rem; border-radius: 4px;">Score: ${item.score}</span>
-                        </div>
-                    `;
-                    historyContainer.appendChild(el);
-                });
+                if (data.history.length === 0) {
+                    const emptyMsg = document.createElement('p');
+                    emptyMsg.style.cssText = 'color: var(--text-secondary); text-align: center; padding: 2rem;';
+                    emptyMsg.textContent = 'no scans yet.';
+                    historyContainer.appendChild(emptyMsg);
+                } else {
+                    data.history.forEach(item => {
+                        const el = document.createElement('div');
+                        el.className = `history-item ${item.category}`;
+                        
+                        const dateRaw = new Date(item.timestamp);
+                        const dateStr = dateRaw.toLocaleDateString() + ' ' + dateRaw.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                        
+                        el.innerHTML = `
+                            <div style="display:flex; flex-direction: column; gap: 0.25rem;">
+                                <strong style="color: var(--text)">${item.wallet}</strong>
+                                <span style="color: var(--text-secondary); font-size: 0.75rem;">${dateStr}</span>
+                            </div>
+                            <div style="display: flex; gap: 1rem; align-items: center;">
+                                <span style="background: rgba(255,255,255,0.1); padding: 0.2rem 0.6rem; border-radius: 4px;">Score: ${item.score}</span>
+                            </div>
+                        `;
+                        historyContainer.appendChild(el);
+                    });
+                }
             }
         } catch (err) {
             console.error(err);
-            document.getElementById('user-email').textContent = 'error loading profile.';
+            const userEmailEl = document.getElementById('user-email');
+            if (userEmailEl) userEmailEl.textContent = 'error loading profile.';
         }
     }
 });

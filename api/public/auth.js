@@ -256,9 +256,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const renderTurnstile = (id, target) => {
         if (!window.turnstile) return null;
+        
+        // S-Tier Action Mapping for Turnstile v2
+        const actionMap = {
+            'login': 'login',
+            'register': 'signup',
+            'forgot': 'forgot_password'
+        };
+
         return window.turnstile.render(id, {
             sitekey: '0x4AAAAAADGpMozD1QOtWPkP',
             theme: 'dark',
+            action: actionMap[target] || 'auth',
             callback: (token) => {
                 if (target === 'login') window.explicitLoginToken = token;
                 else if (target === 'register') window.explicitRegToken = token;
@@ -267,7 +276,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 const btn = document.getElementById(`${target}-submit-btn`) || document.getElementById(`${target}-pw-submit-btn`);
                 if (btn) {
                     btn.disabled = false;
-                    btn.click();
+                    // Small delay to allow token to settle in global scope before click
+                    setTimeout(() => btn.click(), 100);
                 }
             }
         });
