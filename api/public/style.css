@@ -10,6 +10,30 @@
     --neon-blue: #00f0ff;
 }
 
+/* --- S-TIER GLOBAL SCROLLBAR --- */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: #050505;
+}
+::-webkit-scrollbar-thumb {
+    background: rgba(0, 240, 255, 0.2);
+    border-radius: 10px;
+    border: 1px solid rgba(0, 240, 255, 0.1);
+    transition: background 0.3s ease;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 240, 255, 0.5);
+    box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+}
+/* Firefox support */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 240, 255, 0.2) #050505;
+}
+
 
 /* --- SUCCESS LOGIC MOVED TO BOTTOM FOR ISOLATION --- */
 
