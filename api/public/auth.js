@@ -1,4 +1,4 @@
-// SentinelPay Auth Core (v17.6 - ULTIMATE RECOVERY)
+// SentinelPay Auth Core (v17.7 - S-TIER STABILITY)
 // Features: Exception-Safe Handlers, Centralized Turnstile, Robust State Management
 
 // 1. SUPABASE SUBSYSTEM
@@ -46,13 +46,16 @@ window.getTurnstileToken = async (scope) => {
                 const btn = document.querySelector(`[data-captcha-trigger="${scope}"]`);
                 if (btn) {
                     btn.disabled = false;
-                    btn.click();
+                    btn.textContent = 'solved! click again';
+                    setTimeout(() => { if (btn.textContent.includes('solved')) btn.textContent = 'send reset link'; }, 2000);
                 }
             }
         });
     } else {
         state.token = null;
-        window.turnstile.reset(state.widgetId);
+        setTimeout(() => {
+            try { window.turnstile.reset(state.widgetId); } catch(e){}
+        }, 250);
     }
     return null;
 };
@@ -176,7 +179,7 @@ window.handleResendHandshake = async (type = 'signup') => {
 
 // 5. CORE INITIALIZATION
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('[sentinel-auth] initializing v17.6...');
+    console.log('[sentinel-auth] initializing v17.7...');
     
     const scrubHash = () => {
         if (window.location.href.indexOf('#') > -1) {
@@ -194,7 +197,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Bindings
     const bind = (id, func) => {
         const el = document.getElementById(id);
-        if (el) el.onclick = func; // Use onclick for guaranteed single-binding overwrite
+        if (el) el.onclick = func;
     };
 
     bind('tab-login', () => window.switchManual('login'));
@@ -347,7 +350,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     errorMsg.style.display = 'none';
 
                     const captchaToken = window.consumeTurnstileToken('forgot');
-                    const { error } = await s.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin + '/reset', captchaToken });
+                    const { error } = await s.auth.resetPasswordForEmail(email, { 
+                        redirectTo: window.location.origin + '/reset', 
+                        captchaToken: captchaToken 
+                    });
                     
                     if (error) {
                         errorMsg.textContent = 'error: ' + error.message.toLowerCase();
