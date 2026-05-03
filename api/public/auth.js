@@ -147,9 +147,12 @@ window.handleResendHandshake = async (type = 'signup') => {
 
         // Cleanup
         window[tokenKey] = null;
-        if (window.turnstile) window.turnstile.reset(window[`turnstile${type === 'signup' ? 'Reg' : 'Forgot'}WidgetId`]);
+        if (window.turnstile && window[`turnstile${type === 'signup' ? 'Reg' : 'Forgot'}WidgetId`] !== undefined) {
+            window.turnstile.reset(window[`turnstile${type === 'signup' ? 'Reg' : 'Forgot'}WidgetId`]);
+        }
 
         if (error) {
+            console.error('[auth] resend error:', error);
             if (btn) {
                 btn.textContent = 'error: wait';
                 setTimeout(() => { btn.disabled = false; btn.textContent = 'resend email'; }, 3000);
@@ -438,17 +441,25 @@ document.addEventListener('DOMContentLoaded', () => {
             modal.classList.remove('active');
             window.explicitForgotToken = null;
             if (window.turnstile && window.turnstileForgotWidgetId !== undefined) {
-                window.turnstile.reset(window.turnstileForgotWidgetId);
+                try { window.turnstile.reset(window.turnstileForgotWidgetId); } catch(e){}
             }
-            setTimeout(() => { modal.style.display = 'none'; }, 300);
+            setTimeout(() => { 
+                modal.style.display = 'none';
+                // Reset form visibility for next open
+                document.getElementById('forgot-pw-state-form').style.display = 'block';
+                document.getElementById('forgot-pw-state-success').style.display = 'none';
+            }, 300);
         };
 
         closeBtn.addEventListener('click', hideModal);
         modal.addEventListener('click', (e) => { if (e.target === modal) hideModal(); });
 
         if (forgotForm) {
+            let isSubmitting = false;
             forgotForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
+                if (isSubmitting) return;
+
                 const s = getSupabase();
                 const email = document.getElementById('forgot-pw-email').value;
                 const btn = document.getElementById('forgot-pw-submit-btn');
@@ -465,20 +476,31 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
 
+                isSubmitting = true;
                 btn.disabled = true;
                 btn.textContent = 'sending...';
                 errorMsg.style.display = 'none';
 
-                const { error } = await s.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin + '/reset', captchaToken: window.explicitForgotToken });
-                
+                // Atomic Token Consumption
+                const token = window.explicitForgotToken;
                 window.explicitForgotToken = null;
-                if (window.turnstile && window.turnstileForgotWidgetId !== undefined) window.turnstile.reset(window.turnstileForgotWidgetId);
+
+                const { error } = await s.auth.resetPasswordForEmail(email, { 
+                    redirectTo: window.location.origin + '/reset', 
+                    captchaToken: token 
+                });
+                
+                if (window.turnstile && window.turnstileForgotWidgetId !== undefined) {
+                    window.turnstile.reset(window.turnstileForgotWidgetId);
+                }
 
                 if (error) {
+                    console.error('[auth] forgot password error:', error);
                     errorMsg.textContent = 'error: ' + error.message.toLowerCase();
                     errorMsg.style.display = 'block';
                     btn.disabled = false;
                     btn.textContent = 'send reset link';
+                    isSubmitting = false;
                 } else {
                     sessionStorage.setItem('sentinel_forgot_email', email);
                     document.getElementById('forgot-pw-state-form').style.display = 'none';
@@ -486,6 +508,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const unlockAt = Date.now() + 60000;
                     localStorage.setItem('sentinel_forgot_resend_unlock', unlockAt);
                     startCooldown('forgot-resend-btn', 'forgot', 'sentinel_forgot_resend_unlock', 60);
+                    isSubmitting = false;
                 }
             });
         }
