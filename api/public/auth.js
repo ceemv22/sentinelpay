@@ -1,5 +1,5 @@
-// SentinelPay Auth Core (v17.5 - S-TIER STABILITY)
-// Features: Centralized Turnstile Management, Atomic Submission Locks, ID-Safe Rendering
+// SentinelPay Auth Core (v17.6 - ULTIMATE RECOVERY)
+// Features: Exception-Safe Handlers, Centralized Turnstile, Robust State Management
 
 // 1. SUPABASE SUBSYSTEM
 const supabaseUrl = 'https://aivqwkgjdpklxxuvkxpy.supabase.co';
@@ -7,18 +7,15 @@ const supabaseKey = 'sb_publishable_bRfAssaGT6D8oFDQtPARbw_5fyYGWM6';
 let supabaseClient = null;
 
 const getSupabase = () => {
-    if (supabaseClient) return supabaseClient;
-    if (window.supabase) {
-        supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey, {
-            auth: {
-                flowType: 'pkce',
-                autoRefreshToken: true,
-                persistSession: true,
-                detectSessionInUrl: true
-            }
-        });
-        return supabaseClient;
-    }
+    try {
+        if (supabaseClient) return supabaseClient;
+        if (window.supabase) {
+            supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey, {
+                auth: { flowType: 'pkce', autoRefreshToken: true, persistSession: true, detectSessionInUrl: true }
+            });
+            return supabaseClient;
+        }
+    } catch (e) { console.error('[auth] supabase init failed', e); }
     return null;
 };
 
@@ -33,28 +30,19 @@ window.getTurnstileToken = async (scope) => {
     const state = turnstileState[scope];
     if (!state) return null;
 
-    if (state.token) {
-        const t = state.token;
-        // Do NOT clear here, let the submission logic clear it after use
-        return t;
-    }
+    if (state.token) return state.token;
 
-    // If no token, we must (re)render or reset
     if (!window.turnstile) {
-        console.error('[auth] turnstile library not loaded');
+        console.error('[auth] turnstile missing');
         return null;
     }
 
     if (state.widgetId === null) {
-        console.log(`[auth] first render for ${scope}`);
         state.widgetId = window.turnstile.render(state.targetId, {
             sitekey: '0x4AAAAAADGpMozD1QOtWPkP',
             theme: 'dark',
-            // NO 'action' parameter to maximize compatibility with Supabase default settings
             callback: (token) => {
-                console.log(`[auth] turnstile solved for ${scope}`);
                 state.token = token;
-                // Auto-trigger the button that requested the captcha
                 const btn = document.querySelector(`[data-captcha-trigger="${scope}"]`);
                 if (btn) {
                     btn.disabled = false;
@@ -63,20 +51,20 @@ window.getTurnstileToken = async (scope) => {
             }
         });
     } else {
-        console.log(`[auth] resetting widget for ${scope}`);
         state.token = null;
         window.turnstile.reset(state.widgetId);
     }
-
-    return null; // Must wait for callback
+    return null;
 };
 
 window.consumeTurnstileToken = (scope) => {
     const t = turnstileState[scope].token;
     turnstileState[scope].token = null;
     if (window.turnstile && turnstileState[scope].widgetId !== null) {
-        window.turnstile.reset(turnstileState[scope].widgetId);
+        try { window.turnstile.reset(turnstileState[scope].widgetId); } catch(e){}
     }
+    // Clear trigger attribute
+    document.querySelectorAll(`[data-captcha-trigger="${scope}"]`).forEach(el => el.removeAttribute('data-captcha-trigger'));
     return t;
 };
 
@@ -91,10 +79,14 @@ window.switchManual = (target) => {
 
     if (target === 'login') {
         panelRegister.style.display = 'none';
+        panelRegister.classList.remove('active');
         panelLogin.style.display = 'block';
+        setTimeout(() => panelLogin.classList.add('active'), 10);
     } else {
         panelLogin.style.display = 'none';
+        panelLogin.classList.remove('active');
         panelRegister.style.display = 'block';
+        setTimeout(() => panelRegister.classList.add('active'), 10);
     }
 
     if (tabLogin && tabRegister) {
@@ -133,7 +125,6 @@ const startCooldown = (btnId, type, unlockKey, remainingSec) => {
             btn.textContent = `available in ${timeLeft}s`;
         }
     };
-
     if (type === 'signup') resendTimer = setInterval(tick, 1000);
     else forgotResendTimer = setInterval(tick, 1000);
 };
@@ -141,7 +132,6 @@ const startCooldown = (btnId, type, unlockKey, remainingSec) => {
 window.handleResendHandshake = async (type = 'signup') => {
     const s = getSupabase();
     if (!s) return;
-    
     const scope = type === 'signup' ? 'register' : 'forgot';
     const btnId = type === 'signup' ? 'resend-btn' : 'forgot-resend-btn';
     const emailKey = type === 'signup' ? 'sentinel_pending_email' : 'sentinel_forgot_email';
@@ -161,43 +151,40 @@ window.handleResendHandshake = async (type = 'signup') => {
         return;
     }
 
-    if (btn) {
+    try {
         btn.disabled = true;
         btn.textContent = 'sending...';
-    }
-
-    try {
         const captchaToken = window.consumeTurnstileToken(scope);
         const { error } = type === 'signup' 
             ? await s.auth.resend({ type: 'signup', email, options: { captchaToken, emailRedirectTo: window.location.origin + '/auth?verified=true' } })
             : await s.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin + '/reset', captchaToken });
 
         if (error) {
-            console.error('[auth] resend error:', error);
-            if (btn) {
-                btn.textContent = 'error: wait';
-                setTimeout(() => { btn.disabled = false; btn.textContent = 'resend email'; }, 3000);
-            }
+            btn.textContent = 'error: wait';
+            setTimeout(() => { btn.disabled = false; btn.textContent = 'resend email'; }, 3000);
         } else {
-            if (btn) btn.textContent = 'sent!';
-            const unlockTimestamp = Date.now() + 60000;
-            localStorage.setItem(unlockKey, unlockTimestamp);
-            setTimeout(() => startCooldown(btnId, type, unlockKey, 60), 1000);
+            btn.textContent = 'sent!';
+            localStorage.setItem(unlockKey, Date.now() + 60000);
+            startCooldown(btnId, type, unlockKey, 60);
         }
-    } catch (err) { console.error('[auth] resend failed', err); }
+    } catch (err) { 
+        console.error(err); 
+        btn.disabled = false;
+        btn.textContent = 'resend email';
+    }
 };
 
 // 5. CORE INITIALIZATION
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('[sentinel-auth] initializing v17.5...');
+    console.log('[sentinel-auth] initializing v17.6...');
     
-    const s = getSupabase();
     const scrubHash = () => {
         if (window.location.href.indexOf('#') > -1) {
             window.history.replaceState(null, document.title, window.location.href.split('#')[0]);
         }
     };
 
+    const s = getSupabase();
     if (s) {
         s.auth.onAuthStateChange((event, session) => {
             if (session) setTimeout(scrubHash, 1500);
@@ -207,7 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Bindings
     const bind = (id, func) => {
         const el = document.getElementById(id);
-        if (el) el.addEventListener('click', func);
+        if (el) el.onclick = func; // Use onclick for guaranteed single-binding overwrite
     };
 
     bind('tab-login', () => window.switchManual('login'));
@@ -220,10 +207,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const regForm = document.getElementById('register-form');
     if (regForm) {
         let isSubmitting = false;
-        regForm.addEventListener('submit', async (e) => {
+        regForm.onsubmit = async (e) => {
             e.preventDefault();
             if (isSubmitting) return;
 
+            const s = getSupabase();
             const email = document.getElementById('reg-email').value;
             const password = document.getElementById('reg-password').value;
             const btn = document.getElementById('register-submit-btn');
@@ -237,40 +225,42 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            isSubmitting = true;
-            btn.disabled = true;
-            btn.textContent = 'processing...';
-            errorMsg.style.display = 'none';
+            try {
+                isSubmitting = true;
+                btn.disabled = true;
+                btn.textContent = 'processing...';
+                errorMsg.style.display = 'none';
 
-            const captchaToken = window.consumeTurnstileToken('register');
-            const { data, error } = await s.auth.signUp({ email, password, options: { captchaToken } });
-            
-            const isExisting = !error && data?.user && data.user.identities?.length === 0;
-            if (error || isExisting) {
-                errorMsg.textContent = isExisting ? 'error: email already registered' : 'error: ' + error.message.toLowerCase();
-                errorMsg.style.display = 'block';
-                btn.disabled = false;
-                btn.textContent = 'create account';
-                isSubmitting = false;
-            } else {
-                sessionStorage.setItem('sentinel_pending_email', email);
-                document.getElementById('auth-panel').style.display = 'none';
-                document.getElementById('auth-success-state').style.display = 'flex';
-                localStorage.setItem('sentinel_resend_unlock', Date.now() + 60000);
-                startCooldown('resend-btn', 'signup', 'sentinel_resend_unlock', 60);
-                isSubmitting = false;
-            }
-        });
+                const captchaToken = window.consumeTurnstileToken('register');
+                const { data, error } = await s.auth.signUp({ email, password, options: { captchaToken } });
+                
+                const isExisting = !error && data?.user && data.user.identities?.length === 0;
+                if (error || isExisting) {
+                    errorMsg.textContent = isExisting ? 'error: email already registered' : 'error: ' + error.message.toLowerCase();
+                    errorMsg.style.display = 'block';
+                    btn.disabled = false;
+                    btn.textContent = 'create account';
+                } else {
+                    sessionStorage.setItem('sentinel_pending_email', email);
+                    document.getElementById('auth-panel').style.display = 'none';
+                    document.getElementById('auth-success-state').style.display = 'flex';
+                    localStorage.setItem('sentinel_resend_unlock', Date.now() + 60000);
+                    startCooldown('resend-btn', 'signup', 'sentinel_resend_unlock', 60);
+                }
+            } catch (err) { console.error(err); btn.disabled = false; }
+            finally { isSubmitting = false; }
+        };
     }
 
     // Login Form
     const loginForm = document.getElementById('login-form');
     if (loginForm) {
         let isSubmitting = false;
-        loginForm.addEventListener('submit', async (e) => {
+        loginForm.onsubmit = async (e) => {
             e.preventDefault();
             if (isSubmitting) return;
 
+            const s = getSupabase();
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
             const btn = document.getElementById('login-submit-btn');
@@ -284,41 +274,43 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            isSubmitting = true;
-            btn.disabled = true;
-            btn.textContent = 'verifying...';
-            errorMsg.style.display = 'none';
+            try {
+                isSubmitting = true;
+                btn.disabled = true;
+                btn.textContent = 'verifying...';
+                errorMsg.style.display = 'none';
 
-            const captchaToken = window.consumeTurnstileToken('login');
-            const { error } = await s.auth.signInWithPassword({ email, password, options: { captchaToken } });
-            
-            if (error) {
-                errorMsg.textContent = 'error: wrong credentials';
-                errorMsg.style.display = 'block';
-                btn.disabled = false;
-                btn.textContent = 'login';
-                isSubmitting = false;
-            } else {
-                window.location.href = '/dashboard';
-            }
-        });
+                const captchaToken = window.consumeTurnstileToken('login');
+                const { error } = await s.auth.signInWithPassword({ email, password, options: { captchaToken } });
+                
+                if (error) {
+                    errorMsg.textContent = 'error: wrong credentials';
+                    errorMsg.style.display = 'block';
+                    btn.disabled = false;
+                    btn.textContent = 'login';
+                } else {
+                    window.location.href = '/dashboard';
+                }
+            } catch (err) { console.error(err); btn.disabled = false; }
+            finally { isSubmitting = false; }
+        };
     }
 
-    // Forgot Password Modal & Form
+    // Forgot Password
     const trigger = document.getElementById('forgot-pw-trigger');
     const modal = document.getElementById('forgot-pw-modal');
     const closeBtn = document.getElementById('close-forgot-pw-btn');
     const forgotForm = document.getElementById('forgot-pw-form');
 
     if (trigger && modal && closeBtn) {
-        trigger.addEventListener('click', (e) => {
+        trigger.onclick = (e) => {
             e.preventDefault();
             window.consumeTurnstileToken('forgot');
             document.getElementById('forgot-pw-state-form').style.display = 'block';
             document.getElementById('forgot-pw-state-success').style.display = 'none';
             modal.style.display = 'flex';
             setTimeout(() => modal.classList.add('active'), 10);
-        });
+        };
 
         const hideModal = () => {
             modal.classList.remove('active');
@@ -326,15 +318,16 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => { modal.style.display = 'none'; }, 300);
         };
 
-        closeBtn.addEventListener('click', hideModal);
-        modal.addEventListener('click', (e) => { if (e.target === modal) hideModal(); });
+        closeBtn.onclick = hideModal;
+        modal.onclick = (e) => { if (e.target === modal) hideModal(); };
 
         if (forgotForm) {
             let isSubmitting = false;
-            forgotForm.addEventListener('submit', async (e) => {
+            forgotForm.onsubmit = async (e) => {
                 e.preventDefault();
                 if (isSubmitting) return;
 
+                const s = getSupabase();
                 const email = document.getElementById('forgot-pw-email').value;
                 const btn = document.getElementById('forgot-pw-submit-btn');
                 const errorMsg = document.getElementById('forgot-pw-error-msg');
@@ -347,35 +340,36 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
 
-                isSubmitting = true;
-                btn.disabled = true;
-                btn.textContent = 'sending...';
-                errorMsg.style.display = 'none';
+                try {
+                    isSubmitting = true;
+                    btn.disabled = true;
+                    btn.textContent = 'sending...';
+                    errorMsg.style.display = 'none';
 
-                const captchaToken = window.consumeTurnstileToken('forgot');
-                const { error } = await s.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin + '/reset', captchaToken });
-                
-                if (error) {
-                    errorMsg.textContent = 'error: ' + error.message.toLowerCase();
-                    errorMsg.style.display = 'block';
-                    btn.disabled = false;
-                    btn.textContent = 'send reset link';
-                    isSubmitting = false;
-                } else {
-                    sessionStorage.setItem('sentinel_forgot_email', email);
-                    document.getElementById('forgot-pw-state-form').style.display = 'none';
-                    document.getElementById('forgot-pw-state-success').style.display = 'flex';
-                    localStorage.setItem('sentinel_forgot_resend_unlock', Date.now() + 60000);
-                    startCooldown('forgot-resend-btn', 'forgot', 'sentinel_forgot_resend_unlock', 60);
-                    isSubmitting = false;
-                }
-            });
+                    const captchaToken = window.consumeTurnstileToken('forgot');
+                    const { error } = await s.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin + '/reset', captchaToken });
+                    
+                    if (error) {
+                        errorMsg.textContent = 'error: ' + error.message.toLowerCase();
+                        errorMsg.style.display = 'block';
+                        btn.disabled = false;
+                        btn.textContent = 'send reset link';
+                    } else {
+                        sessionStorage.setItem('sentinel_forgot_email', email);
+                        document.getElementById('forgot-pw-state-form').style.display = 'none';
+                        document.getElementById('forgot-pw-state-success').style.display = 'flex';
+                        localStorage.setItem('sentinel_forgot_resend_unlock', Date.now() + 60000);
+                        startCooldown('forgot-resend-btn', 'forgot', 'sentinel_forgot_resend_unlock', 60);
+                    }
+                } catch (err) { console.error(err); btn.disabled = false; }
+                finally { isSubmitting = false; }
+            };
         }
     }
 
-    // Password Eye Toggles
+    // Eye Toggles
     document.querySelectorAll('.pw-eye-toggle').forEach(btn => {
-        btn.addEventListener('click', () => {
+        btn.onclick = () => {
             const input = document.getElementById(btn.getAttribute('data-target'));
             const eyeOn = btn.querySelector('.eye-on');
             const eyeOff = btn.querySelector('.eye-off');
@@ -388,7 +382,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 eyeOn.style.setProperty('display', 'none', 'important');
                 eyeOff.style.setProperty('display', 'block', 'important');
             }
-        });
+        };
     });
 
     // Socials
@@ -396,25 +390,26 @@ document.addEventListener('DOMContentLoaded', () => {
     ['btn-google', 'btn-google-reg', 'btn-x', 'btn-x-reg'].forEach(id => {
         const b = document.getElementById(id);
         if (b) {
-            b.addEventListener('click', async () => {
+            b.onclick = async () => {
+                const s = getSupabase();
                 b.disabled = true;
                 b.textContent = 'connecting...';
                 await s.auth.signInWithOAuth({ provider: id.includes('google') ? 'google' : 'twitter', options: { redirectTo: redirectUrl } });
-            });
+            };
         }
     });
 
-    // Password Rules Tooltip
+    // Tooltip
     const rulesToggle = document.getElementById('pw-rules-toggle');
     const rulesTooltip = document.getElementById('pw-rules-tooltip');
     if (rulesToggle && rulesTooltip) {
-        rulesToggle.addEventListener('mouseenter', () => rulesTooltip.classList.add('visible'));
-        rulesToggle.addEventListener('mouseleave', () => rulesTooltip.classList.remove('visible'));
+        rulesToggle.onmouseenter = () => rulesTooltip.classList.add('visible');
+        rulesToggle.onmouseleave = () => rulesTooltip.classList.remove('visible');
     }
 
     const regPw = document.getElementById('reg-password');
     if (regPw) {
-        regPw.addEventListener('input', (e) => {
+        regPw.oninput = (e) => {
             const val = e.target.value;
             const validate = (id, cond) => {
                 const el = document.getElementById(id);
@@ -427,6 +422,6 @@ document.addEventListener('DOMContentLoaded', () => {
             validate('rule-len', val.length >= 8);
             validate('rule-upper', /[A-Z]/.test(val));
             validate('rule-num', /[0-9]/.test(val));
-        });
+        };
     }
 });
