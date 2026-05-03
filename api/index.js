@@ -52,8 +52,6 @@ app.use(helmet({
             "default-src": ["'self'"],
             "script-src": [
                 "'self'", 
-                "'unsafe-inline'", 
-                "'unsafe-eval'", 
                 "https://aivqwkgjdpklxxuvkxpy.supabase.co", 
                 "https://challenges.cloudflare.com",
                 "blob:",

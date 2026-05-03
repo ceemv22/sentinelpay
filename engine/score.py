@@ -67,8 +67,6 @@ def fetch_all_relevant_txs(wallet, api_key):
         "endblock": 999999999
     }
 
-    print(f"[DEBUG] fetching latest 200 txs for {wallet[:10]}...", file=sys.stderr)
-    
     normal = fetch_etherscan({**base_params, "action": "txlist"})
     internal = fetch_etherscan({**base_params, "action": "txlistinternal"})
     tokens = fetch_etherscan({**base_params, "action": "tokentx"})

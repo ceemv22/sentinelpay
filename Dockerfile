@@ -14,4 +14,7 @@ EXPOSE 8080
 
 ENV PORT=8080
 
+RUN useradd -m sentinel && chown -R sentinel:sentinel /app
+USER sentinel
+
 CMD ["node", "api/index.js"]

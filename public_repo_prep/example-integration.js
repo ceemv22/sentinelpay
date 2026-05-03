@@ -1,38 +1,38 @@
 /**
- * SentinelPay API - Basic Integration Example
- * This script demonstrates how to perform a wallet risk scan.
+ * sentinelpay api - basic integration example
+ * demonstrate how to perform a wallet risk scan.
  */
 
 const axios = require('axios');
 
-const SENTINEL_API_URL = 'https://api.sentinelpay.org/v1/scan';
-const API_KEY = 'YOUR_API_KEY_HERE';
+const sentinel_api_url = 'https://api.sentinelpay.org/v1/scan';
+const api_key = 'your_api_key_here';
 
-async function checkWalletRisk(walletAddress) {
-    console.log(`[sentinel] initiating scan for: ${walletAddress}...`);
+async function checkwalletrisk(walletaddress) {
+    console.log(`[sentinel] initiating scan for: ${walletaddress}...`);
     
     try {
-        const response = await axios.post(SENTINEL_API_URL, {
-            address: walletAddress
+        const response = await axios.post(sentinel_api_url, {
+            address: walletaddress
         }, {
             headers: {
-                'x-api-key': API_KEY,
-                'Content-Type': 'application/json'
+                'x-api-key': api_key,
+                'content-type': 'application/json'
             }
         });
 
         const { score, risk_level, flags } = response.data;
 
         console.log('-----------------------------------');
-        console.log(`SCORE: ${score}/100`);
-        console.log(`LEVEL: ${risk_level.toUpperCase()}`);
-        console.log(`FLAGS: ${flags.length > 0 ? flags.join(', ') : 'none'}`);
+        console.log(`score: ${score}/100`);
+        console.log(`level: ${risk_level.toLowerCase()}`);
+        console.log(`flags: ${flags.length > 0 ? flags.join(', ') : 'none'}`);
         console.log('-----------------------------------');
 
         if (score > 70) {
-            console.warn('[ACTION] deposit blocked: high risk detected.');
+            console.warn('[action] deposit blocked: high risk detected.');
         } else {
-            console.log('[ACTION] deposit approved.');
+            console.log('[action] deposit approved.');
         }
 
     } catch (error) {
@@ -41,6 +41,6 @@ async function checkWalletRisk(walletAddress) {
     }
 }
 
-// Usage Example
-const targetWallet = '0x000000000000000000000000000000000000dEaD';
-checkWalletRisk(targetWallet);
+// usage example
+const targetwallet = '0x000000000000000000000000000000000000dead';
+checkwalletrisk(targetwallet);
