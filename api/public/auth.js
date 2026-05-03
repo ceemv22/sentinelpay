@@ -31,11 +31,7 @@ window.switchManual = (target) => {
 };
 
 // 2. SUPABASE SUBSYSTEM
-// S-Tier Security: Using dynamic domain mapping for white-label OAuth visibility
-const supabaseUrl = window.location.hostname.includes('sentinelpay.org') 
-    ? 'https://api.sentinelpay.org' // Your custom domain once DNS is ready
-    : 'https://aivqwkgjdpklxxuvkxpy.supabase.co';
-
+const supabaseUrl = 'https://aivqwkgjdpklxxuvkxpy.supabase.co';
 const supabaseKey = 'sb_publishable_bRfAssaGT6D8oFDQtPARbw_5fyYGWM6';
 let supabaseClient = null;
 
@@ -44,7 +40,7 @@ const getSupabase = () => {
     if (window.supabase) {
         supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey, {
             auth: {
-                flowType: 'pkce', // OWASP S-Tier: Proof Key for Code Exchange enabled
+                flowType: 'pkce', // Keeping S-Tier PKCE even on default domain
                 autoRefreshToken: true,
                 persistSession: true,
                 detectSessionInUrl: true

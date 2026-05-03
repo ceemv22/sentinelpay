@@ -12,7 +12,6 @@ const rateLimit = require('express-rate-limit');
 const { RedisStore } = require('rate-limit-redis');
 const { createClient } = require('redis');
 const helmet = require('helmet');
-const { createProxyMiddleware } = require('http-proxy-middleware');
 require('dotenv').config();
 
 const { runScoringEngine } = require('./services/scorer');
@@ -47,7 +46,6 @@ if (isProduction && trustProxySetting === undefined) {
     throw new Error('TRUST_PROXY must be explicitly configured in production.');
 }
 app.set('trust proxy', trustProxySetting === undefined ? 1 : trustProxySetting);
-
 app.use(helmet({
     contentSecurityPolicy: {
         directives: {
@@ -57,20 +55,17 @@ app.use(helmet({
                 "'unsafe-inline'", 
                 "'unsafe-eval'", 
                 "https://aivqwkgjdpklxxuvkxpy.supabase.co", 
-                "https://api.sentinelpay.org",
                 "https://challenges.cloudflare.com",
                 "blob:",
                 "about:"
             ],
             "style-src": ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
             "font-src": ["'self'", "https://fonts.gstatic.com"],
-            "img-src": ["'self'", "data:", "https://aivqwkgjdpklxxuvkxpy.supabase.co", "https://api.sentinelpay.org"],
+            "img-src": ["'self'", "data:", "https://aivqwkgjdpklxxuvkxpy.supabase.co"],
             "connect-src": [
                 "'self'", 
                 "https://aivqwkgjdpklxxuvkxpy.supabase.co", 
                 "wss://aivqwkgjdpklxxuvkxpy.supabase.co", 
-                "https://api.sentinelpay.org",
-                "wss://api.sentinelpay.org",
                 "https://api.etherscan.io",
                 "https://challenges.cloudflare.com"
             ],
@@ -88,35 +83,11 @@ app.use(helmet({
     crossOriginResourcePolicy: { policy: "cross-origin" },
     crossOriginOpenerPolicy: false,
     hsts: {
-        maxAge: 63072000, // 2 years - S-Tier Recommendation
+        maxAge: 63072000, // Keeping S-Tier HSTS
         includeSubDomains: true,
         preload: true
     }
 }));
-
-// 1. SUPABASE PROXY (Branding & White-labeling)
-// OWASP S-Tier: Transparently proxying auth/rest requests to hide Supabase ID from frontend
-const supabaseProxy = createProxyMiddleware({
-    target: 'https://aivqwkgjdpklxxuvkxpy.supabase.co',
-    changeOrigin: true,
-    secure: true,
-    xfwd: true,
-    logLevel: 'error',
-    onProxyRes: (proxyRes, req, res) => {
-        // OWASP Hardening: Secure headers
-        delete proxyRes.headers['x-powered-by'];
-        
-        // S-Tier Branding: Rewrite redirects to keep the user on our domain
-        if (proxyRes.headers['location']) {
-            const originalUrl = 'aivqwkgjdpklxxuvkxpy.supabase.co';
-            const customUrl = 'api.sentinelpay.org';
-            proxyRes.headers['location'] = proxyRes.headers['location'].replace(originalUrl, customUrl);
-        }
-    }
-});
-
-app.use('/auth/v1', supabaseProxy);
-app.use('/rest/v1', supabaseProxy);
 
 // Suppress Permissions Policy warnings from Cloudflare and third-party scripts
 app.use((req, res, next) => {
