@@ -23,21 +23,22 @@
         .error-code-wrap {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 1rem;
             margin-bottom: 2rem;
             font-family: 'JetBrains Mono', monospace;
             font-weight: 800;
-            font-size: clamp(8rem, 20vw, 12rem);
+            font-size: clamp(6rem, 18vw, 10rem);
             line-height: 1;
-            letter-spacing: -5px;
             color: #fff;
             filter: drop-shadow(0 0 30px rgba(0, 240, 255, 0.15));
         }
 
         .error-logo-eye {
-            width: clamp(6rem, 15vw, 9rem);
-            height: clamp(6rem, 15vw, 9rem);
-            margin-top: 1rem;
+            width: clamp(5rem, 14vw, 8rem);
+            height: clamp(5rem, 14vw, 8rem);
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .error-message {
@@ -61,6 +62,7 @@
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
+            text-transform: lowercase;
         }
 
         .back-btn:hover {
@@ -71,8 +73,8 @@
         }
 
         @media (max-width: 600px) {
-            .error-code-wrap { gap: 0.25rem; letter-spacing: -2px; }
-            .error-logo-eye { width: 5rem; height: 5rem; }
+            .error-code-wrap { gap: 0.5rem; }
+            .error-logo-eye { width: 4rem; height: 4rem; }
         }
     </style>
 </head>
@@ -115,7 +117,7 @@
 
         <p class="error-message">> ERROR_CODE: 404 | RESOURCE_NOT_FOUND_</p>
 
-        <a href="/" class="back-btn">return to core</a>
+        <a href="/" class="back-btn">back to scanner</a>
     </main>
 
     <script src="eye-track.js"></script>
