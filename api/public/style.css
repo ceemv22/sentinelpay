@@ -1265,3 +1265,60 @@ button:hover:not(:disabled) {
    Mobile has min-height: auto !important in its own media query.
    Turnstile is interaction-only (invisible), so no extra height needed.
    ========================================================================== */
+
+/* --- NOSCRIPT S-TIER OVERLAY --- */
+.noscript-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--bg-dark);
+    z-index: 999999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.noscript-card {
+    max-width: 450px;
+    width: 90%;
+    text-align: center;
+    border: 1px solid rgba(255, 51, 51, 0.3);
+    box-shadow: 0 0 50px rgba(255, 51, 51, 0.1);
+}
+
+.noscript-icon {
+    margin-bottom: 2rem;
+    filter: drop-shadow(0 0 15px rgba(255, 51, 51, 0.4));
+}
+
+.noscript-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 1rem;
+    letter-spacing: -1px;
+}
+
+.noscript-text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.8;
+    margin-bottom: 2rem;
+}
+
+.noscript-status {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: rgba(255, 51, 51, 0.1);
+    color: var(--color-red);
+    border: 1px solid rgba(255, 51, 51, 0.2);
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: lowercase;
+}
