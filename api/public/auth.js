@@ -229,6 +229,19 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
+    // Tab Auto-Switch (based on mode param or session)
+    const urlParams = new URLSearchParams(window.location.search);
+    const mode = urlParams.get('mode');
+    const lastTab = sessionStorage.getItem('sentinel_auth_tab');
+
+    if (mode === 'register') {
+        window.switchManual('register');
+    } else if (mode === 'login') {
+        window.switchManual('login');
+    } else if (lastTab) {
+        window.switchManual(lastTab);
+    }
+
     // BINDINGS
     const trigger = document.getElementById('forgot-pw-trigger');
     const modal = document.getElementById('forgot-pw-modal');
