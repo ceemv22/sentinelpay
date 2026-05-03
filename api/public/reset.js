@@ -1,3 +1,4 @@
+// SentinelPay Password Reset (v11.7 - PATIENT HYDRATION)
 const supabaseUrl = 'https://aivqwkgjdpklxxuvkxpy.supabase.co';
 const supabaseKey = 'sb_publishable_bRfAssaGT6D8oFDQtPARbw_5fyYGWM6';
 let s = null;
@@ -6,12 +7,7 @@ const getSupabase = () => {
     if (s) return s;
     if (window.supabase) {
         s = window.supabase.createClient(supabaseUrl, supabaseKey, {
-            auth: {
-                flowType: 'pkce',
-                autoRefreshToken: true,
-                persistSession: true,
-                detectSessionInUrl: true
-            }
+            auth: { flowType: 'pkce', autoRefreshToken: true, persistSession: true, detectSessionInUrl: true }
         });
         return s;
     }
@@ -21,37 +17,116 @@ const getSupabase = () => {
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('[reset] security handshake protocol initiated...');
     const supabase = getSupabase();
+    if (!supabase) return;
+
     const form = document.getElementById('reset-password-form');
     const invalidState = document.getElementById('reset-invalid-state');
     const introText = document.getElementById('reset-intro-text');
-    
-    // Check for recovery session
-    const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-    
+    const successState = document.getElementById('reset-success-state');
+
     const cleanURL = () => {
-        if (window.location.href.indexOf('#') > -1) {
-            window.history.replaceState(null, document.title, window.location.href.split('#')[0]);
+        if (window.location.href.indexOf('#') > -1 || window.location.href.indexOf('code=') > -1) {
+            const url = new URL(window.location.href);
+            url.searchParams.delete('code');
+            window.history.replaceState(null, document.title, url.pathname);
         }
     };
 
-    if (session) {
-        console.log('[reset] recovery session validated.');
-        form.style.display = 'flex';
-        // Clean URL: Multi-phase scrub to win the race against third-party scripts
-        cleanURL();
-        let resetScrubInterval = setInterval(cleanURL, 50);
-        setTimeout(() => clearInterval(resetScrubInterval), 3000);
+    // 1. PATIENT HYDRATION (Wait for PKCE Exchange)
+    const isRecoveryRedirect = window.location.search.includes('code=');
+    let sessionValidated = false;
+
+    const validateSession = async () => {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) {
+            console.log('[reset] recovery session validated.');
+            sessionValidated = true;
+            form.style.display = 'flex';
+            cleanURL();
+            return true;
+        }
+        return false;
+    };
+
+    if (isRecoveryRedirect) {
+        console.log('[reset] recovery link detected, waiting for exchange...');
+        // Give it up to 5 seconds to exchange the code
+        let attempts = 0;
+        const interval = setInterval(async () => {
+            attempts++;
+            const ok = await validateSession();
+            if (ok || attempts > 10) {
+                clearInterval(interval);
+                if (!ok) {
+                    console.warn('[reset] recovery exchange failed or timed out.');
+                    if (introText) introText.style.display = 'none';
+                    if (invalidState) invalidState.style.display = 'flex';
+                }
+            }
+        }, 500);
     } else {
-        console.warn('[reset] invalid or expired recovery bridge.');
-        if (introText) introText.style.display = 'none';
-        if (invalidState) {
-            invalidState.style.display = 'flex';
+        // No code in URL, check if we already have a session (e.g. from a previous successful exchange)
+        const ok = await validateSession();
+        if (!ok) {
+            console.warn('[reset] no recovery session found.');
+            if (introText) introText.style.display = 'none';
+            if (invalidState) invalidState.style.display = 'flex';
         }
     }
 
-    // Password Eye Toggles
+    // 2. FORM SUBMISSION
+    if (form) {
+        let isSubmitting = false;
+        form.onsubmit = async (e) => {
+            e.preventDefault();
+            if (isSubmitting) return;
+
+            const pw = document.getElementById('new-password').value;
+            const confirm = document.getElementById('confirm-password').value;
+            const btn = document.getElementById('reset-submit-btn');
+            const errorMsg = document.getElementById('reset-error-msg');
+            
+            if (pw !== confirm) {
+                errorMsg.textContent = 'error: passwords do not match';
+                errorMsg.style.display = 'block';
+                return;
+            }
+
+            if (pw.length < 8 || !/[A-Z]/.test(pw) || !/[0-9]/.test(pw)) {
+                errorMsg.textContent = 'error: security requirements not met';
+                errorMsg.style.display = 'block';
+                return;
+            }
+
+            try {
+                isSubmitting = true;
+                btn.disabled = true;
+                btn.textContent = 'updating key...';
+                errorMsg.style.display = 'none';
+
+                const { error } = await supabase.auth.updateUser({ password: pw });
+
+                if (error) {
+                    errorMsg.textContent = 'error: ' + error.message.toLowerCase();
+                    errorMsg.style.display = 'block';
+                    btn.disabled = false;
+                    btn.textContent = 'update security key';
+                } else {
+                    if (introText) introText.style.display = 'none';
+                    form.style.display = 'none';
+                    successState.style.display = 'flex';
+                    const tabs = document.querySelector('.auth-tabs');
+                    if (tabs) tabs.style.display = 'none';
+                    await supabase.auth.signOut();
+                }
+            } catch (err) { console.error(err); }
+            finally { isSubmitting = false; }
+        };
+    }
+
+    // 3. UI TOGGLES
     document.querySelectorAll('.pw-eye-toggle').forEach(btn => {
-        btn.addEventListener('click', () => {
+        btn.onclick = () => {
             const input = document.getElementById(btn.getAttribute('data-target'));
             const eyeOn = btn.querySelector('.eye-on');
             const eyeOff = btn.querySelector('.eye-off');
@@ -64,91 +139,27 @@ document.addEventListener('DOMContentLoaded', async () => {
                 eyeOn.style.display = 'none';
                 eyeOff.style.display = 'block';
             }
-        });
+        };
     });
 
-    // Form logic
-    if (form) {
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const pw = document.getElementById('new-password').value;
-            const confirm = document.getElementById('confirm-password').value;
-            const btn = document.getElementById('reset-submit-btn');
-            const errorMsg = document.getElementById('reset-error-msg');
-            
-            if (pw !== confirm) {
-                errorMsg.textContent = 'error: passwords do not match';
-                errorMsg.style.display = 'block';
-                return;
-            }
+    const bind = (id, url) => {
+        const el = document.getElementById(id);
+        if (el) el.onclick = () => window.location.href = url;
+    };
+    bind('reset-login-btn', '/auth');
+    bind('back-to-login-invalid', '/auth');
 
-            const isLenMet = pw.length >= 8;
-            const isUpperMet = /[A-Z]/.test(pw);
-            const isNumMet = /[0-9]/.test(pw);
-
-            if (!isLenMet || !isUpperMet || !isNumMet) {
-                errorMsg.textContent = 'error: password does not meet security requirements.';
-                errorMsg.style.display = 'block';
-                return;
-            }
-
-            btn.disabled = true;
-            btn.textContent = 'updating key...';
-            errorMsg.style.display = 'none';
-
-            const { error } = await supabase.auth.updateUser({ password: pw });
-
-            if (error) {
-                errorMsg.textContent = 'error: ' + error.message.toLowerCase();
-                errorMsg.style.display = 'block';
-                btn.disabled = false;
-                btn.textContent = 'update security key';
-            } else {
-                // Success
-                if (introText) introText.style.display = 'none';
-                form.style.display = 'none';
-                
-                // Hide the tab header for a cleaner success view
-                const tabs = document.querySelector('.auth-tabs');
-                if (tabs) tabs.style.display = 'none';
-                
-                document.getElementById('reset-success-state').style.display = 'flex';
-                
-                // Clean up session immediately for security
-                await supabase.auth.signOut();
-            }
-        });
-    }
-
-    const loginBtn = document.getElementById('reset-login-btn');
-    const backToLoginInvalidBtn = document.getElementById('back-to-login-invalid');
-    
-    if (loginBtn) {
-        loginBtn.addEventListener('click', () => {
-            console.log('[reset] redirection to auth via success state...');
-            window.location.href = '/auth';
-        });
-    }
-
-    if (backToLoginInvalidBtn) {
-        backToLoginInvalidBtn.addEventListener('click', () => {
-            console.log('[reset] redirection to auth via invalid state...');
-            window.location.href = '/auth';
-        });
-    }
-
-    // Tooltip logic
+    // Tooltip
     const toggle = document.getElementById('pw-rules-toggle');
     const tooltip = document.getElementById('pw-rules-tooltip');
     if (toggle && tooltip) {
-        toggle.addEventListener('mouseenter', () => tooltip.classList.add('visible'));
-        toggle.addEventListener('mouseleave', () => tooltip.classList.remove('visible'));
+        toggle.onmouseenter = () => tooltip.classList.add('visible');
+        toggle.onmouseleave = () => tooltip.classList.remove('visible');
     }
 
-    // Password Rules Real-time
-    const newPw = document.getElementById('new-password');
-    if (newPw) {
-        newPw.addEventListener('input', (e) => {
+    const newPwInput = document.getElementById('new-password');
+    if (newPwInput) {
+        newPwInput.oninput = (e) => {
             const val = e.target.value;
             const validate = (id, cond) => {
                 const el = document.getElementById(id);
@@ -161,6 +172,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             validate('rule-len', val.length >= 8);
             validate('rule-upper', /[A-Z]/.test(val));
             validate('rule-num', /[0-9]/.test(val));
-        });
+        };
     }
 });
