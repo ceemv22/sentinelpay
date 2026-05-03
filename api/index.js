@@ -252,7 +252,11 @@ const limiter = rateLimit({
     max: 30,
     standardHeaders: true,
     legacyHeaders: false,
-    keyGenerator: (req) => req.headers['x-api-key'] || req.ip,
+    keyGenerator: (req) => {
+        // Use API Key if available, else fall back to standard IP identifier
+        return req.headers['x-api-key'] || req.ip;
+    },
+    validate: { xForwardedForHeader: false, ipKeyGenerator: false }, // Suppress Railway IPv6 warning since we use req.ip
     store: createStore('b2b:'),
     message: { error: 'request limit exceeded. try again in 15 minutes.', code: 429 }
 });
@@ -531,8 +535,8 @@ async function start() {
         }
     }
     
-    // Catch-all: serve 404 page
-    app.get('*', (req, res) => {
+    // Catch-all: serve 404 page (using regex pattern for path-to-regexp v6+ compatibility)
+    app.get('(.*)', (req, res) => {
         res.status(404).sendFile(path.join(__dirname, 'public', '404.html'));
     });
 
