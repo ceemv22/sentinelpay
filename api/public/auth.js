@@ -1,4 +1,4 @@
-// SentinelPay Auth Core (v17.0 - ULTIMATE RECOVERY)
+// SentinelPay Auth Core (v17.1 - ULTIMATE RECOVERY)
 // Features: Zero-Trust Scripting, Explicit Scoping, Atomic Event Binding
 
 // 1. GLOBAL UI HANDLERS
@@ -124,7 +124,7 @@ window.handleResendHandshake = async (type = 'signup') => {
 
 // 4. CORE INITIALIZATION
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('[sentinel-auth] initializing v17.0...');
+    console.log('[sentinel-auth] initializing v17.1...');
     
     const s = getSupabase();
     const scrubHash = () => {
@@ -134,8 +134,11 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     if (s) {
-        s.auth.getSession().then(() => {
-            setTimeout(scrubHash, 500);
+        s.auth.onAuthStateChange((event, session) => {
+            if (event === 'SIGNED_IN') {
+                console.log('[auth] session established, waiting to scrub hash...');
+                setTimeout(scrubHash, 1000); // 1s delay for max stability
+            }
         });
     }
 
@@ -175,6 +178,30 @@ document.addEventListener('DOMContentLoaded', () => {
         if (vState) vState.style.display = 'flex';
     }
 
+    // Turnstile State Management
+    window.explicitRegToken = null;
+    window.explicitLoginToken = null;
+    window.explicitForgotToken = null;
+
+    const renderTurnstile = (id, target) => {
+        if (!window.turnstile) return null;
+        return window.turnstile.render(id, {
+            sitekey: '0x4AAAAAADGpMozD1QOtWPkP',
+            theme: 'dark',
+            callback: (token) => {
+                if (target === 'login') window.explicitLoginToken = token;
+                else if (target === 'register') window.explicitRegToken = token;
+                else if (target === 'forgot') window.explicitForgotToken = token;
+                
+                const btn = document.getElementById(`${target}-submit-btn`) || document.getElementById(`${target}-pw-submit-btn`);
+                if (btn) {
+                    btn.disabled = false;
+                    btn.click();
+                }
+            }
+        });
+    };
+
     // Forms
     const regForm = document.getElementById('register-form');
     if (regForm) {
@@ -192,25 +219,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            btn.disabled = true;
-            btn.textContent = 'processing...';
-            errorMsg.style.display = 'none';
-
-            const turnstileToken = window.explicitRegToken || document.querySelector('#turnstile-register [name="cf-turnstile-response"]')?.value;
-            if (!turnstileToken) {
-                if (!window.turnstileRegWidgetId && window.turnstile) {
-                    window.turnstileRegWidgetId = window.turnstile.render('#turnstile-register', {
-                        sitekey: '0x4AAAAAADGpMozD1QOtWPkP',
-                        theme: 'dark',
-                        callback: (token) => { window.explicitRegToken = token; btn.disabled = false; btn.click(); }
-                    });
+            if (!window.explicitRegToken) {
+                btn.disabled = true;
+                btn.textContent = 'please solve captcha...';
+                if (window.turnstileRegWidgetId === undefined) {
+                    window.turnstileRegWidgetId = renderTurnstile('#turnstile-register', 'register');
+                } else {
+                    window.turnstile.reset(window.turnstileRegWidgetId);
                 }
                 return;
             }
 
-            const { data, error } = await s.auth.signUp({ email, password, options: { captchaToken: turnstileToken } });
+            btn.disabled = true;
+            btn.textContent = 'processing...';
+            errorMsg.style.display = 'none';
+
+            const { data, error } = await s.auth.signUp({ email, password, options: { captchaToken: window.explicitRegToken } });
             
-            // Cleanup Turnstile
+            // Cleanup
             window.explicitRegToken = null;
             if (window.turnstile && window.turnstileRegWidgetId !== undefined) window.turnstile.reset(window.turnstileRegWidgetId);
 
@@ -241,23 +267,22 @@ document.addEventListener('DOMContentLoaded', () => {
             const btn = document.getElementById('login-submit-btn');
             const errorMsg = document.getElementById('login-error-msg');
 
-            btn.disabled = true;
-            btn.textContent = 'verifying...';
-            errorMsg.style.display = 'none';
-
-            const turnstileToken = window.explicitLoginToken || document.querySelector('#turnstile-login [name="cf-turnstile-response"]')?.value;
-            if (!turnstileToken) {
-                if (!window.turnstileLoginWidgetId && window.turnstile) {
-                    window.turnstileLoginWidgetId = window.turnstile.render('#turnstile-login', {
-                        sitekey: '0x4AAAAAADGpMozD1QOtWPkP',
-                        theme: 'dark',
-                        callback: (token) => { window.explicitLoginToken = token; btn.disabled = false; btn.click(); }
-                    });
+            if (!window.explicitLoginToken) {
+                btn.disabled = true;
+                btn.textContent = 'please solve captcha...';
+                if (window.turnstileLoginWidgetId === undefined) {
+                    window.turnstileLoginWidgetId = renderTurnstile('#turnstile-login', 'login');
+                } else {
+                    window.turnstile.reset(window.turnstileLoginWidgetId);
                 }
                 return;
             }
 
-            const { error } = await s.auth.signInWithPassword({ email, password, options: { captchaToken: turnstileToken } });
+            btn.disabled = true;
+            btn.textContent = 'verifying...';
+            errorMsg.style.display = 'none';
+
+            const { error } = await s.auth.signInWithPassword({ email, password, options: { captchaToken: window.explicitLoginToken } });
             
             window.explicitLoginToken = null;
             if (window.turnstile && window.turnstileLoginWidgetId !== undefined) window.turnstile.reset(window.turnstileLoginWidgetId);
@@ -333,23 +358,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 const btn = document.getElementById('forgot-pw-submit-btn');
                 const errorMsg = document.getElementById('forgot-pw-error-msg');
 
-                btn.disabled = true;
-                btn.textContent = 'sending...';
-                errorMsg.style.display = 'none';
-
-                const turnstileToken = window.explicitForgotToken || document.querySelector('#turnstile-forgot [name="cf-turnstile-response"]')?.value;
-                if (!turnstileToken) {
-                    if (!window.turnstileForgotWidgetId && window.turnstile) {
-                        window.turnstileForgotWidgetId = window.turnstile.render('#turnstile-forgot', {
-                            sitekey: '0x4AAAAAADGpMozD1QOtWPkP',
-                            theme: 'dark',
-                            callback: (token) => { window.explicitForgotToken = token; btn.disabled = false; btn.click(); }
-                        });
+                if (!window.explicitForgotToken) {
+                    btn.disabled = true;
+                    btn.textContent = 'please solve captcha...';
+                    if (window.turnstileForgotWidgetId === undefined) {
+                        window.turnstileForgotWidgetId = renderTurnstile('#turnstile-forgot', 'forgot');
+                    } else {
+                        window.turnstile.reset(window.turnstileForgotWidgetId);
                     }
                     return;
                 }
 
-                const { error } = await s.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin + '/reset', captchaToken: turnstileToken });
+                btn.disabled = true;
+                btn.textContent = 'sending...';
+                errorMsg.style.display = 'none';
+
+                const { error } = await s.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin + '/reset', captchaToken: window.explicitForgotToken });
                 
                 window.explicitForgotToken = null;
                 if (window.turnstile && window.turnstileForgotWidgetId !== undefined) window.turnstile.reset(window.turnstileForgotWidgetId);
