@@ -73,8 +73,23 @@
         }
 
         @media (max-width: 600px) {
-            .error-code-wrap { gap: 0.5rem; }
-            .error-logo-eye { width: 4rem; height: 4rem; }
+            .error-code-wrap { 
+                gap: 0.25rem; 
+                font-size: clamp(4.5rem, 25vw, 6rem);
+            }
+            .error-logo-eye { 
+                width: 3.5rem; 
+                height: 3.5rem; 
+            }
+            .error-message {
+                font-size: 0.85rem;
+                padding: 0 1rem;
+            }
+            .back-btn {
+                width: 80%;
+                max-width: 300px;
+                padding: 0.8rem 1.5rem;
+            }
         }
     </style>
 </head>
