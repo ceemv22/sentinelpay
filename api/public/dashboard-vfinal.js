@@ -21,37 +21,56 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     // 1. Setup Auth Listener
     sentinelAuth.auth.onAuthStateChange(async (event, session) => {
-        console.log('[sentinel-dashboard] auth event:', event);
+        console.log('[sentinel-dashboard] auth event:', event, !!session);
         
-        if (event === 'SIGNED_OUT' || (!session && event !== 'INITIAL_SESSION')) {
-            console.warn('[sentinel-dashboard] no session found, redirecting to auth');
-            window.location.href = '/auth';
+        if (session) {
+            // Give Supabase a moment to fully hydrate before scrubbing
+            setTimeout(scrubHash, 1500);
+            renderDashboard(session);
             return;
         }
 
-        if (session) {
-            // Give Supabase a moment to fully hydrate before scrubbing
-            setTimeout(scrubHash, 1000);
-            renderDashboard(session);
+        // Only redirect if we are SURE there is no session and no incoming auth code
+        if (event === 'SIGNED_OUT' || (!session && event === 'INITIAL_SESSION')) {
+            const hasAuthParams = 
+                window.location.search.includes('code=') || 
+                window.location.hash.includes('access_token=') || 
+                window.location.hash.includes('code=');
+
+            if (!hasAuthParams) {
+                console.warn('[sentinel-dashboard] truly no session, redirecting');
+                window.location.href = '/auth';
+            } else {
+                console.log('[sentinel-dashboard] auth params detected, waiting for exchange...');
+            }
         }
     });
 
-    // Handle initial state if listener doesn't trigger immediately
-    const { data: { session } } = await sentinelAuth.auth.getSession();
-    if (session) {
-        renderDashboard(session);
+    // 2. Immediate Session Check with PKCE Awareness
+    const { data: { session: initialSession } } = await sentinelAuth.auth.getSession();
+    if (initialSession) {
+        renderDashboard(initialSession);
     } else {
-        // Wait a bit for PKCE exchange to finish if it's a redirect
-        setTimeout(async () => {
-            const { data: { session: retrySession } } = await sentinelAuth.auth.getSession();
-            if (!retrySession) {
-                // Only redirect if still no session after 2 seconds
-                console.warn('[sentinel-dashboard] redirect check failed after delay');
-                if (window.location.hash.indexOf('access_token') === -1 && window.location.hash.indexOf('code=') === -1) {
+        // Wait up to 3 seconds for PKCE exchange if we see a code in URL
+        const isAuthRedirect = window.location.search.includes('code=') || window.location.hash.includes('access_token=');
+        if (isAuthRedirect) {
+            console.log('[sentinel-dashboard] redirect detected, holding for hydration...');
+            setTimeout(async () => {
+                const { data: { session: retrySession } } = await sentinelAuth.auth.getSession();
+                if (retrySession) {
+                    renderDashboard(retrySession);
+                } else {
+                    console.warn('[sentinel-dashboard] PKCE exchange timed out');
                     window.location.href = '/auth';
                 }
-            }
-        }, 2000);
+            }, 3000);
+        } else {
+            // No session and not a redirect -> instant auth bounce
+            setTimeout(async () => {
+                const { data: { session: finalCheck } } = await sentinelAuth.auth.getSession();
+                if (!finalCheck) window.location.href = '/auth';
+            }, 1000);
+        }
     }
 
     async function renderDashboard(session) {
