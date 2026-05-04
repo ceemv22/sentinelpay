@@ -12,6 +12,7 @@ const rateLimit = require('express-rate-limit');
 const { RedisStore } = require('rate-limit-redis');
 const { createClient } = require('redis');
 const helmet = require('helmet');
+const hpp = require('hpp');
 require('dotenv').config();
 
 const { runScoringEngine } = require('./services/scorer');
@@ -46,9 +47,11 @@ app.set('trust proxy', trustProxySetting === undefined ? 1 : trustProxySetting);
 
 // S-Tier IP Resolver: Prioritize Cloudflare verified IP
 app.use((req, res, next) => {
-    req.realIp = req.headers['cf-connecting-ip'] || req.ip;
+    // Railway/Cloudflare hybrid trust
+    req.realIp = req.headers['cf-connecting-ip'] || req.headers['x-forwarded-for']?.split(',')[0].trim() || req.ip;
     next();
 });
+app.use(hpp()); // Prevent HTTP Parameter Pollution
 app.use(helmet({
     contentSecurityPolicy: {
         directives: {
@@ -67,7 +70,14 @@ app.use(helmet({
             ],
             "style-src": ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
             "font-src": ["'self'", "https://fonts.gstatic.com"],
-            "img-src": ["'self'", "data:", "https://aivqwkgjdpklxxuvkxpy.supabase.co"],
+            "img-src": [
+                "'self'", 
+                "data:", 
+                "https://aivqwkgjdpklxxuvkxpy.supabase.co", 
+                "https://*.googleusercontent.com", 
+                "https://*.twimg.com", 
+                "https://abs.twimg.com"
+            ],
             "connect-src": [
                 "'self'", 
                 "https://*.supabase.co", 
@@ -76,11 +86,26 @@ app.use(helmet({
                 "https://challenges.cloudflare.com",
                 "https://accounts.google.com",
                 "https://*.twitter.com",
-                "https://*.x.com"
+                "https://*.x.com",
+                "https://api.stripe.com"
             ],
-            "frame-src": ["'self'", "https://challenges.cloudflare.com", "https://aivqwkgjdpklxxuvkxpy.supabase.co", "blob:", "about:"],
+            "frame-src": [
+                "'self'", 
+                "https://challenges.cloudflare.com", 
+                "https://aivqwkgjdpklxxuvkxpy.supabase.co", 
+                "https://accounts.google.com", 
+                "blob:", 
+                "about:"
+            ],
             "base-uri": ["'self'"],
-            "form-action": ["'self'", "https://aivqwkgjdpklxxuvkxpy.supabase.co", "https://accounts.google.com", "https://twitter.com", "https://x.com"],
+            "form-action": [
+                "'self'", 
+                "https://aivqwkgjdpklxxuvkxpy.supabase.co", 
+                "https://accounts.google.com", 
+                "https://twitter.com", 
+                "https://x.com", 
+                "https://checkout.stripe.com"
+            ],
             "frame-ancestors": ["'none'"],
             "object-src": ["'none'"],
             "upgrade-insecure-requests": [],
