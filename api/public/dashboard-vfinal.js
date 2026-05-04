@@ -164,7 +164,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (!response.ok) throw new Error('Failed to load profile');
 
             const data = await response.json();
-            document.getElementById('user-email').textContent = data.email;
+            const displayEmail = data.email || (data.authProvider === 'twitter' ? 'linked_via_x' : 'oauth_account');
+            document.getElementById('user-email').textContent = displayEmail;
             document.getElementById('credit-count').textContent = data.credits;
 
             const historyContainer = document.getElementById('history-container');
