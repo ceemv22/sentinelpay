@@ -4,132 +4,88 @@
 
 <p align="center">
   <a href="https://github.com/ceemv22/sentinelpay/releases/latest"><img src="https://img.shields.io/github/v/release/ceemv22/sentinelpay?color=00f0ff&label=version&style=flat-square" alt="Version"></a>
-  <a href="https://sentinelpay.org"><img src="https://img.shields.io/badge/status-production_ready-00ff88?style=flat-square" alt="Status"></a>
+  <a href="https://sentinelpay.org"><img src="https://img.shields.io/badge/status-production_hardened-00f0ff?style=flat-square" alt="Status"></a>
   <a href="https://x.com/sentinelpayorg"><img src="https://img.shields.io/twitter/follow/sentinelpayorg?style=social" alt="Twitter"></a>
 </p>
 
 <h3 align="center">
-  real-time risk decision engine for on-chain payment flows.
+  the security oracle for high-stakes crypto commerce.
 </h3>
 
 <p align="center">
-  stop illicit funds, sanction breaches, and mixer interactions <b>before</b> they hit your platform.<br>
-  built for crypto casinos, otc desks, and high-risk merchants.
+  sentinelpay is a high-performance risk scoring engine designed to sit at the edge of your payment flow.<br>
+  <b>detect. block. comply.</b>
 </p>
 
 ---
 
-## the protocol
+## 🛡️ state of the protocol: phase 3 (production hardened)
 
-most crypto platforms evaluate risk retroactively. by the time a wallet is flagged, the deposit has already settled, triggering compliance breaches, frozen exchange accounts, and operational nightmares. 
+sentinelpay has graduated from active development to **production stable**. the current architecture is hardened against advanced evasion techniques and infrastructure-level attacks.
 
-**sentinelpay reverses this paradigm.** 
-
-by sitting at the edge of your payment gateway, our engine evaluates the inbound wallet *before* generating a deposit address, providing an instant `0-100` risk score alongside actionable heuristics.
-
-### architecture
-
-```mermaid
-sequenceDiagram
-    participant User as user
-    participant Gateway as your platform
-    participant API as sentinelpay api
-    participant Engine as scoring engine (python)
-    
-    User->>Gateway: requests deposit address
-    Gateway->>API: POST /v1/score { wallet: "0x..." }
-    API->>Engine: dispatch heuristics pipeline
-    Engine-->>API: score: 85, flags: [mixer_interaction]
-    API-->>Gateway: 200 OK (high risk)
-    Gateway-->>User: 403 Forbidden (deposit rejected)
-```
+### why sentinelpay?
+most risk scoring happens *after* a transaction is mined. for b2b operators, this is too late. sentinelpay provides **sub-second pre-deposit verification**, allowing you to reject illicit funds before they contaminate your treasury.
 
 ---
 
-## integration (b2b)
+## ⚙️ the engine (heuristics v3.5)
 
-integration takes less than 5 minutes. grab your api key from the [dashboard](https://sentinelpay.org/dashboard) and inject it into your payment flow.
+our proprietary engine performs a deep forensic scan across all transaction types (normal, internal, and erc-20) with a depth of up to **10,000 transactions** per wallet.
+
+| heuristic | description | status |
+|-----------|-------------|--------|
+| `sanctioned_entity` | direct match with ofac, mixers, or known sanctioned addresses. | **active** |
+| `mixer_interaction` | inbound/outbound flow from tornado cash, sinbad, and 140+ others. | **active** |
+| `history_incomplete` | detection of **history flooding** (evasion attempts using 10k+ tx). | **new** |
+| `high_velocity` | > 50 transactions broadcasted within a 24h rolling window. | **active** |
+| `new_wallet` | on-chain birth timestamp < 30 days. | **active** |
+| `io_imbalance` | highly skewed inbound vs outbound capital ratios. | **active** |
+
+---
+
+## 🔒 s-tier cybersecurity architecture
+
+we don't just secure your payments; we secure our own infrastructure to protect your data.
+
+- **hybrid trust ip resolution**: advanced cloudflare + railway header verification for accurate rate-limiting and audit logging.
+- **atomic billing**: credits and api key provisioning are handled via isolated prisma transactions.
+- **aes-256-gcm encryption**: sensitive data is encrypted at rest using industry-standard authenticated encryption with versioned rotation support.
+- **hpp & clickjacking protection**: implementation of http parameter pollution (hpp) protection and strict `frame-ancestors` csp directives.
+- **zero-retention policy**: raw api keys are permanently erased from the database immediately after the one-time user reveal.
+
+---
+
+## 🚀 integration in < 60 seconds
+
+sentinelpay is designed for seamless b2b integration. use your `x-api-key` to secure your deposit flows.
 
 ```bash
-curl -X POST https://sentinelpay.org/v1/score \
-  -H "content-type: application/json" \
-  -H "x-api-key: sp_your_live_key_here" \
-  -d '{"wallet": "0x742d35Cc6634C0532925a3b844Bc9e695d487DA2"}'
+curl -X POST https://api.sentinelpay.org/v1/score \
+  -H "x-api-key: sp_live_xxxxxxxxxxxxxxxx" \
+  -d '{"wallet": "0x..."}'
 ```
 
-**response:**
+**sample response:**
 ```json
 {
-  "wallet": "0x742d35cc6634c0532925a3b844bc9e695d487da2",
-  "score": 70,
+  "wallet": "0x...",
+  "score": 85,
   "category": "high",
-  "flags": ["mixer_interaction", "high_velocity"],
-  "timestamp": "2026-05-02T00:00:00.000Z"
+  "flags": ["mixer_interaction", "history_incomplete"],
+  "timestamp": "2026-05-04T00:00:00.000Z"
 }
 ```
 
 ---
 
-## risk vectors (v3.0)
+## 🌐 ecosystem
 
-our proprietary engine analyzes deep historical data across eth, internal, and erc-20 token transfers.
-
-| flag | heuristics applied | score penalty |
-|------|--------------------|--------------|
-| `sanctioned_entity` | absolute match in global ofac / high-risk entity database | `+100` |
-| `mixer_interaction` | inbound/outbound interaction with tornado cash, sinbad, etc. | `+50` |
-| `high_velocity` | > 50 transactions broadcasted within the last 24h window | `+20` |
-| `new_wallet` | on-chain birth timestamp is < 30 days old | `+20` |
-| `io_imbalance` | highly skewed inbound vs outbound capital ratio | `+10` |
-
-> **note:** the engine employs a `0.001 eth` floor threshold for inbound mixer transactions to automatically mitigate dusting attacks and prevent false positives.
-
----
-
-## enterprise security (s-tier certified)
-
-we handle the security so you can handle the volume. sentinelpay is subjected to rigorous internal penetration testing.
-
-- **zero data retention:** cleartext api keys are permanently erased (`api key sinkhole` architecture) immediately after the one-time user reveal.
-- **race-condition immunity:** all billing and credit decrements are executed via atomic db transactions.
-- **ddos resilience:** dual-layer fingerprinting + redis-backed sliding window rate limits.
-- **xss & injection proof:** strict content-security-policy (csp) and hardened prisma orm implementation.
-
----
-
-## self-hosting & local development
-
-want to run the engine locally or contribute?
-
-```bash
-# 1. clone the repository
-git clone https://github.com/ceemv22/sentinelpay.git
-cd sentinelpay
-
-# 2. install dependencies
-npm install
-pip install -r requirements.txt
-
-# 3. set environment variables
-cp api/.env.example api/.env
-# populate: DATABASE_URL, REDIS_URL, ETHERSCAN_API_KEY, STRIPE_SECRET_KEY, SUPABASE_URL
-
-# 4. push database schema
-npx prisma db push
-
-# 5. start the core
-npm run dev
-```
-
----
-
-## ecosystem
-
-| platform | link |
-|----------|------|
-| **production api** | `https://sentinelpay.org/v1` |
-| **plg risk scanner** | [sentinelpay.org](https://sentinelpay.org) |
-| **developer portal** | [sentinelpay.org/dashboard](https://sentinelpay.org/dashboard) |
+| node | url |
+|------|-----|
+| **official portal** | [sentinelpay.org](https://sentinelpay.org) |
+| **b2b dashboard** | [sentinelpay.org/dashboard](https://sentinelpay.org/dashboard) |
+| **public core** | [github.com/ceemv22/sentinelpay-public](https://github.com/ceemv22/sentinelpay-public) |
 | **x / twitter** | [@sentinelpayorg](https://x.com/sentinelpayorg) |
 
 ---
+// sentinelpay // security by architecture.
