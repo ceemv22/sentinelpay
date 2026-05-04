@@ -22,8 +22,9 @@ async function requireSupabaseAuth(req, res, next) {
             return res.status(401).json({ error: 'Invalid or expired token', code: 401 });
         }
 
-        // Detect Provider and Verification status
+        // Detect Provider, Username, and Verification status
         const authProvider = user.app_metadata?.provider || 'email';
+        const username = user.user_metadata?.user_name || user.user_metadata?.full_name || null;
         const isOAuth = authProvider !== 'email';
         const isEmailVerified = Boolean(user.email_confirmed_at || user.confirmed_at || user.phone_confirmed_at) || isOAuth;
 
@@ -40,12 +41,14 @@ async function requireSupabaseAuth(req, res, next) {
             where: { supabaseId: user.id },
             update: { 
                 email: userEmail,
+                username: username, // Update username if it changed on social profile
                 authProvider,
                 isEmailVerified
             },
             create: {
                 supabaseId: user.id,
                 email: userEmail,
+                username: username,
                 authProvider,
                 isEmailVerified,
                 credits: 5 

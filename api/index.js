@@ -496,6 +496,7 @@ app.get('/v1/user/profile', requireSupabaseAuth, async (req, res) => {
 
         res.json({
             email: user.email,
+            username: user.username,
             authProvider: user.authProvider,
             isEmailVerified: user.isEmailVerified,
             credits: user.credits,
