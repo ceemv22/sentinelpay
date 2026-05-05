@@ -177,74 +177,57 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const suffixEl = document.getElementById('api-key-suffix');
                 if (suffixEl) suffixEl.textContent = last4;
 
+                // Modal Logic
                 const badgeEl = document.getElementById('header-api-key');
-                if (badgeEl) {
+                const modal = document.getElementById('api-modal-overlay');
+                const closeBtn = document.getElementById('btn-close-api-modal');
+                const modalDisplay = document.getElementById('modal-api-key-display');
+                const revealBtn = document.getElementById('modal-btn-reveal');
+                const copyBtn = document.getElementById('modal-btn-copy');
+
+                let isRevealed = false;
+
+                if (badgeEl && modal) {
                     badgeEl.onclick = () => {
+                        modal.classList.add('active');
+                    };
+
+                    closeBtn.onclick = () => {
+                        modal.classList.remove('active');
+                        // reset state
+                        isRevealed = false;
+                        modalDisplay.textContent = 'sp_live_••••••••••••••••••••••••••••';
+                        modalDisplay.style.color = 'var(--text-muted)';
+                        revealBtn.style.display = 'flex';
+                    };
+
+                    modal.onclick = (e) => {
+                        if (e.target === modal) {
+                            closeBtn.click();
+                        }
+                    };
+
+                    revealBtn.onclick = () => {
+                        isRevealed = true;
+                        modalDisplay.textContent = fullKey;
+                        modalDisplay.style.color = 'var(--neon-blue)';
+                        revealBtn.style.display = 'none';
+                        if (window.SentinelToast) window.SentinelToast.show('API key revealed! Save it securely.', 'success');
+                    };
+
+                    copyBtn.onclick = () => {
+                        if (!isRevealed) {
+                            if (window.SentinelToast) window.SentinelToast.show('Please reveal the key before copying.', 'warning');
+                            return;
+                        }
                         navigator.clipboard.writeText(fullKey).then(() => {
-                            if (window.SentinelToast) window.SentinelToast.show('API Key copied to clipboard!', 'success');
+                            if (window.SentinelToast) window.SentinelToast.show('API key copied to clipboard!', 'success');
                         });
                     };
                 }
             }
         } catch (err) {
             console.error('Failed to fetch header API key:', err);
-        }
-    }
-
-    function setupRevealKey(token) {
-        const revealBtn = document.getElementById('btn-reveal-key');
-        if (revealBtn) {
-            revealBtn.onclick = async () => {
-                try {
-                    revealBtn.disabled = true;
-                    const originalIcon = revealBtn.innerHTML;
-                    revealBtn.innerHTML = '...';
-
-                    const res = await fetch('/v1/user/api-key/reveal', {
-                        headers: { 'Authorization': `Bearer ${token}` }
-                    });
-                    const result = await res.json();
-                    
-                    if (res.ok && result.apiKey) {
-                        document.getElementById('api-key-display').textContent = result.apiKey;
-                        document.getElementById('api-key-display').style.color = 'var(--neon-blue)';
-                        revealBtn.style.display = 'none';
-                        if (window.SentinelToast) window.SentinelToast.show('API Key revealed! Save it securely.', 'success');
-                    } else {
-                        if (window.SentinelToast) window.SentinelToast.show(result.error || 'Failed to reveal key', 'error');
-                        revealBtn.disabled = false;
-                        revealBtn.innerHTML = originalIcon;
-                    }
-                } catch (err) {
-                    console.error(err);
-                    revealBtn.disabled = false;
-                }
-            };
-        }
-    }
-
-    function setupCopyKey() {
-        const copyBtn = document.getElementById('btn-copy-key');
-        if (copyBtn) {
-            copyBtn.onclick = () => {
-                const keyText = document.getElementById('api-key-display').textContent;
-                if (keyText.includes('•')) {
-                    if (window.SentinelToast) window.SentinelToast.show('Please reveal the key before copying.', 'warning');
-                    return;
-                }
-                navigator.clipboard.writeText(keyText).then(() => {
-                    if (window.SentinelToast) window.SentinelToast.show('API Key copied to clipboard!', 'success');
-                });
-            };
-        }
-    }
-
-    function setupBuyCredits() {
-        const buyBtn = document.getElementById('btn-buy-credits');
-        if (buyBtn) {
-            buyBtn.onclick = () => {
-                if (window.SentinelToast) window.SentinelToast.show('Stripe connection offline. Phase 3 pending.', 'info');
-            };
         }
     }
 
