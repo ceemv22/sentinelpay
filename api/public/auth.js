@@ -102,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (!token) {
                 btn.disabled = true;
-                btn.textContent = 'Verifying identity...';
+                btn.textContent = 'verifying identity...';
                 await window.solveCaptcha('login', 'turnstile-login', btn);
                 return;
             }
@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 isBusy = true;
                 btn.disabled = true;
-                btn.textContent = 'Logging in...';
+                btn.textContent = 'logging in...';
                 const email = document.getElementById('login-email').value;
                 const password = document.getElementById('login-password').value;
 
@@ -121,10 +121,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
                 if (error) {
-                    document.getElementById('login-error-msg').textContent = 'Error: Invalid credentials';
+                    document.getElementById('login-error-msg').textContent = 'error: wrong credentials';
                     document.getElementById('login-error-msg').style.display = 'block';
                     btn.disabled = false;
-                    btn.textContent = 'Login';
+                    btn.textContent = 'login';
                     btn.removeAttribute('data-captcha-token');
                     isBusy = false;
                 } else {
@@ -147,7 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (!token) {
                 btn.disabled = true;
-                btn.textContent = 'Verifying identity...';
+                btn.textContent = 'verifying identity...';
                 await window.solveCaptcha('register', 'turnstile-register', btn);
                 return;
             }
@@ -155,7 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 isBusy = true;
                 btn.disabled = true;
-                btn.textContent = 'Creating account...';
+                btn.textContent = 'creating account...';
                 const email = document.getElementById('reg-email').value;
                 const password = document.getElementById('reg-password').value;
 
@@ -167,11 +167,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const isExisting = !error && data?.user && data.user.identities?.length === 0;
                 if (error || isExisting) {
-                    const msg = isExisting ? 'Error: Email already registered' : 'Error: ' + error.message;
+                    const msg = isExisting ? 'error: email already registered' : 'error: ' + error.message.toLowerCase();
                     document.getElementById('register-error-msg').textContent = msg;
                     document.getElementById('register-error-msg').style.display = 'block';
                     btn.disabled = false;
-                    btn.textContent = 'Create Account';
+                    btn.textContent = 'create account';
                     btn.removeAttribute('data-captcha-token');
                     isBusy = false;
                 } else {
@@ -196,7 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (!token) {
                 btn.disabled = true;
-                btn.textContent = 'Verifying identity...';
+                btn.textContent = 'verifying identity...';
                 await window.solveCaptcha('forgot', 'turnstile-forgot', btn);
                 return;
             }
@@ -204,7 +204,7 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 isBusy = true;
                 btn.disabled = true;
-                btn.textContent = 'Sending link...';
+                btn.textContent = 'sending link...';
                 const email = document.getElementById('forgot-pw-email').value;
                 const errorMsg = document.getElementById('forgot-pw-error-msg');
 
@@ -214,10 +214,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
                 if (error) {
-                    errorMsg.textContent = 'Error: ' + error.message;
+                    errorMsg.textContent = 'error: ' + error.message.toLowerCase();
                     errorMsg.style.display = 'block';
                     btn.disabled = false;
-                    btn.textContent = 'Send Reset Link';
+                    btn.textContent = 'send reset link';
                     btn.removeAttribute('data-captcha-token');
                     isBusy = false;
                 } else {
@@ -292,7 +292,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (b) {
             b.onclick = async () => {
                 b.disabled = true;
-                b.textContent = 'Connecting...';
+                b.textContent = 'connecting...';
                 await s.auth.signInWithOAuth({ 
                     provider: id.includes('google') ? 'google' : 'twitter', 
                     options: { redirectTo: window.location.origin + '/dashboard' } 
