@@ -36,6 +36,23 @@
             z-index: 10000;
         }
 
+        .user-menu-trigger {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            padding: 4px 12px 4px 4px;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            background: transparent;
+            border: 1px solid transparent;
+        }
+
+        .user-menu-trigger:hover {
+            background: rgba(255, 255, 255, 0.02);
+            border-color: rgba(255, 255, 255, 0.05);
+        }
+
         .user-avatar {
             width: 42px;
             height: 42px;
@@ -54,13 +71,24 @@
             -webkit-backdrop-filter: blur(10px);
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
             transition: all 0.3s ease;
-            cursor: pointer;
         }
 
-        .user-avatar:hover {
+        .user-menu-trigger:hover .user-avatar {
             background: rgba(255, 255, 255, 0.1);
             border-color: rgba(0, 240, 255, 0.3);
             box-shadow: 0 0 20px rgba(0, 240, 255, 0.15);
+        }
+
+        .chevron-icon {
+            color: var(--text-muted);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0.6;
+        }
+
+        .user-menu-trigger:hover .chevron-icon {
+            color: #fff;
+            opacity: 1;
+            transform: translateY(2px);
         }
 
         /* --- Institutional Sidebar --- */
@@ -459,7 +487,12 @@
     <div class="glow-orb"></div>
 
     <header class="dashboard-header">
-        <div class="user-avatar" id="user-avatar-circle">?</div>
+        <div class="user-menu-trigger">
+            <div class="user-avatar" id="user-avatar-circle">?</div>
+            <svg class="chevron-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+        </div>
     </header>
 
     <script src="toast.js"></script>
