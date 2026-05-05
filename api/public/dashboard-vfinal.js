@@ -102,10 +102,27 @@ document.addEventListener('DOMContentLoaded', async () => {
         // 3. Setup Logout
         const logoutBtn = document.getElementById('btn-logout');
         if (logoutBtn) {
-            logoutBtn.onclick = async () => {
+            logoutBtn.onclick = async (e) => {
+                e.preventDefault();
                 await sentinelAuth.auth.signOut();
                 window.location.href = '/';
             };
+        }
+
+        // 4. Setup Dropdown Toggle
+        const menuTrigger = document.getElementById('user-menu-trigger');
+        const dropdownMenu = document.getElementById('user-dropdown');
+        if (menuTrigger && dropdownMenu) {
+            menuTrigger.addEventListener('click', (e) => {
+                e.stopPropagation();
+                dropdownMenu.classList.toggle('active');
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!menuTrigger.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                    dropdownMenu.classList.remove('active');
+                }
+            });
         }
 
         // Setup UI
@@ -199,11 +216,15 @@ document.addEventListener('DOMContentLoaded', async () => {
                 avatarInitial = 'O';
             }
 
-            // Update avatar
+            // Update avatar and dropdown header
             const avatarEl = document.getElementById('user-avatar-circle');
             if (avatarEl) avatarEl.textContent = avatarInitial.toUpperCase();
+            
+            const dropdownEmailEl = document.getElementById('dropdown-email');
+            if (dropdownEmailEl) dropdownEmailEl.textContent = displayIdentifier;
 
-            document.getElementById('user-email').textContent = displayIdentifier;
+            const userEmailEl = document.getElementById('user-email');
+            if (userEmailEl) userEmailEl.textContent = displayIdentifier;
             document.getElementById('credit-count').textContent = data.credits;
 
             const historyContainer = document.getElementById('history-container');
