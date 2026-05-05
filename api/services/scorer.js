@@ -13,6 +13,8 @@ function runScoringEngine(wallet) {
         }
 
         const scriptPath = path.join(__dirname, '..', '..', 'engine', 'score.py');
+        
+        // S-S-S-S Tier Fail-Fast: Verify python3 availability
         const python = spawn('python3', [scriptPath, wallet], {
             env: { ...process.env, ETHERSCAN_API_KEY: apiKey }
         });

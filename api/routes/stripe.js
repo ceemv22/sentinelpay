@@ -99,7 +99,8 @@ router.post('/webhook', express.raw({type: 'application/json', limit: '100kb'}),
 
                 const userId = session.metadata?.userId;
                 if (!userId) {
-                    throw new Error('Stripe session missing userId metadata');
+                    console.error(`[billing] CRITICAL: Stripe session ${session.id} missing userId metadata. Provisioning aborted.`);
+                    return res.status(400).send('Missing userId in metadata');
                 }
 
                 const PLAN_CREDIT_MAPPING = {

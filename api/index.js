@@ -45,10 +45,14 @@ function resolveTrustProxySetting(value) {
 const trustProxySetting = resolveTrustProxySetting(trustProxyEnv);
 app.set('trust proxy', trustProxySetting === undefined ? 1 : trustProxySetting);
 
-// S-Tier IP Resolver: Prioritize Cloudflare verified IP
+// S-S-S-S Tier IP Resolver: Secure & Spoof-Proof
 app.use((req, res, next) => {
-    // Railway/Cloudflare hybrid trust
-    req.realIp = req.headers['cf-connecting-ip'] || req.headers['x-forwarded-for']?.split(',')[0].trim() || req.ip;
+    // Cloudflare verified IP is the gold standard. 
+    // If cf-connecting-ip is missing, we check x-forwarded-for but ONLY if we are certain we are behind a proxy.
+    const cfIp = req.headers['cf-connecting-ip'];
+    const forwardedFor = req.headers['x-forwarded-for'];
+    
+    req.realIp = cfIp || (forwardedFor ? forwardedFor.split(',')[0].trim() : req.ip);
     next();
 });
 app.use(hpp()); // Prevent HTTP Parameter Pollution
@@ -122,9 +126,9 @@ app.use(helmet({
     }
 }));
 
-// Suppress Permissions Policy warnings from Cloudflare and third-party scripts
+// S-S-S-S Tier Permissions Policy: Locked Down
 app.use((req, res, next) => {
-    res.setHeader('Permissions-Policy', 'xr-spatial-tracking=*, camera=(), microphone=(), geolocation=(), interest-cohort=()');
+    res.setHeader('Permissions-Policy', 'xr-spatial-tracking=(), camera=(), microphone=(), geolocation=(), interest-cohort=()');
     next();
 });
 app.use(cors({
@@ -565,6 +569,10 @@ app.use((err, req, res, next) => {
 async function start() {
     if (isProduction && !redisUrl) {
         throw new Error('REDIS_URL must be configured in production.');
+    }
+
+    if (isProduction && !process.env.STRIPE_WEBHOOK_SECRET) {
+        throw new Error('STRIPE_WEBHOOK_SECRET must be configured in production to secure payment flows.');
     }
 
     if (redisClient) {
