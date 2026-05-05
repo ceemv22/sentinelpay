@@ -159,10 +159,36 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         // Setup UI
-        setupRevealKey(token);
-        setupCopyKey();
-        setupBuyCredits();
+        fetchHeaderApiKey(token);
         fetchProfile(token);
+    }
+
+    async function fetchHeaderApiKey(token) {
+        try {
+            const res = await fetch('/v1/user/api-key/reveal', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const result = await res.json();
+            
+            if (res.ok && result.apiKey) {
+                const fullKey = result.apiKey;
+                const last4 = fullKey.slice(-4);
+                
+                const suffixEl = document.getElementById('api-key-suffix');
+                if (suffixEl) suffixEl.textContent = last4;
+
+                const badgeEl = document.getElementById('header-api-key');
+                if (badgeEl) {
+                    badgeEl.onclick = () => {
+                        navigator.clipboard.writeText(fullKey).then(() => {
+                            if (window.SentinelToast) window.SentinelToast.show('API Key copied to clipboard!', 'success');
+                        });
+                    };
+                }
+            }
+        } catch (err) {
+            console.error('Failed to fetch header API key:', err);
+        }
     }
 
     function setupRevealKey(token) {
