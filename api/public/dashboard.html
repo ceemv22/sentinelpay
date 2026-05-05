@@ -97,16 +97,16 @@
         
         .dropdown-menu {
             position: absolute;
-            top: calc(100% + 10px);
+            top: calc(100% + 15px);
             right: 0;
-            width: 220px;
-            background: rgba(10, 10, 10, 0.85);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border-glass);
-            border-radius: 12px;
-            padding: 8px 0;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            width: 240px;
+            background: rgba(10, 12, 15, 0.7);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 12px;
+            box-shadow: 0 40px 80px -15px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.05);
             opacity: 0;
             visibility: hidden;
             transform: translateY(-10px);
@@ -121,10 +121,11 @@
         }
 
         .dropdown-header {
-            padding: 8px 16px 12px;
+            padding: 4px 8px 12px 8px;
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.75rem;
-            color: var(--text-muted);
+            color: var(--neon-blue);
+            opacity: 0.8;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -133,41 +134,70 @@
         .dropdown-divider {
             height: 1px;
             background: var(--border-glass);
-            margin: 4px 0;
+            margin: 8px 0 12px 0;
+            width: calc(100% + 24px);
+            transform: translateX(-12px);
         }
 
         .dropdown-item {
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 10px 16px;
-            color: #fff;
+            gap: 12px;
+            padding: 10px 12px;
+            color: var(--text-main);
             text-decoration: none;
             font-size: 0.8rem;
             font-family: 'JetBrains Mono', monospace;
             text-transform: lowercase;
             font-weight: 500;
+            border-radius: 8px;
+            margin-bottom: 4px;
+            border: 1px solid transparent;
             transition: all 0.2s ease;
+        }
+        
+        .dropdown-item:last-child {
+            margin-bottom: 0;
         }
 
         .dropdown-item:hover {
             background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.15);
             color: var(--neon-blue);
+            box-shadow: inset 0 0 10px rgba(0, 240, 255, 0.05);
+            transform: translateY(-1px);
         }
 
         .dropdown-item svg {
             width: 16px;
             height: 16px;
-            opacity: 0.7;
+            color: var(--text-muted);
+            transition: all 0.2s ease;
+        }
+        
+        .dropdown-item:hover svg {
+            color: var(--neon-blue);
         }
 
         .dropdown-item.text-red {
             color: var(--color-red);
+            margin-top: 8px;
+        }
+        
+        .dropdown-item.text-red svg {
+            color: var(--color-red);
+            opacity: 0.8;
         }
 
         .dropdown-item.text-red:hover {
             background: rgba(255, 51, 51, 0.05);
+            border-color: rgba(255, 51, 51, 0.2);
             color: var(--color-red);
+            box-shadow: inset 0 0 10px rgba(255, 51, 51, 0.05);
+        }
+        
+        .dropdown-item.text-red:hover svg {
+            opacity: 1;
         }
 
         /* --- Institutional Sidebar --- */
