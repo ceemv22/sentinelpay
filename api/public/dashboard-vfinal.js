@@ -189,7 +189,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             } else if (!data.email && data.username) {
                 displayIdentifier = data.username;
             } else if (!data.email) {
-                displayIdentifier = data.authProvider === 'twitter' ? 'linked_via_x' : 'oauth_account';
+                displayIdentifier = data.authProvider === 'twitter' ? 'Linked via X' : 'OAuth Account';
             }
 
             document.getElementById('user-email').textContent = displayIdentifier;
@@ -202,7 +202,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 if (data.history.length === 0) {
                     const emptyMsg = document.createElement('p');
                     emptyMsg.style.cssText = 'color: var(--text-secondary); text-align: center; padding: 2rem;';
-                    emptyMsg.textContent = 'no scans yet.';
+                    emptyMsg.textContent = 'No scans yet.';
                     historyContainer.appendChild(emptyMsg);
                 } else {
                     data.history.forEach(item => {
@@ -228,7 +228,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         } catch (err) {
             console.error(err);
             const userEmailEl = document.getElementById('user-email');
-            if (userEmailEl) userEmailEl.textContent = 'error loading profile.';
+            if (userEmailEl) userEmailEl.textContent = 'Error loading profile.';
         }
     }
 });

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>sentinelpay | dashboard</title>
+    <title>SentinelPay | Dashboard</title>
     
     <meta name="theme-color" content="#050505">
     <link rel="icon" type="image/svg+xml" href="logo.svg">
@@ -12,7 +12,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     
-    <link rel="stylesheet" href="style.css?v=21.2">
+    <link rel="stylesheet" href="style.css?v=21.3">
     <script src="lib/supabase.js"></script>
     <style>
         :root {
@@ -29,7 +29,7 @@
             min-height: 100vh;
         }
 
-        /* --- Hacker-Institutional Sidebar --- */
+        /* --- Institutional Sidebar --- */
         .sidebar {
             width: var(--sidebar-width);
             height: 100vh;
@@ -61,7 +61,6 @@
             font-size: 1.4rem;
             color: #fff;
             letter-spacing: -1px;
-            text-transform: lowercase;
         }
 
         .nav-list {
@@ -80,16 +79,15 @@
             border-radius: 12px;
             color: var(--text-muted);
             text-decoration: none;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             font-weight: 500;
             font-family: 'JetBrains Mono', monospace;
-            text-transform: lowercase;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             border: 1px solid transparent;
         }
 
         .nav-link svg {
-            opacity: 0.4;
+            opacity: 0.5;
             transition: all 0.3s;
         }
 
@@ -119,20 +117,19 @@
             width: 100%;
             background: transparent;
             color: var(--color-red);
-            border: 1px solid rgba(255, 51, 51, 0.1);
+            border: 1px solid rgba(255, 51, 51, 0.15);
             padding: 0.9rem;
             border-radius: 12px;
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.82rem;
-            font-weight: 500;
-            text-transform: lowercase;
+            font-size: 0.9rem;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
         }
 
         .btn-logout:hover {
             background: rgba(255, 51, 51, 0.05);
-            border-color: rgba(255, 51, 51, 0.25);
+            border-color: rgba(255, 51, 51, 0.3);
         }
 
         /* --- Main Content Layout --- */
@@ -155,20 +152,18 @@
 
         .header-title h1 {
             font-family: 'Space Grotesk', sans-serif;
-            font-size: 2.2rem;
+            font-size: 2.5rem;
             font-weight: 700;
-            letter-spacing: -1.5px;
+            letter-spacing: -1px;
             margin-bottom: 0.5rem;
-            text-transform: lowercase;
             color: #fff;
         }
 
         .header-title p {
             color: var(--text-muted);
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.85rem;
+            font-size: 0.95rem;
             letter-spacing: -0.5px;
-            text-transform: lowercase;
         }
 
         /* --- Dashboard Components --- */
@@ -198,14 +193,14 @@
 
         .card-label {
             color: var(--text-muted);
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             font-weight: 700;
             font-family: 'JetBrains Mono', monospace;
-            text-transform: lowercase;
+            text-transform: uppercase;
             letter-spacing: 1.5px;
             margin-bottom: 1.5rem;
             display: block;
-            opacity: 0.6;
+            opacity: 0.7;
         }
 
         .card-value {
@@ -219,12 +214,11 @@
 
         .card-meta {
             margin-top: 1rem;
-            font-size: 0.7rem;
+            font-size: 0.8rem;
             color: var(--neon-blue);
             font-family: 'JetBrains Mono', monospace;
             font-weight: 500;
-            opacity: 0.6;
-            text-transform: lowercase;
+            opacity: 0.8;
         }
 
         /* --- API Access Section --- */
@@ -247,7 +241,7 @@
 
         #api-key-display {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.9rem;
+            font-size: 1rem;
             color: var(--text-muted);
             letter-spacing: 2px;
         }
@@ -292,9 +286,8 @@
 
         .section-header h3 {
             font-family: 'Space Grotesk', sans-serif;
-            font-size: 1.1rem;
+            font-size: 1.25rem;
             font-weight: 700;
-            text-transform: lowercase;
         }
 
         .usage-chart {
@@ -311,13 +304,13 @@
             flex: 1;
             background: linear-gradient(180deg, var(--neon-blue), rgba(0, 240, 255, 0.05));
             border-radius: 4px;
-            opacity: 0.25;
+            opacity: 0.3;
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
         }
 
         .bar:hover {
-            opacity: 0.8;
+            opacity: 0.9;
             filter: drop-shadow(0 0 10px var(--neon-blue));
         }
 
@@ -348,8 +341,8 @@
         }
 
         .history-item:hover {
-            background: rgba(255, 255, 255, 0.04);
-            border-color: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.15);
         }
 
         .history-meta {
@@ -360,57 +353,55 @@
 
         .history-wallet {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             font-weight: 700;
             color: #fff;
             letter-spacing: -0.5px;
         }
 
         .history-time {
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             font-family: 'JetBrains Mono', monospace;
             color: var(--text-muted);
-            text-transform: lowercase;
-            opacity: 0.6;
+            opacity: 0.7;
         }
 
         .score-badge {
-            padding: 0.35rem 0.75rem;
+            padding: 0.4rem 0.8rem;
             border-radius: 6px;
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             font-weight: 700;
             font-family: 'JetBrains Mono', monospace;
-            text-transform: lowercase;
+            text-transform: uppercase;
             border: 1px solid transparent;
         }
 
-        .score-badge.low { background: rgba(0, 255, 136, 0.05); color: var(--color-green); border-color: rgba(0, 255, 136, 0.15); }
-        .score-badge.medium { background: rgba(255, 184, 0, 0.05); color: var(--color-yellow); border-color: rgba(255, 184, 0, 0.15); }
-        .score-badge.high { background: rgba(255, 51, 51, 0.05); color: var(--color-red); border-color: rgba(255, 51, 51, 0.15); }
+        .score-badge.low { background: rgba(0, 255, 136, 0.08); color: var(--color-green); border-color: rgba(0, 255, 136, 0.2); }
+        .score-badge.medium { background: rgba(255, 184, 0, 0.08); color: var(--color-yellow); border-color: rgba(255, 184, 0, 0.2); }
+        .score-badge.high { background: rgba(255, 51, 51, 0.08); color: var(--color-red); border-color: rgba(255, 51, 51, 0.2); }
 
         .btn-primary {
             background: #fff;
             color: #000;
             border: none;
-            padding: 0.8rem 1.5rem;
+            padding: 0.9rem 1.8rem;
             border-radius: 10px;
             font-weight: 700;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             font-family: 'JetBrains Mono', monospace;
-            text-transform: lowercase;
             cursor: pointer;
             transition: all 0.2s;
         }
 
         .btn-primary:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.15);
         }
 
         /* Scrollbar Styling */
         .content-area::-webkit-scrollbar { width: 4px; }
         .content-area::-webkit-scrollbar-track { background: transparent; }
-        .content-area::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.05); border-radius: 10px; }
+        .content-area::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
 
         /* Responsive */
         @media (max-width: 1280px) {
@@ -454,41 +445,41 @@
                 <circle cx="60" cy="60" r="2" fill="url(#neonGradientSidebar)" stroke="none"/>
               </g>
             </svg>
-            <span>sentinelpay</span>
+            <span>SentinelPay</span>
         </a>
 
         <nav class="nav-list">
             <a href="/dashboard" class="nav-link active">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
-                overview
+                Overview
             </a>
             <a href="/" class="nav-link">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                scanner
+                Scanner
             </a>
             <a href="#" class="nav-link">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                account
+                Account
             </a>
             <a href="#" class="nav-link">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-                settings
+                Settings
             </a>
         </nav>
 
         <div class="sidebar-footer">
-            <button id="btn-logout" class="btn-logout">terminate_session</button>
+            <button id="btn-logout" class="btn-logout">Sign Out</button>
         </div>
     </aside>
 
     <main class="content-area">
         <header class="page-header">
             <div class="header-title">
-                <h1>dashboard_overview</h1>
-                <p id="user-email">institutional profile loading...</p>
+                <h1>Dashboard Overview</h1>
+                <p id="user-email">Institutional Profile Loading...</p>
             </div>
             <div class="header-actions">
-                <button id="btn-buy-credits" class="btn-primary">buy_credits</button>
+                <button id="btn-buy-credits" class="btn-primary">Buy Credits</button>
             </div>
         </header>
 
@@ -496,24 +487,24 @@
             <div class="left-section">
                 <div class="summary-cards">
                     <div class="card">
-                        <span class="card-label">service_credits</span>
+                        <span class="card-label">Service Credits</span>
                         <div id="credit-count" class="card-value">0</div>
-                        <div class="card-meta">enterprise_pool</div>
+                        <div class="card-meta">Enterprise Pool</div>
                     </div>
                     <div class="card">
-                        <span class="card-label">account_tier</span>
-                        <div class="card-value" style="font-size: 2.2rem;">starter</div>
-                        <div class="card-meta">integration_ready</div>
+                        <span class="card-label">Account Tier</span>
+                        <div class="card-value" style="font-size: 2.2rem;">Starter</div>
+                        <div class="card-meta">Integration Ready</div>
                     </div>
                     <div class="card">
-                        <span class="card-label">api_latency</span>
+                        <span class="card-label">API Latency</span>
                         <div class="card-value" style="font-size: 2.2rem;">342ms</div>
-                        <div class="card-meta">cdn_active</div>
+                        <div class="card-meta">Global CDN Active</div>
                     </div>
 
                     <div class="card api-access-card">
                         <div class="api-details">
-                            <span class="card-label">api_access_key</span>
+                            <span class="card-label">API Access Key</span>
                             <div class="api-key-wrapper">
                                 <span id="api-key-display">••••••••••••••••••••••••</span>
                                 <div class="action-group">
@@ -531,8 +522,8 @@
 
                 <div class="card analytics-card">
                     <div class="section-header">
-                        <h3>usage_analytics</h3>
-                        <span style="color: var(--text-muted); font-size: 0.7rem; font-family: 'JetBrains Mono', monospace; font-weight: 700; letter-spacing: 1px; opacity: 0.5;">24-HOUR SCAN VELOCITY</span>
+                        <h3>Usage Analytics</h3>
+                        <span style="color: var(--text-muted); font-size: 0.75rem; font-family: 'JetBrains Mono', monospace; font-weight: 700; letter-spacing: 1px;">24-HOUR SCAN VELOCITY</span>
                     </div>
                     <div class="usage-chart" id="usage-chart">
                         <!-- Chart generated via JS -->
@@ -543,12 +534,12 @@
             <div class="right-section">
                 <div class="card audit-panel">
                     <div class="section-header" style="margin-bottom: 2rem;">
-                        <h3>audit_history</h3>
+                        <h3>Audit History</h3>
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" style="opacity: 0.4;"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     </div>
                     <div class="audit-list" id="history-container">
-                        <p style="color: var(--text-muted); text-align: center; padding: 4rem 0; font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; opacity: 0.5;">
-                            querying ledger records...
+                        <p style="color: var(--text-muted); text-align: center; padding: 4rem 0; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem;">
+                            Querying ledger records...
                         </p>
                     </div>
                 </div>
@@ -557,7 +548,7 @@
     </main>
 
     <script src="toast.js"></script>
-    <script src="dashboard-vfinal.js?v=17.5"></script>
+    <script src="dashboard-vfinal.js?v=17.6"></script>
     <script>
         const chart = document.getElementById('usage-chart');
         for (let i = 0; i < 24; i++) {
