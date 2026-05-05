@@ -98,8 +98,35 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     async function renderDashboard(session) {
         const token = session.access_token;
+        const user = session.user;
         
-        // 3. Setup Logout
+        // --- 1. Immediate Avatar Update (No Delay) ---
+        let displayIdentifier = user.email || '';
+        let avatarInitial = '?';
+
+        if (user.user_metadata) {
+            if (user.user_metadata.user_name) {
+                displayIdentifier = `@${user.user_metadata.user_name}`;
+                avatarInitial = user.user_metadata.user_name.charAt(0);
+            } else if (user.user_metadata.full_name) {
+                avatarInitial = user.user_metadata.full_name.charAt(0);
+            }
+        }
+        
+        if (avatarInitial === '?' && displayIdentifier) {
+            avatarInitial = displayIdentifier.charAt(0);
+        } else if (avatarInitial === '?') {
+            displayIdentifier = 'OAuth Account';
+            avatarInitial = 'O';
+        }
+
+        const avatarEl = document.getElementById('user-avatar-circle');
+        if (avatarEl) avatarEl.textContent = avatarInitial.toUpperCase();
+        
+        const dropdownEmailEl = document.getElementById('dropdown-email');
+        if (dropdownEmailEl) dropdownEmailEl.textContent = displayIdentifier;
+
+        // --- 2. Setup Logout ---
         const logoutBtn = document.getElementById('btn-logout');
         if (logoutBtn) {
             logoutBtn.onclick = async (e) => {
@@ -109,17 +136,23 @@ document.addEventListener('DOMContentLoaded', async () => {
             };
         }
 
-        // 4. Setup Dropdown Toggle
+        // --- 3. Setup Dropdown Toggle ---
         const menuTrigger = document.getElementById('user-menu-trigger');
         const dropdownMenu = document.getElementById('user-dropdown');
+        
         if (menuTrigger && dropdownMenu) {
-            menuTrigger.addEventListener('click', (e) => {
+            // Remove any old listeners if renderDashboard is called twice
+            const newTrigger = menuTrigger.cloneNode(true);
+            menuTrigger.parentNode.replaceChild(newTrigger, menuTrigger);
+            
+            newTrigger.addEventListener('click', (e) => {
+                e.preventDefault();
                 e.stopPropagation();
                 dropdownMenu.classList.toggle('active');
             });
 
             document.addEventListener('click', (e) => {
-                if (!menuTrigger.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                if (!newTrigger.contains(e.target) && !dropdownMenu.contains(e.target)) {
                     dropdownMenu.classList.remove('active');
                 }
             });
@@ -225,7 +258,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             const userEmailEl = document.getElementById('user-email');
             if (userEmailEl) userEmailEl.textContent = displayIdentifier;
-            document.getElementById('credit-count').textContent = data.credits;
+            const creditCountEl = document.getElementById('credit-count');
+            if (creditCountEl) creditCountEl.textContent = data.credits;
 
             const historyContainer = document.getElementById('history-container');
             if (historyContainer) {
