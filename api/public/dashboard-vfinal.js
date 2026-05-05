@@ -177,15 +177,21 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             newBadge.addEventListener('click', (e) => {
                 e.preventDefault();
-                modal.classList.add('active');
+                modal.style.display = 'flex';
+                setTimeout(() => {
+                    modal.classList.add('active');
+                }, 10);
             });
 
             closeBtn.onclick = () => {
                 modal.classList.remove('active');
-                isRevealed = false;
-                modalDisplay.textContent = 'sp_live_••••••••••••••••••••••••••••';
-                modalDisplay.style.color = 'var(--text-muted)';
-                revealBtn.style.display = 'flex';
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                    isRevealed = false;
+                    modalDisplay.textContent = 'sp_live_••••••••••••••••••••••••••••';
+                    modalDisplay.style.color = 'var(--text-muted)';
+                    revealBtn.style.display = 'flex';
+                }, 300);
             };
 
             modal.onclick = (e) => {

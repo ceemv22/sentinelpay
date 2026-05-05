@@ -78,112 +78,7 @@
             color: var(--neon-blue);
         }
 
-        /* --- API Key Modal --- */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            z-index: 99999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
 
-        .modal-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .modal-content {
-            background: rgba(10, 12, 15, 0.85);
-            border: 1px solid var(--border-glass);
-            border-radius: 16px;
-            width: 100%;
-            max-width: 420px;
-            padding: 2.5rem;
-            position: relative;
-            transform: translateY(20px) scale(0.95);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 40px 80px -15px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-        }
-
-        .modal-overlay.active .modal-content {
-            transform: translateY(0) scale(1);
-        }
-
-        .modal-close {
-            position: absolute;
-            top: 1rem;
-            right: 1.5rem;
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: color 0.2s;
-            padding: 0;
-        }
-
-        .modal-close:hover {
-            color: #fff;
-            transform: none;
-            box-shadow: none;
-        }
-
-        .modal-header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .modal-header h2 {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-
-        .api-key-container {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .api-key-wrapper {
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid var(--border-glass);
-            border-radius: 8px;
-            padding: 1rem;
-            text-align: center;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
-            overflow-x: auto;
-        }
-
-        #modal-api-key-display {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            word-break: break-all;
-        }
-
-        .api-actions {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .api-actions button {
-            flex: 1;
-            padding: 0.8rem;
-            font-size: 0.8rem;
-        }
 
         .user-menu-trigger {
             display: flex;
@@ -785,23 +680,23 @@
 
     <!-- API Key Modal -->
     <div id="api-modal-overlay" class="modal-overlay">
-        <div class="modal-content">
-            <button class="modal-close" id="btn-close-api-modal">&times;</button>
+        <div class="auth-card modal-content" style="position: relative; z-index: 1000; display: flex; flex-direction: column;">
+            <button class="modal-close-btn" id="btn-close-api-modal">✕</button>
             <div class="modal-header">
-                <h2>API Access</h2>
-                <p class="subtitle">manage your secret key</p>
+                <h2 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; text-align: center;">API Access</h2>
+                <p class="subtitle" style="text-align: center;">manage your secret key</p>
             </div>
             
-            <div class="api-key-container">
-                <div class="api-key-wrapper">
-                    <span id="modal-api-key-display">sp_live_••••••••••••••••••••••••••••</span>
+            <div class="api-key-container" style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem; margin-top: 1rem;">
+                <div class="api-key-wrapper" style="background: rgba(0, 0, 0, 0.4); border: 1px solid var(--border-glass); border-radius: 8px; padding: 1rem; text-align: center; box-shadow: inset 0 2px 4px rgba(0,0,0,0.5); overflow-x: auto;">
+                    <span id="modal-api-key-display" style="font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: var(--text-muted); word-break: break-all;">sp_live_••••••••••••••••••••••••••••</span>
                 </div>
-                <div class="api-actions">
-                    <button class="social-btn" id="modal-btn-reveal">
+                <div class="api-actions" style="display: flex; gap: 1rem;">
+                    <button class="social-btn" id="modal-btn-reveal" style="flex: 1; padding: 0.8rem; font-size: 0.8rem;">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                         reveal
                     </button>
-                    <button class="social-btn" id="modal-btn-copy">
+                    <button class="social-btn" id="modal-btn-copy" style="flex: 1; padding: 0.8rem; font-size: 0.8rem;">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
                         copy
                     </button>
@@ -814,6 +709,6 @@
     </div>
 
     <script src="toast.js"></script>
-    <script src="dashboard-vfinal.js?v=17.92"></script>
+    <script src="dashboard-vfinal.js?v=17.93"></script>
 </body>
 </html>
