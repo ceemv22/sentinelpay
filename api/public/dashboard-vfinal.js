@@ -158,12 +158,97 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
         }
 
+        // --- 4. Setup API Key Modal ---
+        const badgeEl = document.getElementById('header-api-key');
+        const modal = document.getElementById('api-modal-overlay');
+        const closeBtn = document.getElementById('btn-close-api-modal');
+        const modalDisplay = document.getElementById('modal-api-key-display');
+        const revealBtn = document.getElementById('modal-btn-reveal');
+        const copyBtn = document.getElementById('modal-btn-copy');
+
+        // We will store the full key here once fetched
+        let cachedFullKey = null;
+        let isRevealed = false;
+
+        if (badgeEl && modal) {
+            // Remove old listeners by cloning
+            const newBadge = badgeEl.cloneNode(true);
+            badgeEl.parentNode.replaceChild(newBadge, badgeEl);
+
+            newBadge.addEventListener('click', (e) => {
+                e.preventDefault();
+                modal.classList.add('active');
+            });
+
+            closeBtn.onclick = () => {
+                modal.classList.remove('active');
+                isRevealed = false;
+                modalDisplay.textContent = 'sp_live_••••••••••••••••••••••••••••';
+                modalDisplay.style.color = 'var(--text-muted)';
+                revealBtn.style.display = 'flex';
+            };
+
+            modal.onclick = (e) => {
+                if (e.target === modal) {
+                    closeBtn.click();
+                }
+            };
+
+            revealBtn.onclick = async () => {
+                try {
+                    revealBtn.disabled = true;
+                    revealBtn.innerHTML = '...';
+                    
+                    let keyToDisplay = cachedFullKey;
+                    
+                    if (!keyToDisplay) {
+                        const res = await fetch('/v1/user/api-key/reveal', {
+                            headers: { 'Authorization': `Bearer ${token}` }
+                        });
+                        const result = await res.json();
+                        if (res.ok && result.apiKey) {
+                            keyToDisplay = result.apiKey;
+                            cachedFullKey = keyToDisplay;
+                        } else {
+                            throw new Error(result.error || 'Failed to fetch key');
+                        }
+                    }
+
+                    isRevealed = true;
+                    modalDisplay.textContent = keyToDisplay;
+                    modalDisplay.style.color = 'var(--neon-blue)';
+                    revealBtn.style.display = 'none';
+                    if (window.SentinelToast) window.SentinelToast.show('API key revealed! Save it securely.', 'success');
+                } catch (err) {
+                    console.error(err);
+                    if (window.SentinelToast) window.SentinelToast.show('Error revealing key.', 'error');
+                    revealBtn.disabled = false;
+                    revealBtn.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        reveal
+                    `;
+                }
+            };
+
+            copyBtn.onclick = () => {
+                if (!isRevealed || !cachedFullKey) {
+                    if (window.SentinelToast) window.SentinelToast.show('Please reveal the key before copying.', 'warning');
+                    return;
+                }
+                navigator.clipboard.writeText(cachedFullKey).then(() => {
+                    if (window.SentinelToast) window.SentinelToast.show('API key copied to clipboard!', 'success');
+                });
+            };
+        }
+
         // Setup UI
-        fetchHeaderApiKey(token);
+        fetchHeaderApiKey(token, (fullKey) => {
+            cachedFullKey = fullKey;
+        });
         fetchProfile(token);
     }
 
-    async function fetchHeaderApiKey(token) {
+    async function fetchHeaderApiKey(token, onKeyFetched) {
         try {
             const res = await fetch('/v1/user/api-key/reveal', {
                 headers: { 'Authorization': `Bearer ${token}` }
@@ -176,55 +261,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 
                 const suffixEl = document.getElementById('api-key-suffix');
                 if (suffixEl) suffixEl.textContent = last4;
-
-                // Modal Logic
-                const badgeEl = document.getElementById('header-api-key');
-                const modal = document.getElementById('api-modal-overlay');
-                const closeBtn = document.getElementById('btn-close-api-modal');
-                const modalDisplay = document.getElementById('modal-api-key-display');
-                const revealBtn = document.getElementById('modal-btn-reveal');
-                const copyBtn = document.getElementById('modal-btn-copy');
-
-                let isRevealed = false;
-
-                if (badgeEl && modal) {
-                    badgeEl.onclick = () => {
-                        modal.classList.add('active');
-                    };
-
-                    closeBtn.onclick = () => {
-                        modal.classList.remove('active');
-                        // reset state
-                        isRevealed = false;
-                        modalDisplay.textContent = 'sp_live_••••••••••••••••••••••••••••';
-                        modalDisplay.style.color = 'var(--text-muted)';
-                        revealBtn.style.display = 'flex';
-                    };
-
-                    modal.onclick = (e) => {
-                        if (e.target === modal) {
-                            closeBtn.click();
-                        }
-                    };
-
-                    revealBtn.onclick = () => {
-                        isRevealed = true;
-                        modalDisplay.textContent = fullKey;
-                        modalDisplay.style.color = 'var(--neon-blue)';
-                        revealBtn.style.display = 'none';
-                        if (window.SentinelToast) window.SentinelToast.show('API key revealed! Save it securely.', 'success');
-                    };
-
-                    copyBtn.onclick = () => {
-                        if (!isRevealed) {
-                            if (window.SentinelToast) window.SentinelToast.show('Please reveal the key before copying.', 'warning');
-                            return;
-                        }
-                        navigator.clipboard.writeText(fullKey).then(() => {
-                            if (window.SentinelToast) window.SentinelToast.show('API key copied to clipboard!', 'success');
-                        });
-                    };
-                }
+                
+                if (onKeyFetched) onKeyFetched(fullKey);
             }
         } catch (err) {
             console.error('Failed to fetch header API key:', err);
