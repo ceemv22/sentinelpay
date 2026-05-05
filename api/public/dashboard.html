@@ -5,213 +5,111 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>sentinelpay | dashboard</title>
     
-    <meta name="theme-color" content="#0b0e14">
+    <meta name="theme-color" content="#050505">
     <link rel="icon" type="image/svg+xml" href="logo.svg">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Inter:wght@300;400;600;800&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
     
-    <link rel="stylesheet" href="style.css?v=17.5">
+    <link rel="stylesheet" href="style.css?v=20.0">
     <script src="lib/supabase.js"></script>
     <style>
-        .dashboard-container {
-            max-width: 900px;
-            margin: 0 auto;
+        :root {
+            --sidebar-width: 280px;
+            --accent-glow: rgba(0, 240, 255, 0.15);
+        }
+
+        body {
+            display: flex;
+            background-color: #050505;
+            color: var(--text-main);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* --- Sidebar Navigation --- */
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: rgba(10, 10, 10, 0.6);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border-right: 1px solid var(--border-glass);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 1000;
             padding: 2rem 1.5rem;
-            position: relative;
-            z-index: 10;
+            transition: transform 0.3s ease;
         }
 
-        .dashboard-header {
+        .sidebar-logo {
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            gap: 1rem;
+            text-decoration: none;
             margin-bottom: 3rem;
-            padding-bottom: 2rem;
-            border-bottom: 1px solid var(--border-glass);
+            padding: 0.5rem;
         }
 
-        .user-info h1 {
-            font-size: 1.75rem;
+        .sidebar-logo span {
+            font-family: 'Space Grotesk', sans-serif;
             font-weight: 800;
-            margin-bottom: 0.25rem;
-            background: linear-gradient(135deg, #fff 0%, #777 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-size: 1.4rem;
+            color: #fff;
+            letter-spacing: -1px;
         }
 
-        .user-email {
-            color: var(--neon-blue);
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            flex-grow: 1;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border-radius: 10px;
+            color: var(--text-muted);
+            text-decoration: none;
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.85rem;
-            opacity: 0.8;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-            margin-bottom: 3rem;
-        }
-
-        .stat-card {
-            padding: 2rem;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            min-height: 160px;
-        }
-
-        .stat-label {
-            color: var(--text-muted);
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.75rem;
-            text-transform: lowercase;
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-value {
-            font-size: 3.5rem;
-            font-weight: 800;
-            font-family: 'JetBrains Mono', monospace;
-            color: #fff;
-            line-height: 1;
-            text-shadow: 0 0 20px rgba(255,255,255,0.1);
-        }
-
-        .api-key-section {
-            margin-top: 1rem;
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-        }
-
-        .api-key-box {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: rgba(0,0,0,0.4);
-            border: 1px solid var(--border-glass);
-            padding: 0.75rem 1.25rem;
-            border-radius: 8px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
-        }
-
-        #api-key-display {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            max-width: 250px;
-        }
-
-        .history-section h2 {
-            font-size: 1.25rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            color: #fff;
-            font-family: 'JetBrains Mono', monospace;
-            text-transform: lowercase;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .history-section h2::before {
-            content: '';
-            display: block;
-            width: 8px;
-            height: 8px;
-            background: var(--neon-blue);
-            border-radius: 50%;
-            box-shadow: 0 0 10px var(--neon-blue);
-        }
-
-        .history-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-            max-height: 500px;
-            overflow-y: auto;
-            padding-right: 0.5rem;
-        }
-
-        .history-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 1.5rem;
-            background: rgba(255,255,255,0.02);
-            border: 1px solid var(--border-glass);
-            border-radius: 8px;
             transition: all 0.3s ease;
+            border: 1px solid transparent;
         }
 
-        .history-item:hover {
-            background: rgba(255,255,255,0.05);
-            border-color: rgba(255,255,255,0.15);
-            transform: translateX(5px);
+        .nav-item:hover, .nav-item.active {
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            border-color: rgba(255, 255, 255, 0.08);
         }
 
-        .history-item.high { border-left: 3px solid var(--color-red); }
-        .history-item.medium { border-left: 3px solid var(--color-yellow); }
-        .history-item.low { border-left: 3px solid var(--color-green); }
-
-        .btn-reveal {
-            background: transparent;
-            border: 1px solid var(--neon-blue);
+        .nav-item.active {
+            background: rgba(0, 240, 255, 0.05);
+            border-color: rgba(0, 240, 255, 0.2);
             color: var(--neon-blue);
-            padding: 0.4rem 0.8rem;
-            font-size: 0.75rem;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.2s ease;
         }
 
-        .btn-reveal:hover {
-            background: var(--neon-blue);
-            color: #000;
-            box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
-        }
-
-        .btn-buy {
-            background: #fff;
-            color: #000;
-            padding: 0.75rem 1.5rem;
-            border-radius: 50px;
-            font-size: 0.85rem;
-            font-weight: 700;
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-
-        .btn-buy:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(255,255,255,0.1);
-        }
-
-        .nav-link {
-            text-decoration: none;
-            color: var(--text-muted);
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.8rem;
-            transition: color 0.2s;
-        }
-
-        .nav-link:hover {
-            color: #fff;
+        .sidebar-footer {
+            margin-top: auto;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-glass);
         }
 
         #btn-logout {
-            background: rgba(255, 51, 51, 0.1);
+            width: 100%;
+            background: rgba(255, 51, 51, 0.05);
             color: var(--color-red);
-            border: 1px solid rgba(255, 51, 51, 0.2);
-            padding: 0.5rem 1rem;
-            border-radius: 50px;
-            font-size: 0.75rem;
+            border: 1px solid rgba(255, 51, 51, 0.1);
+            padding: 0.8rem;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
             cursor: pointer;
             transition: all 0.2s;
         }
@@ -221,48 +119,283 @@
             color: #fff;
         }
 
-        .navbar {
+        /* --- Main Content Area --- */
+        .main-dashboard {
+            margin-left: var(--sidebar-width);
+            flex-grow: 1;
+            padding: 3rem 4rem;
+            max-width: 1400px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .welcome-header {
+            margin-bottom: 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .welcome-text h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: -1.5px;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #fff 0%, #aaa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .welcome-text p {
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+        }
+
+        /* --- Dashboard Grid --- */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .metric-card {
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle at top right, var(--accent-glow), transparent 70%);
+        }
+
+        .metric-label {
+            display: block;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: lowercase;
+            margin-bottom: 1rem;
+        }
+
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            font-family: 'JetBrains Mono', monospace;
+            color: #fff;
+        }
+
+        .metric-sub {
+            display: block;
+            margin-top: 0.5rem;
+            font-size: 0.7rem;
+            color: var(--neon-blue);
+            opacity: 0.7;
+        }
+
+        /* --- API Key Panel --- */
+        .api-panel {
+            grid-column: span 3;
+            padding: 1.5rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+        }
+
+        .api-info {
+            flex-grow: 1;
+        }
+
+        .api-key-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(0,0,0,0.4);
+            border: 1px solid var(--border-glass);
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            margin-top: 0.5rem;
+        }
+
+        #api-key-display {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            letter-spacing: 2px;
+        }
+
+        .api-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .icon-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-glass);
+            color: #fff;
+            padding: 0.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .icon-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* --- Activity Visualization --- */
+        .activity-panel {
+            padding: 2rem;
+            min-height: 400px;
+        }
+
+        .panel-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1.5rem 2rem;
-            background: rgba(5, 5, 5, 0.8);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--border-glass);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
+            margin-bottom: 2rem;
         }
 
-        .nav-logo {
+        .panel-header h3 {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            text-transform: lowercase;
+        }
+
+        .visual-chart {
+            height: 250px;
+            width: 100%;
             display: flex;
+            align-items: flex-end;
+            gap: 8px;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-glass);
+        }
+
+        .chart-bar {
+            flex: 1;
+            background: linear-gradient(to top, var(--neon-blue), transparent);
+            border-radius: 4px 4px 0 0;
+            opacity: 0.3;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .chart-bar:hover {
+            opacity: 0.8;
+            filter: drop-shadow(0 0 10px var(--neon-blue));
+        }
+
+        /* --- History List --- */
+        .history-panel {
+            padding: 2rem;
+        }
+
+        .history-scroll {
+            max-height: 600px;
+            overflow-y: auto;
+            padding-right: 1rem;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 0.75rem;
-            text-decoration: none;
+            padding: 1.25rem;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--border-glass);
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .nav-logo .logo-text {
-            font-weight: 800;
-            font-size: 1.25rem;
+        .history-item:hover {
+            background: rgba(255,255,255,0.05);
+            transform: translateX(8px);
+            border-color: rgba(255,255,255,0.15);
+        }
+
+        .history-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .history-wallet {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.95rem;
             color: #fff;
-            letter-spacing: -0.5px;
         }
 
-        @media (max-width: 768px) {
-            .stats-grid { grid-template-columns: 1fr; }
-            .dashboard-header { flex-direction: column; align-items: flex-start; gap: 1.5rem; }
-            .btn-buy { width: 100%; text-align: center; }
-            .navbar { padding: 1rem 1.5rem; }
+        .history-time {
+            font-size: 0.75rem;
+            color: var(--text-muted);
         }
+
+        .history-score {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 0.4rem;
+        }
+
+        .score-badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .score-badge.high { background: rgba(255, 51, 51, 0.1); color: var(--color-red); border: 1px solid rgba(255, 51, 51, 0.2); }
+        .score-badge.medium { background: rgba(255, 184, 0, 0.1); color: var(--color-yellow); border: 1px solid rgba(255, 184, 0, 0.2); }
+        .score-badge.low { background: rgba(0, 255, 136, 0.1); color: var(--color-green); border: 1px solid rgba(0, 255, 136, 0.2); }
+
+        /* --- Responsive --- */
+        @media (max-width: 1200px) {
+            .dashboard-grid { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 900px) {
+            .sidebar { transform: translateX(-100%); }
+            .main-dashboard { margin-left: 0; padding: 2rem; }
+            .metrics-grid { grid-template-columns: 1fr; }
+            .api-panel { flex-direction: column; align-items: stretch; }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border-glass); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
     </style>
 </head>
 <body>
     <div class="cyber-grid"></div>
     <div class="glow-orb"></div>
 
-    <header class="navbar">
-        <a href="/" class="nav-logo">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <a href="/" class="sidebar-logo">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" style="width: 32px; height: 32px;">
               <defs>
                 <linearGradient id="neonGradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -275,50 +408,122 @@
                 <circle cx="60" cy="60" r="10" />
               </g>
             </svg>
-            <span class="logo-text">sentinelpay</span>
+            <span>sentinelpay</span>
         </a>
-        <nav style="display: flex; gap: 1.5rem; align-items: center;">
-            <a href="/" class="nav-link">scanner</a>
-            <button id="btn-logout">logout</button>
+
+        <nav class="nav-menu">
+            <a href="/dashboard" class="nav-item active">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                overview
+            </a>
+            <a href="/" class="nav-item">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                scanner
+            </a>
+            <a href="#" class="nav-item">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                profile
+            </a>
+            <a href="#" class="nav-item">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"></path></svg>
+                settings
+            </a>
         </nav>
-    </header>
 
-    <main class="dashboard-container">
-        <section class="dashboard-header">
-            <div class="user-info">
-                <h1>dashboard</h1>
-                <div id="user-email" class="user-email">loading profile_</div>
-            </div>
-            <a href="#" id="btn-buy-credits" class="btn-buy">buy credits</a>
-        </section>
+        <div class="sidebar-footer">
+            <button id="btn-logout">logout_session</button>
+        </div>
+    </aside>
 
-        <section class="stats-grid">
-            <div class="glass-panel stat-card">
-                <span class="stat-label">> available_credits</span>
-                <div id="credit-count" class="stat-value">0</div>
+    <!-- Main Dashboard Area -->
+    <main class="main-dashboard">
+        <header class="welcome-header">
+            <div class="welcome-text">
+                <h1>system_overview</h1>
+                <p id="user-email">loading_identity...</p>
             </div>
-            <div class="glass-panel stat-card">
-                <span class="stat-label">> active_api_key</span>
-                <div class="api-key-section">
-                    <div class="api-key-box">
-                        <span id="api-key-display">••••••••••••••••</span>
-                        <button id="btn-reveal-key" class="btn-reveal">reveal</button>
+            <div class="header-actions">
+                <button id="btn-buy-credits" class="btn-buy" style="background: #fff; color: #000; border: none; padding: 0.8rem 1.5rem; border-radius: 8px; font-weight: 700; cursor: pointer; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;">refill_credits</button>
+            </div>
+        </header>
+
+        <div class="dashboard-grid">
+            <!-- Left Column: Metrics and Visualization -->
+            <div class="left-col">
+                <div class="metrics-grid">
+                    <div class="glass-panel metric-card">
+                        <span class="metric-label">> credits_remaining</span>
+                        <div id="credit-count" class="metric-value">0</div>
+                        <span class="metric-sub">5 free scans inclusive</span>
+                    </div>
+                    <div class="glass-panel metric-card">
+                        <span class="metric-label">> active_tier</span>
+                        <div class="metric-value">starter</div>
+                        <span class="metric-sub">b2b enabled</span>
+                    </div>
+                    <div class="glass-panel metric-card">
+                        <span class="metric-label">> avg_latency</span>
+                        <div class="metric-value">342<span style="font-size: 1rem; color: var(--text-muted);">ms</span></div>
+                        <span class="metric-sub">s-tier optimized</span>
+                    </div>
+
+                    <div class="glass-panel api-panel">
+                        <div class="api-info">
+                            <span class="metric-label">> api_access_key</span>
+                            <div class="api-key-container">
+                                <span id="api-key-display">••••••••••••••••••••••••</span>
+                            </div>
+                        </div>
+                        <div class="api-actions">
+                            <button id="btn-reveal-key" class="icon-btn" title="Reveal Key">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                            </button>
+                            <button id="btn-copy-key" class="icon-btn" title="Copy Key">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-panel activity-panel">
+                    <div class="panel-header">
+                        <h3>scan_velocity_metrics</h3>
+                        <span style="color: var(--text-muted); font-size: 0.75rem; font-family: 'JetBrains Mono', monospace;">LAST 24 HOURS</span>
+                    </div>
+                    <div class="visual-chart" id="activity-chart">
+                        <!-- Bars will be generated via CSS/JS -->
                     </div>
                 </div>
             </div>
-        </section>
 
-        <section class="history-section">
-            <h2>recent_scans</h2>
-            <div class="history-list glass-panel" id="history-container">
-                <p style="color: var(--text-muted); text-align: center; padding: 3rem; font-family: 'JetBrains Mono', monospace;">
-                    > querying on-chain history...
-                </p>
+            <!-- Right Column: Recent Activity -->
+            <div class="right-col">
+                <div class="glass-panel history-panel">
+                    <div class="panel-header">
+                        <h3>recent_activity</h3>
+                    </div>
+                    <div class="history-scroll" id="history-container">
+                        <p style="color: var(--text-muted); text-align: center; padding: 3rem; font-family: 'JetBrains Mono', monospace;">
+                            > querying_history...
+                        </p>
+                    </div>
+                </div>
             </div>
-        </section>
+        </div>
     </main>
 
     <script src="toast.js"></script>
     <script src="dashboard-vfinal.js"></script>
+    <script>
+        // Generate pseudo-chart bars
+        const chart = document.getElementById('activity-chart');
+        for (let i = 0; i < 24; i++) {
+            const bar = document.createElement('div');
+            bar.className = 'chart-bar';
+            const height = Math.floor(Math.random() * 80) + 10;
+            bar.style.height = height + '%';
+            chart.appendChild(bar);
+        }
+    </script>
 </body>
 </html>

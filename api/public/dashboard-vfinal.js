@@ -110,6 +110,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // Setup UI
         setupRevealKey(token);
+        setupCopyKey();
         setupBuyCredits();
         fetchProfile(token);
     }
@@ -119,8 +120,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (revealBtn) {
             revealBtn.onclick = async () => {
                 try {
-                    revealBtn.textContent = 'revealing...';
                     revealBtn.disabled = true;
+                    const originalIcon = revealBtn.innerHTML;
+                    revealBtn.innerHTML = '...';
 
                     const res = await fetch('/v1/user/api-key/reveal', {
                         headers: { 'Authorization': `Bearer ${token}` }
@@ -129,18 +131,34 @@ document.addEventListener('DOMContentLoaded', async () => {
                     
                     if (res.ok && result.apiKey) {
                         document.getElementById('api-key-display').textContent = result.apiKey;
+                        document.getElementById('api-key-display').style.color = 'var(--neon-blue)';
                         revealBtn.style.display = 'none';
                         if (window.SentinelToast) window.SentinelToast.show('API Key revealed! Save it securely.', 'success');
                     } else {
                         if (window.SentinelToast) window.SentinelToast.show(result.error || 'Failed to reveal key', 'error');
-                        revealBtn.textContent = 'reveal';
                         revealBtn.disabled = false;
+                        revealBtn.innerHTML = originalIcon;
                     }
                 } catch (err) {
                     console.error(err);
-                    revealBtn.textContent = 'reveal';
                     revealBtn.disabled = false;
                 }
+            };
+        }
+    }
+
+    function setupCopyKey() {
+        const copyBtn = document.getElementById('btn-copy-key');
+        if (copyBtn) {
+            copyBtn.onclick = () => {
+                const keyText = document.getElementById('api-key-display').textContent;
+                if (keyText.includes('•')) {
+                    if (window.SentinelToast) window.SentinelToast.show('Please reveal the key before copying.', 'warning');
+                    return;
+                }
+                navigator.clipboard.writeText(keyText).then(() => {
+                    if (window.SentinelToast) window.SentinelToast.show('API Key copied to clipboard!', 'success');
+                });
             };
         }
     }
@@ -189,18 +207,18 @@ document.addEventListener('DOMContentLoaded', async () => {
                 } else {
                     data.history.forEach(item => {
                         const el = document.createElement('div');
-                        el.className = `history-item ${item.category}`;
+                        el.className = `history-item`;
                         
                         const dateRaw = new Date(item.timestamp);
                         const dateStr = dateRaw.toLocaleDateString() + ' ' + dateRaw.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
                         
                         el.innerHTML = `
-                            <div style="display:flex; flex-direction: column; gap: 0.25rem;">
-                                <strong style="color: var(--text)">${item.wallet}</strong>
-                                <span style="color: var(--text-secondary); font-size: 0.75rem;">${dateStr}</span>
+                            <div class="history-meta">
+                                <strong class="history-wallet">${item.wallet.slice(0, 10)}...${item.wallet.slice(-8)}</strong>
+                                <span class="history-time">${dateStr}</span>
                             </div>
-                            <div style="display: flex; gap: 1rem; align-items: center;">
-                                <span style="background: rgba(255,255,255,0.1); padding: 0.2rem 0.6rem; border-radius: 4px;">Score: ${item.score}</span>
+                            <div class="history-score">
+                                <span class="score-badge ${item.category}">${item.score}</span>
                             </div>
                         `;
                         historyContainer.appendChild(el);
