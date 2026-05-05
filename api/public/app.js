@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const dashboardLink = document.createElement('a');
                     dashboardLink.href = '/dashboard';
                     dashboardLink.className = 'auth-nav-btn';
-                    dashboardLink.textContent = 'dashboard';
+                    dashboardLink.textContent = 'Dashboard';
                     authContainer.appendChild(dashboardLink);
                 }
             }
@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
     btn.addEventListener('click', async () => {
         const wallet = input.value.trim();
         if (!/^0x[a-fA-F0-9]{40}$/.test(wallet)) {
-            showError('error: invalid eth address hex');
+            showError('Error: Invalid Ethereum address format.');
             return;
         }
 
@@ -133,14 +133,14 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!turnstileToken) {
                 if (!window.turnstileScannerWidgetId && window.turnstile) {
                     btn.disabled = true;
-                    btn.textContent = 'please solve captcha...';
+                    btn.textContent = 'Please solve CAPTCHA...';
                     window.turnstileScannerWidgetId = window.turnstile.render('#turnstile-scanner', {
                         sitekey: '0x4AAAAAADGpMozD1QOtWPkP',
                         theme: 'dark',
                         callback: function(token) {
                             window.explicitScannerToken = token;
                             btn.disabled = false;
-                            btn.textContent = 'scan wallet';
+                            btn.textContent = 'Scan Wallet';
                             btn.click(); // Auto-trigger the scan once solved
                         }
                     });
@@ -152,7 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         resetUI();
         btn.disabled = true;
-        btn.textContent = 'scanning...';
+        btn.textContent = 'Scanning...';
 
         try {
             const endpoint = cachedSession ? '/v1/user/score' : '/v1/public/score';
@@ -182,13 +182,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (!response.ok) {
                 if (response.status === 403 && data.requiresAuth) {
-                    throw new Error('free limit reached. please login/register to continue.');
+                    throw new Error('Free limit reached. Please log in or register to continue.');
                 }
                 if (response.status === 403 && data.requiresUpgrade) {
-                    throw new Error('out of credits. go to dashboard to refill.');
+                    throw new Error('Out of credits. Please visit your dashboard to add more.');
                 }
-                if (response.status === 429) throw new Error('rate_limit_exceeded (try later)');
-                throw new Error(data.error || 'sys_error');
+                if (response.status === 429) throw new Error('Rate limit exceeded. Please try again later.');
+                throw new Error(data.error || 'Internal system error.');
             }
 
             lastResult = data;
@@ -202,7 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         setTimeout(() => typeFlag(flag, false), idx * 400); 
                     });
                 } else {
-                    typeFlag('no_risk_detected', true);
+                    typeFlag('No Risk Detected', true);
                 }
                 
                 // Show share button after a small delay

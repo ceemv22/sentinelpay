@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>sentinelpay | auth</title>
+    <title>SentinelPay | Authentication</title>
     <meta name="description" content="Login or register for SentinelPay to unlock deep scanning and API access.">
     <meta name="theme-color" content="#040404">
     <link rel="icon" type="image/svg+xml" href="logo.svg">
@@ -24,9 +24,9 @@
                         <line x1="12" y1="17" x2="12" y2="17"/>
                     </svg>
                 </div>
-                <h1 class="noscript-title">javascript_required</h1>
-                <p class="noscript-text">sentinelpay auth requires script execution to verify identity and maintain secure sessions.</p>
-                <div class="noscript-status">> status: blocked_</div>
+                <h1 class="noscript-title">JavaScript Required</h1>
+                <p class="noscript-text">SentinelPay requires script execution to verify identity and maintain secure sessions.</p>
+                <div class="noscript-status">> Status: Access Blocked</div>
             </div>
         </div>
     </noscript>
@@ -63,7 +63,7 @@
               </g>
             </svg>
         </div>
-        <a href="/" class="auth-nav-btn" style="background: transparent; border-color: rgba(255,255,255,0.1); color: var(--text-muted);">back to scanner</a>
+        <a href="/" class="auth-nav-btn" style="background: transparent; border-color: rgba(255,255,255,0.1); color: var(--text-muted);">Back to Scanner</a>
     </div>
 
     <!-- Centered content area -->
@@ -101,8 +101,8 @@
         <!-- Auth Card -->
         <div class="auth-card" id="auth-panel" style="position: relative; z-index: 500;">
             <div class="auth-tabs">
-                <button class="auth-tab active" id="tab-login" style="cursor: pointer; position: relative; z-index: 1000; pointer-events: auto;">login</button>
-                <button class="auth-tab" id="tab-register" style="cursor: pointer; position: relative; z-index: 1000; pointer-events: auto;">register</button>
+                <button class="auth-tab active" id="tab-login" style="cursor: pointer; position: relative; z-index: 1000; pointer-events: auto;">Login</button>
+                <button class="auth-tab" id="tab-register" style="cursor: pointer; position: relative; z-index: 1000; pointer-events: auto;">Register</button>
             </div>
 
             <div class="auth-panels-container">
@@ -116,25 +116,25 @@
                                 <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
                                 <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
                             </svg>
-                            continue with google
+                            Continue with Google
                         </button>
                         <button class="social-btn" id="btn-x">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.005 4.15H5.059z"/>
                             </svg>
-                            continue with x
+                            Continue with X
                         </button>
                     </div>
 
-                    <div class="auth-divider"><span>or via email</span></div>
+                    <div class="auth-divider"><span>Or via Email</span></div>
 
                     <form id="login-form" class="auth-form" novalidate>
                         <div class="input-group">
-                            <label for="login-email">email</label>
+                            <label for="login-email">Email</label>
                             <input type="email" id="login-email" placeholder="john.doe@example.com" required autocomplete="email">
                         </div>
                         <div class="input-group" style="margin-top: 0.8rem;">
-                            <label for="login-password">password</label>
+                            <label for="login-password">Password</label>
                             <div class="password-field-wrap">
                                 <input type="password" id="login-password" placeholder="••••••••" required autocomplete="current-password">
                                 <span class="pw-eye-toggle" role="button" data-target="login-password">
@@ -142,13 +142,13 @@
                                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="eye-on" style="display:none;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                                 </span>
                             </div>
-                            <a href="#" id="forgot-pw-trigger" class="forgot-pw-link">forgot password?</a>
+                            <a href="#" id="forgot-pw-trigger" class="forgot-pw-link">Forgot password?</a>
                         </div>
 
                         <div id="turnstile-login" style="margin-top: 1rem; display: flex; justify-content: center;"></div>
                         
                         <p id="login-error-msg" class="error-msg" style="display: none;"></p>
-                        <button type="submit" id="login-submit-btn" class="submit-btn" style="margin-top: 2rem;">login</button>
+                        <button type="submit" id="login-submit-btn" class="submit-btn" style="margin-top: 2rem;">Login</button>
                     </form>
                 </div>
 
@@ -205,7 +205,7 @@
                         <div id="turnstile-register" style="margin-top: 1rem; display: flex; justify-content: center;"></div>
                         
                         <p id="register-error-msg" class="error-msg" style="display: none;"></p>
-                        <button type="submit" id="register-submit-btn" class="submit-btn" style="margin-top: 1.25rem;">create account</button>
+                        <button type="submit" id="register-submit-btn" class="submit-btn" style="margin-top: 1.25rem;">Create Account</button>
                     </form>
                 </div>
             </div>
@@ -232,8 +232,8 @@
                     </svg>
                 </div>
                 
-                <h2 style="font-size: 2.25rem; font-weight: 800; letter-spacing: -1.75px; color: #fff; margin-bottom: 1rem; font-family: 'JetBrains Mono', monospace; text-transform: lowercase;">check inbox</h2>
-                <p style="color: rgba(255,255,255,0.4); font-size: 0.9rem; font-family: 'JetBrains Mono', monospace; line-height: 1.8; max-width: 280px; margin: 0 auto;">we've dispatched a secure verification link to verify your identity.</p>
+                <h2 style="font-size: 2.25rem; font-weight: 800; letter-spacing: -1.75px; color: #fff; margin-bottom: 1rem; font-family: 'Space Grotesk', sans-serif;">Check Inbox</h2>
+                <p style="color: rgba(255,255,255,0.4); font-size: 0.9rem; line-height: 1.8; max-width: 280px; margin: 0 auto;">We've dispatched a secure verification link to verify your identity.</p>
             </div>
 
             <!-- Hardened Sticky Footer (No-Shift Layout) -->
@@ -241,7 +241,7 @@
                 <div id="resend-wrap" style="width: 100%;">
                     <!-- UX Enhancement: Timer integrated into button text -->
                     <button id="resend-btn" style="background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.1); padding: 14px 28px; border-radius: 12px; font-size: 0.72rem; cursor: pointer; font-family: 'JetBrains Mono', monospace; transition: all 0.3s ease; display: inline-block; min-width: 200px;">
-                        resend email
+                        Resend Email
                     </button>
                     <!-- Visual spacer to ensure height stability -->
                     <div style="height: 20px; margin-top: 1rem;"></div>
@@ -257,9 +257,9 @@
                     <path d="m9 12 2 2 4-4"/>
                 </svg>
             </div>
-            <div style="font-size: 1.5rem; font-weight: 800; letter-spacing: -1px; margin-bottom: 1rem; color: #fff;">identity verified.</div>
-            <p style="color: var(--text-muted); font-size: 0.95rem; font-family: 'JetBrains Mono', monospace; line-height: 1.6;">your account is now active. you can proceed to the dashboard.</p>
-            <button id="verified-dashboard-btn" class="submit-btn" style="margin-top: 2rem;">go to dashboard</button>
+            <div style="font-size: 1.5rem; font-weight: 800; letter-spacing: -1px; margin-bottom: 1rem; color: #fff;">Identity Verified</div>
+            <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6;">Your account is now active. You can proceed to the dashboard.</p>
+            <button id="verified-dashboard-btn" class="submit-btn" style="margin-top: 2rem;">Go to Dashboard</button>
         </div>
 
     </div>
@@ -272,9 +272,9 @@
             <!-- Default Form State -->
             <div id="forgot-pw-state-form" style="display: flex; flex-direction: column; width: 100%;">
                 <div class="auth-tabs" style="margin-bottom: 2rem;">
-                    <button class="auth-tab active" style="width: 100%; cursor: default; pointer-events: none;">reset password</button>
+                    <button class="auth-tab active" style="width: 100%; cursor: default; pointer-events: none;">Reset Password</button>
                 </div>
-                <p style="color: var(--text-muted); font-size: 0.85rem; font-family: 'JetBrains Mono', monospace; line-height: 1.6; margin-bottom: 2rem; width: 100%; text-align: center;">enter your email and we'll send you a secure link to reset your access.</p>
+                <p style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.6; margin-bottom: 2rem; width: 100%; text-align: center;">Enter your email and we'll send you a secure link to reset your access.</p>
                 
                 <form id="forgot-pw-form" class="auth-form" style="width: 100%; display: flex; flex-direction: column;" novalidate>
                     <div class="input-group">
@@ -285,7 +285,7 @@
                     <div id="turnstile-forgot" style="margin-top: 1rem; display: flex; justify-content: center;"></div>
                     
                     <p id="forgot-pw-error-msg" class="error-msg" style="display: none;"></p>
-                    <button type="submit" id="forgot-pw-submit-btn" class="submit-btn" style="margin-top: 1.5rem;">send reset link</button>
+                    <button type="submit" id="forgot-pw-submit-btn" class="submit-btn" style="margin-top: 1.5rem;">Send Reset Link</button>
                 </form>
             </div>
 
@@ -315,7 +315,7 @@
                 <!-- Resend Anchor -->
                 <div id="forgot-resend-anchor" style="width: 100%; display: flex; flex-direction: column; align-items: center; padding-bottom: 0.5rem;">
                     <button id="forgot-resend-btn" style="background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.1); padding: 12px 24px; border-radius: 12px; font-size: 0.72rem; cursor: pointer; font-family: 'JetBrains Mono', monospace; transition: all 0.3s ease; display: inline-block; min-width: 180px;">
-                        resend email
+                        Resend Email
                     </button>
                 </div>
             </div>
