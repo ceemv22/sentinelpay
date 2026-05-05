@@ -29,6 +29,40 @@
             min-height: 100vh;
         }
 
+        .dashboard-header {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            z-index: 1000;
+        }
+
+        .user-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-glass);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #fff;
+            text-transform: uppercase;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .user-avatar:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(0, 240, 255, 0.3);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.15);
+        }
+
         /* --- Institutional Sidebar --- */
         .sidebar {
             width: var(--sidebar-width);
@@ -415,6 +449,7 @@
             .content-area { margin-left: 0; padding: 2rem; }
             .summary-cards { grid-template-columns: 1fr; }
             .api-access-card { grid-column: span 1; }
+            .dashboard-header { display: none !important; }
         }
 
     </style>
@@ -422,6 +457,10 @@
 <body>
     <div class="cyber-grid"></div>
     <div class="glow-orb"></div>
+
+    <header class="dashboard-header">
+        <div class="user-avatar" id="user-avatar-circle">?</div>
+    </header>
 
     <script src="toast.js"></script>
     <script src="dashboard-vfinal.js?v=17.6"></script>

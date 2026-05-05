@@ -184,13 +184,24 @@ document.addEventListener('DOMContentLoaded', async () => {
             const data = await response.json();
             
             let displayIdentifier = data.email;
+            let avatarInitial = '?';
+            
             if (data.authProvider === 'twitter' && data.username) {
                 displayIdentifier = `@${data.username}`;
+                avatarInitial = data.username.charAt(0);
             } else if (!data.email && data.username) {
                 displayIdentifier = data.username;
-            } else if (!data.email) {
+                avatarInitial = data.username.charAt(0);
+            } else if (data.email) {
+                avatarInitial = data.email.charAt(0);
+            } else {
                 displayIdentifier = data.authProvider === 'twitter' ? 'Linked via X' : 'OAuth Account';
+                avatarInitial = 'O';
             }
+
+            // Update avatar
+            const avatarEl = document.getElementById('user-avatar-circle');
+            if (avatarEl) avatarEl.textContent = avatarInitial.toUpperCase();
 
             document.getElementById('user-email').textContent = displayIdentifier;
             document.getElementById('credit-count').textContent = data.credits;
