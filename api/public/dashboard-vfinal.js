@@ -189,14 +189,16 @@ document.addEventListener('DOMContentLoaded', async () => {
                     modal.classList.add('active');
                 }, 10);
                 
-                // Show key immediately in modal
+                // Show masked key immediately in modal
                 if (cachedFullKey) {
-                    modalDisplay.textContent = cachedFullKey;
+                    const last4 = cachedFullKey.slice(-4);
+                    modalDisplay.textContent = `sp_live_••••••••••••••••••••••••${last4}`;
                 } else {
                     // Fetch if not cached
                     await fetchHeaderApiKey(token, (fullKey) => {
                         cachedFullKey = fullKey;
-                        modalDisplay.textContent = fullKey;
+                        const last4 = fullKey.slice(-4);
+                        modalDisplay.textContent = `sp_live_••••••••••••••••••••••••${last4}`;
                     });
                 }
             });
@@ -231,10 +233,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                         
                         if (res.ok && result.apiKey) {
                             cachedFullKey = result.apiKey;
-                            modalDisplay.textContent = cachedFullKey;
+                            const last4 = cachedFullKey.slice(-4);
+                            modalDisplay.textContent = `sp_live_••••••••••••••••••••••••${last4}`;
                             
                             // Update header suffix and cache
-                            const last4 = cachedFullKey.slice(-4);
                             const suffixEl = document.getElementById('api-key-suffix');
                             if (suffixEl) suffixEl.textContent = last4;
                             localStorage.setItem('sentinel_key_suffix', last4);
