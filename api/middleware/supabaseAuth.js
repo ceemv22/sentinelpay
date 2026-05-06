@@ -72,6 +72,23 @@ async function requireSupabaseAuth(req, res, next) {
              throw new Error('failed to synchronize user data');
         }
 
+        // S-Tier Auto-Heal: Ensure user has at least one API Key
+        const existingKey = await prisma.apiKey.findFirst({
+            where: { userId: dbUser.id, active: true }
+        });
+
+        if (!existingKey) {
+            console.log(`[auth] auto-generating missing API key for user: ${dbUser.id}`);
+            await prisma.apiKey.create({
+                data: {
+                    userId: dbUser.id,
+                    keyHash: generateApiKey(),
+                    plan: 'starter',
+                    active: true
+                }
+            });
+        }
+
         req.user = dbUser;
         next();
     } catch (err) {
