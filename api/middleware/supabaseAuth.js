@@ -1,11 +1,17 @@
 const { createClient } = require('@supabase/supabase-js');
 const prisma = require('../services/db');
+const crypto = require('crypto');
 require('dotenv').config();
 
 const supabase = createClient(
     process.env.SUPABASE_URL,
     process.env.SUPABASE_ANON_KEY
 );
+
+// S-Tier API Key Generator
+const generateApiKey = () => {
+    return `sp_live_${crypto.randomBytes(24).toString('hex')}`;
+};
 
 async function requireSupabaseAuth(req, res, next) {
     const authHeader = req.headers.authorization;
@@ -41,7 +47,7 @@ async function requireSupabaseAuth(req, res, next) {
             where: { supabaseId: user.id },
             update: { 
                 email: userEmail,
-                username: username, // Update username if it changed on social profile
+                username: username,
                 authProvider,
                 isEmailVerified
             },
@@ -51,7 +57,14 @@ async function requireSupabaseAuth(req, res, next) {
                 username: username,
                 authProvider,
                 isEmailVerified,
-                credits: 5 
+                credits: 5,
+                apiKeys: {
+                    create: {
+                        keyHash: generateApiKey(), // We store it raw for now as per schema logic, but we could hash it later
+                        plan: 'starter',
+                        active: true
+                    }
+                }
             }
         });
 
