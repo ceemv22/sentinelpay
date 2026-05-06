@@ -2,7 +2,7 @@
 // Features: Dynamic Captcha Lifecycle, Atomic Locks, Zero-Conflict Handlers
 
 // 1. SUPABASE SUBSYSTEM
-const supabaseUrl = 'https://auth.sentinelpay.org';
+const supabaseUrl = 'https://aivqwkgjdpklxxuvkxpy.supabase.co';
 const supabaseKey = 'sb_publishable_bRfAssaGT6D8oFDQtPARbw_5fyYGWM6';
 let supabaseClient = null;
 

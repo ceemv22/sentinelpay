@@ -1,4 +1,4 @@
-const supabaseUrl = 'https://auth.sentinelpay.org';
+const supabaseUrl = 'https://aivqwkgjdpklxxuvkxpy.supabase.co';
 const supabaseKey = 'sb_publishable_bRfAssaGT6D8oFDQtPARbw_5fyYGWM6';
 const sentinelAuth = window.supabase.createClient(supabaseUrl, supabaseKey, {
     auth: {
