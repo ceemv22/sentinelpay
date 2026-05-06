@@ -64,7 +64,7 @@ app.use(helmet({
                 "'self'", 
                 "'unsafe-inline'", 
                 "'unsafe-eval'", 
-                "https://*.supabase.co", 
+                "https://api.sentinelpay.org", 
                 "https://challenges.cloudflare.com",
                 "https://accounts.google.com",
                 "https://*.twitter.com",
@@ -77,15 +77,15 @@ app.use(helmet({
             "img-src": [
                 "'self'", 
                 "data:", 
-                "https://aivqwkgjdpklxxuvkxpy.supabase.co", 
+                "https://api.sentinelpay.org", 
                 "https://*.googleusercontent.com", 
                 "https://*.twimg.com", 
                 "https://abs.twimg.com"
             ],
             "connect-src": [
                 "'self'", 
-                "https://*.supabase.co", 
-                "wss://*.supabase.co", 
+                "https://api.sentinelpay.org", 
+                "wss://api.sentinelpay.org", 
                 "https://api.etherscan.io",
                 "https://challenges.cloudflare.com",
                 "https://accounts.google.com",
@@ -96,7 +96,7 @@ app.use(helmet({
             "frame-src": [
                 "'self'", 
                 "https://challenges.cloudflare.com", 
-                "https://aivqwkgjdpklxxuvkxpy.supabase.co", 
+                "https://api.sentinelpay.org", 
                 "https://accounts.google.com", 
                 "blob:", 
                 "about:"
@@ -104,7 +104,7 @@ app.use(helmet({
             "base-uri": ["'self'"],
             "form-action": [
                 "'self'", 
-                "https://aivqwkgjdpklxxuvkxpy.supabase.co", 
+                "https://api.sentinelpay.org", 
                 "https://accounts.google.com", 
                 "https://twitter.com", 
                 "https://x.com", 
