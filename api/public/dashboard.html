@@ -436,6 +436,120 @@
             opacity: 0.8;
         }
 
+        /* --- S-Tier Risk Gauge --- */
+        .gauge-container {
+            position: relative;
+            width: 120px;
+            height: 60px;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+
+        .gauge-bg {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.05);
+            stroke-width: 12;
+            stroke-linecap: round;
+        }
+
+        .gauge-fill {
+            fill: none;
+            stroke: var(--neon-blue);
+            stroke-width: 12;
+            stroke-linecap: round;
+            stroke-dasharray: 157;
+            stroke-dashoffset: 157;
+            transition: stroke-dashoffset 1.5s cubic-bezier(0.4, 0, 0.2, 1), stroke 1.5s ease;
+            filter: drop-shadow(0 0 5px var(--neon-blue));
+        }
+
+        .gauge-text {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: #fff;
+        }
+
+        /* --- S-Tier Risk Gauge --- */
+        .gauge-container {
+            position: relative;
+            width: 120px;
+            height: 60px;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+
+        .gauge-bg {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.05);
+            stroke-width: 12;
+            stroke-linecap: round;
+        }
+
+        .gauge-fill {
+            fill: none;
+            stroke: var(--neon-blue);
+            stroke-width: 12;
+            stroke-linecap: round;
+            stroke-dasharray: 157;
+            stroke-dashoffset: 157;
+            transition: stroke-dashoffset 1.5s cubic-bezier(0.4, 0, 0.2, 1), stroke 1.5s ease;
+            filter: drop-shadow(0 0 5px var(--neon-blue));
+        }
+
+        .gauge-text {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: #fff;
+        }
+
+        /* --- S-Tier Risk Gauge --- */
+        .gauge-container {
+            position: relative;
+            width: 120px;
+            height: 60px;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+
+        .gauge-bg {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.05);
+            stroke-width: 12;
+            stroke-linecap: round;
+        }
+
+        .gauge-fill {
+            fill: none;
+            stroke: var(--neon-blue);
+            stroke-width: 12;
+            stroke-linecap: round;
+            stroke-dasharray: 157;
+            stroke-dashoffset: 157;
+            transition: stroke-dashoffset 1.5s cubic-bezier(0.4, 0, 0.2, 1), stroke 1.5s ease;
+            filter: drop-shadow(0 0 5px var(--neon-blue));
+        }
+
+        .gauge-text {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: #fff;
+        }
+
         /* --- API Access Section --- */
         .api-access-card {
             grid-column: span 3;
@@ -677,6 +791,98 @@
             </div>
         </div>
     </header>
+
+    <aside class="sidebar">
+        <a href="/" class="sidebar-brand">
+            <span>sentinelpay</span>
+        </a>
+        <nav class="nav-list">
+            <a href="/dashboard" class="nav-link active">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                dashboard
+            </a>
+            <a href="#" class="nav-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                security_scan
+            </a>
+            <a href="#" class="nav-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                analytics
+            </a>
+            <a href="/docs" class="nav-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                api_docs
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <button class="btn-logout" onclick="window.location.href='/auth'">// secure_exit</button>
+        </div>
+    </aside>
+
+    <main class="content-area">
+        <header class="page-header">
+            <div class="header-title">
+                <h1>overview</h1>
+                <p>Welcome back, <span id="user-email">...</span></p>
+            </div>
+            <button class="btn-primary" onclick="window.location.href='/'">new_scan</button>
+        </header>
+
+        <div class="dashboard-grid">
+            <div class="main-stats">
+                <section class="summary-cards">
+                    <div class="glass-panel card">
+                        <span class="card-label">> available_credits</span>
+                        <div class="card-value" id="credit-count">0</div>
+                        <div class="card-meta">unlimited_access_enabled</div>
+                    </div>
+                    
+                    <div class="glass-panel card">
+                        <span class="card-label">> risk_index</span>
+                        <div class="gauge-container">
+                            <svg viewBox="0 0 120 60">
+                                <path class="gauge-bg" d="M10,55 A50,50 0 0,1 110,55" />
+                                <path id="risk-gauge-fill" class="gauge-fill" d="M10,55 A50,50 0 0,1 110,55" />
+                            </svg>
+                            <div class="gauge-text" id="risk-index-value">0%</div>
+                        </div>
+                        <div class="card-meta" id="risk-status">system_nominal_</div>
+                    </div>
+
+                    <div class="glass-panel card">
+                        <span class="card-label">> active_nodes</span>
+                        <div class="card-value">14</div>
+                        <div class="card-meta">global_latency_12ms</div>
+                    </div>
+                </section>
+
+                <div class="glass-panel card analytics-card">
+                    <div class="section-header">
+                        <h3>api_usage_analytics</h3>
+                        <div class="card-meta">last_30_days</div>
+                    </div>
+                    <div class="usage-chart">
+                        <div class="bar" style="height: 40%;"></div>
+                        <div class="bar" style="height: 65%;"></div>
+                        <div class="bar" style="height: 45%;"></div>
+                        <div class="bar" style="height: 80%;"></div>
+                        <div class="bar" style="height: 30%;"></div>
+                        <div class="bar" style="height: 55%;"></div>
+                        <div class="bar" style="height: 90%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-panel card audit-panel">
+                <div class="section-header">
+                    <h3>audit_history</h3>
+                </div>
+                <div id="history-container" class="audit-list">
+                    <!-- History items will be injected here -->
+                </div>
+            </div>
+        </div>
+    </main>
 
     <!-- API Key Modal -->
     <div id="api-modal-overlay" class="modal-overlay">

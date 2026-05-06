@@ -254,6 +254,39 @@ document.addEventListener('DOMContentLoaded', async () => {
         fetchProfile(token);
     }
 
+    function updateRiskGauge(score) {
+        const fill = document.getElementById('risk-gauge-fill');
+        const text = document.getElementById('risk-index-value');
+        const status = document.getElementById('risk-status');
+        
+        if (!fill || !text) return;
+
+        // SVG Path length is ~157 (half circle of radius 50)
+        // 0 score = 157 offset (empty)
+        // 100 score = 0 offset (full)
+        const offset = 157 - (score / 100) * 157;
+        fill.style.strokeDashoffset = offset;
+        text.textContent = `${Math.round(score)}%`;
+
+        // Update color and status text
+        if (score < 30) {
+            fill.style.stroke = 'var(--color-green)';
+            fill.style.filter = 'drop-shadow(0 0 5px var(--color-green))';
+            status.textContent = 'system_nominal_';
+            status.style.color = 'var(--color-green)';
+        } else if (score < 70) {
+            fill.style.stroke = 'var(--color-yellow)';
+            fill.style.filter = 'drop-shadow(0 0 5px var(--color-yellow))';
+            status.textContent = 'elevated_risk_detected_';
+            status.style.color = 'var(--color-yellow)';
+        } else {
+            fill.style.stroke = 'var(--color-red)';
+            fill.style.filter = 'drop-shadow(0 0 5px var(--color-red))';
+            status.textContent = 'critical_threat_level_';
+            status.style.color = 'var(--color-red)';
+        }
+    }
+
     async function fetchHeaderApiKey(token, onKeyFetched) {
         try {
             const res = await fetch('/v1/user/api-key/reveal', {
@@ -313,6 +346,14 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (userEmailEl) userEmailEl.textContent = displayIdentifier;
             const creditCountEl = document.getElementById('credit-count');
             if (creditCountEl) creditCountEl.textContent = data.credits;
+
+            // Calculate average risk
+            if (data.history && data.history.length > 0) {
+                const avgScore = data.history.reduce((acc, curr) => acc + curr.score, 0) / data.history.length;
+                updateRiskGauge(avgScore);
+            } else {
+                updateRiskGauge(0);
+            }
 
             const historyContainer = document.getElementById('history-container');
             if (historyContainer) {
