@@ -20,16 +20,23 @@
             --accent-glow: rgba(0, 240, 255, 0.15);
         }
 
-        /* Sidebar Border Line - Desktop Only */
+        /* Sidebar Container - Desktop Only */
         @media (min-width: 1024px) {
-            .sidebar-border {
+            .sidebar {
                 position: fixed;
-                left: 80px;
+                left: 0;
                 top: 0;
                 bottom: 0;
-                width: 1px;
-                background: var(--border-glass);
+                width: 80px;
+                background: #000; /* Solid black as requested */
+                border-right: 1px solid var(--border-glass);
                 z-index: 1000;
+                transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                overflow: hidden;
+            }
+
+            .sidebar:hover {
+                width: var(--sidebar-width); /* 280px */
             }
         }
 
@@ -767,7 +774,7 @@
     </style>
 </head>
 <body>
-    <div class="sidebar-border"></div>
+    <div class="sidebar"></div>
     <div class="cyber-grid"></div>
     <div class="glow-orb"></div>
 
