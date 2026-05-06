@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const scoreValue = document.getElementById('score-value');
     const flagsContainer = document.getElementById('flags-container');
     // Supabase Auth and Fingerprint Init
-    const supabaseUrl = 'https://api.sentinelpay.org';
+    const supabaseUrl = 'https://auth.sentinelpay.org';
     const supabaseKey = 'sb_publishable_bRfAssaGT6D8oFDQtPARbw_5fyYGWM6';
     const supabaseClient = window.supabase ? window.supabase.createClient(supabaseUrl, supabaseKey) : null;
     let cachedSession = null;

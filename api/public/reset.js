@@ -1,5 +1,5 @@
 // SentinelPay Password Reset (v11.7 - PATIENT HYDRATION)
-const supabaseUrl = 'https://api.sentinelpay.org';
+const supabaseUrl = 'https://auth.sentinelpay.org';
 const supabaseKey = 'sb_publishable_bRfAssaGT6D8oFDQtPARbw_5fyYGWM6';
 let s = null;
 
