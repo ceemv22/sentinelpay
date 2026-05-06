@@ -27,21 +27,20 @@
                 left: 0;
                 top: 0;
                 bottom: 0;
-                width: 80px; /* Default position of the line */
-                background: transparent; /* Show background by default */
+                width: 4px; /* Default position (very far left) */
+                background: #000; /* Always black */
                 border-right: 1px solid var(--border-glass);
                 z-index: 1000;
-                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
                 overflow: hidden;
             }
 
             .sidebar:hover {
                 width: var(--sidebar-width); /* Expand to 280px */
-                background: #000; /* Become solid black on hover */
             }
 
             .content-area {
-                margin-left: 80px !important; /* Start content after the line */
+                margin-left: 0 !important; /* Content stays at edge */
             }
         }
 
