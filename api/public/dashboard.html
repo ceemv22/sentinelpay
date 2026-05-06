@@ -27,25 +27,25 @@
                 left: 0;
                 top: 0;
                 bottom: 0;
-                width: 20px; /* Default Position - much further left */
+                width: 60px; /* Collapsed width */
                 background: #000;
                 border-right: 1px solid var(--border-glass);
-                z-index: 10000; /* Ensure it's on top */
+                z-index: 10000;
                 transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
                 overflow: hidden;
             }
 
             .sidebar:hover {
-                width: 80px; /* Position on hover - as requested */
+                width: 260px; /* Expanded width */
             }
 
             .content-area {
-                margin-left: 20px !important;
+                margin-left: 60px !important;
                 transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             }
 
             .sidebar:hover ~ .content-area {
-                margin-left: 80px !important;
+                margin-left: 260px !important;
             }
         }
 
