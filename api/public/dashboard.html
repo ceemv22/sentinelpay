@@ -20,27 +20,32 @@
             --accent-glow: rgba(0, 240, 255, 0.15);
         }
 
-        /* Sidebar Container - Desktop Only */
+        /* Sidebar System - Supabase Style (Step-by-Step) */
         @media (min-width: 1024px) {
             .sidebar {
                 position: fixed;
                 left: 0;
                 top: 0;
                 bottom: 0;
-                width: 4px; /* Default position (very far left) */
-                background: #000; /* Always black */
+                width: 20px; /* Default Position - much further left */
+                background: #000;
                 border-right: 1px solid var(--border-glass);
-                z-index: 1000;
+                z-index: 10000; /* Ensure it's on top */
                 transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
                 overflow: hidden;
             }
 
             .sidebar:hover {
-                width: var(--sidebar-width); /* Expand to 280px */
+                width: 80px; /* Position on hover - as requested */
             }
 
             .content-area {
-                margin-left: 0 !important; /* Content stays at edge */
+                margin-left: 20px !important;
+                transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+
+            .sidebar:hover ~ .content-area {
+                margin-left: 80px !important;
             }
         }
 
@@ -371,9 +376,8 @@
             border-color: rgba(255, 51, 51, 0.3);
         }
 
-        /* --- Main Content Layout --- */
+        /* Content Area Base Styles */
         .content-area {
-            margin-left: var(--sidebar-width);
             flex-grow: 1;
             padding: 4rem 5rem;
             height: 100vh;
