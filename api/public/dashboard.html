@@ -33,7 +33,7 @@
                 -webkit-backdrop-filter: blur(20px);
                 border-right: 1px solid var(--border-glass);
                 z-index: 10000;
-                transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1), filter 0.3s ease;
                 overflow: hidden;
                 display: flex;
                 flex-direction: column;
@@ -42,6 +42,12 @@
 
             .sidebar:hover {
                 width: 260px; /* Standard expanded width */
+            }
+
+            /* Blur effect when modal is active */
+            body.modal-open .sidebar {
+                filter: blur(8px);
+                pointer-events: none;
             }
 
             .sidebar-content {
@@ -85,6 +91,7 @@
                 transition: all 0.2s ease;
                 white-space: nowrap;
                 position: relative;
+                font-family: 'JetBrains Mono', monospace; /* Same as sp_live modal */
             }
 
             .sidebar-item:hover {
@@ -119,12 +126,13 @@
             }
 
             .item-label {
-                font-family: 'Inter', sans-serif;
-                font-size: 0.9rem;
+                font-family: 'JetBrains Mono', monospace; /* Same as sp_live modal */
+                font-size: 0.85rem;
                 font-weight: 500;
                 margin-left: 1.25rem;
                 opacity: 0;
                 transition: opacity 0.3s ease;
+                text-transform: lowercase;
             }
 
             .sidebar:hover .item-label {

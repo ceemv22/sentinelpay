@@ -184,6 +184,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             newBadge.addEventListener('click', async (e) => {
                 e.preventDefault();
+                document.body.classList.add('modal-open');
                 modal.style.display = 'flex';
                 setTimeout(() => {
                     modal.classList.add('active');
@@ -210,6 +211,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
 
             closeBtn.onclick = () => {
+                document.body.classList.remove('modal-open');
                 modal.classList.remove('active');
                 setTimeout(() => {
                     modal.style.display = 'none';
@@ -235,6 +237,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 };
 
                 const closeRoll = () => {
+                    document.body.classList.remove('modal-open');
                     rollConfirmModal.classList.remove('active');
                     setTimeout(() => rollConfirmModal.style.display = 'none', 300);
                 };
