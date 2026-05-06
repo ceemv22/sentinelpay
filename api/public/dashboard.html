@@ -561,6 +561,13 @@
             transform: scale(1.1);
         }
 
+        .modal-copy-btn.copied {
+            color: var(--color-green) !important;
+            cursor: default !important;
+            transform: none !important;
+            pointer-events: none;
+        }
+
         .btn-roll {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -752,7 +759,7 @@
                     <div class="input-group" style="margin-bottom: 2rem;">
                         <div class="api-key-display-wrapper">
                             <span id="modal-api-key-display" style="font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--neon-blue); white-space: nowrap; letter-spacing: 0.5px; overflow: hidden; text-overflow: ellipsis;">sp_live_••••••••••••••••••••••••••••</span>
-                            <button id="modal-btn-copy" class="modal-copy-btn" title="Copy Key">
+                            <button id="modal-btn-copy" class="modal-copy-btn">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
                             </button>
                         </div>
