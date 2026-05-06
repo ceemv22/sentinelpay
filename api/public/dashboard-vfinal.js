@@ -223,13 +223,25 @@ document.addEventListener('DOMContentLoaded', async () => {
             };
 
             const rollBtn = document.getElementById('modal-btn-roll');
-            if (rollBtn) {
-                rollBtn.onclick = async () => {
-                    if (!confirm('Are you sure? Rolling your API key will immediately invalidate the old one. Any active integrations will break.')) return;
-                    
+            const rollConfirmModal = document.getElementById('roll-confirm-modal');
+            const cancelRollBtn = document.getElementById('btn-cancel-roll');
+            const confirmRollActionBtn = document.getElementById('btn-confirm-roll-action');
+
+            if (rollBtn && rollConfirmModal) {
+                rollBtn.onclick = () => {
+                    rollConfirmModal.style.display = 'flex';
+                    setTimeout(() => rollConfirmModal.classList.add('active'), 10);
+                };
+
+                cancelRollBtn.onclick = () => {
+                    rollConfirmModal.classList.remove('active');
+                    setTimeout(() => rollConfirmModal.style.display = 'none', 300);
+                };
+
+                confirmRollActionBtn.onclick = async () => {
                     try {
-                        rollBtn.disabled = true;
-                        rollBtn.textContent = 'rolling...';
+                        confirmRollActionBtn.disabled = true;
+                        confirmRollActionBtn.textContent = 'rolling...';
                         
                         const res = await fetch('/v1/user/api-key/roll', {
                             method: 'POST',
@@ -252,6 +264,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                             localStorage.setItem('sentinel_key_suffix', last4);
 
                             if (window.SentinelToast) window.SentinelToast.show('API key rolled successfully!', 'success');
+                            
+                            // Close confirm modal
+                            cancelRollBtn.click();
                         } else {
                             throw new Error(result.error || 'Failed to roll key');
                         }
@@ -259,11 +274,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                         console.error(err);
                         if (window.SentinelToast) window.SentinelToast.show('Error rolling key.', 'error');
                     } finally {
-                        rollBtn.disabled = false;
-                        rollBtn.innerHTML = `
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
-                            roll api key
-                        `;
+                        confirmRollActionBtn.disabled = false;
+                        confirmRollActionBtn.textContent = 'confirm roll';
                     }
                 };
             }

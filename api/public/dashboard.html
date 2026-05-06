@@ -594,6 +594,58 @@
             color: #fff;
         }
 
+        /* --- Roll Confirmation Modal --- */
+        .confirm-modal-content {
+            max-width: 400px !important;
+            text-align: center;
+        }
+
+        .confirm-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            width: 100%;
+        }
+
+        .btn-cancel {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-muted);
+            padding: 0.8rem;
+            border-radius: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-cancel:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+        }
+
+        .btn-confirm-red {
+            flex: 1;
+            background: rgba(255, 51, 51, 0.1);
+            border: 1px solid rgba(255, 51, 51, 0.2);
+            color: var(--color-red);
+            padding: 0.8rem;
+            border-radius: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-confirm-red:hover {
+            background: var(--color-red);
+            color: #fff;
+            box-shadow: 0 0 20px rgba(255, 51, 51, 0.3);
+        }
+
         /* --- Audit History --- */
         .audit-panel {
             padding: 2rem;
@@ -776,6 +828,21 @@
                         your api key is private. if you suspect it has been compromised, use the 'roll api key' button below to invalidate it and generate a new one immediately.
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Roll Confirmation Modal -->
+    <div id="roll-confirm-modal" class="modal-overlay">
+        <div class="auth-card modal-content confirm-modal-content">
+            <h2 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem; color: #fff; margin-bottom: 1rem;">roll api key?</h2>
+            <p style="color: var(--text-muted); font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; line-height: 1.6; margin-bottom: 1.5rem;">
+                this will immediately invalidate your current key. any systems using it will stop working until updated with the new one.
+            </p>
+            
+            <div class="confirm-actions">
+                <button class="btn-cancel" id="btn-cancel-roll">cancel</button>
+                <button class="btn-confirm-red" id="btn-confirm-roll-action">confirm roll</button>
             </div>
         </div>
     </div>
