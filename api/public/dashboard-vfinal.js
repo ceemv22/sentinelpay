@@ -247,7 +247,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             };
         }
 
-        // Setup UI
+        // Setup UI (Prioritize API Key for S-Tier instant load)
         fetchHeaderApiKey(token, (fullKey) => {
             cachedFullKey = fullKey;
         });
@@ -255,6 +255,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     async function fetchHeaderApiKey(token, onKeyFetched) {
+        const suffixEl = document.getElementById('api-key-suffix');
+        
+        // 1. Instant Load from Cache
+        const cachedSuffix = localStorage.getItem('sentinel_key_suffix');
+        if (cachedSuffix && suffixEl) {
+            suffixEl.textContent = cachedSuffix;
+        }
+
         try {
             const res = await fetch('/v1/user/api-key/reveal', {
                 headers: { 'Authorization': `Bearer ${token}` }
@@ -265,8 +273,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const fullKey = result.apiKey;
                 const last4 = fullKey.slice(-4);
                 
-                const suffixEl = document.getElementById('api-key-suffix');
+                // 2. Update UI and Cache
                 if (suffixEl) suffixEl.textContent = last4;
+                localStorage.setItem('sentinel_key_suffix', last4);
                 
                 if (onKeyFetched) onKeyFetched(fullKey);
             }
