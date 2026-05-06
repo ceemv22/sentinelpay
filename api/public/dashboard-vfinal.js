@@ -191,14 +191,20 @@ document.addEventListener('DOMContentLoaded', async () => {
                 
                 // Show masked key immediately in modal
                 if (cachedFullKey) {
-                    const last4 = cachedFullKey.slice(-4);
-                    modalDisplay.textContent = `sp_live_••••••••••••••••••••••••${last4}`;
+                    const prefix = 'sp_live_';
+                    const suffix = cachedFullKey.slice(-4);
+                    const dotsCount = cachedFullKey.length - prefix.length - 4;
+                    const dots = '•'.repeat(dotsCount > 0 ? dotsCount : 24);
+                    modalDisplay.textContent = `${prefix}${dots}${suffix}`;
                 } else {
                     // Fetch if not cached
                     await fetchHeaderApiKey(token, (fullKey) => {
                         cachedFullKey = fullKey;
-                        const last4 = fullKey.slice(-4);
-                        modalDisplay.textContent = `sp_live_••••••••••••••••••••••••${last4}`;
+                        const prefix = 'sp_live_';
+                        const suffix = fullKey.slice(-4);
+                        const dotsCount = fullKey.length - prefix.length - 4;
+                        const dots = '•'.repeat(dotsCount > 0 ? dotsCount : 24);
+                        modalDisplay.textContent = `${prefix}${dots}${suffix}`;
                     });
                 }
             });
@@ -233,10 +239,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                         
                         if (res.ok && result.apiKey) {
                             cachedFullKey = result.apiKey;
-                            const last4 = cachedFullKey.slice(-4);
-                            modalDisplay.textContent = `sp_live_••••••••••••••••••••••••${last4}`;
+                            const prefix = 'sp_live_';
+                            const suffix = cachedFullKey.slice(-4);
+                            const dotsCount = cachedFullKey.length - prefix.length - 4;
+                            const dots = '•'.repeat(dotsCount > 0 ? dotsCount : 24);
+                            modalDisplay.textContent = `${prefix}${dots}${suffix}`;
                             
                             // Update header suffix and cache
+                            const last4 = suffix;
                             const suffixEl = document.getElementById('api-key-suffix');
                             if (suffixEl) suffixEl.textContent = last4;
                             localStorage.setItem('sentinel_key_suffix', last4);
