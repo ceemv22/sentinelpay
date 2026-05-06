@@ -534,6 +534,38 @@ app.get('/v1/user/api-key/reveal', requireSupabaseAuth, async (req, res) => {
         console.error('[api key reveal error]', err);
         res.status(500).json({ error: 'failed to reveal api key' });
     }
+// S-Tier API Key Roll (Re-generate)
+app.post('/v1/user/api-key/roll', requireSupabaseAuth, async (req, res) => {
+    try {
+        const newKeyRaw = `sp_live_${require('crypto').randomBytes(24).toString('hex')}`;
+        
+        const result = await prisma.$transaction(async (tx) => {
+            // 1. Deactivate all old keys
+            await tx.apiKey.updateMany({
+                where: { userId: req.user.id, active: true },
+                data: { active: false }
+            });
+
+            // 2. Create new key
+            return await tx.apiKey.create({
+                data: {
+                    userId: req.user.id,
+                    keyHash: newKeyRaw,
+                    plan: 'starter',
+                    active: true
+                }
+            });
+        });
+
+        res.json({
+            apiKey: result.keyHash,
+            plan: result.plan,
+            createdAt: result.createdAt
+        });
+    } catch (err) {
+        console.error('[api key roll error]', err);
+        res.status(500).json({ error: 'failed to roll api key' });
+    }
 });
 
 app.get('/health', (req, res) => {

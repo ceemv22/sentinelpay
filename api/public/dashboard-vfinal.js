@@ -182,22 +182,29 @@ document.addEventListener('DOMContentLoaded', async () => {
             const newBadge = badgeEl.cloneNode(true);
             badgeEl.parentNode.replaceChild(newBadge, badgeEl);
 
-            newBadge.addEventListener('click', (e) => {
+            newBadge.addEventListener('click', async (e) => {
                 e.preventDefault();
                 modal.style.display = 'flex';
                 setTimeout(() => {
                     modal.classList.add('active');
                 }, 10);
+                
+                // Show key immediately in modal
+                if (cachedFullKey) {
+                    modalDisplay.textContent = cachedFullKey;
+                } else {
+                    // Fetch if not cached
+                    await fetchHeaderApiKey(token, (fullKey) => {
+                        cachedFullKey = fullKey;
+                        modalDisplay.textContent = fullKey;
+                    });
+                }
             });
 
             closeBtn.onclick = () => {
                 modal.classList.remove('active');
                 setTimeout(() => {
                     modal.style.display = 'none';
-                    isRevealed = false;
-                    modalDisplay.textContent = 'sp_live_••••••••••••••••••••••••••••';
-                    modalDisplay.style.color = 'var(--text-muted)';
-                    revealBtn.style.display = 'flex';
                 }, 300);
             };
 
@@ -207,47 +214,50 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
             };
 
-            revealBtn.onclick = async () => {
-                try {
-                    revealBtn.disabled = true;
-                    revealBtn.innerHTML = '...';
+            const rollBtn = document.getElementById('modal-btn-roll');
+            if (rollBtn) {
+                rollBtn.onclick = async () => {
+                    if (!confirm('Are you sure? Rolling your API key will immediately invalidate the old one. Any active integrations will break.')) return;
                     
-                    let keyToDisplay = cachedFullKey;
-                    
-                    if (!keyToDisplay) {
-                        const res = await fetch('/v1/user/api-key/reveal', {
+                    try {
+                        rollBtn.disabled = true;
+                        rollBtn.textContent = 'rolling...';
+                        
+                        const res = await fetch('/v1/user/api-key/roll', {
+                            method: 'POST',
                             headers: { 'Authorization': `Bearer ${token}` }
                         });
                         const result = await res.json();
+                        
                         if (res.ok && result.apiKey) {
-                            keyToDisplay = result.apiKey;
-                            cachedFullKey = keyToDisplay;
-                        } else {
-                            throw new Error(result.error || 'Failed to fetch key');
-                        }
-                    }
+                            cachedFullKey = result.apiKey;
+                            modalDisplay.textContent = cachedFullKey;
+                            
+                            // Update header suffix and cache
+                            const last4 = cachedFullKey.slice(-4);
+                            const suffixEl = document.getElementById('api-key-suffix');
+                            if (suffixEl) suffixEl.textContent = last4;
+                            localStorage.setItem('sentinel_key_suffix', last4);
 
-                    isRevealed = true;
-                    modalDisplay.textContent = keyToDisplay;
-                    modalDisplay.style.color = 'var(--neon-blue)';
-                    revealBtn.style.display = 'none';
-                    if (window.SentinelToast) window.SentinelToast.show('API key revealed! Save it securely.', 'success');
-                } catch (err) {
-                    console.error(err);
-                    if (window.SentinelToast) window.SentinelToast.show('Error revealing key.', 'error');
-                    revealBtn.disabled = false;
-                    revealBtn.innerHTML = `
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-                        reveal
-                    `;
-                }
-            };
+                            if (window.SentinelToast) window.SentinelToast.show('API key rolled successfully!', 'success');
+                        } else {
+                            throw new Error(result.error || 'Failed to roll key');
+                        }
+                    } catch (err) {
+                        console.error(err);
+                        if (window.SentinelToast) window.SentinelToast.show('Error rolling key.', 'error');
+                    } finally {
+                        rollBtn.disabled = false;
+                        rollBtn.innerHTML = `
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+                            roll api key
+                        `;
+                    }
+                };
+            }
 
             copyBtn.onclick = () => {
-                if (!isRevealed || !cachedFullKey) {
-                    if (window.SentinelToast) window.SentinelToast.show('Please reveal the key before copying.', 'warning');
-                    return;
-                }
+                if (!cachedFullKey) return;
                 navigator.clipboard.writeText(cachedFullKey).then(() => {
                     if (window.SentinelToast) window.SentinelToast.show('API key copied to clipboard!', 'success');
                 });
