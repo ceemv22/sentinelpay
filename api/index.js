@@ -534,6 +534,8 @@ app.get('/v1/user/api-key/reveal', requireSupabaseAuth, async (req, res) => {
         console.error('[api key reveal error]', err);
         res.status(500).json({ error: 'failed to reveal api key' });
     }
+});
+
 // S-Tier API Key Roll (Re-generate)
 app.post('/v1/user/api-key/roll', requireSupabaseAuth, async (req, res) => {
     try {
