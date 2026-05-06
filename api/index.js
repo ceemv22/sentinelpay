@@ -502,56 +502,36 @@ app.get('/v1/user/profile', requireSupabaseAuth, async (req, res) => {
         res.json({
             email: user.email,
             username: user.username,
+            credits: user.credits,
             authProvider: user.authProvider,
             isEmailVerified: user.isEmailVerified,
-            credits: user.credits,
             history: user.scanHistory
         });
     } catch (err) {
         console.error('[profile error]', err);
-        res.status(500).json({ error: 'failed to load profile data' });
+        res.status(500).json({ error: 'failed to fetch profile' });
     }
 });
 
-// Secure API Key Reveal (One-time Display)
+// S-Tier API Key Reveal (IDOR Protected)
 app.get('/v1/user/api-key/reveal', requireSupabaseAuth, async (req, res) => {
     try {
-        const result = await prisma.$transaction(async (tx) => {
-            const keys = await tx.apiKey.findMany({
-                where: { userId: req.user.id, active: true },
-                orderBy: { createdAt: 'desc' },
-                take: 1
-            });
-
-            if (keys.length === 0) {
-                return { status: 404, data: { error: 'no active api key found' } };
-            }
-
-            const key = keys[0];
-            if (key.rawKey) {
-                // Decrypt the key before showing it
-                let decryptedKey;
-                try {
-                    decryptedKey = decrypt(key.rawKey);
-                } catch (e) {
-                    console.error('[reveal-error] decryption failed. possible key mismatch or corrupted payload.');
-                    return { status: 500, data: { error: 'failed to decrypt key' } };
-                }
-
-                // Secure S-Tier Wipe: remove the raw key permanently after first access
-                await tx.apiKey.update({
-                    where: { id: key.id },
-                    data: { rawKey: null }
-                });
-                return { status: 200, data: { apiKey: decryptedKey } };
-            } else {
-                return { status: 410, data: { error: 'api key already revealed and securely erased from our servers' } };
-            }
+        const apiKey = await prisma.apiKey.findFirst({
+            where: { userId: req.user.id, active: true },
+            orderBy: { createdAt: 'desc' }
         });
 
-        res.status(result.status).json(result.data);
+        if (!apiKey) {
+            return res.status(404).json({ error: 'no active api key found' });
+        }
+
+        res.json({
+            apiKey: apiKey.keyHash, 
+            plan: apiKey.plan,
+            createdAt: apiKey.createdAt
+        });
     } catch (err) {
-        console.error('[api-key reveal error]', err);
+        console.error('[api key reveal error]', err);
         res.status(500).json({ error: 'failed to reveal api key' });
     }
 });
