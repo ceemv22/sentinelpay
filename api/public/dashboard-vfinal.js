@@ -258,8 +258,17 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             copyBtn.onclick = () => {
                 if (!cachedFullKey) return;
+                
+                const originalHTML = copyBtn.innerHTML;
                 navigator.clipboard.writeText(cachedFullKey).then(() => {
-                    if (window.SentinelToast) window.SentinelToast.show('API key copied to clipboard!', 'success');
+                    // S-Tier Feedback: Swap icon to checkmark
+                    copyBtn.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--neon-blue)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    `;
+                    
+                    setTimeout(() => {
+                        copyBtn.innerHTML = originalHTML;
+                    }, 2000);
                 });
             };
         }
