@@ -22,7 +22,14 @@ const scrubHash = () => {
 };
 
 document.addEventListener('DOMContentLoaded', async () => {
-    console.log('[sentinel-dashboard] v-final loader active (v17.3)');
+    console.log('[sentinel-dashboard] v-final loader active (v17.4)');
+    
+    // S-Tier Pre-Hydration: Show cached API suffix instantly
+    const cachedSuffix = localStorage.getItem('sentinel_key_suffix');
+    if (cachedSuffix) {
+        const suffixEl = document.getElementById('api-key-suffix');
+        if (suffixEl) suffixEl.textContent = cachedSuffix;
+    }
     
     let isInitialized = false;
 
