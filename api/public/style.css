@@ -973,8 +973,8 @@ button:hover:not(:disabled) {
 
 .modal-close-btn {
     position: absolute;
-    top: 0.8rem;
-    right: 0.8rem;
+    top: 0.5rem;
+    right: 0.5rem;
     background: transparent !important;
     border: none !important;
     color: var(--text-muted);
