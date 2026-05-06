@@ -33,10 +33,96 @@
                 z-index: 10000;
                 transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
                 overflow: hidden;
+                display: flex;
+                flex-direction: column;
+                padding: 1.5rem 0;
             }
 
             .sidebar:hover {
                 width: 260px; /* Expanded width */
+                padding: 1.5rem 1rem;
+            }
+
+            .sidebar-content {
+                display: flex;
+                flex-direction: column;
+                gap: 2rem;
+                margin-top: 2rem;
+            }
+
+            .sidebar-section {
+                display: flex;
+                flex-direction: column;
+                gap: 0.4rem;
+            }
+
+            .section-label {
+                font-family: 'JetBrains Mono', monospace;
+                font-size: 0.65rem;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                color: var(--text-muted);
+                padding: 0 1rem;
+                margin-bottom: 0.5rem;
+                opacity: 0;
+                transition: opacity 0.2s;
+                white-space: nowrap;
+            }
+
+            .sidebar:hover .section-label {
+                opacity: 0.5;
+            }
+
+            .sidebar-item {
+                display: flex;
+                align-items: center;
+                gap: 1.2rem;
+                padding: 0.8rem;
+                color: var(--text-muted);
+                text-decoration: none;
+                border-radius: 10px;
+                transition: all 0.2s ease;
+                white-space: nowrap;
+                min-width: 200px;
+            }
+
+            .sidebar-item:hover {
+                background: rgba(255, 255, 255, 0.04);
+                color: #fff;
+            }
+
+            .sidebar-item.active {
+                background: rgba(0, 240, 255, 0.08);
+                color: var(--neon-blue);
+                border: 1px solid rgba(0, 240, 255, 0.15);
+            }
+
+            .item-icon {
+                width: 20px;
+                height: 20px;
+                flex-shrink: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-left: 0.4rem; /* Center when collapsed */
+                transition: margin 0.3s;
+            }
+
+            .sidebar:hover .item-icon {
+                margin-left: 0;
+            }
+
+            .item-label {
+                font-family: 'Inter', sans-serif;
+                font-size: 0.9rem;
+                font-weight: 500;
+                opacity: 0;
+                transition: opacity 0.2s;
+            }
+
+            .sidebar:hover .item-label {
+                opacity: 1;
             }
 
             .content-area {
@@ -680,7 +766,84 @@
     </style>
 </head>
 <body>
-    <div class="sidebar"></div>
+    <div class="sidebar">
+        <!-- Logo Area -->
+        <div style="padding: 0 1.2rem; display: flex; align-items: center; gap: 1rem; height: 40px;">
+            <img src="logo.svg" style="width: 24px; height: 24px; flex-shrink: 0;" alt="L">
+            <span style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; color: #fff; font-size: 1.1rem; letter-spacing: -0.5px;" class="item-label">sentinelpay</span>
+        </div>
+
+        <div class="sidebar-content">
+            <!-- Monitor Section -->
+            <div class="sidebar-section">
+                <span class="section-label">monitor</span>
+                <a href="#" class="sidebar-item active">
+                    <div class="item-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                    </div>
+                    <span class="item-label">overview</span>
+                </a>
+                <a href="#" class="sidebar-item">
+                    <div class="item-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20"></path><path d="m4.93 4.93 14.14 14.14"></path><path d="M2 12h20"></path><path d="m19.07 4.93-14.14 14.14"></path></svg>
+                    </div>
+                    <span class="item-label">risk feed</span>
+                </a>
+                <a href="#" class="sidebar-item">
+                    <div class="item-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                    </div>
+                    <span class="item-label">analytics</span>
+                </a>
+            </div>
+
+            <!-- Manage Section -->
+            <div class="sidebar-section">
+                <span class="section-label">manage</span>
+                <a href="#" class="sidebar-item">
+                    <div class="item-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                    </div>
+                    <span class="item-label">compliance</span>
+                </a>
+                <a href="#" class="sidebar-item">
+                    <div class="item-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>
+                    </div>
+                    <span class="item-label">blacklist</span>
+                </a>
+                <a href="#" class="sidebar-item">
+                    <div class="item-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                    </div>
+                    <span class="item-label">alert rules</span>
+                </a>
+            </div>
+
+            <!-- Dev Section -->
+            <div class="sidebar-section">
+                <span class="section-label">dev</span>
+                <a href="#" class="sidebar-item">
+                    <div class="item-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                    </div>
+                    <span class="item-label">api logs</span>
+                </a>
+                <a href="#" class="sidebar-item">
+                    <div class="item-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+                    </div>
+                    <span class="item-label">webhooks</span>
+                </a>
+                <a href="#" class="sidebar-item">
+                    <div class="item-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                    </div>
+                    <span class="item-label">settings</span>
+                </a>
+            </div>
+        </div>
+    </div>
     <div class="cyber-grid"></div>
     <div class="glow-orb"></div>
 
