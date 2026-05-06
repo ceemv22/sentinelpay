@@ -226,6 +226,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const rollConfirmModal = document.getElementById('roll-confirm-modal');
             const cancelRollBtn = document.getElementById('btn-cancel-roll');
             const confirmRollActionBtn = document.getElementById('btn-confirm-roll-action');
+            const closeRollModalBtn = document.getElementById('btn-close-roll-modal');
 
             if (rollBtn && rollConfirmModal) {
                 rollBtn.onclick = () => {
@@ -233,9 +234,16 @@ document.addEventListener('DOMContentLoaded', async () => {
                     setTimeout(() => rollConfirmModal.classList.add('active'), 10);
                 };
 
-                cancelRollBtn.onclick = () => {
+                const closeRoll = () => {
                     rollConfirmModal.classList.remove('active');
                     setTimeout(() => rollConfirmModal.style.display = 'none', 300);
+                };
+
+                cancelRollBtn.onclick = closeRoll;
+                if (closeRollModalBtn) closeRollModalBtn.onclick = closeRoll;
+                
+                rollConfirmModal.onclick = (e) => {
+                    if (e.target === rollConfirmModal) closeRoll();
                 };
 
                 confirmRollActionBtn.onclick = async () => {
