@@ -20,6 +20,19 @@
             --accent-glow: rgba(0, 240, 255, 0.15);
         }
 
+        /* Sidebar Border Line - Desktop Only */
+        @media (min-width: 1024px) {
+            .sidebar-border {
+                position: fixed;
+                left: 80px;
+                top: 0;
+                bottom: 0;
+                width: 1px;
+                background: var(--border-glass);
+                z-index: 1000;
+            }
+        }
+
         body {
             display: flex;
             background-color: var(--bg-dark);
@@ -754,6 +767,7 @@
     </style>
 </head>
 <body>
+    <div class="sidebar-border"></div>
     <div class="cyber-grid"></div>
     <div class="glow-orb"></div>
 
