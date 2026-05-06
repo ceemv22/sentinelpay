@@ -773,10 +773,36 @@
 </head>
 <body>
     <div class="sidebar">
-        <!-- Logo Area -->
+        <!-- Logo Area with Eye Tracking -->
         <div style="padding: 0 1.5rem; display: flex; align-items: center; gap: 1rem; height: 40px; flex-shrink: 0;">
-            <img src="logo.svg" style="width: 24px; height: 24px; flex-shrink: 0;" alt="L">
-            <span style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; color: #fff; font-size: 1.2rem; letter-spacing: -1px;" class="item-label">sentinelpay</span>
+            <div class="logo-container" style="width: 24px; height: 24px; flex-shrink: 0;">
+                <svg viewBox="0 0 120 120" width="24" height="24">
+                  <defs>
+                    <linearGradient id="neonGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stop-color="#00ffff" />
+                      <stop offset="100%" stop-color="#a020f0" />
+                    </linearGradient>
+                    <filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%">
+                      <feGaussianBlur stdDeviation="3.5" result="coloredBlur"/>
+                      <feMerge>
+                        <feMergeNode in="coloredBlur"/>
+                        <feMergeNode in="SourceGraphic"/>
+                      </feMerge>
+                    </filter>
+                  </defs>
+                  <g filter="url(#neonGlow)" fill="none" stroke="url(#neonGradient)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z" />
+                    <path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z" />
+                    <g id="eye-center">
+                        <circle cx="60" cy="60" r="6" />
+                        <circle cx="60" cy="60" r="2" fill="url(#neonGradient)" stroke="none"/>
+                    </g>
+                    <path d="M60 15 V 30" stroke-width="2" opacity="0.6"/>
+                    <path d="M60 90 V 105" stroke-width="2" opacity="0.6"/>
+                  </g>
+                </svg>
+            </div>
+            <span style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; color: #fff; font-size: 1.25rem; letter-spacing: -1.5px; text-transform: lowercase;" class="item-label">sentinelpay</span>
         </div>
 
         <div class="sidebar-content">
@@ -959,5 +985,24 @@
 
     <script src="toast.js"></script>
     <script src="dashboard-vfinal.js?v=17.97"></script>
+    <script>
+        // Eye Tracking Logic
+        document.addEventListener('mousemove', (e) => {
+            const eyeCenter = document.getElementById('eye-center');
+            if (!eyeCenter) return;
+            
+            const rect = eyeCenter.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            
+            const angle = Math.atan2(e.clientY - centerY, e.clientX - centerX);
+            const distance = Math.min(4, Math.hypot(e.clientX - centerX, e.clientY - centerY) / 50);
+            
+            const moveX = Math.cos(angle) * distance;
+            const moveY = Math.sin(angle) * distance;
+            
+            eyeCenter.style.transform = `translate(${moveX}px, ${moveY}px)`;
+        });
+    </script>
 </body>
 </html>
