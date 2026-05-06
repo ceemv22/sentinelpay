@@ -27,8 +27,8 @@
                 left: 0;
                 top: 0;
                 bottom: 0;
-                width: 80px;
-                background: #000; /* Solid black as requested */
+                width: 1px; /* Line at default position (edge) */
+                background: #000;
                 border-right: 1px solid var(--border-glass);
                 z-index: 1000;
                 transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -36,11 +36,11 @@
             }
 
             .sidebar:hover {
-                width: var(--sidebar-width); /* 280px */
+                width: var(--sidebar-width); /* Expands on hover */
             }
 
             .content-area {
-                margin-left: 80px !important;
+                margin-left: 0 !important;
             }
         }
 
