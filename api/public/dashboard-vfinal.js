@@ -169,11 +169,17 @@ document.addEventListener('DOMContentLoaded', async () => {
             avatarInitial = 'O';
         }
 
-        const avatarEl = document.getElementById('user-avatar-circle');
+        const avatarEl = document.getElementById('org-avatar-circle');
         if (avatarEl) avatarEl.textContent = avatarInitial.toUpperCase();
         
         const dropdownEmailEl = document.getElementById('dropdown-email');
         if (dropdownEmailEl) dropdownEmailEl.textContent = displayIdentifier;
+
+        // --- Mock Org Initialization (Until Backend is Ready) ---
+        const orgNameEl = document.getElementById('current-org-name');
+        if (orgNameEl) orgNameEl.textContent = `${displayIdentifier.split('@')[0]}'s Org`;
+        const orgDropdownName = document.querySelector('.org-name-text');
+        if (orgDropdownName) orgDropdownName.textContent = `${displayIdentifier.split('@')[0]}'s Org`;
 
         // --- 2. Setup Logout ---
         const logoutBtn = document.getElementById('btn-logout');
@@ -417,11 +423,16 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
 
             // Update avatar and dropdown header
-            const avatarEl = document.getElementById('user-avatar-circle');
+            const avatarEl = document.getElementById('org-avatar-circle');
             if (avatarEl) avatarEl.textContent = avatarInitial.toUpperCase();
             
             const dropdownEmailEl = document.getElementById('dropdown-email');
             if (dropdownEmailEl) dropdownEmailEl.textContent = displayIdentifier;
+
+            const orgNameEl = document.getElementById('current-org-name');
+            if (orgNameEl) orgNameEl.textContent = `${displayIdentifier.split('@')[0]}'s Org`;
+            const orgDropdownName = document.querySelector('.org-name-text');
+            if (orgDropdownName) orgDropdownName.textContent = `${displayIdentifier.split('@')[0]}'s Org`;
 
             const userEmailEl = document.getElementById('user-email');
             if (userEmailEl) userEmailEl.textContent = displayIdentifier;
