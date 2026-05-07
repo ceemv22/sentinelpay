@@ -169,9 +169,9 @@
             
             /* Sidebar Popup Styling */
             .sidebar-popup {
-                position: absolute;
-                bottom: 0;
-                left: calc(100% + 15px);
+                position: fixed;
+                bottom: 2rem;
+                left: 85px;
                 width: 220px;
                 background: rgba(10, 12, 15, 0.85);
                 backdrop-filter: blur(25px);
@@ -183,9 +183,12 @@
                 opacity: 0;
                 visibility: hidden;
                 transform: translateX(-10px);
-                transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+                transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
                 z-index: 10001;
             }
+            .sidebar:hover .sidebar-popup { left: 275px; }
+            body.sidebar-expanded .sidebar-popup { left: 275px !important; }
+            body.sidebar-collapsed .sidebar-popup { left: 85px !important; }
             .sidebar-popup.active {
                 opacity: 1;
                 visibility: visible;
@@ -954,7 +957,7 @@
                 <div class="item-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
                 </div>
-                <span class="item-label">sidebar state</span>
+                <span class="item-label">collapse</span>
             </a>
             
             <!-- S-Tier Popup for Sidebar State -->
