@@ -103,6 +103,48 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.error('[sentinel-dashboard] session check failed', err);
     }
 
+    // --- Setup Sidebar State Toggle (S-Tier UX) ---
+    const sidebarToggle = document.getElementById('sidebar-toggle');
+    const sidebarPopup = document.getElementById('sidebar-popup');
+    
+    if (sidebarToggle && sidebarPopup) {
+        sidebarToggle.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            sidebarPopup.classList.toggle('active');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!sidebarToggle.contains(e.target) && !sidebarPopup.contains(e.target)) {
+                sidebarPopup.classList.remove('active');
+            }
+        });
+
+        const stateOptions = sidebarPopup.querySelectorAll('.state-option');
+        stateOptions.forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                stateOptions.forEach(opt => opt.classList.remove('active'));
+                option.classList.add('active');
+                
+                const state = option.getAttribute('data-state');
+                
+                document.body.classList.remove('sidebar-expanded', 'sidebar-collapsed');
+                
+                if (state === 'expanded') {
+                    document.body.classList.add('sidebar-expanded');
+                } else if (state === 'collapsed') {
+                    document.body.classList.add('sidebar-collapsed');
+                }
+                
+                setTimeout(() => {
+                    sidebarPopup.classList.remove('active');
+                }, 150); // slight delay for S-Tier UX
+            });
+        });
+    }
+
     async function renderDashboard(session) {
         const token = session.access_token;
         const user = session.user;
