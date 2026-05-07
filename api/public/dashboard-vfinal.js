@@ -352,38 +352,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             };
         }
 
-        // --- 5. Animate Overview Metrics (S-Tier UX) ---
-        const animateValue = (el, start, end, duration, isDecimal = false) => {
-            let startTimestamp = null;
-            const step = (timestamp) => {
-                if (!startTimestamp) startTimestamp = timestamp;
-                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-                const easeOut = 1 - Math.pow(1 - progress, 4); // easeOutQuart
-                const current = progress === 1 ? end : start + (end - start) * easeOut;
-                
-                if (isDecimal) {
-                    el.textContent = current.toFixed(1);
-                } else {
-                    el.textContent = Math.floor(current).toLocaleString();
-                }
-                
-                if (progress < 1) {
-                    window.requestAnimationFrame(step);
-                }
-            };
-            window.requestAnimationFrame(step);
-        };
-
-        const metricValues = document.querySelectorAll('.metric-value[data-target]');
-        metricValues.forEach(el => {
-            const targetStr = el.getAttribute('data-target');
-            const target = parseFloat(targetStr);
-            const isDecimal = el.getAttribute('data-decimal') === 'true';
-            if (!isNaN(target)) {
-                animateValue(el, 0, target, 2000, isDecimal);
-            }
-        });
-
         // Setup UI (Prioritize API Key for S-Tier instant load)
         fetchHeaderApiKey(token, (fullKey) => {
             cachedFullKey = fullKey;
