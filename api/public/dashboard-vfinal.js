@@ -434,18 +434,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             const orgDropdownName = document.querySelector('.org-name-text');
             if (orgDropdownName) orgDropdownName.textContent = `${displayIdentifier.split('@')[0]}'s Org`;
 
-            // --- Update Org Home Mock Data ---
-            const homeAvatarEl = document.getElementById('home-org-avatar');
-            if (homeAvatarEl) homeAvatarEl.textContent = avatarInitial.toUpperCase();
-            const homeNameEl = document.getElementById('home-org-name');
-            if (homeNameEl) homeNameEl.textContent = `${displayIdentifier.split('@')[0]}'s Org`;
-
             // --- Org Home View Transition Logic ---
             document.body.classList.add('state-org-home');
             
-            const mockCard = document.getElementById('mock-org-card');
-            if (mockCard) {
-                mockCard.addEventListener('click', () => {
+            // Temporary testing flow: click 'new organization' to enter dashboard
+            const newOrgBtn = document.getElementById('mock-new-org-btn');
+            if (newOrgBtn) {
+                newOrgBtn.addEventListener('click', () => {
                     document.body.classList.remove('state-org-home');
                     const orgHomeView = document.getElementById('org-home-view');
                     const dashboardView = document.getElementById('dashboard-view');

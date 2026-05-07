@@ -876,6 +876,29 @@
             align-items: center;
             padding-top: 8rem;
         }
+        body.state-org-home #header-api-key {
+            display: none !important;
+        }
+        body.state-org-home .org-only {
+            display: none !important;
+        }
+        body.state-org-home #user-menu-trigger {
+            background: transparent;
+            border: none;
+            padding: 0;
+        }
+        body.state-org-home #user-menu-trigger:hover {
+            background: transparent;
+            border-color: transparent;
+            box-shadow: none;
+            transform: scale(1.05);
+        }
+        body.state-org-home #org-avatar-circle {
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            font-size: 1rem;
+        }
 
         /* --- Org Home Specific Styles --- */
         .org-home-container {
@@ -884,12 +907,14 @@
             display: flex;
             flex-direction: column;
             gap: 2rem;
+            position: relative;
+            z-index: 10;
         }
 
         .org-home-header {
             font-family: 'Inter', sans-serif;
-            font-size: 1.4rem;
-            font-weight: 500;
+            font-size: 1.5rem;
+            font-weight: 600;
             color: #fff;
             margin-bottom: 0.5rem;
             letter-spacing: -0.5px;
@@ -904,7 +929,7 @@
 
         .org-search-wrapper {
             position: relative;
-            width: 320px;
+            width: 340px;
         }
 
         .org-search-icon {
@@ -915,12 +940,13 @@
             color: var(--text-muted);
             width: 16px;
             height: 16px;
+            opacity: 0.7;
         }
 
         .org-search-input {
             width: 100%;
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             padding: 0.6rem 1rem 0.6rem 2.2rem;
             border-radius: 6px;
             color: #fff;
@@ -930,15 +956,15 @@
         }
 
         .org-search-input:focus {
-            border-color: rgba(0, 240, 255, 0.5);
-            box-shadow: 0 0 15px rgba(0, 240, 255, 0.15);
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(255, 255, 255, 0.15);
             outline: none;
         }
 
         .btn-new-org {
-            background: rgba(0, 255, 136, 0.1);
+            background: rgba(0, 255, 136, 0.05);
             color: var(--color-green);
-            border: 1px solid rgba(0, 255, 136, 0.3);
+            border: 1px solid rgba(0, 255, 136, 0.2);
             padding: 0.5rem 1rem;
             border-radius: 6px;
             font-family: 'Inter', sans-serif;
@@ -952,23 +978,22 @@
         }
 
         .btn-new-org:hover {
-            background: rgba(0, 255, 136, 0.2);
-            border-color: rgba(0, 255, 136, 0.5);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.15);
+            background: rgba(0, 255, 136, 0.1);
+            border-color: rgba(0, 255, 136, 0.4);
+            transform: translateY(-1px);
         }
 
         .org-cards-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 1rem;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
         }
 
         .org-card-item {
-            background: rgba(255, 255, 255, 0.02);
+            background: rgba(10, 10, 10, 0.6);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.06);
             border-radius: 8px;
             padding: 1.25rem;
             display: flex;
@@ -979,23 +1004,23 @@
         }
 
         .org-card-item:hover {
-            background: rgba(255, 255, 255, 0.05);
-            border-color: rgba(255, 255, 255, 0.2);
+            background: rgba(20, 20, 20, 0.8);
+            border-color: rgba(255, 255, 255, 0.12);
             transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
 
         .org-card-avatar {
-            width: 40px;
-            height: 40px;
+            width: 44px;
+            height: 44px;
             border-radius: 6px;
-            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.02));
+            background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
             display: flex;
             align-items: center;
             justify-content: center;
             font-family: 'Space Grotesk', sans-serif;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             font-weight: 700;
             color: #fff;
             text-transform: uppercase;
@@ -1009,7 +1034,7 @@
 
         .org-card-name {
             font-family: 'Inter', sans-serif;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             font-weight: 600;
             color: #fff;
         }
@@ -1018,6 +1043,7 @@
             font-family: 'Inter', sans-serif;
             font-size: 0.75rem;
             color: var(--text-muted);
+            opacity: 0.8;
         }
 
         /* Scrollbar Styling */
@@ -1195,34 +1221,34 @@
         <div class="user-menu-container">
             <div class="org-switcher-trigger" id="user-menu-trigger">
                 <div class="org-avatar" id="org-avatar-circle">S</div>
-                <div class="org-info">
+                <div class="org-info org-only">
                     <span class="org-name" id="current-org-name">Personal Org</span>
                     <span class="org-plan">Pro Plan</span>
                 </div>
-                <svg class="selector-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"></path><path d="m7 9 5-5 5 5"></path></svg>
+                <svg class="selector-icon org-only" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"></path><path d="m7 9 5-5 5 5"></path></svg>
             </div>
             
             <div class="dropdown-menu org-dropdown" id="user-dropdown">
-                <div class="dropdown-header">
+                <div class="dropdown-header org-only">
                     <span style="color: var(--text-muted);">Active Organization</span>
                 </div>
-                <div class="org-list">
+                <div class="org-list org-only">
                     <a href="#" class="dropdown-item org-item active">
                         <div class="org-avatar small">S</div>
                         <span class="org-name-text">Personal Org</span>
                         <svg class="check-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--neon-blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left: auto; width: 14px; height: 14px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
                     </a>
                 </div>
-                <div class="dropdown-divider"></div>
-                <a href="#" class="dropdown-item">
+                <div class="dropdown-divider org-only"></div>
+                <a href="#" class="dropdown-item org-only">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                     create organization
                 </a>
-                <a href="#" class="dropdown-item">
+                <a href="#" class="dropdown-item org-only">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
                     organization settings
                 </a>
-                <div class="dropdown-divider"></div>
+                <div class="dropdown-divider org-only"></div>
                 <div class="dropdown-header" style="margin-top: 8px;">
                     <span id="dropdown-email" style="text-transform: none; color: var(--text-muted); font-size: 0.7rem; letter-spacing: 0;">user@email.com</span>
                 </div>
@@ -1249,20 +1275,14 @@
                     <input type="text" class="org-search-input" placeholder="Search for an organization">
                 </div>
                 
-                <button class="btn-new-org">
+                <button class="btn-new-org" id="mock-new-org-btn">
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                    New organization
+                    new organization
                 </button>
             </div>
 
             <div class="org-cards-grid">
-                <div class="org-card-item" id="mock-org-card">
-                    <div class="org-card-avatar" id="home-org-avatar">S</div>
-                    <div class="org-card-info">
-                        <div class="org-card-name" id="home-org-name">Personal Org</div>
-                        <div class="org-card-meta">Pro Plan · 1 project</div>
-                    </div>
-                </div>
+                <!-- Org cards will be injected here. Empty by default so user has to create one -->
             </div>
         </div>
 
