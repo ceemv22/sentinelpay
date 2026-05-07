@@ -34,10 +34,22 @@
                 border-right: 1px solid var(--border-glass);
                 z-index: 10000;
                 transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1), filter 0.3s ease;
-                overflow: hidden;
+                overflow: visible;
                 display: flex;
                 flex-direction: column;
                 padding: 2rem 0;
+            }
+
+            .sidebar .item-label,
+            .sidebar .section-label {
+                pointer-events: none;
+            }
+
+            .sidebar:hover .item-label,
+            .sidebar:hover .section-label,
+            body.sidebar-expanded .sidebar .item-label,
+            body.sidebar-expanded .sidebar .section-label {
+                pointer-events: auto;
             }
 
             .sidebar:hover {
