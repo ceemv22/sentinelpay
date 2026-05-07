@@ -859,6 +859,167 @@
             box-shadow: 0 5px 15px rgba(255, 255, 255, 0.15);
         }
 
+        /* --- View State Logic --- */
+        body.state-org-home {
+            --sidebar-width: 0px !important;
+        }
+        body.state-org-home .sidebar {
+            display: none !important;
+        }
+        body.state-org-home .sidebar-popup {
+            display: none !important;
+        }
+        body.state-org-home .content-area {
+            margin-left: 0 !important;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 8rem;
+        }
+
+        /* --- Org Home Specific Styles --- */
+        .org-home-container {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .org-home-header {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 500;
+            color: #fff;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+        }
+
+        .org-controls-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .org-search-wrapper {
+            position: relative;
+            width: 320px;
+        }
+
+        .org-search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            width: 16px;
+            height: 16px;
+        }
+
+        .org-search-input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0.6rem 1rem 0.6rem 2.2rem;
+            border-radius: 6px;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .org-search-input:focus {
+            border-color: rgba(0, 240, 255, 0.5);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.15);
+            outline: none;
+        }
+
+        .btn-new-org {
+            background: rgba(0, 255, 136, 0.1);
+            color: var(--color-green);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-new-org:hover {
+            background: rgba(0, 255, 136, 0.2);
+            border-color: rgba(0, 255, 136, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.15);
+        }
+
+        .org-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+
+        .org-card-item {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            padding: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .org-card-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+
+        .org-card-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 6px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.02));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #fff;
+            text-transform: uppercase;
+        }
+
+        .org-card-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .org-card-name {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .org-card-meta {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
         /* Scrollbar Styling */
         .content-area::-webkit-scrollbar { width: 4px; }
         .content-area::-webkit-scrollbar-track { background: transparent; }
@@ -1076,6 +1237,40 @@
             </div>
         </div>
     </header>
+
+    <main class="content-area">
+        <!-- ORG HOME VIEW -->
+        <div id="org-home-view" class="org-home-container">
+            <h1 class="org-home-header">Your Organizations</h1>
+            
+            <div class="org-controls-row">
+                <div class="org-search-wrapper">
+                    <svg class="org-search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <input type="text" class="org-search-input" placeholder="Search for an organization">
+                </div>
+                
+                <button class="btn-new-org">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    New organization
+                </button>
+            </div>
+
+            <div class="org-cards-grid">
+                <div class="org-card-item" id="mock-org-card">
+                    <div class="org-card-avatar" id="home-org-avatar">S</div>
+                    <div class="org-card-info">
+                        <div class="org-card-name" id="home-org-name">Personal Org</div>
+                        <div class="org-card-meta">Pro Plan · 1 project</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DASHBOARD VIEW -->
+        <div id="dashboard-view" class="hidden">
+            <!-- Full dashboard content will go here -->
+        </div>
+    </main>
 
     <!-- API Key Modal -->
     <div id="api-modal-overlay" class="modal-overlay">
