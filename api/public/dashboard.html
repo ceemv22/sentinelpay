@@ -198,7 +198,7 @@
                 transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
                 z-index: 10001;
             }
-            .sidebar:hover .sidebar-popup { left: 275px; }
+            .sidebar:hover ~ .sidebar-popup { left: 275px; }
             body.sidebar-expanded .sidebar-popup { left: 275px !important; }
             body.sidebar-collapsed .sidebar-popup { left: 85px !important; }
             .sidebar-popup.active {
@@ -971,23 +971,23 @@
                 </div>
                 <span class="item-label">collapse</span>
             </a>
-            
-            <!-- S-Tier Popup for Sidebar State -->
-            <div class="sidebar-popup" id="sidebar-popup">
-                <a href="#" class="dropdown-item state-option" data-state="expanded">
-                    <div class="radio-indicator"></div>
-                    expanded
-                </a>
-                <a href="#" class="dropdown-item state-option" data-state="collapsed">
-                    <div class="radio-indicator"></div>
-                    collapsed
-                </a>
-                <a href="#" class="dropdown-item state-option active" data-state="hover">
-                    <div class="radio-indicator"></div>
-                    expand on hover
-                </a>
-            </div>
         </div>
+    </div>
+    
+    <!-- S-Tier Popup for Sidebar State (Moved outside sidebar to avoid runaway hover) -->
+    <div class="sidebar-popup" id="sidebar-popup">
+        <a href="#" class="dropdown-item state-option" data-state="expanded">
+            <div class="radio-indicator"></div>
+            expanded
+        </a>
+        <a href="#" class="dropdown-item state-option" data-state="collapsed">
+            <div class="radio-indicator"></div>
+            collapsed
+        </a>
+        <a href="#" class="dropdown-item state-option active" data-state="hover">
+            <div class="radio-indicator"></div>
+            expand on hover
+        </a>
     </div>
     <div class="cyber-grid"></div>
     <div class="glow-orb"></div>
