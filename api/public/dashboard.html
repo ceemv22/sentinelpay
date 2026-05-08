@@ -860,12 +860,29 @@
             box-shadow: 0 5px 15px rgba(255, 255, 255, 0.15);
         }
 
-        /* --- View State Logic --- */
         body.state-org-home .content-area {
             display: flex;
             flex-direction: column;
             align-items: center;
             padding-top: 6rem;
+        }
+
+        @media (min-width: 1024px) {
+            body.state-org-home .content-area {
+                margin-left: 72px !important;
+                transition: none !important;
+            }
+            body.state-org-home .sidebar:hover ~ .content-area {
+                margin-left: 72px !important;
+            }
+            body.sidebar-expanded.state-org-home .content-area {
+                margin-left: 72px !important;
+            }
+        }
+        
+        /* Overlay sidebar in org-home state to prevent pushing content */
+        body.state-org-home .sidebar:hover {
+            z-index: 1001;
         }
         body.state-org-home #header-api-key {
             display: none !important;
