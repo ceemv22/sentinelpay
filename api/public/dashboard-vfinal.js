@@ -202,56 +202,38 @@ document.addEventListener('DOMContentLoaded', async () => {
         const orgDropdownName = document.querySelector('.org-name-text');
         if (orgDropdownName) orgDropdownName.textContent = `${displayIdentifier.split('@')[0]}'s Org`;
 
-        // --- 2. Setup Logout ---
-        const logoutBtn = document.getElementById('btn-logout');
-        if (logoutBtn) {
-            logoutBtn.onclick = async (e) => {
-                e.preventDefault();
-                await sentinelAuth.auth.signOut();
-                window.location.href = '/';
-            };
-        }
-
-        // --- 3. Setup Dropdown Toggle ---
+        // --- 2. Setup Dropdown Toggle (Idempotent) ---
         const menuTrigger = document.getElementById('user-menu-trigger');
         const dropdownMenu = document.getElementById('user-dropdown');
         
-        if (menuTrigger && dropdownMenu) {
-            // Remove any old listeners if renderDashboard is called twice
-            const newTrigger = menuTrigger.cloneNode(true);
-            menuTrigger.parentNode.replaceChild(newTrigger, menuTrigger);
-            
-            newTrigger.addEventListener('click', (e) => {
+        if (menuTrigger && dropdownMenu && !menuTrigger.dataset.initialized) {
+            menuTrigger.dataset.initialized = "true";
+            menuTrigger.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 dropdownMenu.classList.toggle('active');
             });
 
             document.addEventListener('click', (e) => {
-                if (!newTrigger.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                if (!menuTrigger.contains(e.target) && !dropdownMenu.contains(e.target)) {
                     dropdownMenu.classList.remove('active');
                 }
             });
         }
 
-        // --- 4. Setup API Key Modal ---
+        // --- 3. Setup API Key Modal (Idempotent) ---
         const badgeEl = document.getElementById('header-api-key');
         const modal = document.getElementById('api-modal-overlay');
         const closeBtn = document.getElementById('btn-close-api-modal');
         const modalDisplay = document.getElementById('modal-api-key-display');
-        const revealBtn = document.getElementById('modal-btn-reveal');
         const copyBtn = document.getElementById('modal-btn-copy');
 
         // We will store the full key here once fetched
         let cachedFullKey = null;
-        let isRevealed = false;
 
-        if (badgeEl && modal) {
-            // Remove old listeners by cloning
-            const newBadge = badgeEl.cloneNode(true);
-            badgeEl.parentNode.replaceChild(newBadge, badgeEl);
-
-            newBadge.addEventListener('click', async (e) => {
+        if (badgeEl && modal && !badgeEl.dataset.initialized) {
+            badgeEl.dataset.initialized = "true";
+            badgeEl.addEventListener('click', async (e) => {
                 e.preventDefault();
                 document.body.classList.add('modal-open');
                 modal.style.display = 'flex';
@@ -306,7 +288,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 };
 
                 const closeRoll = () => {
-                    document.body.classList.remove('modal-open');
                     rollConfirmModal.classList.remove('active');
                     setTimeout(() => rollConfirmModal.style.display = 'none', 300);
                 };
