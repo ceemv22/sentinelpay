@@ -71,7 +71,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             setTimeout(scrubHash, 2000);
         } else {
             // Wait up to 5 seconds for PKCE exchange if we see a code in URL
-            const isAuthRedirect = window.location.search.includes('code=') || window.location.hash.includes('access_token=');
+            const isAuthRedirect = 
+                window.location.search.includes('code=') || 
+                window.location.hash.includes('access_token=') ||
+                window.location.hash.includes('code=') ||
+                window.location.search.includes('error=');
             
             if (isAuthRedirect) {
                 console.log('[sentinel-dashboard] redirect detected, holding for hydration (10s timeout)...');
@@ -89,14 +93,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                     }
                 }, 10000);
             } else {
-                // No session and not a redirect -> give it 1.5s then bounce
+                // No session and not a redirect -> give it 3s (more generous for slow connections)
                 setTimeout(async () => {
                     const { data: { session: finalCheck } } = await sentinelAuth.auth.getSession();
                     if (!finalCheck && !isInitialized) {
-                        console.warn('[sentinel-dashboard] no session detected, bouncing to auth');
+                        console.warn('[sentinel-dashboard] no session detected after 3s, bouncing to auth');
                         window.location.href = '/auth';
                     }
-                }, 1500);
+                }, 3000);
             }
         }
     } catch (err) {
