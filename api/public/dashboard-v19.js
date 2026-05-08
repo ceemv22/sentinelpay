@@ -94,12 +94,8 @@ const startHydration = async () => {
 
     // 1. Setup Auth Listener
     sentinelAuth.auth.onAuthStateChange(async (event, session) => {
-        console.log('[sentinel-dashboard] auth event:', event, !!session);
-        showStatus(`auth event: ${event}`);
-        
         if (session && !isInitialized) {
             isInitialized = true;
-            showStatus('session verified!', 'success');
             renderDashboard(session);
             setTimeout(scrubHash, 5000); 
         }
@@ -111,7 +107,6 @@ const startHydration = async () => {
 
     // 2. Hydration Flow
     (async () => {
-        showStatus('probing for session...');
         const hasSession = await checkSession();
         if (hasSession) return;
 
@@ -120,37 +115,34 @@ const startHydration = async () => {
         const isAuthRedirect = !!code || initialHash.includes('access_token=');
 
         if (isAuthRedirect) {
+            showStatus('finalizing security handshake...');
             if (code) {
-                showStatus('exchanging security code...');
                 try {
                     const { data, error } = await sentinelAuth.auth.exchangeCodeForSession(code);
                     if (error) throw error;
                     if (data.session && !isInitialized) {
                         isInitialized = true;
-                        showStatus('identity confirmed!', 'success');
                         renderDashboard(data.session);
                         setTimeout(scrubHash, 5000);
                         return;
                     }
                 } catch (e) {
-                    showStatus(`exchange failed: ${e.message}`, 'error');
+                    showStatus(`handshake failed: ${e.message}`, 'error');
                 }
             }
 
-            for (let i = 0; i < 30; i++) {
-                await new Promise(r => setTimeout(r, 1000));
-                showStatus(`syncing (attempt ${i+1}/30)...`);
+            for (let i = 0; i < 20; i++) {
+                await new Promise(r => setTimeout(r, 500));
                 if (isInitialized || await checkSession()) return;
             }
-            showStatus('hydration timeout', 'error');
+            showStatus('identity verification timed out', 'error');
             setTimeout(() => window.location.href = '/auth?error=hydration_timeout', 3000);
         } else {
-            showStatus('unauthenticated guest', 'info');
             setTimeout(async () => {
                 if (!isInitialized && !(await checkSession())) {
                     window.location.href = '/auth';
                 }
-            }, 10000);
+            }, 8000);
         }
     })();
 };
@@ -204,8 +196,11 @@ async function renderDashboard(session) {
             };
         }
 
-        fetchHeaderApiKey(token);
-        fetchProfile(token);
+        // Parallel data fetch
+        await Promise.all([
+            fetchHeaderApiKey(token),
+            fetchProfile(token)
+        ]);
     } catch (e) {
         showStatus('render error: ' + e.message, 'error');
     }
