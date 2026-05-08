@@ -31,9 +31,9 @@ sentinelAuth.auth.onAuthStateChange(async (event, session) => {
     if (session) {
         if (!isInitialized) {
             isInitialized = true;
-            console.log('[sentinel-dashboard] session stabilized, rendering...');
-            setTimeout(scrubHash, 10000); 
+            console.log('[sentinel-dashboard] session stabilized via onAuthStateChange, rendering...');
             renderDashboard(session);
+            setTimeout(scrubHash, 5000); 
         }
         return;
     }
@@ -42,35 +42,39 @@ sentinelAuth.auth.onAuthStateChange(async (event, session) => {
     // Ignore SIGNED_OUT events in the first 20 seconds (Extreme hydration window)
     if (event === 'SIGNED_OUT' && (Date.now() - authStartTime > 20000)) {
         console.warn('[sentinel-dashboard] truly signed out, redirecting');
-        window.location.href = '/auth';
+        window.location.href = '/auth?reason=signed_out';
     }
 });
 
 // 0. ULTIMATE HASH SCRUBBER (Aggressively kills # trailing fragments)
 const scrubHash = () => {
-    if (window.location.href.indexOf('#') > -1) {
-        window.history.replaceState(null, document.title, window.location.href.split('#')[0]);
-    }
-    // Also scrub ?code if it exists after a delay
-    if (window.location.search.includes('code=')) {
-        const newUrl = window.location.origin + window.location.pathname;
-        window.history.replaceState(null, document.title, newUrl);
+    try {
+        const url = new URL(window.location.href);
+        if (url.search || url.hash) {
+            window.history.replaceState(null, document.title, url.pathname);
+            console.log('[sentinel-dashboard] URL scrubbed clean.');
+        }
+    } catch (e) {
+        console.warn('[sentinel] scrubHash failed');
     }
 };
 
 const checkSession = async () => {
     try {
         const { data: { session } } = await sentinelAuth.auth.getSession();
+        console.log('[sentinel-dashboard] checkSession found session:', !!session);
         if (session) {
             if (!isInitialized) {
                 isInitialized = true;
+                console.log('[sentinel-dashboard] initializing dashboard from checkSession');
                 renderDashboard(session);
-                setTimeout(scrubHash, 10000);
+                setTimeout(scrubHash, 5000); // Scrub faster
             }
             return true;
         }
         return false;
     } catch (err) {
+        console.error('[sentinel-dashboard] checkSession error:', err);
         return false;
     }
 };
