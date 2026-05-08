@@ -1,3 +1,15 @@
+// 0. S-Tier Global Error Monitor (Catch silent crashes)
+window.onerror = (msg, url, line) => {
+    console.error(`[sentinel-critical] JS Error: ${msg} at ${url}:${line}`);
+};
+window.onunhandledrejection = (event) => {
+    console.error('[sentinel-critical] Unhandled Promise Rejection:', event.reason);
+};
+
+// 0. Pre-Flight State Capture (BEFORE Supabase initialized to catch ?code=)
+const initialSearch = window.location.search;
+const initialHash = window.location.hash;
+
 const supabaseUrl = 'https://aivqwkgjdpklxxuvkxpy.supabase.co';
 const supabaseKey = 'sb_publishable_bRfAssaGT6D8oFDQtPARbw_5fyYGWM6';
 const sentinelAuth = window.supabase.createClient(supabaseUrl, supabaseKey, {
@@ -9,10 +21,6 @@ const sentinelAuth = window.supabase.createClient(supabaseUrl, supabaseKey, {
     }
 });
 
-// 0. Pre-Flight State Capture
-const initialUrl = window.location.href;
-const initialSearch = window.location.search;
-const initialHash = window.location.hash;
 let isInitialized = false;
 let authStartTime = Date.now();
 
@@ -71,10 +79,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.log('[sentinel-dashboard] v-final loader active (v18.1)');
     
     // S-Tier Pre-Hydration: Show cached API suffix instantly
-    const cachedSuffix = localStorage.getItem('sentinel_key_suffix');
-    if (cachedSuffix) {
-        const suffixEl = document.getElementById('api-key-suffix');
-        if (suffixEl) suffixEl.textContent = cachedSuffix;
+    try {
+        const cachedSuffix = localStorage.getItem('sentinel_key_suffix');
+        if (cachedSuffix) {
+            const suffixEl = document.getElementById('api-key-suffix');
+            if (suffixEl) suffixEl.textContent = cachedSuffix;
+        }
+    } catch (e) {
+        console.warn('[sentinel] localStorage access failed');
     }
     
     // Main Hydration Logic
@@ -96,11 +108,16 @@ document.addEventListener('DOMContentLoaded', async () => {
             // Extremely patient retry loop for new accounts
             for (let i = 0; i < 60; i++) {
                 await new Promise(r => setTimeout(r, 500));
-                if (isInitialized) return;
-                if (await checkSession()) return;
+                const sessionFound = await checkSession();
+                console.log(`[sentinel-dashboard] hydration attempt ${i+1}/60 - sessionFound: ${sessionFound}, isInitialized: ${isInitialized}`);
+                if (isInitialized || sessionFound) {
+                    console.log('[sentinel-dashboard] hydration successful, breaking loop.');
+                    return;
+                }
             }
             console.warn('[sentinel-dashboard] hydration loop timed out after 30s');
-            window.location.href = '/auth';
+            // If we are still not initialized after 30s of waiting for a code exchange, we have to bail
+            window.location.href = '/auth?error=hydration_timeout';
         } else {
             console.log('[sentinel-dashboard] normal load, no redirect params detected');
             // No session and not a redirect -> wait 10s before bouncing

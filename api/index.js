@@ -162,7 +162,7 @@ app.use(express.json({ limit: '10kb' }));
 // Ensure correct MIME types and No-Cache for HTML/JS during rapid debug phase
 app.use((req, res, next) => {
     const p = req.path;
-    if (p.endsWith('.html') || p.endsWith('.js') || p.endsWith('.css') || p === '/auth' || p === '/') {
+    if (p.endsWith('.html') || p.endsWith('.js') || p.endsWith('.css') || p === '/auth' || p === '/' || p.startsWith('/dashboard')) {
         res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
     }
     if (p.endsWith('.js')) {
