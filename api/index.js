@@ -590,7 +590,67 @@ app.use((err, req, res, next) => {
     next(err);
 });
 
-async function start() {
+// --- Organization Endpoints (S-Tier Backend) ---
+app.get('/v1/organizations', requireSupabaseAuth, async (req, res) => {
+    try {
+        console.log(`[organization-service] fetching orgs for user: ${req.user.id}`);
+        const orgs = await prisma.organization.findMany({
+            where: {
+                OR: [
+                    { ownerId: req.user.id },
+                    { members: { some: { id: req.user.id } } }
+                ]
+            },
+            select: {
+                id: true,
+                name: true,
+                ownerId: true,
+                createdAt: true
+            }
+        });
+
+        // Add role info
+        const orgsWithRole = orgs.map(org => ({
+            ...org,
+            role: org.ownerId === req.user.id ? 'Owner' : 'Member'
+        }));
+
+        console.log(`[organization-service] found ${orgs.length} orgs for user ${req.user.id}`);
+        res.json(orgsWithRole);
+    } catch (err) {
+        console.error('[organization-service] fetch error:', err);
+        res.status(500).json({ error: 'failed to fetch organizations' });
+    }
+});
+
+app.post('/v1/organizations', requireSupabaseAuth, async (req, res) => {
+    const { name } = req.body;
+    if (!name || name.trim().length < 2) {
+        return res.status(400).json({ error: 'organization name too short', code: 400 });
+    }
+
+    try {
+        console.log(`[organization-service] creating org "${name}" for user: ${req.user.id}`);
+        
+        const newOrg = await prisma.organization.create({
+            data: {
+                name: name.trim(),
+                ownerId: req.user.id,
+                members: {
+                    connect: [{ id: req.user.id }]
+                }
+            }
+        });
+
+        console.log(`[organization-service] organization created successfully: ${newOrg.id}`);
+        res.status(201).json(newOrg);
+    } catch (err) {
+        console.error('[organization-service] creation error:', err);
+        res.status(500).json({ error: 'failed to create organization' });
+    }
+});
+
+function start() {
     if (isProduction && !redisUrl) {
         throw new Error('REDIS_URL must be configured in production.');
     }

@@ -434,43 +434,91 @@ document.addEventListener('DOMContentLoaded', async () => {
             const orgDropdownName = document.querySelector('.org-name-text');
             if (orgDropdownName) orgDropdownName.textContent = `${displayIdentifier.split('@')[0]}'s Org`;
 
-            // --- Org Home View Transition Logic ---
-            document.body.classList.add('state-org-home');
-            
-            // 1. Inject Default Org Card
-            const orgCardsGrid = document.querySelector('.org-cards-grid');
-            if (orgCardsGrid) {
-                orgCardsGrid.innerHTML = `
-                    <div class="org-card-item" data-org="personal">
-                        <div class="org-card-avatar">${avatarInitial}</div>
-                        <div class="org-card-info">
-                            <span class="org-card-name">${displayIdentifier.split('@')[0]}'s Org</span>
-                            <span class="org-card-meta">Pro Plan • Personal</span>
-                        </div>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left: auto; opacity: 0.3;"><path d="m9 18 6-6-6-6"></path></svg>
-                    </div>
-                `;
-
-                // Add click listener to the card
-                const personalCard = orgCardsGrid.querySelector('[data-org="personal"]');
-                if (personalCard) {
-                    personalCard.addEventListener('click', () => enterDashboard());
+            // --- Org Home View Logic ---
+            // 1. Fetch real organizations from backend
+            try {
+                const orgsRes = await fetch('/v1/organizations', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const orgs = await orgsRes.json();
+                
+                const orgCardsGrid = document.querySelector('.org-cards-grid');
+                if (orgCardsGrid) {
+                    orgCardsGrid.innerHTML = '';
+                    
+                    if (orgs.length === 0) {
+                        // Empty state: User must create their first org
+                        orgCardsGrid.innerHTML = `
+                            <div style="grid-column: 1/-1; text-align: center; padding: 4rem 2rem; background: rgba(255,255,255,0.02); border: 1px dashed rgba(255,255,255,0.1); border-radius: 16px;">
+                                <p style="color: var(--text-muted); margin-bottom: 1.5rem;">you don't have any organizations yet.</p>
+                                <button class="submit-btn" style="width: auto; padding: 0.6rem 1.5rem;" onclick="document.getElementById('mock-new-org-btn').click()">create your first organization</button>
+                            </div>
+                        `;
+                    } else {
+                        orgs.forEach(org => {
+                            const card = document.createElement('div');
+                            card.className = 'org-card-item';
+                            card.innerHTML = `
+                                <div class="org-card-avatar">${org.name.charAt(0).toUpperCase()}</div>
+                                <div class="org-card-info">
+                                    <span class="org-card-name">${org.name}</span>
+                                    <span class="org-card-meta">${org.role || 'Member'} • ${org.id.slice(0,8)}</span>
+                                </div>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left: auto; opacity: 0.3;"><path d="m9 18 6-6-6-6"></path></svg>
+                            `;
+                            card.onclick = () => enterDashboard(org);
+                            orgCardsGrid.appendChild(card);
+                        });
+                    }
                 }
+            } catch (err) {
+                console.error('[sentinel-dashboard] failed to fetch organizations:', err);
             }
+
+            document.body.classList.add('state-org-home');
 
             // 2. Setup New Org Button
             const newOrgBtn = document.getElementById('mock-new-org-btn');
             if (newOrgBtn) {
-                newOrgBtn.addEventListener('click', () => enterDashboard());
+                newOrgBtn.onclick = async () => {
+                    const orgName = prompt('enter organization name:');
+                    if (!orgName) return;
+                    
+                    try {
+                        const res = await fetch('/v1/organizations', {
+                            method: 'POST',
+                            headers: { 
+                                'Authorization': `Bearer ${token}`,
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ name: orgName })
+                        });
+                        
+                        if (res.ok) {
+                            location.reload(); // Refresh to show new org
+                        } else {
+                            const err = await res.json();
+                            alert('failed to create organization: ' + err.error);
+                        }
+                    } catch (err) {
+                        console.error('Org creation error:', err);
+                    }
+                };
             }
 
-            function enterDashboard() {
+            function enterDashboard(org) {
+                console.log('[sentinel-dashboard] entering dashboard for org:', org?.name);
                 document.body.classList.remove('state-org-home');
                 const orgHomeView = document.getElementById('org-home-view');
                 const dashboardView = document.getElementById('dashboard-view');
                 if (orgHomeView) orgHomeView.classList.add('hidden');
                 if (dashboardView) dashboardView.classList.remove('hidden');
                 
+                if (org) {
+                    const orgNameEl = document.getElementById('current-org-name');
+                    if (orgNameEl) orgNameEl.textContent = org.name;
+                }
+
                 // Ensure 'overview' is active in sidebar
                 document.querySelectorAll('.sidebar-item').forEach(item => {
                     item.classList.remove('active');
