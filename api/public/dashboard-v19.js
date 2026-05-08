@@ -53,7 +53,6 @@ const checkSession = async () => {
         if (error) throw error;
         if (session && !isInitialized) {
             isInitialized = true;
-            console.log('[sentinel-dashboard] session found in checkSession');
             showStatus('session confirmed, loading...', 'success');
             renderDashboard(session);
             setTimeout(scrubHash, 5000);
@@ -66,18 +65,21 @@ const checkSession = async () => {
     }
 };
 
-document.addEventListener('DOMContentLoaded', async () => {
-    showStatus('booting v19-resilience...');
+const startHydration = async () => {
+    // RESOLVE SDK RACE CONDITION
+    let sdk = window.supabase;
+    if (!sdk && typeof supabase !== 'undefined') sdk = supabase;
     
-    // Check for SDK
-    if (!window.supabase) {
-        showStatus('CRITICAL: Supabase SDK not found in window!', 'error');
-        // Try fallback initialization if possible or just stop
+    if (!sdk) {
+        showStatus('CRITICAL: SDK not found. Refreshing in 3s...', 'error');
+        setTimeout(() => window.location.reload(), 3000);
         return;
     }
 
+    showStatus('booting v19.1-resilience...');
+
     try {
-        sentinelAuth = window.supabase.createClient(supabaseUrl, supabaseKey, {
+        sentinelAuth = sdk.createClient(supabaseUrl, supabaseKey, {
             auth: {
                 flowType: 'pkce',
                 autoRefreshToken: true,
@@ -85,7 +87,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 detectSessionInUrl: true
             }
         });
-        showStatus('security subsystem active.');
     } catch (e) {
         showStatus('SDK INIT FAILED: ' + e.message, 'error');
         return;
@@ -136,7 +137,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
             }
 
-            // Loop fallback
             for (let i = 0; i < 30; i++) {
                 await new Promise(r => setTimeout(r, 1000));
                 showStatus(`syncing (attempt ${i+1}/30)...`);
@@ -153,31 +153,24 @@ document.addEventListener('DOMContentLoaded', async () => {
             }, 10000);
         }
     })();
+};
 
-    // 3. UI logic (renderDashboard etc)
-    const logoutBtn = document.getElementById('btn-logout');
-    if (logoutBtn) {
-        logoutBtn.onclick = async (e) => {
-            e.preventDefault();
-            showStatus('signing out...');
-            await sentinelAuth.auth.signOut();
-            window.location.href = '/auth';
-        };
-    }
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', startHydration);
+} else {
+    startHydration();
+}
 
-    // Sidebar Toggle
-    const sidebarToggle = document.getElementById('sidebar-toggle');
-    const sidebarPopup = document.getElementById('sidebar-popup');
-    if (sidebarToggle && sidebarPopup) {
-        sidebarToggle.addEventListener('click', (e) => {
-            e.preventDefault(); e.stopPropagation();
-            sidebarPopup.classList.toggle('active');
-        });
-        document.addEventListener('click', (e) => {
-            if (!sidebarToggle.contains(e.target) && !sidebarPopup.contains(e.target)) sidebarPopup.classList.remove('active');
-        });
-    }
-});
+// UI HELPERS
+const logoutBtn = document.getElementById('btn-logout');
+if (logoutBtn) {
+    logoutBtn.onclick = async (e) => {
+        e.preventDefault();
+        showStatus('signing out...');
+        if (sentinelAuth) await sentinelAuth.auth.signOut();
+        window.location.href = '/auth';
+    };
+}
 
 async function renderDashboard(session) {
     try {
