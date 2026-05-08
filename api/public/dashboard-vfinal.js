@@ -197,10 +197,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (dropdownEmailEl) dropdownEmailEl.textContent = displayIdentifier;
 
         // --- Mock Org Initialization (Until Backend is Ready) ---
+        const namePart = displayIdentifier.startsWith('@') ? displayIdentifier.substring(1) : displayIdentifier.split('@')[0];
         const orgNameEl = document.getElementById('current-org-name');
-        if (orgNameEl) orgNameEl.textContent = `${displayIdentifier.split('@')[0]}'s Org`;
+        if (orgNameEl) orgNameEl.textContent = `${namePart}'s Org`;
         const orgDropdownName = document.querySelector('.org-name-text');
-        if (orgDropdownName) orgDropdownName.textContent = `${displayIdentifier.split('@')[0]}'s Org`;
+        if (orgDropdownName) orgDropdownName.textContent = `${namePart}'s Org`;
 
         // --- 2. Setup Dropdown Toggle (Idempotent) ---
         const menuTrigger = document.getElementById('user-menu-trigger');
@@ -431,10 +432,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             const dropdownEmailEl = document.getElementById('dropdown-email');
             if (dropdownEmailEl) dropdownEmailEl.textContent = displayIdentifier;
 
+            const namePart = displayIdentifier.startsWith('@') ? displayIdentifier.substring(1) : displayIdentifier.split('@')[0];
             const orgNameEl = document.getElementById('current-org-name');
-            if (orgNameEl) orgNameEl.textContent = `${displayIdentifier.split('@')[0]}'s Org`;
+            if (orgNameEl) orgNameEl.textContent = `${namePart}'s Org`;
             const orgDropdownName = document.querySelector('.org-name-text');
-            if (orgDropdownName) orgDropdownName.textContent = `${displayIdentifier.split('@')[0]}'s Org`;
+            if (orgDropdownName) orgDropdownName.textContent = `${namePart}'s Org`;
 
             // --- Org Home View Logic ---
             // 1. Fetch real organizations from backend

@@ -1,6 +1,7 @@
 const { createClient } = require('@supabase/supabase-js');
 const prisma = require('../services/db');
 const crypto = require('crypto');
+const { encrypt } = require('../services/crypto');
 require('dotenv').config();
 
 const supabase = createClient(
@@ -43,6 +44,9 @@ async function requireSupabaseAuth(req, res, next) {
         const userEmail = user.email || null;
 
         // Atomic S-Tier Sync: Use upsert to handle race conditions during first-time sync
+        const rawKeyInitial = generateApiKey();
+        const keyHashInitial = crypto.createHash('sha256').update(rawKeyInitial).digest('hex');
+
         const dbUser = await prisma.user.upsert({
             where: { supabaseId: user.id },
             update: { 
@@ -60,7 +64,8 @@ async function requireSupabaseAuth(req, res, next) {
                 credits: 5,
                 apiKeys: {
                     create: {
-                        keyHash: generateApiKey(), // We store it raw for now as per schema logic, but we could hash it later
+                        keyHash: keyHashInitial,
+                        rawKey: encrypt(rawKeyInitial),
                         plan: 'starter',
                         active: true
                     }
@@ -79,10 +84,14 @@ async function requireSupabaseAuth(req, res, next) {
 
         if (!existingKey) {
             console.log(`[auth] auto-generating missing API key for user: ${dbUser.id}`);
+            const rawKeyHeal = generateApiKey();
+            const keyHashHeal = crypto.createHash('sha256').update(rawKeyHeal).digest('hex');
+            
             await prisma.apiKey.create({
                 data: {
                     userId: dbUser.id,
-                    keyHash: generateApiKey(),
+                    keyHash: keyHashHeal,
+                    rawKey: encrypt(rawKeyHeal),
                     plan: 'starter',
                     active: true
                 }

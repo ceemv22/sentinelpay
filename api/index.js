@@ -175,7 +175,9 @@ app.use((req, res, next) => {
 
 // Dashboard SPA Routes - serve dashboard.html for all /dashboard/* paths
 app.get('/dashboard', (req, res) => {
-    res.redirect(301, '/dashboard/organizations');
+    // S-Tier Redirect: Use 307 (Temporary) to preserve method and query params (Crucial for OAuth PKCE 'code')
+    const queryString = req.url.includes('?') ? req.url.substring(req.url.indexOf('?')) : '';
+    res.redirect(307, '/dashboard/organizations' + queryString);
 });
 
 app.get('/dashboard/organizations', (req, res) => {
@@ -549,6 +551,8 @@ app.get('/v1/user/api-key/reveal', requireSupabaseAuth, async (req, res) => {
 app.post('/v1/user/api-key/roll', requireSupabaseAuth, async (req, res) => {
     try {
         const newKeyRaw = `sp_live_${require('crypto').randomBytes(24).toString('hex')}`;
+        const newKeyHash = require('crypto').createHash('sha256').update(newKeyRaw).digest('hex');
+        const { encrypt } = require('./services/crypto');
         
         const result = await prisma.$transaction(async (tx) => {
             // 1. Deactivate all old keys
@@ -561,7 +565,8 @@ app.post('/v1/user/api-key/roll', requireSupabaseAuth, async (req, res) => {
             return await tx.apiKey.create({
                 data: {
                     userId: req.user.id,
-                    keyHash: newKeyRaw,
+                    keyHash: newKeyHash,
+                    rawKey: encrypt(newKeyRaw),
                     plan: 'starter',
                     active: true
                 }
@@ -569,7 +574,7 @@ app.post('/v1/user/api-key/roll', requireSupabaseAuth, async (req, res) => {
         });
 
         res.json({
-            apiKey: result.keyHash,
+            apiKey: newKeyRaw, // Return RAW key to user once
             plan: result.plan,
             createdAt: result.createdAt
         });
