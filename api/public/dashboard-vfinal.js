@@ -9,6 +9,35 @@ const sentinelAuth = window.supabase.createClient(supabaseUrl, supabaseKey, {
     }
 });
 
+// 0. Pre-Flight State Capture
+const initialUrl = window.location.href;
+const initialSearch = window.location.search;
+const initialHash = window.location.hash;
+let isInitialized = false;
+let authStartTime = Date.now();
+
+// 1. Setup Auth Listener (Top-Level to catch early events)
+sentinelAuth.auth.onAuthStateChange(async (event, session) => {
+    console.log('[sentinel-dashboard] auth event:', event, !!session);
+    
+    if (session) {
+        if (!isInitialized) {
+            isInitialized = true;
+            console.log('[sentinel-dashboard] session stabilized, rendering...');
+            setTimeout(scrubHash, 10000); 
+            renderDashboard(session);
+        }
+        return;
+    }
+
+    // Only redirect if we are 100% sure there is no session
+    // Ignore SIGNED_OUT events in the first 20 seconds (Extreme hydration window)
+    if (event === 'SIGNED_OUT' && (Date.now() - authStartTime > 20000)) {
+        console.warn('[sentinel-dashboard] truly signed out, redirecting');
+        window.location.href = '/auth';
+    }
+});
+
 // 0. ULTIMATE HASH SCRUBBER (Aggressively kills # trailing fragments)
 const scrubHash = () => {
     if (window.location.href.indexOf('#') > -1) {
@@ -21,8 +50,25 @@ const scrubHash = () => {
     }
 };
 
+const checkSession = async () => {
+    try {
+        const { data: { session } } = await sentinelAuth.auth.getSession();
+        if (session) {
+            if (!isInitialized) {
+                isInitialized = true;
+                renderDashboard(session);
+                setTimeout(scrubHash, 10000);
+            }
+            return true;
+        }
+        return false;
+    } catch (err) {
+        return false;
+    }
+};
+
 document.addEventListener('DOMContentLoaded', async () => {
-    console.log('[sentinel-dashboard] v-final loader active (v17.4)');
+    console.log('[sentinel-dashboard] v-final loader active (v18.1)');
     
     // S-Tier Pre-Hydration: Show cached API suffix instantly
     const cachedSuffix = localStorage.getItem('sentinel_key_suffix');
@@ -31,75 +77,39 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (suffixEl) suffixEl.textContent = cachedSuffix;
     }
     
-    let isInitialized = false;
-    let authStartTime = Date.now();
-
-    // 1. Setup Auth Listener (S-Tier Patient Flow)
-    sentinelAuth.auth.onAuthStateChange(async (event, session) => {
-        console.log('[sentinel-dashboard] auth event:', event, !!session);
-        
-        if (session) {
-            if (!isInitialized) {
-                isInitialized = true;
-                setTimeout(scrubHash, 10000); // 10s delay to be safe
-                renderDashboard(session);
-            }
-            return;
-        }
-
-        // Only redirect if we are 100% sure there is no session
-        // Ignore SIGNED_OUT events in the first 15 seconds (Generous hydration window)
-        if (event === 'SIGNED_OUT' && (Date.now() - authStartTime > 15000)) {
-            console.warn('[sentinel-dashboard] truly signed out, redirecting');
-            window.location.href = '/auth';
-        }
-    });
-
-    // 2. Initial Session Handshake
-    const checkSession = async () => {
-        try {
-            const { data: { session } } = await sentinelAuth.auth.getSession();
-            if (session) {
-                if (!isInitialized) {
-                    isInitialized = true;
-                    renderDashboard(session);
-                    setTimeout(scrubHash, 10000);
-                }
-                return true;
-            }
-            return false;
-        } catch (err) {
-            return false;
-        }
-    };
-
     // Main Hydration Logic
     (async () => {
         const hasSession = await checkSession();
-        if (hasSession) return;
+        if (hasSession) {
+            console.log('[sentinel-dashboard] session found on first check');
+            return;
+        }
 
         const isAuthRedirect = 
-            window.location.search.includes('code=') || 
-            window.location.hash.includes('access_token=') ||
-            window.location.hash.includes('code=') ||
-            window.location.search.includes('error=');
+            initialSearch.includes('code=') || 
+            initialHash.includes('access_token=') ||
+            initialHash.includes('code=') ||
+            initialSearch.includes('error=');
 
         if (isAuthRedirect) {
-            console.log('[sentinel-dashboard] auth redirect detected, holding for 30s...');
+            console.log('[sentinel-dashboard] auth redirect detected (initial URL), holding for 30s...');
             // Extremely patient retry loop for new accounts
             for (let i = 0; i < 60; i++) {
                 await new Promise(r => setTimeout(r, 500));
                 if (isInitialized) return;
                 if (await checkSession()) return;
             }
+            console.warn('[sentinel-dashboard] hydration loop timed out after 30s');
             window.location.href = '/auth';
         } else {
-            // No session and not a redirect -> wait 8s
+            console.log('[sentinel-dashboard] normal load, no redirect params detected');
+            // No session and not a redirect -> wait 10s before bouncing
             setTimeout(async () => {
                 if (!isInitialized && !(await checkSession())) {
+                    console.warn('[sentinel-dashboard] no session after 10s, redirecting to /auth');
                     window.location.href = '/auth';
                 }
-            }, 8000);
+            }, 10000);
         }
     })();
 
