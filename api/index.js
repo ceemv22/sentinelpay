@@ -173,6 +173,15 @@ app.use((req, res, next) => {
     next();
 });
 
+// Dashboard SPA Routes - serve dashboard.html for all /dashboard/* paths
+app.get('/dashboard', (req, res) => {
+    res.redirect(301, '/dashboard/organizations');
+});
+
+app.get('/dashboard/organizations', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
+});
+
 app.use(express.static(path.join(__dirname, 'public'), { extensions: ['html'] }));
 
 // Redis Setup & Rate Limiter Store
