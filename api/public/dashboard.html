@@ -900,9 +900,6 @@
             height: 36px;
             font-size: 1rem;
         }
-        body.state-org-home #user-menu-trigger {
-            display: none !important;
-        }
         body.state-org-home .org-home-logo {
             display: flex !important;
             align-items: center;
@@ -1242,38 +1239,39 @@
     <div class="glow-orb"></div>
 
     <header class="dashboard-header">
+        <!-- Brand logo: LEFT, visible only in state-org-home (replaces api-key-badge) -->
+        <a href="https://sentinelpay.org" target="_blank" class="org-home-logo">
+            <svg viewBox="0 0 120 120" width="30" height="30">
+              <defs>
+                <linearGradient id="neonGradientH" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#00ffff" />
+                  <stop offset="100%" stop-color="#a020f0" />
+                </linearGradient>
+                <filter id="neonGlowH" x="-50%" y="-50%" width="200%" height="200%">
+                  <feGaussianBlur stdDeviation="3.5" result="coloredBlur"/>
+                  <feMerge>
+                    <feMergeNode in="coloredBlur"/>
+                    <feMergeNode in="SourceGraphic"/>
+                  </feMerge>
+                </filter>
+              </defs>
+              <g filter="url(#neonGlowH)" fill="none" stroke="url(#neonGradientH)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z" />
+                <path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z" />
+                <g>
+                  <circle cx="60" cy="60" r="6" />
+                  <circle cx="60" cy="60" r="2" fill="url(#neonGradientH)" stroke="none"/>
+                </g>
+              </g>
+            </svg>
+        </a>
+        <!-- API key badge: LEFT, visible in full dashboard -->
         <div class="api-key-badge" id="header-api-key" title="View API Key">
             <span class="key-prefix">sp_live_</span><span class="key-dots">••••</span><span class="key-suffix" id="api-key-suffix">----</span>
         </div>
         
         <div class="user-menu-container">
-            <!-- Brand logo: TOP RIGHT, visible only in state-org-home -->
-            <a href="https://sentinelpay.org" target="_blank" class="org-home-logo">
-                <svg viewBox="0 0 120 120" width="32" height="32">
-                  <defs>
-                    <linearGradient id="neonGradientH" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stop-color="#00ffff" />
-                      <stop offset="100%" stop-color="#a020f0" />
-                    </linearGradient>
-                    <filter id="neonGlowH" x="-50%" y="-50%" width="200%" height="200%">
-                      <feGaussianBlur stdDeviation="3.5" result="coloredBlur"/>
-                      <feMerge>
-                        <feMergeNode in="coloredBlur"/>
-                        <feMergeNode in="SourceGraphic"/>
-                      </feMerge>
-                    </filter>
-                  </defs>
-                  <g filter="url(#neonGlowH)" fill="none" stroke="url(#neonGradientH)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z" />
-                    <path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z" />
-                    <g>
-                      <circle cx="60" cy="60" r="6" />
-                      <circle cx="60" cy="60" r="2" fill="url(#neonGradientH)" stroke="none"/>
-                    </g>
-                  </g>
-                </svg>
-            </a>
-            <!-- Org switcher: visible in full dashboard -->
+            <!-- Org switcher: ALWAYS visible on the right -->
             <div class="org-switcher-trigger" id="user-menu-trigger">
                 <!-- Org avatar: visible in full dashboard -->
                 <div class="org-avatar" id="org-avatar-circle">S</div>
