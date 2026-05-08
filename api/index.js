@@ -650,7 +650,7 @@ app.post('/v1/organizations', requireSupabaseAuth, async (req, res) => {
     }
 });
 
-function start() {
+async function start() {
     if (isProduction && !redisUrl) {
         throw new Error('REDIS_URL must be configured in production.');
     }
