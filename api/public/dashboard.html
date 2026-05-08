@@ -894,9 +894,10 @@
             display: none !important;
         }
         body.state-org-home #user-menu-trigger {
-            background: transparent;
-            border: none;
-            padding: 0;
+            display: none !important;
+        }
+        body:not(.state-org-home) .global-only {
+            display: none !important;
         }
         body.state-org-home #user-menu-trigger:hover {
             background: transparent;
@@ -1123,8 +1124,63 @@
         </a>
 
         <div class="sidebar-content">
-            <!-- Monitor Section -->
-            <div class="sidebar-section">
+            <!-- GLOBAL SECTIONS (Visible only in Org Home) -->
+            <div class="sidebar-section global-only">
+                <span class="section-label">identity</span>
+                <a href="#" class="sidebar-item active">
+                    <div class="item-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    </div>
+                    <span class="item-label">profile</span>
+                </a>
+                <a href="#" class="sidebar-item">
+                    <div class="item-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                    </div>
+                    <span class="item-label">security</span>
+                </a>
+                <a href="#" class="sidebar-item">
+                    <div class="item-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    </div>
+                    <span class="item-label">sessions</span>
+                </a>
+            </div>
+
+            <div class="sidebar-section global-only">
+                <span class="section-label">billing</span>
+                <a href="#" class="sidebar-item">
+                    <div class="item-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                    </div>
+                    <span class="item-label">usage</span>
+                </a>
+                <a href="#" class="sidebar-item">
+                    <div class="item-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+                    </div>
+                    <span class="item-label">plans</span>
+                </a>
+            </div>
+
+            <div class="sidebar-section global-only">
+                <span class="section-label">resources</span>
+                <a href="#" class="sidebar-item">
+                    <div class="item-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                    </div>
+                    <span class="item-label">documentation</span>
+                </a>
+                <a href="#" class="sidebar-item">
+                    <div class="item-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                    </div>
+                    <span class="item-label">api reference</span>
+                </a>
+            </div>
+
+            <!-- Monitor Section (Org Only) -->
+            <div class="sidebar-section org-only">
                 <span class="section-label">monitor</span>
                 <a href="#" class="sidebar-item active">
                     <div class="item-icon">
@@ -1146,8 +1202,8 @@
                 </a>
             </div>
 
-            <!-- Manage Section -->
-            <div class="sidebar-section">
+            <!-- Manage Section (Org Only) -->
+            <div class="sidebar-section org-only">
                 <span class="section-label">manage</span>
                 <a href="#" class="sidebar-item">
                     <div class="item-icon">
@@ -1181,8 +1237,8 @@
                 </a>
             </div>
 
-            <!-- Dev Section -->
-            <div class="sidebar-section">
+            <!-- Dev Section (Org Only) -->
+            <div class="sidebar-section org-only">
                 <span class="section-label">dev</span>
                 <a href="#" class="sidebar-item">
                     <div class="item-icon">
