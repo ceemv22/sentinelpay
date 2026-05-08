@@ -12,7 +12,7 @@ window.onunhandledrejection = (event) => {
 
 // 0. S-Tier UI Status Overlay
 window.showStatus = (msg, type = 'info') => {
-    if (window.silentMode && type === 'info') return; // Bypass noise for healthy users
+    if (window.silentMode && type === 'info') return; 
     let overlay = document.getElementById('sentinel-status-overlay');
     if (!overlay) {
         overlay = document.createElement('div');
@@ -67,7 +67,7 @@ const checkSession = async () => {
 const startHydration = async () => {
     let sdk = window.supabase || (typeof supabase !== 'undefined' ? supabase : null);
     if (!sdk) {
-        setTimeout(startHydration, 100); // Fast retry
+        setTimeout(startHydration, 100);
         return;
     }
 
@@ -84,7 +84,6 @@ const startHydration = async () => {
         return;
     }
 
-    // 1. Setup Auth Listener
     sentinelAuth.auth.onAuthStateChange(async (event, session) => {
         if (session && !isInitialized) {
             isInitialized = true;
@@ -96,7 +95,6 @@ const startHydration = async () => {
         }
     });
 
-    // 2. Hydration Flow
     const hasSession = await checkSession();
     if (hasSession) {
         window.silentMode = true;
@@ -133,7 +131,7 @@ const startHydration = async () => {
             if (!isInitialized && !(await checkSession())) {
                 window.location.href = '/auth';
             }
-        }, 3000);
+        }, 4000);
     }
 };
 
@@ -144,6 +142,7 @@ const logoutBtn = document.getElementById('btn-logout');
 if (logoutBtn) {
     logoutBtn.onclick = async (e) => {
         e.preventDefault();
+        localStorage.removeItem('sentinel-cached-orgs');
         if (sentinelAuth) await sentinelAuth.auth.signOut();
         window.location.href = '/auth';
     };
@@ -189,13 +188,47 @@ function renderDashboard(session) {
             };
         }
 
-        // 3. BACKGROUND FETCH (Don't await)
+        // 3. CACHE LOOKUP (Truly Instant)
+        const cachedOrgs = localStorage.getItem('sentinel-cached-orgs');
+        const orgCardsGrid = document.querySelector('.org-cards-grid');
+        if (orgCardsGrid) {
+            if (cachedOrgs) {
+                try {
+                    const orgs = JSON.parse(cachedOrgs);
+                    updateOrgGrid(orgs);
+                } catch(e) {
+                    orgCardsGrid.innerHTML = '<div class="sync-shimmer">syncing organizations...</div>';
+                }
+            } else {
+                // If no cache, show a shimmer or empty state immediately while syncing
+                orgCardsGrid.innerHTML = '<div class="sync-shimmer">syncing organizations...</div>';
+            }
+        }
+
+        // 4. BACKGROUND FETCH
         fetchHeaderApiKey(token);
         fetchProfile(token);
     } catch (e) {
         showStatus('Render Error', 'error');
     } finally {
         renderDashboard.busy = false;
+    }
+}
+
+function updateOrgGrid(orgs) {
+    const orgCardsGrid = document.querySelector('.org-cards-grid');
+    if (!orgCardsGrid) return;
+    
+    orgCardsGrid.innerHTML = '';
+    if (orgs.length === 0) {
+        orgCardsGrid.innerHTML = '<div class="empty-state">no organizations found.</div>';
+    } else {
+        orgs.forEach(org => {
+            const card = document.createElement('div');
+            card.className = 'org-card-item';
+            card.innerHTML = `<span>${org.name}</span>`;
+            orgCardsGrid.appendChild(card);
+        });
     }
 }
 
@@ -217,19 +250,9 @@ async function fetchProfile(token) {
         
         const orgsRes = await fetch('/v1/organizations', { headers: { 'Authorization': `Bearer ${token}` } });
         const orgs = await orgsRes.json();
-        const orgCardsGrid = document.querySelector('.org-cards-grid');
-        if (orgCardsGrid) {
-            orgCardsGrid.innerHTML = '';
-            if (orgs.length === 0) {
-                orgCardsGrid.innerHTML = '<div class="empty-state">no organizations found.</div>';
-            } else {
-                orgs.forEach(org => {
-                    const card = document.createElement('div');
-                    card.className = 'org-card-item';
-                    card.innerHTML = `<span>${org.name}</span>`;
-                    orgCardsGrid.appendChild(card);
-                });
-            }
-        }
+        
+        // Update Cache & UI
+        localStorage.setItem('sentinel-cached-orgs', JSON.stringify(orgs));
+        updateOrgGrid(orgs);
     } catch (err) {}
 }
