@@ -913,12 +913,13 @@
         }
 
         .org-home-header {
-            font-family: 'Inter', sans-serif;
-            font-size: 1.5rem;
-            font-weight: 600;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.4rem;
+            font-weight: 700;
             color: #fff;
             margin-bottom: 0.5rem;
-            letter-spacing: -0.5px;
+            letter-spacing: -1px;
+            text-transform: lowercase;
         }
 
         .org-controls-row {
@@ -951,9 +952,15 @@
             padding: 0.6rem 1rem 0.6rem 2.2rem;
             border-radius: 6px;
             color: #fff;
-            font-family: 'Inter', sans-serif;
-            font-size: 0.85rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
             transition: all 0.3s ease;
+        }
+
+        .org-search-input::placeholder {
+            font-family: 'JetBrains Mono', monospace;
+            color: rgba(255, 255, 255, 0.25);
+            font-size: 0.8rem;
         }
 
         .org-search-input:focus {
@@ -963,25 +970,27 @@
         }
 
         .btn-new-org {
-            background: rgba(0, 255, 136, 0.05);
-            color: var(--color-green);
-            border: 1px solid rgba(0, 255, 136, 0.2);
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            font-family: 'Inter', sans-serif;
+            background: #fff;
+            color: #000;
+            border: none;
+            padding: 0.55rem 1.2rem;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
             font-size: 0.8rem;
-            font-weight: 500;
+            font-weight: 700;
+            text-transform: lowercase;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             align-items: center;
             gap: 6px;
+            letter-spacing: -0.3px;
         }
 
         .btn-new-org:hover {
-            background: rgba(0, 255, 136, 0.1);
-            border-color: rgba(0, 255, 136, 0.4);
+            filter: brightness(1.08);
             transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(255, 255, 255, 0.15);
         }
 
         .org-cards-grid {
@@ -1268,12 +1277,12 @@
     <main class="content-area">
         <!-- ORG HOME VIEW -->
         <div id="org-home-view" class="org-home-container">
-            <h1 class="org-home-header">Your Organizations</h1>
+            <h1 class="org-home-header">your organizations</h1>
             
             <div class="org-controls-row">
                 <div class="org-search-wrapper">
                     <svg class="org-search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                    <input type="text" class="org-search-input" placeholder="Search for an organization">
+                    <input type="text" class="org-search-input" placeholder="search for an organization">
                 </div>
                 
                 <button class="btn-new-org" id="mock-new-org-btn">
