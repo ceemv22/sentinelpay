@@ -437,15 +437,59 @@ document.addEventListener('DOMContentLoaded', async () => {
             // --- Org Home View Transition Logic ---
             document.body.classList.add('state-org-home');
             
-            // Temporary testing flow: click 'new organization' to enter dashboard
+            // 1. Inject Default Org Card
+            const orgCardsGrid = document.querySelector('.org-cards-grid');
+            if (orgCardsGrid) {
+                orgCardsGrid.innerHTML = `
+                    <div class="org-card-item" data-org="personal">
+                        <div class="org-card-avatar">${avatarInitial}</div>
+                        <div class="org-card-info">
+                            <span class="org-card-name">${displayIdentifier.split('@')[0]}'s Org</span>
+                            <span class="org-card-meta">Pro Plan • Personal</span>
+                        </div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left: auto; opacity: 0.3;"><path d="m9 18 6-6-6-6"></path></svg>
+                    </div>
+                `;
+
+                // Add click listener to the card
+                const personalCard = orgCardsGrid.querySelector('[data-org="personal"]');
+                if (personalCard) {
+                    personalCard.addEventListener('click', () => enterDashboard());
+                }
+            }
+
+            // 2. Setup New Org Button
             const newOrgBtn = document.getElementById('mock-new-org-btn');
             if (newOrgBtn) {
-                newOrgBtn.addEventListener('click', () => {
-                    document.body.classList.remove('state-org-home');
-                    const orgHomeView = document.getElementById('org-home-view');
-                    const dashboardView = document.getElementById('dashboard-view');
-                    if (orgHomeView) orgHomeView.classList.add('hidden');
-                    if (dashboardView) dashboardView.classList.remove('hidden');
+                newOrgBtn.addEventListener('click', () => enterDashboard());
+            }
+
+            function enterDashboard() {
+                document.body.classList.remove('state-org-home');
+                const orgHomeView = document.getElementById('org-home-view');
+                const dashboardView = document.getElementById('dashboard-view');
+                if (orgHomeView) orgHomeView.classList.add('hidden');
+                if (dashboardView) dashboardView.classList.remove('hidden');
+                
+                // Ensure 'overview' is active in sidebar
+                document.querySelectorAll('.sidebar-item').forEach(item => {
+                    item.classList.remove('active');
+                    const label = item.querySelector('.item-label');
+                    if (label && label.textContent.toLowerCase().includes('overview')) {
+                        item.classList.add('active');
+                    }
+                });
+            }
+
+            // 3. Search Filtering (S-Tier Feel)
+            const searchInput = document.querySelector('.org-search-input');
+            if (searchInput) {
+                searchInput.addEventListener('input', (e) => {
+                    const term = e.target.value.toLowerCase();
+                    document.querySelectorAll('.org-card-item').forEach(card => {
+                        const name = card.querySelector('.org-card-name').textContent.toLowerCase();
+                        card.style.display = name.includes(term) ? 'flex' : 'none';
+                    });
                 });
             }
 

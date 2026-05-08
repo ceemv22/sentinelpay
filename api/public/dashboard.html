@@ -1290,8 +1290,60 @@
         </div>
 
         <!-- DASHBOARD VIEW -->
-        <div id="dashboard-view" class="hidden">
-            <!-- Full dashboard content will go here -->
+        <div id="dashboard-view" class="hidden" style="width: 100%; max-width: 1400px; display: flex; flex-direction: column; gap: 2rem;">
+            <div class="summary-cards">
+                <!-- Metric 1: Total Scans -->
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <span class="metric-label">total scans</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                    </div>
+                    <div class="metric-value-container">
+                        <span class="metric-value" id="stat-total-scans">0</span>
+                    </div>
+                    <span class="metric-trend positive">+12.5%</span>
+                </div>
+
+                <!-- Metric 2: High Risk Detected -->
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <span class="metric-label">high risk</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path></svg>
+                    </div>
+                    <div class="metric-value-container">
+                        <span class="metric-value" id="stat-high-risk">0</span>
+                    </div>
+                    <span class="metric-trend negative">+4.3%</span>
+                </div>
+
+                <!-- Metric 3: Credits Remaining -->
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <span class="metric-label">credits</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--neon-blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                    </div>
+                    <div class="metric-value-container">
+                        <span class="metric-value" id="stat-credits">0</span>
+                        <span class="metric-trend down"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline><polyline points="17 18 23 18 23 12"></polyline></svg> -2.1</span>
+                    </div>
+                </div>
+
+                <!-- Metric 4: API Status -->
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <span class="metric-label">system health</span>
+                        <div class="pulse-dot-container"><div class="pulse-dot"></div></div>
+                    </div>
+                    <div class="metric-value-container">
+                        <span class="metric-value text-white" style="font-size: 2rem;">nominal</span>
+                    </div>
+                    <span class="metric-trend neutral">42ms latency | 100% uptime</span>
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                <!-- Additional dashboard widgets can go here -->
+            </div>
         </div>
     </main>
 
