@@ -32,6 +32,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     
     let isInitialized = false;
+    let authStartTime = Date.now();
 
     // 1. Setup Auth Listener (S-Tier Patient Flow)
     sentinelAuth.auth.onAuthStateChange(async (event, session) => {
@@ -40,72 +41,77 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (session) {
             if (!isInitialized) {
                 isInitialized = true;
-                setTimeout(scrubHash, 2000); // Wait longer before scrubbing to ensure session stability
+                setTimeout(scrubHash, 5000); // Wait longer to ensure stability
                 renderDashboard(session);
             }
             return;
         }
 
-        // Only redirect if we are 100% sure there is no session AND no incoming code
-        if (event === 'SIGNED_OUT') {
+        // Only redirect if we are 100% sure there is no session
+        // Ignore SIGNED_OUT events in the first 5 seconds of page load (hydration period)
+        if (event === 'SIGNED_OUT' && (Date.now() - authStartTime > 5000)) {
             const hasAuthParams = 
                 window.location.search.includes('code=') || 
                 window.location.hash.includes('access_token=') || 
                 window.location.hash.includes('code=');
 
             if (!hasAuthParams) {
-                console.warn('[sentinel-dashboard] truly signed out, redirecting');
+                console.warn('[sentinel-dashboard] truly signed out after hydration, redirecting');
                 window.location.href = '/auth';
-            } else {
-                console.log('[sentinel-dashboard] SIGNED_OUT event ignored due to active OAuth redirect params');
             }
         }
     });
 
-    // 2. Immediate Session Check with PKCE Awareness
-    try {
-        const { data: { session: initialSession } } = await sentinelAuth.auth.getSession();
-        if (initialSession) {
-            isInitialized = true;
-            renderDashboard(initialSession);
-            setTimeout(scrubHash, 2000);
-        } else {
-            // Wait up to 5 seconds for PKCE exchange if we see a code in URL
-            const isAuthRedirect = 
-                window.location.search.includes('code=') || 
-                window.location.hash.includes('access_token=') ||
-                window.location.hash.includes('code=') ||
-                window.location.search.includes('error=');
-            
-            if (isAuthRedirect) {
-                console.log('[sentinel-dashboard] redirect detected, holding for hydration (10s timeout)...');
-                setTimeout(async () => {
-                    const { data: { session: retrySession } } = await sentinelAuth.auth.getSession();
-                    if (retrySession) {
-                        if (!isInitialized) {
-                            isInitialized = true;
-                            renderDashboard(retrySession);
-                            setTimeout(scrubHash, 2000);
-                        }
-                    } else {
-                        console.warn('[sentinel-dashboard] PKCE exchange timed out after 10s');
-                        window.location.href = '/auth';
-                    }
-                }, 10000);
-            } else {
-                // No session and not a redirect -> give it 3s (more generous for slow connections)
-                setTimeout(async () => {
-                    const { data: { session: finalCheck } } = await sentinelAuth.auth.getSession();
-                    if (!finalCheck && !isInitialized) {
-                        console.warn('[sentinel-dashboard] no session detected after 3s, bouncing to auth');
-                        window.location.href = '/auth';
-                    }
-                }, 3000);
+    // 2. Initial Session Handshake
+    const checkSession = async (isRetry = false) => {
+        try {
+            const { data: { session } } = await sentinelAuth.auth.getSession();
+            if (session) {
+                if (!isInitialized) {
+                    isInitialized = true;
+                    renderDashboard(session);
+                    setTimeout(scrubHash, 5000);
+                }
+                return true;
             }
+            return false;
+        } catch (err) {
+            console.error('Session check error:', err);
+            return false;
         }
-    } catch (err) {
-        console.error('[sentinel-dashboard] session check failed', err);
-    }
+    };
+
+    // Main Hydration Logic
+    (async () => {
+        const hasSession = await checkSession();
+        if (hasSession) return;
+
+        const isAuthRedirect = 
+            window.location.search.includes('code=') || 
+            window.location.hash.includes('access_token=') ||
+            window.location.hash.includes('code=') ||
+            window.location.search.includes('error=');
+
+        if (isAuthRedirect) {
+            console.log('[sentinel-dashboard] auth redirect detected, waiting for PKCE (10s)...');
+            // Give it multiple retries
+            for (let i = 0; i < 20; i++) {
+                await new Promise(r => setTimeout(r, 500));
+                if (isInitialized) return;
+                if (await checkSession()) return;
+            }
+            console.warn('[sentinel-dashboard] auth redirect failed to hydrate session');
+            window.location.href = '/auth';
+        } else {
+            // No session and not a redirect -> wait 4s then bounce
+            setTimeout(async () => {
+                if (!isInitialized && !(await checkSession())) {
+                    console.warn('[sentinel-dashboard] no session detected after 4s, bouncing');
+                    window.location.href = '/auth';
+                }
+            }, 4000);
+        }
+    })();
 
     // --- Setup Sidebar State Toggle (S-Tier UX) ---
     const sidebarToggle = document.getElementById('sidebar-toggle');
