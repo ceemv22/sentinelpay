@@ -107,19 +107,47 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     // Main Hydration Logic
     (async () => {
+        showStatus('checking active sessions...');
         const hasSession = await checkSession();
-        if (hasSession) return;
+        if (hasSession) {
+            showStatus('session active', 'success');
+            return;
+        }
 
-        const isAuthRedirect = initialSearch.includes('code=') || initialHash.includes('code=') || initialHash.includes('access_token=');
+        const urlParams = new URLSearchParams(initialSearch || initialHash.substring(1));
+        const code = urlParams.get('code');
+        const accessToken = urlParams.get('access_token');
+        const isAuthRedirect = !!(code || accessToken);
 
         if (isAuthRedirect) {
-            showStatus('exchanging security tokens...');
-            console.log('[sentinel-dashboard] auth redirect detected, waiting for exchange...');
-            
-            // Patient retry loop for PKCE exchange
-            for (let i = 0; i < 40; i++) {
+            if (code) {
+                showStatus(`exchanging security code...`);
+                console.log('[sentinel-dashboard] attempting manual code exchange for PKCE');
+                try {
+                    // Force exchange
+                    const { data, error } = await sentinelAuth.auth.exchangeCodeForSession(code);
+                    if (error) throw error;
+                    console.log('[sentinel-dashboard] manual exchange success:', !!data.session);
+                    if (data.session) {
+                        showStatus('identity verified!', 'success');
+                        if (!isInitialized) {
+                            isInitialized = true;
+                            renderDashboard(data.session);
+                            setTimeout(scrubHash, 5000);
+                        }
+                        return;
+                    }
+                } catch (e) {
+                    console.error('[sentinel-dashboard] manual exchange error:', e.message);
+                    showStatus(`exchange failed: ${e.message}`, 'error');
+                }
+            }
+
+            console.log('[sentinel-dashboard] waiting for SDK auto-hydration loop...');
+            // Patient retry loop for PKCE exchange (fallback)
+            for (let i = 0; i < 30; i++) {
                 await new Promise(r => setTimeout(r, 1000));
-                showStatus(`verifying identity (attempt ${i+1}/40)...`);
+                showStatus(`verifying identity (attempt ${i+1}/30)...`);
                 const sessionFound = await checkSession();
                 if (isInitialized || sessionFound) {
                     return;
@@ -129,6 +157,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             showStatus('identity verification timed out', 'error');
             setTimeout(() => window.location.href = '/auth?error=hydration_timeout', 3000);
         } else {
+            showStatus('unauthenticated guest', 'info');
             // Normal load: Wait 10s then bounce
             setTimeout(async () => {
                 if (!isInitialized && !(await checkSession())) {
