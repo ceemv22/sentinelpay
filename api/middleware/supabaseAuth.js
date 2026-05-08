@@ -39,39 +39,56 @@ async function requireSupabaseAuth(req, res, next) {
             return res.status(403).json({ error: 'Account verification required', code: 403 });
         }
 
-        // Handle Email (X/Twitter might not provide one)
-        // We still provide a fallback for DB consistency if needed, but we mark it as unverified internally if it's the fallback
         const userEmail = user.email || null;
 
-        // Atomic S-Tier Sync: Use upsert to handle race conditions during first-time sync
-        const rawKeyInitial = generateApiKey();
-        const keyHashInitial = crypto.createHash('sha256').update(rawKeyInitial).digest('hex');
+        // S-Tier Identity Linking: Check by email first to prevent unique constraint collisions
+        let dbUser = null;
+        if (userEmail) {
+            dbUser = await prisma.user.findUnique({ where: { email: userEmail } });
+        }
 
-        const dbUser = await prisma.user.upsert({
-            where: { supabaseId: user.id },
-            update: { 
-                email: userEmail,
-                username: username,
-                authProvider,
-                isEmailVerified
-            },
-            create: {
-                supabaseId: user.id,
-                email: userEmail,
-                username: username,
-                authProvider,
-                isEmailVerified,
-                credits: 5,
-                apiKeys: {
-                    create: {
-                        keyHash: keyHashInitial,
-                        rawKey: encrypt(rawKeyInitial),
-                        plan: 'starter',
-                        active: true
+        if (dbUser) {
+            // Link existing record to this Supabase ID
+            dbUser = await prisma.user.update({
+                where: { id: dbUser.id },
+                data: { 
+                    supabaseId: user.id,
+                    username: username,
+                    authProvider,
+                    isEmailVerified
+                }
+            });
+        } else {
+            // Atomic Sync: Use upsert by supabaseId as fallback
+            const rawKeyInitial = generateApiKey();
+            const keyHashInitial = crypto.createHash('sha256').update(rawKeyInitial).digest('hex');
+
+            dbUser = await prisma.user.upsert({
+                where: { supabaseId: user.id },
+                update: { 
+                    email: userEmail,
+                    username: username,
+                    authProvider,
+                    isEmailVerified
+                },
+                create: {
+                    supabaseId: user.id,
+                    email: userEmail,
+                    username: username,
+                    authProvider,
+                    isEmailVerified,
+                    credits: 10,
+                    apiKeys: {
+                        create: {
+                            keyHash: keyHashInitial,
+                            rawKey: encrypt(rawKeyInitial),
+                            plan: 'starter',
+                            active: true
+                        }
                     }
                 }
-            }
-        });
+            });
+        }
 
         if (!dbUser) {
              throw new Error('failed to synchronize user data');
@@ -100,9 +117,9 @@ async function requireSupabaseAuth(req, res, next) {
 
         req.user = dbUser;
         next();
-    } catch (err) {
-        console.error('[auth error]', err);
-        res.status(500).json({ error: 'Authentication failed', code: 500 });
+    } catch (error) {
+        console.error('[sentinel-auth-middleware] critical error:', error.message);
+        return res.status(500).json({ error: 'authentication_sync_failed', details: error.message });
     }
 }
 

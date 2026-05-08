@@ -175,9 +175,7 @@ app.use((req, res, next) => {
 
 // Dashboard SPA Routes - serve dashboard.html for all /dashboard/* paths
 app.get('/dashboard', (req, res) => {
-    // S-Tier Redirect: Use 307 (Temporary) to preserve method and query params (Crucial for OAuth PKCE 'code')
-    const queryString = req.url.includes('?') ? req.url.substring(req.url.indexOf('?')) : '';
-    res.redirect(307, '/dashboard/organizations' + queryString);
+    res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
 });
 
 app.get('/dashboard/organizations', (req, res) => {
