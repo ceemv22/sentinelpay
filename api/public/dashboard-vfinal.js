@@ -41,42 +41,34 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (session) {
             if (!isInitialized) {
                 isInitialized = true;
-                setTimeout(scrubHash, 5000); // Wait longer to ensure stability
+                setTimeout(scrubHash, 10000); // 10s delay to be safe
                 renderDashboard(session);
             }
             return;
         }
 
         // Only redirect if we are 100% sure there is no session
-        // Ignore SIGNED_OUT events in the first 5 seconds of page load (hydration period)
-        if (event === 'SIGNED_OUT' && (Date.now() - authStartTime > 5000)) {
-            const hasAuthParams = 
-                window.location.search.includes('code=') || 
-                window.location.hash.includes('access_token=') || 
-                window.location.hash.includes('code=');
-
-            if (!hasAuthParams) {
-                console.warn('[sentinel-dashboard] truly signed out after hydration, redirecting');
-                window.location.href = '/auth';
-            }
+        // Ignore SIGNED_OUT events in the first 15 seconds (Generous hydration window)
+        if (event === 'SIGNED_OUT' && (Date.now() - authStartTime > 15000)) {
+            console.warn('[sentinel-dashboard] truly signed out, redirecting');
+            window.location.href = '/auth';
         }
     });
 
     // 2. Initial Session Handshake
-    const checkSession = async (isRetry = false) => {
+    const checkSession = async () => {
         try {
             const { data: { session } } = await sentinelAuth.auth.getSession();
             if (session) {
                 if (!isInitialized) {
                     isInitialized = true;
                     renderDashboard(session);
-                    setTimeout(scrubHash, 5000);
+                    setTimeout(scrubHash, 10000);
                 }
                 return true;
             }
             return false;
         } catch (err) {
-            console.error('Session check error:', err);
             return false;
         }
     };
@@ -93,25 +85,34 @@ document.addEventListener('DOMContentLoaded', async () => {
             window.location.search.includes('error=');
 
         if (isAuthRedirect) {
-            console.log('[sentinel-dashboard] auth redirect detected, waiting for PKCE (10s)...');
-            // Give it multiple retries
-            for (let i = 0; i < 20; i++) {
+            console.log('[sentinel-dashboard] auth redirect detected, holding for 30s...');
+            // Extremely patient retry loop for new accounts
+            for (let i = 0; i < 60; i++) {
                 await new Promise(r => setTimeout(r, 500));
                 if (isInitialized) return;
                 if (await checkSession()) return;
             }
-            console.warn('[sentinel-dashboard] auth redirect failed to hydrate session');
             window.location.href = '/auth';
         } else {
-            // No session and not a redirect -> wait 4s then bounce
+            // No session and not a redirect -> wait 8s
             setTimeout(async () => {
                 if (!isInitialized && !(await checkSession())) {
-                    console.warn('[sentinel-dashboard] no session detected after 4s, bouncing');
                     window.location.href = '/auth';
                 }
-            }, 4000);
+            }, 8000);
         }
     })();
+
+    // 3. Logout Logic
+    const logoutBtn = document.getElementById('btn-logout');
+    if (logoutBtn) {
+        logoutBtn.onclick = async (e) => {
+            e.preventDefault();
+            console.log('[sentinel-dashboard] manual logout triggered');
+            await sentinelAuth.auth.signOut();
+            window.location.href = '/auth';
+        };
+    }
 
     // --- Setup Sidebar State Toggle (S-Tier UX) ---
     const sidebarToggle = document.getElementById('sidebar-toggle');
