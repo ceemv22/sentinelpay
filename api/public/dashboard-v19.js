@@ -10,20 +10,18 @@ window.onunhandledrejection = (event) => {
     if (window.showStatus) showStatus(errorMsg, 'error');
 };
 
-// 0. S-Tier UI Status Overlay
+// 0. S-Tier UI Status Overlay (Only for Errors now)
 window.showStatus = (msg, type = 'info') => {
-    if (window.silentMode && type === 'info') return; 
+    if (type !== 'error') return; // Silent mode for everything except critical failures
+    
     let overlay = document.getElementById('sentinel-status-overlay');
     if (!overlay) {
         overlay = document.createElement('div');
         overlay.id = 'sentinel-status-overlay';
-        overlay.style.cssText = 'position:fixed;bottom:20px;right:20px;padding:12px 20px;background:rgba(0,0,0,0.8);backdrop-filter:blur(10px);border:1px solid rgba(0,240,255,0.2);border-radius:12px;color:#00f0ff;font-family:JetBrains Mono,monospace;font-size:0.75rem;z-index:99999;box-shadow:0 10px 30px rgba(0,0,0,0.5);pointer-events:none;transition:all 0.3s ease;';
+        overlay.style.cssText = 'position:fixed;bottom:20px;right:20px;padding:12px 20px;background:rgba(0,0,0,0.8);backdrop-filter:blur(10px);border:1px solid rgba(255,51,51,0.4);border-radius:12px;color:#ff3333;font-family:JetBrains Mono,monospace;font-size:0.75rem;z-index:99999;box-shadow:0 10px 30px rgba(0,0,0,0.5);pointer-events:none;transition:all 0.3s ease;';
         document.body.appendChild(overlay);
     }
-    overlay.style.borderColor = type === 'error' ? 'rgba(255,51,51,0.4)' : 'rgba(0,240,255,0.2)';
-    overlay.style.color = type === 'error' ? '#ff3333' : '#00f0ff';
     overlay.textContent = msg;
-    if (type === 'success') setTimeout(() => { if (overlay) overlay.remove(); }, 2000);
 };
 
 // 1. GLOBAL STATE
@@ -32,7 +30,6 @@ const supabaseKey = 'sb_publishable_bRfAssaGT6D8oFDQtPARbw_5fyYGWM6';
 let sentinelAuth = null;
 let isInitialized = false;
 let authStartTime = Date.now();
-window.silentMode = false;
 
 const initialSearch = window.location.search;
 const initialHash = window.location.hash;
@@ -96,17 +93,13 @@ const startHydration = async () => {
     });
 
     const hasSession = await checkSession();
-    if (hasSession) {
-        window.silentMode = true;
-        return;
-    }
+    if (hasSession) return;
 
     const urlParams = new URLSearchParams(initialSearch || initialHash.substring(1));
     const code = urlParams.get('code');
     const isAuthRedirect = !!code || initialHash.includes('access_token=');
 
     if (isAuthRedirect) {
-        showStatus('finalizing identity...', 'info');
         if (code) {
             try {
                 const { data, error } = await sentinelAuth.auth.exchangeCodeForSession(code);
@@ -118,7 +111,7 @@ const startHydration = async () => {
                     return;
                 }
             } catch (e) {
-                showStatus(`handshake failed: ${e.message}`, 'error');
+                showStatus(`Identity Error: ${e.message}`, 'error');
             }
         }
         for (let i = 0; i < 10; i++) {
@@ -158,7 +151,6 @@ function renderDashboard(session) {
         
         // 1. INSTANT UI STATE
         document.body.classList.add('state-org-home');
-        showStatus('Dashboard Ready', 'success');
 
         // 2. Immediate Identifiers
         let displayIdentifier = user.email || 'user';
@@ -188,7 +180,7 @@ function renderDashboard(session) {
             };
         }
 
-        // 3. CACHE LOOKUP (Truly Instant)
+        // 3. CACHE LOOKUP
         const cachedOrgs = localStorage.getItem('sentinel-cached-orgs');
         const orgCardsGrid = document.querySelector('.org-cards-grid');
         if (orgCardsGrid) {
@@ -200,7 +192,6 @@ function renderDashboard(session) {
                     orgCardsGrid.innerHTML = '<div class="sync-shimmer">syncing organizations...</div>';
                 }
             } else {
-                // If no cache, show a shimmer or empty state immediately while syncing
                 orgCardsGrid.innerHTML = '<div class="sync-shimmer">syncing organizations...</div>';
             }
         }
@@ -226,7 +217,17 @@ function updateOrgGrid(orgs) {
         orgs.forEach(org => {
             const card = document.createElement('div');
             card.className = 'org-card-item';
-            card.innerHTML = `<span>${org.name}</span>`;
+            
+            // Re-creating the professional org card structure
+            const initial = org.name.charAt(0).toUpperCase();
+            card.innerHTML = `
+                <div class="org-card-avatar">${initial}</div>
+                <div class="org-card-info">
+                    <span class="org-card-name">${org.name}</span>
+                    <span class="org-card-meta">Standard Plan</span>
+                </div>
+                <svg style="margin-left: auto; opacity: 0.3;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            `;
             orgCardsGrid.appendChild(card);
         });
     }
@@ -251,7 +252,6 @@ async function fetchProfile(token) {
         const orgsRes = await fetch('/v1/organizations', { headers: { 'Authorization': `Bearer ${token}` } });
         const orgs = await orgsRes.json();
         
-        // Update Cache & UI
         localStorage.setItem('sentinel-cached-orgs', JSON.stringify(orgs));
         updateOrgGrid(orgs);
     } catch (err) {}
