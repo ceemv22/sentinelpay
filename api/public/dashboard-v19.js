@@ -1,17 +1,17 @@
-// 0. S-Tier Global Error Monitor (Catch silent crashes)
+// 0. S-Tier Global Error Monitor
 window.onerror = (msg, url, line) => {
     const errorMsg = `[sentinel-critical] JS Error: ${msg} at ${url}:${line}`;
     console.error(errorMsg);
-    showStatus(errorMsg, 'error');
+    if (window.showStatus) showStatus(errorMsg, 'error');
 };
 window.onunhandledrejection = (event) => {
     const errorMsg = `[sentinel-critical] Unhandled Promise Rejection: ${event.reason}`;
     console.error(errorMsg);
-    showStatus(errorMsg, 'error');
+    if (window.showStatus) showStatus(errorMsg, 'error');
 };
 
-// 0. S-Tier UI Status Overlay (Visible feedback for hydration)
-const showStatus = (msg, type = 'info') => {
+// 0. S-Tier UI Status Overlay
+window.showStatus = (msg, type = 'info') => {
     let overlay = document.getElementById('sentinel-status-overlay');
     if (!overlay) {
         overlay = document.createElement('div');
@@ -25,77 +25,41 @@ const showStatus = (msg, type = 'info') => {
     if (type === 'success') setTimeout(() => overlay.remove(), 5000);
 };
 
-// 0. Pre-Flight State Capture
-const initialSearch = window.location.search;
-const initialHash = window.location.hash;
-
+// 1. GLOBAL STATE
 const supabaseUrl = 'https://aivqwkgjdpklxxuvkxpy.supabase.co';
 const supabaseKey = 'sb_publishable_bRfAssaGT6D8oFDQtPARbw_5fyYGWM6';
-
-showStatus('initializing security subsystem...');
-
-const sentinelAuth = window.supabase.createClient(supabaseUrl, supabaseKey, {
-    auth: {
-        flowType: 'pkce',
-        autoRefreshToken: true,
-        persistSession: true,
-        detectSessionInUrl: true
-    }
-});
-
+let sentinelAuth = null;
 let isInitialized = false;
 let authStartTime = Date.now();
 
-// 1. Setup Auth Listener
-sentinelAuth.auth.onAuthStateChange(async (event, session) => {
-    console.log('[sentinel-dashboard] auth event:', event, !!session);
-    showStatus(`auth event: ${event}`);
-    
-    if (session) {
-        if (!isInitialized) {
-            isInitialized = true;
-            console.log('[sentinel-dashboard] session stabilized via onAuthStateChange, rendering...');
-            showStatus('session verified, loading profile...', 'success');
-            renderDashboard(session);
-            setTimeout(scrubHash, 5000); 
-        }
-        return;
-    }
+const initialSearch = window.location.search;
+const initialHash = window.location.hash;
 
-    if (event === 'SIGNED_OUT' && (Date.now() - authStartTime > 20000)) {
-        console.warn('[sentinel-dashboard] truly signed out, redirecting');
-        window.location.href = '/auth?reason=signed_out';
-    }
-});
-
+// 2. CORE LOGIC
 const scrubHash = () => {
     try {
         const url = new URL(window.location.href);
         if (url.search || url.hash) {
             window.history.replaceState(null, document.title, url.pathname);
-            console.log('[sentinel-dashboard] URL scrubbed clean.');
+            console.log('[sentinel-dashboard] URL scrubbed.');
         }
-    } catch (e) {
-        console.warn('[sentinel] scrubHash failed');
-    }
+    } catch (e) {}
 };
 
 const checkSession = async () => {
+    if (!sentinelAuth) return false;
     try {
         const { data: { session }, error } = await sentinelAuth.auth.getSession();
         if (error) throw error;
-        console.log('[sentinel-dashboard] checkSession session:', !!session);
-        if (session) {
-            if (!isInitialized) {
-                isInitialized = true;
-                console.log('[sentinel-dashboard] initializing from checkSession');
-                showStatus('session found, launching...', 'success');
-                renderDashboard(session);
-                setTimeout(scrubHash, 5000);
-            }
+        if (session && !isInitialized) {
+            isInitialized = true;
+            console.log('[sentinel-dashboard] session found in checkSession');
+            showStatus('session confirmed, loading...', 'success');
+            renderDashboard(session);
+            setTimeout(scrubHash, 5000);
             return true;
         }
-        return false;
+        return !!session;
     } catch (err) {
         console.error('[sentinel-dashboard] checkSession error:', err);
         return false;
@@ -103,72 +67,94 @@ const checkSession = async () => {
 };
 
 document.addEventListener('DOMContentLoaded', async () => {
-    console.log('[sentinel-dashboard] v-19 loader active (ULTIMATE RESILIENCE)');
+    showStatus('booting v19-resilience...');
     
-    // Main Hydration Logic
-    (async () => {
-        showStatus('checking active sessions...');
-        const hasSession = await checkSession();
-        if (hasSession) {
-            showStatus('session active', 'success');
-            return;
+    // Check for SDK
+    if (!window.supabase) {
+        showStatus('CRITICAL: Supabase SDK not found in window!', 'error');
+        // Try fallback initialization if possible or just stop
+        return;
+    }
+
+    try {
+        sentinelAuth = window.supabase.createClient(supabaseUrl, supabaseKey, {
+            auth: {
+                flowType: 'pkce',
+                autoRefreshToken: true,
+                persistSession: true,
+                detectSessionInUrl: true
+            }
+        });
+        showStatus('security subsystem active.');
+    } catch (e) {
+        showStatus('SDK INIT FAILED: ' + e.message, 'error');
+        return;
+    }
+
+    // 1. Setup Auth Listener
+    sentinelAuth.auth.onAuthStateChange(async (event, session) => {
+        console.log('[sentinel-dashboard] auth event:', event, !!session);
+        showStatus(`auth event: ${event}`);
+        
+        if (session && !isInitialized) {
+            isInitialized = true;
+            showStatus('session verified!', 'success');
+            renderDashboard(session);
+            setTimeout(scrubHash, 5000); 
         }
+
+        if (event === 'SIGNED_OUT' && (Date.now() - authStartTime > 30000)) {
+            window.location.href = '/auth?reason=signed_out';
+        }
+    });
+
+    // 2. Hydration Flow
+    (async () => {
+        showStatus('probing for session...');
+        const hasSession = await checkSession();
+        if (hasSession) return;
 
         const urlParams = new URLSearchParams(initialSearch || initialHash.substring(1));
         const code = urlParams.get('code');
-        const accessToken = urlParams.get('access_token');
-        const isAuthRedirect = !!(code || accessToken);
+        const isAuthRedirect = !!code || initialHash.includes('access_token=');
 
         if (isAuthRedirect) {
             if (code) {
-                showStatus(`exchanging security code...`);
-                console.log('[sentinel-dashboard] attempting manual code exchange for PKCE');
+                showStatus('exchanging security code...');
                 try {
-                    // Force exchange
                     const { data, error } = await sentinelAuth.auth.exchangeCodeForSession(code);
                     if (error) throw error;
-                    console.log('[sentinel-dashboard] manual exchange success:', !!data.session);
-                    if (data.session) {
-                        showStatus('identity verified!', 'success');
-                        if (!isInitialized) {
-                            isInitialized = true;
-                            renderDashboard(data.session);
-                            setTimeout(scrubHash, 5000);
-                        }
+                    if (data.session && !isInitialized) {
+                        isInitialized = true;
+                        showStatus('identity confirmed!', 'success');
+                        renderDashboard(data.session);
+                        setTimeout(scrubHash, 5000);
                         return;
                     }
                 } catch (e) {
-                    console.error('[sentinel-dashboard] manual exchange error:', e.message);
                     showStatus(`exchange failed: ${e.message}`, 'error');
                 }
             }
 
-            console.log('[sentinel-dashboard] waiting for SDK auto-hydration loop...');
-            // Patient retry loop for PKCE exchange (fallback)
+            // Loop fallback
             for (let i = 0; i < 30; i++) {
                 await new Promise(r => setTimeout(r, 1000));
-                showStatus(`verifying identity (attempt ${i+1}/30)...`);
-                const sessionFound = await checkSession();
-                if (isInitialized || sessionFound) {
-                    return;
-                }
+                showStatus(`syncing (attempt ${i+1}/30)...`);
+                if (isInitialized || await checkSession()) return;
             }
-            
-            showStatus('identity verification timed out', 'error');
+            showStatus('hydration timeout', 'error');
             setTimeout(() => window.location.href = '/auth?error=hydration_timeout', 3000);
         } else {
             showStatus('unauthenticated guest', 'info');
-            // Normal load: Wait 10s then bounce
             setTimeout(async () => {
                 if (!isInitialized && !(await checkSession())) {
-                    showStatus('no session found, redirecting to login...', 'error');
-                    setTimeout(() => window.location.href = '/auth', 2000);
+                    window.location.href = '/auth';
                 }
             }, 10000);
         }
     })();
 
-    // 3. Logout Logic
+    // 3. UI logic (renderDashboard etc)
     const logoutBtn = document.getElementById('btn-logout');
     if (logoutBtn) {
         logoutBtn.onclick = async (e) => {
@@ -179,7 +165,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         };
     }
 
-    // --- Setup Sidebar State Toggle ---
+    // Sidebar Toggle
     const sidebarToggle = document.getElementById('sidebar-toggle');
     const sidebarPopup = document.getElementById('sidebar-popup');
     if (sidebarToggle && sidebarPopup) {
@@ -190,26 +176,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.addEventListener('click', (e) => {
             if (!sidebarToggle.contains(e.target) && !sidebarPopup.contains(e.target)) sidebarPopup.classList.remove('active');
         });
-        sidebarPopup.querySelectorAll('.state-option').forEach(option => {
-            option.addEventListener('click', (e) => {
-                e.preventDefault();
-                sidebarPopup.querySelectorAll('.state-option').forEach(opt => opt.classList.remove('active'));
-                option.classList.add('active');
-                const state = option.getAttribute('data-state');
-                document.body.classList.remove('sidebar-expanded', 'sidebar-collapsed');
-                if (state === 'expanded') document.body.classList.add('sidebar-expanded');
-                else if (state === 'collapsed') document.body.classList.add('sidebar-collapsed');
-                setTimeout(() => sidebarPopup.classList.remove('active'), 150);
-            });
-        });
     }
+});
 
-    async function renderDashboard(session) {
+async function renderDashboard(session) {
+    try {
         const token = session.access_token;
         const user = session.user;
         
-        // --- 1. Immediate Avatar Update ---
-        let displayIdentifier = user.email || '';
+        let displayIdentifier = user.email || 'authenticated user';
         let avatarInitial = '?';
         if (user.user_metadata) {
             if (user.user_metadata.user_name) {
@@ -234,95 +209,51 @@ document.addEventListener('DOMContentLoaded', async () => {
                 e.preventDefault(); e.stopPropagation();
                 dropdownMenu.classList.toggle('active');
             };
-            document.addEventListener('click', (e) => {
-                if (!menuTrigger.contains(e.target) && !dropdownMenu.contains(e.target)) dropdownMenu.classList.remove('active');
-            });
         }
 
-        // Setup API Key Modal
-        const badgeEl = document.getElementById('header-api-key');
-        const modal = document.getElementById('api-modal-overlay');
-        const closeBtn = document.getElementById('btn-close-api-modal');
-        const modalDisplay = document.getElementById('modal-api-key-display');
-        const copyBtn = document.getElementById('modal-btn-copy');
-        let cachedFullKey = null;
-
-        if (badgeEl && modal && !badgeEl.dataset.initialized) {
-            badgeEl.dataset.initialized = "true";
-            badgeEl.onclick = async (e) => {
-                e.preventDefault();
-                document.body.classList.add('modal-open');
-                modal.style.display = 'flex';
-                setTimeout(() => modal.classList.add('active'), 10);
-                if (cachedFullKey) {
-                    const suffix = cachedFullKey.slice(-4);
-                    modalDisplay.textContent = `sp_live_••••••••••••••••••••••••${suffix}`;
-                } else {
-                    await fetchHeaderApiKey(token, (fullKey) => {
-                        cachedFullKey = fullKey;
-                        const suffix = fullKey.slice(-4);
-                        modalDisplay.textContent = `sp_live_••••••••••••••••••••••••${suffix}`;
-                    });
-                }
-            };
-            closeBtn.onclick = () => {
-                document.body.classList.remove('modal-open');
-                modal.classList.remove('active');
-                setTimeout(() => modal.style.display = 'none', 300);
-            };
-        }
-
-        fetchHeaderApiKey(token, (fullKey) => cachedFullKey = fullKey);
+        fetchHeaderApiKey(token);
         fetchProfile(token);
+    } catch (e) {
+        showStatus('render error: ' + e.message, 'error');
     }
+}
 
-    async function fetchHeaderApiKey(token, onKeyFetched) {
-        const suffixEl = document.getElementById('api-key-suffix');
-        const cachedSuffix = localStorage.getItem('sentinel_key_suffix');
-        if (cachedSuffix && suffixEl) suffixEl.textContent = cachedSuffix;
-        try {
-            const res = await fetch('/v1/user/api-key/reveal', { headers: { 'Authorization': `Bearer ${token}` } });
-            const result = await res.json();
-            if (res.ok && result.apiKey) {
-                const last4 = result.apiKey.slice(-4);
-                if (suffixEl) suffixEl.textContent = last4;
-                localStorage.setItem('sentinel_key_suffix', last4);
-                if (onKeyFetched) onKeyFetched(result.apiKey);
-            }
-        } catch (err) { console.error('API key fetch error:', err); }
-    }
-
-    async function fetchProfile(token) {
-        try {
-            const response = await fetch('/v1/user/profile', { headers: { 'Authorization': `Bearer ${token}` } });
-            if (!response.ok) {
-                const errData = await response.json();
-                throw new Error(errData.error || 'Failed to load profile');
-            }
-            const data = await response.json();
-            
-            // Render Orgs
-            const orgsRes = await fetch('/v1/organizations', { headers: { 'Authorization': `Bearer ${token}` } });
-            const orgs = await orgsRes.json();
-            const orgCardsGrid = document.querySelector('.org-cards-grid');
-            if (orgCardsGrid) {
-                orgCardsGrid.innerHTML = '';
-                if (orgs.length === 0) {
-                    orgCardsGrid.innerHTML = '<div class="empty-state">no organizations found.</div>';
-                } else {
-                    orgs.forEach(org => {
-                        const card = document.createElement('div');
-                        card.className = 'org-card-item';
-                        card.innerHTML = `<span>${org.name}</span>`;
-                        card.onclick = () => { /* enter dash */ };
-                        orgCardsGrid.appendChild(card);
-                    });
-                }
-            }
-            document.body.classList.add('state-org-home');
-        } catch (err) {
-            console.error('Profile fetch error:', err);
-            showStatus(`Error: ${err.message}`, 'error');
+async function fetchHeaderApiKey(token) {
+    const suffixEl = document.getElementById('api-key-suffix');
+    try {
+        const res = await fetch('/v1/user/api-key/reveal', { headers: { 'Authorization': `Bearer ${token}` } });
+        const result = await res.json();
+        if (res.ok && result.apiKey && suffixEl) {
+            suffixEl.textContent = result.apiKey.slice(-4);
         }
+    } catch (err) {}
+}
+
+async function fetchProfile(token) {
+    try {
+        const response = await fetch('/v1/user/profile', { headers: { 'Authorization': `Bearer ${token}` } });
+        if (!response.ok) throw new Error('profile sync failed');
+        const data = await response.json();
+        
+        const orgsRes = await fetch('/v1/organizations', { headers: { 'Authorization': `Bearer ${token}` } });
+        const orgs = await orgsRes.json();
+        const orgCardsGrid = document.querySelector('.org-cards-grid');
+        if (orgCardsGrid) {
+            orgCardsGrid.innerHTML = '';
+            if (orgs.length === 0) {
+                orgCardsGrid.innerHTML = '<div class="empty-state">no organizations found.</div>';
+            } else {
+                orgs.forEach(org => {
+                    const card = document.createElement('div');
+                    card.className = 'org-card-item';
+                    card.innerHTML = `<span>${org.name}</span>`;
+                    orgCardsGrid.appendChild(card);
+                });
+            }
+        }
+        document.body.classList.add('state-org-home');
+        showStatus('dashboard ready', 'success');
+    } catch (err) {
+        showStatus(`profile error: ${err.message}`, 'error');
     }
-});
+}
