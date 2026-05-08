@@ -23,7 +23,7 @@ window.showStatus = (msg, type = 'info') => {
     overlay.style.borderColor = type === 'error' ? 'rgba(255,51,51,0.4)' : 'rgba(0,240,255,0.2)';
     overlay.style.color = type === 'error' ? '#ff3333' : '#00f0ff';
     overlay.textContent = msg;
-    if (type === 'success') setTimeout(() => { if (overlay) overlay.remove(); }, 3000);
+    if (type === 'success') setTimeout(() => { if (overlay) overlay.remove(); }, 2000);
 };
 
 // 1. GLOBAL STATE
@@ -55,7 +55,7 @@ const checkSession = async () => {
         if (session && !isInitialized) {
             isInitialized = true;
             renderDashboard(session);
-            setTimeout(scrubHash, 1000);
+            setTimeout(scrubHash, 500);
             return true;
         }
         return !!session;
@@ -67,8 +67,7 @@ const checkSession = async () => {
 const startHydration = async () => {
     let sdk = window.supabase || (typeof supabase !== 'undefined' ? supabase : null);
     if (!sdk) {
-        showStatus('SDK not found. Retrying...', 'error');
-        setTimeout(() => window.location.reload(), 2000);
+        setTimeout(startHydration, 100); // Fast retry
         return;
     }
 
@@ -82,16 +81,15 @@ const startHydration = async () => {
             }
         });
     } catch (e) {
-        showStatus('SDK INIT ERROR', 'error');
         return;
     }
 
-    // 1. Setup Auth Listener (Immediate catch)
+    // 1. Setup Auth Listener
     sentinelAuth.auth.onAuthStateChange(async (event, session) => {
         if (session && !isInitialized) {
             isInitialized = true;
             renderDashboard(session);
-            setTimeout(scrubHash, 1000); 
+            setTimeout(scrubHash, 500); 
         }
         if (event === 'SIGNED_OUT' && (Date.now() - authStartTime > 30000)) {
             window.location.href = '/auth';
@@ -101,7 +99,7 @@ const startHydration = async () => {
     // 2. Hydration Flow
     const hasSession = await checkSession();
     if (hasSession) {
-        window.silentMode = true; // No more messages needed
+        window.silentMode = true;
         return;
     }
 
@@ -118,36 +116,28 @@ const startHydration = async () => {
                 if (data.session && !isInitialized) {
                     isInitialized = true;
                     renderDashboard(data.session);
-                    setTimeout(scrubHash, 1000);
+                    setTimeout(scrubHash, 500);
                     return;
                 }
             } catch (e) {
                 showStatus(`handshake failed: ${e.message}`, 'error');
             }
         }
-
-        // Loop fallback (Faster)
-        for (let i = 0; i < 15; i++) {
-            await new Promise(r => setTimeout(r, 400));
+        for (let i = 0; i < 10; i++) {
+            await new Promise(r => setTimeout(r, 200));
             if (isInitialized || await checkSession()) return;
         }
         window.location.href = '/auth?error=timeout';
     } else {
-        // Normal guest load
         setTimeout(async () => {
             if (!isInitialized && !(await checkSession())) {
                 window.location.href = '/auth';
             }
-        }, 5000);
+        }, 3000);
     }
 };
 
-// BOOT IMMEDIATELY
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', startHydration);
-} else {
-    startHydration();
-}
+startHydration();
 
 // UI HELPERS
 const logoutBtn = document.getElementById('btn-logout');
@@ -159,12 +149,19 @@ if (logoutBtn) {
     };
 }
 
-async function renderDashboard(session) {
+function renderDashboard(session) {
+    if (renderDashboard.busy) return;
+    renderDashboard.busy = true;
+
     try {
         const token = session.access_token;
         const user = session.user;
         
-        // Immediate UI preparation
+        // 1. INSTANT UI STATE
+        document.body.classList.add('state-org-home');
+        showStatus('Dashboard Ready', 'success');
+
+        // 2. Immediate Identifiers
         let displayIdentifier = user.email || 'user';
         let avatarInitial = '?';
         if (user.user_metadata) {
@@ -192,15 +189,13 @@ async function renderDashboard(session) {
             };
         }
 
-        // Parallel Fetch
-        await Promise.all([
-            fetchHeaderApiKey(token),
-            fetchProfile(token)
-        ]);
-
-        showStatus('Dashboard Ready', 'success');
+        // 3. BACKGROUND FETCH (Don't await)
+        fetchHeaderApiKey(token);
+        fetchProfile(token);
     } catch (e) {
         showStatus('Render Error', 'error');
+    } finally {
+        renderDashboard.busy = false;
     }
 }
 
@@ -218,7 +213,7 @@ async function fetchHeaderApiKey(token) {
 async function fetchProfile(token) {
     try {
         const response = await fetch('/v1/user/profile', { headers: { 'Authorization': `Bearer ${token}` } });
-        if (!response.ok) throw new Error();
+        if (!response.ok) return;
         
         const orgsRes = await fetch('/v1/organizations', { headers: { 'Authorization': `Bearer ${token}` } });
         const orgs = await orgsRes.json();
@@ -236,6 +231,5 @@ async function fetchProfile(token) {
                 });
             }
         }
-        document.body.classList.add('state-org-home');
     } catch (err) {}
 }
