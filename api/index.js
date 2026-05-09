@@ -641,6 +641,16 @@ app.post('/v1/organizations', requireSupabaseAuth, async (req, res) => {
         if (existing) {
             return res.status(400).json({ error: 'organization name already taken', code: 'name_taken' });
         }
+
+        // S-Tier Protection: 10 Orgs Limit for MVP
+        const orgCount = await prisma.organization.count({
+            where: { ownerId: req.user.id }
+        });
+
+        if (orgCount >= 10) {
+            return res.status(403).json({ error: 'organization limit reached (max 10 for mvp)', code: 'limit_reached' });
+        }
+
         console.log(`[organization-service] creating org "${name}" (Plan: ${plan}, Region: ${region}) for user: ${req.user.id}`);
         
         const newOrg = await prisma.organization.create({
