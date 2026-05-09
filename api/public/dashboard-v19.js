@@ -212,8 +212,9 @@ function renderDashboard(session) {
         fetchHeaderApiKey(token);
         fetchProfile(token);
 
-        // 5. MODAL INITIALIZATION
+        // 5. MODAL & SIDEBAR INITIALIZATION
         setupCreateOrgModal(token);
+        setupSidebar();
     } catch (e) {
         showStatus('Render Error', 'error');
     } finally {
@@ -461,4 +462,58 @@ async function fetchProfile(token) {
         localStorage.setItem('sentinel-cached-orgs', JSON.stringify(orgs));
         updateOrgGrid(orgs);
     } catch (err) {}
+}
+
+function setupSidebar() {
+    const toggle = document.getElementById('sidebar-toggle');
+    const popup = document.getElementById('sidebar-popup');
+    const helpBtn = document.getElementById('sidebar-help');
+    const options = document.querySelectorAll('.state-option');
+
+    if (!toggle || !popup) return;
+    if (toggle.dataset.bound) return;
+    toggle.dataset.bound = "true";
+
+    toggle.onclick = (e) => {
+        e.preventDefault(); e.stopPropagation();
+        popup.classList.toggle('active');
+    };
+
+    if (helpBtn) {
+        helpBtn.onclick = (e) => {
+            e.preventDefault();
+            if (window.SentinelToast) window.SentinelToast.show("documentation and support coming soon.", "info");
+        };
+    }
+
+    options.forEach(opt => {
+        opt.onclick = (e) => {
+            e.preventDefault();
+            const state = opt.dataset.state;
+            
+            document.body.classList.remove('sidebar-expanded', 'sidebar-collapsed', 'sidebar-hover');
+            if (state === 'expanded') document.body.classList.add('sidebar-expanded');
+            else if (state === 'collapsed') document.body.classList.add('sidebar-collapsed');
+            else document.body.classList.add('sidebar-hover');
+
+            options.forEach(o => o.classList.remove('active'));
+            opt.classList.add('active');
+            
+            popup.classList.remove('active');
+            localStorage.setItem('sentinel-sidebar-state', state);
+        };
+    });
+
+    const savedState = localStorage.getItem('sentinel-sidebar-state') || 'hover';
+    document.body.classList.remove('sidebar-expanded', 'sidebar-collapsed', 'sidebar-hover');
+    if (savedState === 'expanded') document.body.classList.add('sidebar-expanded');
+    else if (savedState === 'collapsed') document.body.classList.add('sidebar-collapsed');
+    else document.body.classList.add('sidebar-hover');
+
+    options.forEach(o => {
+        if (o.dataset.state === savedState) o.classList.add('active');
+        else o.classList.remove('active');
+    });
+
+    document.addEventListener('click', () => popup.classList.remove('active'));
 }
