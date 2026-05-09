@@ -159,6 +159,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 const email = document.getElementById('reg-email').value;
                 const password = document.getElementById('reg-password').value;
 
+                // S-Tier Security: Strict Password Policy Check
+                if (password.length < 8 || !/[A-Z]/.test(password) || !/[0-9]/.test(password)) {
+                    document.getElementById('register-error-msg').textContent = 'error: security requirements not met';
+                    document.getElementById('register-error-msg').style.display = 'block';
+                    btn.disabled = false;
+                    btn.textContent = 'create account';
+                    btn.removeAttribute('data-captcha-token');
+                    isBusy = false;
+                    return;
+                }
+
                 const { data, error } = await s.auth.signUp({ 
                     email, 
                     password, 
