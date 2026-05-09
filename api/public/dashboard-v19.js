@@ -240,6 +240,12 @@ function setupCreateOrgModal(token) {
         form.reset();
         errorEl.style.display = 'none';
         
+        // Reset dynamic UI elements
+        const recEl = document.getElementById('org-name-rec');
+        const successIcon = document.getElementById('org-name-success');
+        if (recEl) recEl.style.display = 'none';
+        if (successIcon) successIcon.style.display = 'none';
+        
         // Reset custom selects
         document.querySelectorAll('.sentinel-select-trigger').forEach(t => t.classList.remove('active'));
         document.querySelectorAll('.sentinel-select-dropdown').forEach(d => d.classList.remove('active'));
