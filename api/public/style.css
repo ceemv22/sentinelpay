@@ -1423,3 +1423,101 @@ button:hover:not(:disabled) {
     background: #111;
     color: #fff;
 }
+
+/* Sidebar Blur when modal is open */
+body.modal-open .sidebar-container {
+    filter: blur(8px);
+    pointer-events: none;
+    transition: filter 0.3s ease;
+}
+
+/* Custom Select Styling to match Avatar Dropdown */
+.sentinel-select-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.sentinel-select-trigger {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    color: var(--text-main);
+    padding: 0.8rem 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    width: 100%;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+.sentinel-select-trigger:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+.sentinel-select-trigger.active {
+    border-color: var(--neon-blue);
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 0 20px rgba(0, 240, 255, 0.1);
+}
+
+.sentinel-select-trigger .chevron {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0.5;
+}
+
+.sentinel-select-trigger.active .chevron {
+    transform: rotate(180deg);
+    opacity: 1;
+    color: var(--neon-blue);
+}
+
+.sentinel-select-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    background: rgba(10, 12, 15, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 6px;
+    z-index: 1000;
+    display: none;
+    flex-direction: column;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+    animation: selectDropdownFade 0.2s ease-out;
+}
+
+.sentinel-select-dropdown.active {
+    display: flex;
+}
+
+.sentinel-select-option {
+    padding: 0.75rem 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.sentinel-select-option:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+}
+
+.sentinel-select-option.selected {
+    color: var(--neon-blue);
+    background: rgba(0, 240, 255, 0.05);
+}
+
+@keyframes selectDropdownFade {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}

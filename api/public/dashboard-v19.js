@@ -224,12 +224,18 @@ function setupCreateOrgModal(token) {
 
     const openModal = () => {
         modal.classList.add('active');
+        document.body.classList.add('modal-open');
         form.reset();
         errorEl.style.display = 'none';
+        
+        // Reset custom selects
+        document.querySelectorAll('.sentinel-select-trigger').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.sentinel-select-dropdown').forEach(d => d.classList.remove('active'));
     };
 
     const closeModal = () => {
         modal.classList.remove('active');
+        document.body.classList.remove('modal-open');
     };
 
     openBtn.onclick = (e) => { e.preventDefault(); openModal(); };
@@ -238,10 +244,49 @@ function setupCreateOrgModal(token) {
     // Close on overlay click
     modal.onclick = (e) => { if (e.target === modal) closeModal(); };
 
+    // Custom Select Logic
+    const initSelect = (idPrefix) => {
+        const trigger = document.getElementById(`${idPrefix}-select-trigger`);
+        const dropdown = document.getElementById(`${idPrefix}-select-dropdown`);
+        const hiddenInput = document.getElementById(`org-${idPrefix}`);
+        const options = dropdown.querySelectorAll('.sentinel-select-option');
+        const displayVal = trigger.querySelector('.selected-value');
+
+        trigger.onclick = (e) => {
+            e.stopPropagation();
+            // Close other selects
+            document.querySelectorAll('.sentinel-select-trigger').forEach(t => { if(t!==trigger) t.classList.remove('active') });
+            document.querySelectorAll('.sentinel-select-dropdown').forEach(d => { if(d!==dropdown) d.classList.remove('active') });
+            
+            trigger.classList.toggle('active');
+            dropdown.classList.toggle('active');
+        };
+
+        options.forEach(opt => {
+            opt.onclick = () => {
+                options.forEach(o => o.classList.remove('selected'));
+                opt.classList.add('selected');
+                hiddenInput.value = opt.dataset.value;
+                displayVal.textContent = opt.textContent;
+                trigger.classList.remove('active');
+                dropdown.classList.remove('active');
+            };
+        });
+    };
+
+    initSelect('plan');
+    initSelect('region');
+
+    // Global click to close selects
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.sentinel-select-trigger').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.sentinel-select-dropdown').forEach(d => d.classList.remove('active'));
+    });
+
     form.onsubmit = async (e) => {
         e.preventDefault();
         
-        const name = document.getElementById('org-name').value;
+        const name = document.getElementById('org-name').value.trim();
         const plan = document.getElementById('org-plan').value;
         const region = document.getElementById('org-region').value;
 
@@ -262,6 +307,11 @@ function setupCreateOrgModal(token) {
             const data = await response.json();
 
             if (!response.ok) {
+                if (data.code === 'name_taken') {
+                    const random = Math.floor(100000 + Math.random() * 900000);
+                    const rec = `${name.toLowerCase().replace(/\s+/g, '-')}-${random}`;
+                    throw new Error(`name already taken. recommended: ${rec}`);
+                }
                 throw new Error(data.error || 'failed to create organization');
             }
 

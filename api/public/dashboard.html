@@ -1503,21 +1503,35 @@
                     </div>
 
                     <div class="input-group">
-                        <label for="org-plan">pricing plan</label>
-                        <select id="org-plan" class="modal-select">
-                            <option value="starter">Starter Plan ($0/mo)</option>
-                            <option value="pro">Pro Plan ($49/mo)</option>
-                            <option value="enterprise">Enterprise (Custom)</option>
-                        </select>
+                        <label>pricing plan</label>
+                        <div class="sentinel-select-wrapper" id="plan-select-wrapper">
+                            <div class="sentinel-select-trigger" id="plan-select-trigger">
+                                <span class="selected-value">Starter Plan ($0/mo)</span>
+                                <svg class="chevron" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                            </div>
+                            <div class="sentinel-select-dropdown" id="plan-select-dropdown">
+                                <div class="sentinel-select-option selected" data-value="starter">Starter Plan ($0/mo)</div>
+                                <div class="sentinel-select-option" data-value="pro">Pro Plan ($49/mo)</div>
+                                <div class="sentinel-select-option" data-value="enterprise">Enterprise (Custom)</div>
+                            </div>
+                            <input type="hidden" id="org-plan" value="starter">
+                        </div>
                     </div>
 
                     <div class="input-group">
-                        <label for="org-region">operational region</label>
-                        <select id="org-region" class="modal-select">
-                            <option value="americas">Americas (US-East)</option>
-                            <option value="europe">Europe (Frankfurt)</option>
-                            <option value="asia-pacific">Asia-Pacific (Singapore)</option>
-                        </select>
+                        <label>region</label>
+                        <div class="sentinel-select-wrapper" id="region-select-wrapper">
+                            <div class="sentinel-select-trigger" id="region-select-trigger">
+                                <span class="selected-value">Americas (US-East)</span>
+                                <svg class="chevron" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                            </div>
+                            <div class="sentinel-select-dropdown" id="region-select-dropdown">
+                                <div class="sentinel-select-option selected" data-value="americas">Americas (US-East)</div>
+                                <div class="sentinel-select-option" data-value="europe">Europe (Frankfurt)</div>
+                                <div class="sentinel-select-option" data-value="asia-pacific">Asia-Pacific (Singapore)</div>
+                            </div>
+                            <input type="hidden" id="org-region" value="americas">
+                        </div>
                     </div>
 
                     <p id="create-org-error" class="error-msg" style="display: none;"></p>
