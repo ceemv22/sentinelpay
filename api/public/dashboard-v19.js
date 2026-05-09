@@ -176,6 +176,7 @@ function renderDashboard(session) {
             menuTrigger.dataset.initialized = "true";
             menuTrigger.onclick = (e) => {
                 e.preventDefault(); e.stopPropagation();
+                menuTrigger.classList.toggle('active');
                 dropdownMenu.classList.toggle('active');
             };
         }
