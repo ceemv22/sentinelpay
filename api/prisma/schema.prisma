@@ -28,6 +28,7 @@ model Organization {
   name        String
   owner       User          @relation("OrgOwner", fields: [ownerId], references: [id])
   ownerId     String
+  slug        String        @unique
   members     User[]        @relation("OrgMembers")
   apiKeys     ApiKey[]
   scanHistory ScanHistory[]

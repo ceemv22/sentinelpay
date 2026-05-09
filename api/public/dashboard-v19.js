@@ -181,6 +181,17 @@ function renderDashboard(session) {
             };
         }
 
+        // 2.5 ROUTING LOGIC
+        const path = window.location.pathname;
+        const orgMatch = path.match(/\/dashboard\/org\/([a-z0-9]{20})/);
+        
+        if (orgMatch) {
+            const slug = orgMatch[1];
+            switchToOrgView(slug);
+        } else {
+            switchToHomeView();
+        }
+
         // 3. CACHE LOOKUP
         const cachedOrgs = localStorage.getItem('sentinel-cached-orgs');
         const orgCardsGrid = document.querySelector('.org-cards-grid');
@@ -391,10 +402,42 @@ function updateOrgGrid(orgs) {
             `;
             // Safe assignment
             card.querySelector('.org-card-name').textContent = org.name;
+            
+            // Handle Navigation
+            card.onclick = () => {
+                const slug = org.slug;
+                history.pushState({ slug }, '', `/dashboard/org/${slug}`);
+                switchToOrgView(slug);
+            };
+
             orgCardsGrid.appendChild(card);
         });
     }
 }
+
+function switchToHomeView() {
+    document.body.classList.add('state-org-home');
+    document.getElementById('org-home-view').classList.remove('hidden');
+    document.getElementById('org-dashboard-view').classList.add('hidden');
+    document.getElementById('dashboard-view').classList.add('hidden');
+}
+
+function switchToOrgView(slug) {
+    document.body.classList.add('state-org-home');
+    document.getElementById('org-home-view').classList.add('hidden');
+    document.getElementById('org-dashboard-view').classList.remove('hidden');
+    document.getElementById('dashboard-view').classList.add('hidden');
+    
+    // In the future, we fetch org data by slug here
+    console.log(`[sentinel-router] navigated to organization: ${slug}`);
+}
+
+window.onpopstate = (e) => {
+    const path = window.location.pathname;
+    const orgMatch = path.match(/\/dashboard\/org\/([a-z0-9]{20})/);
+    if (orgMatch) switchToOrgView(orgMatch[1]);
+    else switchToHomeView();
+};
 
 async function fetchHeaderApiKey(token) {
     try {

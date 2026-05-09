@@ -182,6 +182,10 @@ app.get('/dashboard/organizations', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
 });
 
+app.get('/dashboard/org/:slug', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
+});
+
 app.use(express.static(path.join(__dirname, 'public'), { extensions: ['html'] }));
 
 // Redis Setup & Rate Limiter Store
@@ -665,13 +669,22 @@ app.post('/v1/organizations', requireSupabaseAuth, async (req, res) => {
             return res.status(403).json({ error: 'organization limit reached (max 10 for mvp)', code: 'limit_reached' });
         }
 
-        console.log(`[organization-service] creating org "${name}" (Plan: ${plan}, Region: ${region}) for user: ${req.user.id}`);
+        console.log(`[organization-service] creating org "${name}" (Plan: ${plan}) for user: ${req.user.id}`);
         
+        // Generate unpredictable 20-char slug
+        const generateSlug = () => {
+            const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+            let res = '';
+            for (let i = 0; i < 20; i++) res += chars.charAt(Math.floor(Math.random() * chars.length));
+            return res;
+        };
+
         const newOrg = await prisma.organization.create({
             data: {
                 name: name.trim(),
+                slug: generateSlug(),
                 plan: plan || 'starter',
-                region: region || 'americas',
+                region: 'americas',
                 ownerId: req.user.id,
                 members: {
                     connect: [{ id: req.user.id }]
@@ -679,7 +692,7 @@ app.post('/v1/organizations', requireSupabaseAuth, async (req, res) => {
             }
         });
 
-        console.log(`[organization-service] organization created successfully: ${newOrg.id}`);
+        console.log(`[organization-service] organization created successfully: ${newOrg.id} (Slug: ${newOrg.slug})`);
         res.status(201).json(newOrg);
     } catch (err) {
         console.error('[organization-service] creation error:', err);
