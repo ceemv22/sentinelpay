@@ -224,11 +224,13 @@ function updateOrgGrid(orgs) {
             card.innerHTML = `
                 <div class="org-card-avatar">${initial}</div>
                 <div class="org-card-info">
-                    <span class="org-card-name">${org.name}</span>
+                    <span class="org-card-name"></span>
                     <span class="org-card-meta">Standard Plan</span>
                 </div>
                 <svg style="margin-left: auto; opacity: 0.3;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
             `;
+            // Safe assignment
+            card.querySelector('.org-card-name').textContent = org.name;
             orgCardsGrid.appendChild(card);
         });
     }
