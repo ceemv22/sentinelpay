@@ -279,6 +279,7 @@ function setupCreateOrgModal(token) {
     // Live Name Check & Recommendation
     const nameInput = document.getElementById('org-name');
     const recEl = document.getElementById('org-name-rec');
+    const successIcon = document.getElementById('org-name-success');
     let checkTimeout;
 
     nameInput.oninput = () => {
@@ -287,6 +288,7 @@ function setupCreateOrgModal(token) {
         
         if (val.length < 2) {
             recEl.style.display = 'none';
+            if (successIcon) successIcon.style.display = 'none';
             return;
         }
 
@@ -302,8 +304,10 @@ function setupCreateOrgModal(token) {
                     const rec = `${val.toLowerCase().replace(/\s+/g, '-')}-${random}`;
                     recEl.textContent = `${val.toLowerCase()} is taken. try ${rec} instead.`;
                     recEl.style.display = 'block';
+                    if (successIcon) successIcon.style.display = 'none';
                 } else {
                     recEl.style.display = 'none';
+                    if (successIcon) successIcon.style.display = 'block';
                 }
             } catch (e) {}
         }, 400); // 400ms debounce
@@ -339,9 +343,7 @@ function setupCreateOrgModal(token) {
 
             if (!response.ok) {
                 if (data.code === 'name_taken') {
-                    const random = Math.floor(100000 + Math.random() * 900000);
-                    const rec = `${name.toLowerCase().replace(/\s+/g, '-')}-${random}`;
-                    throw new Error(`name already taken. recommended: ${rec}`);
+                    throw new Error(`name already taken.`);
                 }
                 throw new Error(data.error || 'failed to create organization');
             }

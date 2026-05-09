@@ -1499,7 +1499,10 @@
                 <form id="create-org-form" class="auth-form" style="display: flex; flex-direction: column; gap: 1.5rem; width: 100%; box-sizing: border-box;">
                     <div class="input-group">
                         <label for="org-name">organization name</label>
-                        <input type="text" id="org-name" placeholder="e.g. Acme Corp" required minlength="2">
+                        <div style="position: relative; width: 100%;">
+                            <input type="text" id="org-name" placeholder="e.g. Acme Corp" required minlength="2" style="width: 100%; padding-right: 2.5rem;">
+                            <svg id="org-name-success" class="input-check-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-green)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); display: none; opacity: 0.8; filter: drop-shadow(0 0 8px rgba(0, 255, 136, 0.3));"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        </div>
                         <div id="org-name-rec" class="org-rec-text" style="display: none;"></div>
                     </div>
 
