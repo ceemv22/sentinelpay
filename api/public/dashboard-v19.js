@@ -300,7 +300,7 @@ function setupCreateOrgModal(token) {
                 if (!available) {
                     const random = Math.floor(100000 + Math.random() * 900000);
                     const rec = `${val.toLowerCase().replace(/\s+/g, '-')}-${random}`;
-                    recEl.textContent = `recommended: ${rec}`;
+                    recEl.textContent = `${val.toLowerCase()} is taken. try ${rec} instead.`;
                     recEl.style.display = 'block';
                 } else {
                     recEl.style.display = 'none';
