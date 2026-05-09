@@ -625,6 +625,8 @@ app.get('/v1/organizations', requireSupabaseAuth, async (req, res) => {
             select: {
                 id: true,
                 name: true,
+                slug: true,
+                plan: true,
                 ownerId: true,
                 createdAt: true
             }
