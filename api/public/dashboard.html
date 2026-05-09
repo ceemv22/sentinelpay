@@ -1485,6 +1485,51 @@
         </div>
     </div>
 
+    <!-- Create Organization Modal -->
+    <div id="create-org-modal-overlay" class="modal-overlay">
+        <div class="auth-card modal-content" style="position: relative; z-index: 1000; display: flex; flex-direction: column; max-width: 400px;">
+            <button class="modal-close-btn" id="btn-close-create-org">✕</button>
+            
+            <div style="display: flex; flex-direction: column; width: 100%;">
+                <div class="auth-tabs" style="margin-bottom: 1.5rem; display: flex; justify-content: flex-start;">
+                    <button class="auth-tab active" style="width: auto; padding: 0.4rem 1rem; cursor: default; pointer-events: none; font-size: 0.7rem; border-radius: 6px;">new organization</button>
+                </div>
+                <p style="color: var(--text-muted); font-size: 0.85rem; font-family: 'JetBrains Mono', monospace; line-height: 1.6; margin-bottom: 2rem; width: 100%; text-align: center;">initialize your institutional workspace</p>
+                
+                <form id="create-org-form" class="auth-form" style="display: flex; flex-direction: column; gap: 1.5rem; width: 100%; box-sizing: border-box;">
+                    <div class="input-group">
+                        <label for="org-name">organization name</label>
+                        <input type="text" id="org-name" placeholder="e.g. Acme Corp" required minlength="2">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="org-plan">pricing plan</label>
+                        <select id="org-plan" class="modal-select">
+                            <option value="starter">Starter Plan ($0/mo)</option>
+                            <option value="pro">Pro Plan ($49/mo)</option>
+                            <option value="enterprise">Enterprise (Custom)</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="org-region">operational region</label>
+                        <select id="org-region" class="modal-select">
+                            <option value="americas">Americas (US-East)</option>
+                            <option value="europe">Europe (Frankfurt)</option>
+                            <option value="asia-pacific">Asia-Pacific (Singapore)</option>
+                        </select>
+                    </div>
+
+                    <p id="create-org-error" class="error-msg" style="display: none;"></p>
+                    
+                    <button type="submit" class="submit-btn" id="btn-submit-org">
+                        create organization
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <script src="toast.js"></script>
     <script src="dashboard-v19.js"></script>
     <script>

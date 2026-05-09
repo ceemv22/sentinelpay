@@ -627,17 +627,19 @@ app.get('/v1/organizations', requireSupabaseAuth, async (req, res) => {
 });
 
 app.post('/v1/organizations', requireSupabaseAuth, async (req, res) => {
-    const { name } = req.body;
+    const { name, plan, region } = req.body;
     if (!name || name.trim().length < 2) {
         return res.status(400).json({ error: 'organization name too short', code: 400 });
     }
 
     try {
-        console.log(`[organization-service] creating org "${name}" for user: ${req.user.id}`);
+        console.log(`[organization-service] creating org "${name}" (Plan: ${plan}, Region: ${region}) for user: ${req.user.id}`);
         
         const newOrg = await prisma.organization.create({
             data: {
                 name: name.trim(),
+                plan: plan || 'starter',
+                region: region || 'americas',
                 ownerId: req.user.id,
                 members: {
                     connect: [{ id: req.user.id }]

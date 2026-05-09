@@ -200,11 +200,86 @@ function renderDashboard(session) {
         // 4. BACKGROUND FETCH
         fetchHeaderApiKey(token);
         fetchProfile(token);
+
+        // 5. MODAL INITIALIZATION
+        setupCreateOrgModal(token);
     } catch (e) {
         showStatus('Render Error', 'error');
     } finally {
         renderDashboard.busy = false;
     }
+}
+
+function setupCreateOrgModal(token) {
+    const modal = document.getElementById('create-org-modal-overlay');
+    const openBtn = document.getElementById('mock-new-org-btn');
+    const closeBtn = document.getElementById('btn-close-create-org');
+    const form = document.getElementById('create-org-form');
+    const errorEl = document.getElementById('create-org-error');
+    const submitBtn = document.getElementById('btn-submit-org');
+
+    if (!modal || !openBtn || !closeBtn || !form) return;
+    if (openBtn.dataset.bound) return;
+    openBtn.dataset.bound = "true";
+
+    const openModal = () => {
+        modal.classList.add('active');
+        form.reset();
+        errorEl.style.display = 'none';
+    };
+
+    const closeModal = () => {
+        modal.classList.remove('active');
+    };
+
+    openBtn.onclick = (e) => { e.preventDefault(); openModal(); };
+    closeBtn.onclick = (e) => { e.preventDefault(); closeModal(); };
+    
+    // Close on overlay click
+    modal.onclick = (e) => { if (e.target === modal) closeModal(); };
+
+    form.onsubmit = async (e) => {
+        e.preventDefault();
+        
+        const name = document.getElementById('org-name').value;
+        const plan = document.getElementById('org-plan').value;
+        const region = document.getElementById('org-region').value;
+
+        try {
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'initializing...';
+            errorEl.style.display = 'none';
+
+            const response = await fetch('/v1/organizations', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ name, plan, region })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || 'failed to create organization');
+            }
+
+            // Success
+            if (window.SentinelToast) window.SentinelToast.show("organization created successfully.", "success");
+            closeModal();
+            
+            // Refresh grid
+            fetchProfile(token);
+            
+        } catch (err) {
+            errorEl.textContent = `error: ${err.message.toLowerCase()}`;
+            errorEl.style.display = 'block';
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'create organization';
+        }
+    };
 }
 
 function updateOrgGrid(orgs) {
@@ -221,11 +296,14 @@ function updateOrgGrid(orgs) {
             
             // Re-creating the professional org card structure
             const initial = org.name.charAt(0).toUpperCase();
+            const planText = org.plan ? `${org.plan.charAt(0).toUpperCase() + org.plan.slice(1)} Plan` : 'Standard Plan';
+            const regionText = org.region ? org.region.toUpperCase() : 'AMERICAS';
+            
             card.innerHTML = `
                 <div class="org-card-avatar">${initial}</div>
                 <div class="org-card-info">
                     <span class="org-card-name"></span>
-                    <span class="org-card-meta">Standard Plan</span>
+                    <span class="org-card-meta">${planText} | ${regionText}</span>
                 </div>
                 <svg style="margin-left: auto; opacity: 0.3;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
             `;
