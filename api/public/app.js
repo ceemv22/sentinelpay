@@ -10,10 +10,26 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     interceptAuthErrors();
 
-    // 0. ULTIMATE HASH SCRUBBER (Aggressively kills # trailing fragments)
-    const scrubHash = () => {
-        if (window.location.href.indexOf('#') > -1) {
-            window.history.replaceState(null, document.title, window.location.href.split('#')[0]);
+    // 0. ULTIMATE SCRUBBER (Kills # and ?code fragments)
+    const scrubURL = () => {
+        const url = new URL(window.location.href);
+        if (url.hash || url.searchParams.has('code')) {
+            window.history.replaceState(null, document.title, url.pathname);
+        }
+    };
+
+    const updateAuthUI = (session) => {
+        cachedSession = session;
+        if (session) {
+            const authContainer = document.getElementById('auth-nav-container');
+            if (authContainer) {
+                authContainer.replaceChildren();
+                const dashboardLink = document.createElement('a');
+                dashboardLink.href = '/dashboard';
+                dashboardLink.className = 'auth-nav-btn';
+                dashboardLink.textContent = 'dashboard';
+                authContainer.appendChild(dashboardLink);
+            }
         }
     };
 
@@ -31,6 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const scoreValue = document.getElementById('score-value');
     const flagsContainer = document.getElementById('flags-container');
+
     // Supabase Auth and Fingerprint Init
     const supabaseUrl = 'https://aivqwkgjdpklxxuvkxpy.supabase.co';
     const supabaseKey = 'sb_publishable_bRfAssaGT6D8oFDQtPARbw_5fyYGWM6';
@@ -43,24 +60,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const fingerprint = localStorage.getItem('sentinel_fp');
 
     if (supabaseClient) {
-        supabaseClient.auth.getSession().then(({ data: { session } }) => {
-            // Scrub hash AFTER Supabase has read the token from the URL
-            scrubHash();
-            let appScrubInterval = setInterval(scrubHash, 50);
-            setTimeout(() => clearInterval(appScrubInterval), 3000);
-
-            cachedSession = session;
-            if (session) {
-                const authContainer = document.getElementById('auth-nav-container');
-                if (authContainer) {
-                    authContainer.replaceChildren();
-                    const dashboardLink = document.createElement('a');
-                    dashboardLink.href = '/dashboard';
-                    dashboardLink.className = 'auth-nav-btn';
-                    dashboardLink.textContent = 'dashboard';
-                    authContainer.appendChild(dashboardLink);
+        // Handle PKCE Exchange if code is present
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+        
+        if (code) {
+            supabaseClient.auth.exchangeCodeForSession(code).then(({ data, error }) => {
+                if (!error && data.session) {
+                    if (window.SentinelToast) window.SentinelToast.show("Identity verified successfully.", "success");
+                    updateAuthUI(data.session);
+                    scrubURL();
                 }
-            }
+            });
+        }
+
+        supabaseClient.auth.getSession().then(({ data: { session } }) => {
+            if (session) updateAuthUI(session);
+            // General scrub
+            setTimeout(scrubURL, 1000);
         });
     }
 
