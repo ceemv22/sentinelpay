@@ -394,7 +394,11 @@ function updateOrgGrid(orgs) {
             const planText = org.plan ? `${org.plan.charAt(0).toUpperCase() + org.plan.slice(1)} Plan` : 'Standard Plan';
             
             card.innerHTML = `
-                <div class="org-card-avatar">${initial}</div>
+                <div class="org-card-avatar">
+                    <svg viewBox="0 0 120 120" width="20" height="20" style="opacity: 0.9;">
+                        <path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z" fill="white" />
+                    </svg>
+                </div>
                 <div class="org-card-info">
                     <span class="org-card-name"></span>
                     <span class="org-card-meta">${planText}</span>
