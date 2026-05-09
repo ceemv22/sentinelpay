@@ -137,7 +137,7 @@ if (logoutBtn) {
         e.preventDefault();
         localStorage.removeItem('sentinel-cached-orgs');
         if (sentinelAuth) await sentinelAuth.auth.signOut();
-        window.location.href = '/auth';
+        window.location.href = 'https://sentinelpay.org';
     };
 }
 
