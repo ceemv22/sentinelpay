@@ -594,6 +594,20 @@ app.use((err, req, res, next) => {
 });
 
 // --- Organization Endpoints (S-Tier Backend) ---
+app.get('/v1/organizations/check', requireSupabaseAuth, async (req, res) => {
+    const { name } = req.query;
+    if (!name || name.trim().length < 2) return res.json({ available: true });
+
+    try {
+        const existing = await prisma.organization.findFirst({
+            where: { name: { equals: name.trim(), mode: 'insensitive' } }
+        });
+        res.json({ available: !existing });
+    } catch (err) {
+        res.status(500).json({ error: 'check failed' });
+    }
+});
+
 app.get('/v1/organizations', requireSupabaseAuth, async (req, res) => {
     try {
         console.log(`[organization-service] fetching orgs for user: ${req.user.id}`);

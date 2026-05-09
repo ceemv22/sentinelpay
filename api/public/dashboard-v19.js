@@ -276,6 +276,39 @@ function setupCreateOrgModal(token) {
 
     initSelect('plan');
 
+    // Live Name Check & Recommendation
+    const nameInput = document.getElementById('org-name');
+    const recEl = document.getElementById('org-name-rec');
+    let checkTimeout;
+
+    nameInput.oninput = () => {
+        clearTimeout(checkTimeout);
+        const val = nameInput.value.trim();
+        
+        if (val.length < 2) {
+            recEl.style.display = 'none';
+            return;
+        }
+
+        checkTimeout = setTimeout(async () => {
+            try {
+                const res = await fetch(`/v1/organizations/check?name=${encodeURIComponent(val)}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const { available } = await res.json();
+                
+                if (!available) {
+                    const random = Math.floor(100000 + Math.random() * 900000);
+                    const rec = `${val.toLowerCase().replace(/\s+/g, '-')}-${random}`;
+                    recEl.textContent = `recommended: ${rec}`;
+                    recEl.style.display = 'block';
+                } else {
+                    recEl.style.display = 'none';
+                }
+            } catch (e) {}
+        }, 400); // 400ms debounce
+    };
+
     // Global click to close selects
     document.addEventListener('click', () => {
         document.querySelectorAll('.sentinel-select-trigger').forEach(t => t.classList.remove('active'));

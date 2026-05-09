@@ -1424,6 +1424,16 @@ button:hover:not(:disabled) {
     color: #fff;
 }
 
+.org-rec-text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--neon-blue);
+    opacity: 0.7;
+    margin-top: 0.6rem;
+    text-transform: lowercase;
+    animation: fadeIn 0.3s ease-out;
+}
+
 /* Sidebar Blur when modal is open */
 body.modal-open .sidebar-container {
     filter: blur(8px);
