@@ -275,7 +275,6 @@ function setupCreateOrgModal(token) {
     };
 
     initSelect('plan');
-    initSelect('region');
 
     // Global click to close selects
     document.addEventListener('click', () => {
@@ -288,7 +287,6 @@ function setupCreateOrgModal(token) {
         
         const name = document.getElementById('org-name').value.trim();
         const plan = document.getElementById('org-plan').value;
-        const region = document.getElementById('org-region').value;
 
         try {
             submitBtn.disabled = true;
@@ -301,7 +299,7 @@ function setupCreateOrgModal(token) {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify({ name, plan, region })
+                body: JSON.stringify({ name, plan })
             });
 
             const data = await response.json();
@@ -347,13 +345,12 @@ function updateOrgGrid(orgs) {
             // Re-creating the professional org card structure
             const initial = org.name.charAt(0).toUpperCase();
             const planText = org.plan ? `${org.plan.charAt(0).toUpperCase() + org.plan.slice(1)} Plan` : 'Standard Plan';
-            const regionText = org.region ? org.region.toUpperCase() : 'AMERICAS';
             
             card.innerHTML = `
                 <div class="org-card-avatar">${initial}</div>
                 <div class="org-card-info">
                     <span class="org-card-name"></span>
-                    <span class="org-card-meta">${planText} | ${regionText}</span>
+                    <span class="org-card-meta">${planText}</span>
                 </div>
                 <svg style="margin-left: auto; opacity: 0.3;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
             `;
