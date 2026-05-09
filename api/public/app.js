@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const hash = window.location.hash;
         if (hash && hash.includes('error_description=Email+link+is+invalid+or+has+expired')) {
             if (window.SentinelToast) {
-                window.SentinelToast.show("Verification link expired or already used. Please login.", "warning");
+                window.SentinelToast.show("verification link expired or already used.", "warning");
             }
         }
     };
@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (code) {
             supabaseClient.auth.exchangeCodeForSession(code).then(({ data, error }) => {
                 if (!error && data.session) {
-                    if (window.SentinelToast) window.SentinelToast.show("Identity verified successfully.", "success");
+                    if (window.SentinelToast) window.SentinelToast.show("identity verified successfully.", "success");
                     updateAuthUI(data.session);
                     scrubURL();
                 }
