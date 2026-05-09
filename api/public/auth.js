@@ -128,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     btn.removeAttribute('data-captcha-token');
                     isBusy = false;
                 } else {
-                    window.location.href = '/dashboard';
+                    window.location.href = '/dashboard/organizations';
                 }
             } catch (err) { console.error(err); isBusy = false; btn.disabled = false; }
         };
@@ -295,7 +295,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 b.textContent = 'connecting...';
                 await s.auth.signInWithOAuth({ 
                     provider: id.includes('google') ? 'google' : 'twitter', 
-                    options: { redirectTo: window.location.origin + '/dashboard' } 
+                    options: { redirectTo: window.location.origin + '/dashboard/organizations' } 
                 });
             };
         }
