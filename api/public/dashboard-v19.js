@@ -492,7 +492,7 @@ function setupSidebar() {
     if (helpBtn) {
         helpBtn.onclick = (e) => {
             e.preventDefault();
-            if (window.SentinelToast) window.SentinelToast.show("documentation and support coming soon.", "info");
+            window.open('https://help.sentinelpay.org', '_blank');
         };
     }
 

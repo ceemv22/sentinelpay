@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sentinelpay | help center</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'><path d='M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z' fill='none' stroke='%2300ffff' stroke-width='4'/><circle cx='60' cy='60' r='6' fill='none' stroke='%23a020f0' stroke-width='4'/></svg>">
+</head>
+<body>
+    <div class="cyber-grid"></div>
+    
+    <header class="top-nav">
+        <div class="logo-container">
+            <svg class="nav-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+                <path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z" fill="none" stroke="currentColor" stroke-width="4"/>
+                <circle cx="60" cy="60" r="4" fill="var(--neon-blue)"/>
+            </svg>
+            <span class="logo-text">sentinelpay</span>
+            <span class="badge">docs</span>
+        </div>
+        <div class="nav-links">
+            <a href="https://sentinelpay.org" class="nav-link">main site</a>
+            <a href="https://sentinelpay.org/dashboard" class="nav-link">dashboard</a>
+        </div>
+    </header>
+
+    <div class="layout-wrapper">
+        <aside class="sidebar">
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <span class="nav-section-title">getting started</span>
+                    <a href="#introduction" class="nav-item active">introduction</a>
+                    <a href="#quickstart" class="nav-item">quickstart guide</a>
+                </div>
+                
+                <div class="nav-section">
+                    <span class="nav-section-title">core concepts</span>
+                    <a href="#risk-scoring" class="nav-item">risk scoring engine</a>
+                    <a href="#organizations" class="nav-item">organizations</a>
+                    <a href="#api-keys" class="nav-item">api keys</a>
+                </div>
+
+                <div class="nav-section">
+                    <span class="nav-section-title">api reference</span>
+                    <a href="#authentication" class="nav-item">authentication</a>
+                    <a href="#scan-endpoint" class="nav-item">scan endpoint</a>
+                    <a href="#webhooks" class="nav-item">webhooks</a>
+                </div>
+            </nav>
+        </aside>
+
+        <main class="content-pane">
+            <article class="doc-content">
+                <section id="introduction">
+                    <h1>Introduction to SentinelPay</h1>
+                    <p class="lead">SentinelPay is an institutional-grade, pre-deposit risk oracle designed to intercept illicit crypto flows before they contaminate your treasury.</p>
+                    
+                    <p>Built for crypto casinos, OTC desks, and high-risk merchants, our engine evaluates incoming wallet addresses and transactions in real-time. By leveraging advanced heuristics, ML models, and extensive proprietary databases, we provide an immediate risk score (0-100) allowing you to automate compliance and reject tainted funds instantly.</p>
+
+                    <div class="alert alert-info">
+                        <div class="alert-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                        </div>
+                        <div class="alert-content">
+                            <strong>Note for MVP Users:</strong> The current platform supports Ethereum (ERC-20) addresses. Bitcoin and Solana support is rolling out in Q3.
+                        </div>
+                    </div>
+                </section>
+
+                <hr>
+
+                <section id="quickstart">
+                    <h2>Quickstart Guide</h2>
+                    <p>Integrate SentinelPay into your deposit flow in three simple steps.</p>
+
+                    <h3>1. Create an Organization</h3>
+                    <p>Navigate to your <a href="https://sentinelpay.org/dashboard/organizations" target="_blank">dashboard</a> and create an institutional workspace. This isolated environment will house your API keys and scan history.</p>
+
+                    <h3>2. Generate API Keys</h3>
+                    <p>Inside your organization's dashboard, locate the API key widget in the header. Reveal your key and store it securely. We do not store raw keys on our servers.</p>
+
+                    <h3>3. Make your first API Call</h3>
+                    <p>Use your generated `sp_live_...` token to query the risk engine. See the <a href="#scan-endpoint">Scan Endpoint</a> section for a complete payload example.</p>
+                </section>
+
+                <hr>
+
+                <section id="scan-endpoint">
+                    <h2>Scan Endpoint</h2>
+                    <p>The primary endpoint for checking an address's risk profile before processing a deposit.</p>
+
+                    <div class="endpoint-block">
+                        <span class="method get">GET</span>
+                        <code class="url">https://api.sentinelpay.org/v1/scan/:address</code>
+                    </div>
+
+                    <h3>Request Headers</h3>
+                    <table class="doc-table">
+                        <thead>
+                            <tr>
+                                <th>Header</th>
+                                <th>Required</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>Authorization</code></td>
+                                <td>Yes</td>
+                                <td>Bearer token using your `sp_live_...` API key.</td>
+                            </tr>
+                            <tr>
+                                <td><code>Content-Type</code></td>
+                                <td>Yes</td>
+                                <td>Must be <code>application/json</code></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>Example Response</h3>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="lang">json</span>
+                            <button class="copy-btn">copy</button>
+                        </div>
+                        <pre><code>{
+  "address": "0x1234567890abcdef1234567890abcdef12345678",
+  "score": 85,
+  "riskLevel": "high",
+  "flags": [
+    "mixer_interaction",
+    "darknet_exposure"
+  ],
+  "timestamp": "2026-05-10T12:00:00Z"
+}</code></pre>
+                    </div>
+                </section>
+            </article>
+
+            <footer class="doc-footer">
+                <p>&copy; 2026 SentinelPay. All rights reserved.</p>
+            </footer>
+        </main>
+    </div>
+
+    <script>
+        // Simple active state for sidebar
+        const navItems = document.querySelectorAll('.nav-item');
+        navItems.forEach(item => {
+            item.addEventListener('click', () => {
+                navItems.forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
