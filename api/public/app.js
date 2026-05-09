@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (authContainer) {
                 authContainer.replaceChildren();
                 const dashboardLink = document.createElement('a');
-                dashboardLink.href = '/dashboard';
+                dashboardLink.href = '/dashboard/organizations';
                 dashboardLink.className = 'auth-nav-btn';
                 dashboardLink.textContent = 'dashboard';
                 authContainer.appendChild(dashboardLink);
