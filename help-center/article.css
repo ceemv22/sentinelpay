@@ -82,7 +82,7 @@
 
 /* --- ARTICLE BODY TYPOGRAPHY --- */
 .article-body {
-    font-family: 'Inter', sans-serif;
+    font-family: 'JetBrains Mono', monospace;
     font-size: 0.95rem;
     color: rgba(224, 224, 224, 0.85);
     line-height: 1.85;
