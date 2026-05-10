@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Static documentation for SentinelPay",
   "scripts": {
-    "start": "serve -s ."
+    "start": "serve -s . -l tcp://0.0.0.0:$PORT"
   },
   "dependencies": {
     "serve": "^14.2.1"
