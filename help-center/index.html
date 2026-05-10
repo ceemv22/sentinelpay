@@ -4,114 +4,114 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>sentinelpay | help center</title>
+    <meta name="description" content="Search the SentinelPay knowledge base for integration guides, risk engine details, and account settings.">
+    <meta name="theme-color" content="#050505">
     <link rel="icon" type="image/svg+xml" href="logo.svg">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;500;600;800&display=swap" rel="stylesheet">
 </head>
 <body>
+
     <div class="cyber-grid"></div>
-    
+    <div class="glow-orb"></div>
+
+    <!-- Fixed top-right nav button -->
     <header class="top-nav">
-        <div class="nav-actions">
-            <a href="https://sentinelpay.org" class="auth-nav-btn">return to sentinelpay</a>
-        </div>
+        <a href="https://sentinelpay.org" class="auth-nav-btn">return to sentinelpay</a>
     </header>
 
     <main class="kb-wrapper">
+
+        <!-- Hero -->
         <section class="hero-section">
-            <h1 class="hero-title">How can we help you today?</h1>
-            <p class="hero-subtitle">Search our knowledge base for integration guides, risk engine details, and account settings.</p>
-            
-            <div class="search-container">
+            <div class="hero-eyebrow">// help center</div>
+            <h1 class="hero-title">how can we help you?</h1>
+            <p class="hero-subtitle">search our knowledge base for integration guides, risk engine docs, and account info.</p>
+
+            <div class="search-container" id="search-container">
                 <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="11" cy="11" r="8"></circle>
                     <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                 </svg>
-                <input type="text" class="search-input" placeholder="Search for articles, endpoints, or error codes...">
-                <div class="search-glow"></div>
+                <input type="text" id="search-input" class="search-input" placeholder="search articles, endpoints, error codes..." autocomplete="off">
             </div>
         </section>
 
+        <!-- Category Grid -->
         <section class="category-grid">
-            <!-- Category 1 -->
+
             <a href="#getting-started" class="category-card">
                 <div class="card-icon-wrapper">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path></svg>
                 </div>
-                <h3 class="card-title">Getting Started</h3>
-                <p class="card-desc">Organization setup, team members, and core concepts.</p>
-                <div class="card-meta">
-                    <span class="meta-authors">
-                        <img src="https://ui-avatars.com/api/?name=SP&background=00ffff&color=000&rounded=true" alt="Author" class="author-avatar">
-                    </span>
-                    <span class="meta-count">3 articles</span>
+                <div class="card-body">
+                    <h3 class="card-title">getting started</h3>
+                    <p class="card-desc">organization setup, team members, and core concepts explained.</p>
+                </div>
+                <div class="card-footer">
+                    <span class="card-count">3 articles</span>
+                    <svg class="card-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
                 </div>
             </a>
 
-            <!-- Category 2 -->
             <a href="#api-integration" class="category-card">
                 <div class="card-icon-wrapper">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
                 </div>
-                <h3 class="card-title">API Integration</h3>
-                <p class="card-desc">Authentication, scan endpoints, payloads, and webhooks.</p>
-                <div class="card-meta">
-                    <span class="meta-authors">
-                        <img src="https://ui-avatars.com/api/?name=SP&background=00ffff&color=000&rounded=true" alt="Author" class="author-avatar">
-                    </span>
-                    <span class="meta-count">5 articles</span>
+                <div class="card-body">
+                    <h3 class="card-title">api integration</h3>
+                    <p class="card-desc">authentication, scan endpoints, request payloads, and webhooks.</p>
+                </div>
+                <div class="card-footer">
+                    <span class="card-count">5 articles</span>
+                    <svg class="card-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
                 </div>
             </a>
 
-            <!-- Category 3 -->
             <a href="#risk-engine" class="category-card">
                 <div class="card-icon-wrapper">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
                 </div>
-                <h3 class="card-title">Risk Scoring Engine</h3>
-                <p class="card-desc">Understanding heuristics, specific flags, and score thresholds.</p>
-                <div class="card-meta">
-                    <span class="meta-authors">
-                        <img src="https://ui-avatars.com/api/?name=SP&background=00ffff&color=000&rounded=true" alt="Author" class="author-avatar">
-                    </span>
-                    <span class="meta-count">4 articles</span>
+                <div class="card-body">
+                    <h3 class="card-title">risk scoring engine</h3>
+                    <p class="card-desc">understanding heuristics, specific flags, and score thresholds.</p>
+                </div>
+                <div class="card-footer">
+                    <span class="card-count">4 articles</span>
+                    <svg class="card-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
                 </div>
             </a>
 
-            <!-- Category 4 -->
             <a href="#account-billing" class="category-card">
                 <div class="card-icon-wrapper">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2" ry="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
                 </div>
-                <h3 class="card-title">Account & Billing</h3>
-                <p class="card-desc">API rate limits, credit usage, and upgrading your plan.</p>
-                <div class="card-meta">
-                    <span class="meta-authors">
-                        <img src="https://ui-avatars.com/api/?name=SP&background=00ffff&color=000&rounded=true" alt="Author" class="author-avatar">
-                    </span>
-                    <span class="meta-count">2 articles</span>
+                <div class="card-body">
+                    <h3 class="card-title">account & billing</h3>
+                    <p class="card-desc">api rate limits, credit usage, and upgrading your plan.</p>
+                </div>
+                <div class="card-footer">
+                    <span class="card-count">2 articles</span>
+                    <svg class="card-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
                 </div>
             </a>
+
         </section>
 
-        <footer class="doc-footer">
-            <p>&copy; 2026 SentinelPay. All rights reserved.</p>
-            <p class="footer-sub">Need human support? <a href="mailto:support@sentinelpay.org">Contact Us</a></p>
+        <footer class="kb-footer">
+            <span class="footer-text">© 2026 sentinelpay.</span>
+            <span class="footer-divider">·</span>
+            <a href="mailto:support@sentinelpay.org" class="footer-link">support@sentinelpay.org</a>
         </footer>
+
     </main>
 
     <script>
-        // Simple search interaction mock
-        const searchInput = document.querySelector('.search-input');
-        const searchContainer = document.querySelector('.search-container');
-        
-        searchInput.addEventListener('focus', () => {
-            searchContainer.classList.add('focused');
-        });
-        
-        searchInput.addEventListener('blur', () => {
-            searchContainer.classList.remove('focused');
-        });
+        const searchInput = document.getElementById('search-input');
+        const searchContainer = document.getElementById('search-container');
+        searchInput.addEventListener('focus', () => searchContainer.classList.add('focused'));
+        searchInput.addEventListener('blur', () => searchContainer.classList.remove('focused'));
     </script>
+
 </body>
 </html>
