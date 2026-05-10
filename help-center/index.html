@@ -15,8 +15,36 @@
     <div class="cyber-grid"></div>
     <div class="glow-orb"></div>
 
-    <!-- Fixed top-right nav button -->
+    <!-- Fixed top-right nav button (desktop) + full mobile topbar -->
     <header class="top-nav">
+        <!-- Mobile only: small logo left + return btn right -->
+        <div class="mobile-nav-logo mobile-only">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" style="width: 32px; height: 32px;">
+              <defs>
+                <linearGradient id="neonGradientNav" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#00f0ff" />
+                  <stop offset="100%" stop-color="#a020f0" />
+                </linearGradient>
+                <filter id="neonGlowNav" x="-50%" y="-50%" width="200%" height="200%">
+                  <feGaussianBlur stdDeviation="3.5" result="coloredBlur"/>
+                  <feMerge>
+                    <feMergeNode in="coloredBlur"/>
+                    <feMergeNode in="SourceGraphic"/>
+                  </feMerge>
+                </filter>
+              </defs>
+              <g filter="url(#neonGlowNav)" fill="none" stroke="url(#neonGradientNav)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z" />
+                <path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z" />
+                <g class="eye-pupil" style="transition: transform 0.1s ease-out;">
+                  <circle cx="60" cy="60" r="6" />
+                  <circle cx="60" cy="60" r="2" fill="url(#neonGradientNav)" stroke="none"/>
+                </g>
+                <path d="M60 15 V 30" stroke-width="2" opacity="0.6"/>
+                <path d="M60 90 V 105" stroke-width="2" opacity="0.6"/>
+              </g>
+            </svg>
+        </div>
         <a href="https://sentinelpay.org" class="auth-nav-btn">return to sentinelpay</a>
     </header>
 
