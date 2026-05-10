@@ -13,7 +13,10 @@ app.get('/getting-started', (req, res) => {
 });
 
 app.get('/getting-started/:article', (req, res) => {
-    res.sendFile(path.join(__dirname, 'getting-started', 'index.html'));
+    const articlePath = path.join(__dirname, 'getting-started', req.params.article, 'index.html');
+    res.sendFile(articlePath, (err) => {
+        if (err) res.sendFile(path.join(__dirname, 'getting-started', 'index.html'));
+    });
 });
 
 // Fallback to index
