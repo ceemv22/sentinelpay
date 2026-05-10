@@ -12,10 +12,26 @@ app.get('/getting-started', (req, res) => {
     res.sendFile(path.join(__dirname, 'getting-started', 'index.html'));
 });
 
-app.get('/getting-started/:article', (req, res) => {
-    const articlePath = path.join(__dirname, 'getting-started', req.params.article, 'index.html');
+app.get('/api-integration', (req, res) => {
+    res.sendFile(path.join(__dirname, 'api-integration', 'index.html'));
+});
+
+app.get('/risk-engine', (req, res) => {
+    res.sendFile(path.join(__dirname, 'risk-engine', 'index.html'));
+});
+
+app.get('/account-billing', (req, res) => {
+    res.sendFile(path.join(__dirname, 'account-billing', 'index.html'));
+});
+
+app.get('/:category/:article', (req, res) => {
+    const category = req.params.category;
+    const article = req.params.article;
+    const articlePath = path.join(__dirname, category, article, 'index.html');
     res.sendFile(articlePath, (err) => {
-        if (err) res.sendFile(path.join(__dirname, 'getting-started', 'index.html'));
+        if (err) res.sendFile(path.join(__dirname, category, 'index.html'), (err2) => {
+            if (err2) res.sendFile(path.join(__dirname, 'index.html'));
+        });
     });
 });
 
