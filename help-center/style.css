@@ -46,9 +46,9 @@ body {
     align-items: center;
     padding: 1.5rem 3rem;
     background: transparent;
-    position: absolute;
+    position: fixed;
     top: 0; left: 0; right: 0;
-    z-index: 100;
+    z-index: 1000;
 }
 
 .logo-container {
