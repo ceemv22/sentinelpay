@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sentinelpay | getting started</title>
+    <meta name="description" content="Organization setup, team members, and core concepts for SentinelPay.">
+    <meta name="theme-color" content="#050505">
+    <link rel="icon" type="image/svg+xml" href="/logo.svg">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/category.css">
+</head>
+<body>
+
+    <div class="cyber-grid"></div>
+    <div class="glow-orb"></div>
+
+    <!-- Top nav -->
+    <header class="top-nav">
+        <div class="mobile-nav-logo mobile-only">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" style="width: 32px; height: 32px;">
+              <defs>
+                <linearGradient id="neonGradientNav" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#00f0ff" />
+                  <stop offset="100%" stop-color="#a020f0" />
+                </linearGradient>
+                <filter id="neonGlowNav" x="-50%" y="-50%" width="200%" height="200%">
+                  <feGaussianBlur stdDeviation="3.5" result="coloredBlur"/>
+                  <feMerge>
+                    <feMergeNode in="coloredBlur"/>
+                    <feMergeNode in="SourceGraphic"/>
+                  </feMerge>
+                </filter>
+              </defs>
+              <g filter="url(#neonGlowNav)" fill="none" stroke="url(#neonGradientNav)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z" />
+                <path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z" />
+                <g class="eye-pupil" style="transition: transform 0.1s ease-out;">
+                  <circle cx="60" cy="60" r="6" />
+                  <circle cx="60" cy="60" r="2" fill="url(#neonGradientNav)" stroke="none"/>
+                </g>
+                <path d="M60 15 V 30" stroke-width="2" opacity="0.6"/>
+                <path d="M60 90 V 105" stroke-width="2" opacity="0.6"/>
+              </g>
+            </svg>
+        </div>
+        <a href="https://sentinelpay.org" class="auth-nav-btn">return to sentinelpay</a>
+    </header>
+
+    <main class="kb-wrapper">
+
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb">
+            <a href="/" class="breadcrumb-link">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                all collections
+            </a>
+            <span class="breadcrumb-sep">/</span>
+            <span class="breadcrumb-current">getting started</span>
+        </nav>
+
+        <!-- Category Header -->
+        <section class="cat-header">
+            <div class="cat-icon-wrapper">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path></svg>
+            </div>
+            <div class="cat-header-text">
+                <h1 class="cat-title">getting started</h1>
+                <p class="cat-desc">organization setup, team members, and core concepts explained.</p>
+            </div>
+        </section>
+
+        <!-- Article List -->
+        <section class="article-list">
+
+            <a href="/getting-started/what-is-sentinelpay" class="article-row">
+                <div class="article-row-body">
+                    <span class="article-title">what is sentinelpay?</span>
+                    <span class="article-excerpt">an overview of what we do, who we serve, and how our risk engine works at a high level.</span>
+                </div>
+                <svg class="article-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+
+            <a href="/getting-started/creating-your-organization" class="article-row">
+                <div class="article-row-body">
+                    <span class="article-title">creating your organization</span>
+                    <span class="article-excerpt">step-by-step guide to setting up your first organization, choosing a plan, and naming your workspace.</span>
+                </div>
+                <svg class="article-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+
+            <a href="/getting-started/inviting-team-members" class="article-row">
+                <div class="article-row-body">
+                    <span class="article-title">inviting team members</span>
+                    <span class="article-excerpt">how to add colleagues to your organization and manage their access permissions.</span>
+                </div>
+                <svg class="article-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+
+        </section>
+
+        <footer class="kb-footer">
+            <a href="mailto:support@sentinelpay.org" class="footer-link">support@sentinelpay.org</a>
+        </footer>
+
+    </main>
+
+    <script>
+        // Eye-cursor tracking
+        (function() {
+            var pupils = document.querySelectorAll('.eye-pupil');
+            if (pupils.length > 0) {
+                document.addEventListener('mousemove', function(e) {
+                    var cx = window.innerWidth / 2;
+                    var cy = window.innerHeight / 2;
+                    var ox = (e.clientX - cx) / cx;
+                    var oy = (e.clientY - cy) / cy;
+                    var m = 3;
+                    pupils.forEach(function(pupil) {
+                        pupil.style.transform = 'translate(' + (ox * m) + 'px, ' + (oy * m) + 'px)';
+                    });
+                });
+            }
+        })();
+    </script>
+
+</body>
+</html>

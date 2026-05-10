@@ -7,7 +7,16 @@ const PORT = process.env.PORT || 3000;
 // Serve static files from the current directory
 app.use(express.static(path.join(__dirname)));
 
-// Fallback for single-page routing (if needed)
+// Category routes
+app.get('/getting-started', (req, res) => {
+    res.sendFile(path.join(__dirname, 'getting-started', 'index.html'));
+});
+
+app.get('/getting-started/:article', (req, res) => {
+    res.sendFile(path.join(__dirname, 'getting-started', 'index.html'));
+});
+
+// Fallback to index
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
