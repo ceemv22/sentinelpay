@@ -50,6 +50,17 @@
 
     <main class="kb-wrapper">
 
+        <!-- Search bar (above breadcrumb, like CSGOEmpire) -->
+        <div class="cat-search-wrapper">
+            <div class="search-container" id="search-container">
+                <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input type="text" id="search-input" class="search-input" placeholder="search articles, endpoints, error codes..." autocomplete="off">
+            </div>
+        </div>
+
         <!-- Breadcrumb -->
         <nav class="breadcrumb">
             <a href="/" class="breadcrumb-link">
@@ -68,6 +79,13 @@
             <div class="cat-header-text">
                 <h1 class="cat-title">getting started</h1>
                 <p class="cat-desc">organization setup, team members, and core concepts explained.</p>
+                <!-- Author + article count (CSGOEmpire style) -->
+                <div class="cat-meta">
+                    <div class="cat-authors">
+                        <img src="https://github.com/ceemv22.png" alt="ceem" class="cat-author-avatar">
+                    </div>
+                    <span class="cat-meta-text">by <strong>ceem</strong> · 3 articles</span>
+                </div>
             </div>
         </section>
 
@@ -107,6 +125,11 @@
     </main>
 
     <script>
+        const searchInput = document.getElementById('search-input');
+        const searchContainer = document.getElementById('search-container');
+        searchInput.addEventListener('focus', () => searchContainer.classList.add('focused'));
+        searchInput.addEventListener('blur', () => searchContainer.classList.remove('focused'));
+
         // Eye-cursor tracking
         (function() {
             var pupils = document.querySelectorAll('.eye-pupil');

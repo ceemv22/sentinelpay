@@ -3,12 +3,24 @@
    Extends style.css for article list views
    ======================================== */
 
+/* --- SEARCH BAR ABOVE BREADCRUMB --- */
+.cat-search-wrapper {
+    padding-top: 5.5rem;
+    margin-bottom: 1.75rem;
+}
+
+.cat-search-wrapper .search-container {
+    max-width: 100%;
+    margin: 0;
+    animation: none;
+}
+
 /* --- BREADCRUMB --- */
 .breadcrumb {
     display: flex;
     align-items: center;
     gap: 0.6rem;
-    padding-top: 6rem;
+    padding-top: 0;
     margin-bottom: 3rem;
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.75rem;
@@ -68,6 +80,7 @@
     justify-content: center;
     color: var(--neon-blue);
     filter: drop-shadow(0 0 10px rgba(0, 240, 255, 0.1));
+    margin-top: 4px; /* optical alignment with title */
 }
 
 .cat-icon-wrapper svg {
@@ -97,6 +110,42 @@
     font-size: 0.85rem;
     text-transform: lowercase;
     line-height: 1.7;
+    margin-bottom: 1rem;
+}
+
+/* Author + article count (CSGOEmpire style) */
+.cat-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 0.25rem;
+}
+
+.cat-authors {
+    display: flex;
+    align-items: center;
+}
+
+.cat-author-avatar {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 240, 255, 0.2);
+    object-fit: cover;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.cat-meta-text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    text-transform: lowercase;
+    letter-spacing: 0.2px;
+}
+
+.cat-meta-text strong {
+    color: var(--text-main);
+    font-weight: 700;
 }
 
 /* --- ARTICLE LIST --- */
@@ -214,8 +263,9 @@
 
 /* --- MOBILE --- */
 @media (max-width: 768px) {
-    .breadcrumb { padding-top: 4.5rem; }
+    .cat-search-wrapper { padding-top: 4.5rem; }
     .cat-header { flex-direction: column; gap: 1rem; }
+    .cat-icon-wrapper { margin-top: 0; }
     .cat-title { font-size: 1.5rem; }
     .article-row { padding: 1.25rem; }
     .article-row:hover { padding-left: 1.75rem; }
