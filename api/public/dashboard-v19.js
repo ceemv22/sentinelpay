@@ -183,11 +183,12 @@ function renderDashboard(session) {
 
         // 2.5 ROUTING LOGIC
         const path = window.location.pathname;
-        const orgMatch = path.match(/\/dashboard\/org\/([a-z0-9]{20})/);
+        const orgMatch = path.match(/\/dashboard\/org\/([a-z0-9]{20})(\/[a-z0-9-]+)?/);
         
         if (orgMatch) {
             const slug = orgMatch[1];
-            switchToOrgView(slug);
+            const subView = orgMatch[2] ? orgMatch[2].substring(1) : 'projects';
+            switchToOrgView(slug, subView);
         } else {
             switchToHomeView();
         }
@@ -426,7 +427,7 @@ function updateOrgGrid(orgs) {
             card.onclick = () => {
                 const slug = org.slug;
                 history.pushState({ slug }, '', `/dashboard/org/${slug}`);
-                switchToOrgView(slug);
+                switchToOrgView(slug, 'projects');
             };
 
             orgCardsGrid.appendChild(card);
@@ -447,10 +448,9 @@ function switchToHomeView() {
     if (orgNav) orgNav.classList.add('hidden');
 }
 
-function switchToOrgView(slug) {
+function switchToOrgView(slug, view = 'projects') {
     document.body.classList.add('state-org-home');
     document.getElementById('org-home-view').classList.add('hidden');
-    document.getElementById('org-dashboard-view').classList.remove('hidden');
     document.getElementById('dashboard-view').classList.add('hidden');
     
     // Toggle Sidebar Nav
@@ -458,16 +458,44 @@ function switchToOrgView(slug) {
     const orgNav = document.getElementById('sidebar-org-nav');
     if (globalNav) globalNav.classList.add('hidden');
     if (orgNav) orgNav.classList.remove('hidden');
+
+    // Hide all sub-views
+    const subViews = ['org-dashboard-view', 'org-team-view'];
+    subViews.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.add('hidden');
+    });
+
+    // Sidebar Active State Sync
+    document.querySelectorAll('#sidebar-org-nav .sidebar-item').forEach(i => i.classList.remove('active'));
+
+    if (view === 'team') {
+        const teamView = document.getElementById('org-team-view');
+        if (teamView) teamView.classList.remove('hidden');
+        const teamItem = document.getElementById('sidebar-item-team');
+        if (teamItem) teamItem.classList.add('active');
+    } else {
+        // Default to projects/dashboard
+        const dashView = document.getElementById('org-dashboard-view');
+        if (dashView) dashView.classList.remove('hidden');
+        const projItem = document.getElementById('sidebar-item-projects');
+        if (projItem) projItem.classList.add('active');
+    }
     
     // In the future, we fetch org data by slug here
-    console.log(`[sentinel-router] navigated to organization: ${slug}`);
+    console.log(`[sentinel-router] navigated to organization: ${slug} (view: ${view})`);
 }
 
 window.onpopstate = (e) => {
     const path = window.location.pathname;
-    const orgMatch = path.match(/\/dashboard\/org\/([a-z0-9]{20})/);
-    if (orgMatch) switchToOrgView(orgMatch[1]);
-    else switchToHomeView();
+    const orgMatch = path.match(/\/dashboard\/org\/([a-z0-9]{20})(\/[a-z0-9-]+)?/);
+    if (orgMatch) {
+        const slug = orgMatch[1];
+        const subView = orgMatch[2] ? orgMatch[2].substring(1) : 'projects';
+        switchToOrgView(slug, subView);
+    } else {
+        switchToHomeView();
+    }
 };
 
 async function fetchHeaderApiKey(token) {
@@ -546,4 +574,28 @@ function setupSidebar() {
     });
 
     document.addEventListener('click', () => popup.classList.remove('active'));
+
+    // --- Organization Navigation SPA Logic ---
+    const bindOrgNav = (id, subPath, viewName) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.onclick = (e) => {
+            e.preventDefault();
+            const path = window.location.pathname;
+            const orgMatch = path.match(/\/dashboard\/org\/([a-z0-9]{20})/);
+            if (orgMatch) {
+                const slug = orgMatch[1];
+                const newPath = subPath === '' ? `/dashboard/org/${slug}` : `/dashboard/org/${slug}/${subPath}`;
+                history.pushState({ slug }, '', newPath);
+                switchToOrgView(slug, viewName);
+            }
+        };
+    };
+
+    bindOrgNav('sidebar-item-projects', '', 'projects');
+    bindOrgNav('sidebar-item-team', 'team', 'team');
+    // Placeholders for other items
+    ['integrations', 'usage', 'billing', 'settings'].forEach(sub => {
+        bindOrgNav(`sidebar-item-${sub}`, sub, sub);
+    });
 }

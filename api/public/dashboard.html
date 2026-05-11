@@ -1129,37 +1129,37 @@
             <!-- ORGANIZATION NAVIGATION (Visible inside a specific Org) -->
             <div id="sidebar-org-nav" class="nav-org hidden">
                 <div class="sidebar-section">
-                    <a href="#" class="sidebar-item active">
+                    <a href="#" class="sidebar-item active" id="sidebar-item-projects">
                         <div class="item-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
                         </div>
                         <span class="item-label">projects</span>
                     </a>
-                    <a href="#" class="sidebar-item">
+                    <a href="#" class="sidebar-item" id="sidebar-item-team">
                         <div class="item-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
                         </div>
                         <span class="item-label">team</span>
                     </a>
-                    <a href="#" class="sidebar-item">
+                    <a href="#" class="sidebar-item" id="sidebar-item-integrations">
                         <div class="item-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
                         </div>
                         <span class="item-label">integrations</span>
                     </a>
-                    <a href="#" class="sidebar-item">
+                    <a href="#" class="sidebar-item" id="sidebar-item-usage">
                         <div class="item-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
                         </div>
                         <span class="item-label">usage</span>
                     </a>
-                    <a href="#" class="sidebar-item">
+                    <a href="#" class="sidebar-item" id="sidebar-item-billing">
                         <div class="item-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
                         </div>
                         <span class="item-label">billing</span>
                     </a>
-                    <a href="#" class="sidebar-item">
+                    <a href="#" class="sidebar-item" id="sidebar-item-settings">
                         <div class="item-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
                         </div>
@@ -1335,6 +1335,37 @@
                 <!-- Additional dashboard widgets can go here -->
             </div>
         </div>
+
+        <!-- ORGANIZATION DASHBOARD VIEW (Specific Org) -->
+        <div id="org-dashboard-view" class="hidden" style="width: 100%; display: flex; flex-direction: column; gap: 2rem;">
+            <!-- This will be populated later, currently empty as requested -->
+            <div style="padding: 4rem; text-align: center; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; opacity: 0.5;">
+                initializing secure workspace environment...
+            </div>
+        </div>
+
+        <!-- ORGANIZATION TEAM VIEW -->
+        <div id="org-team-view" class="hidden" style="width: 100%; display: flex; flex-direction: column; gap: 2rem;">
+            <div class="page-header" style="margin-bottom: 2rem;">
+                <div class="header-title">
+                    <h1>team</h1>
+                    <p>manage your organization members and permissions</p>
+                </div>
+            </div>
+            
+            <div class="glass-panel" style="padding: 2.5rem; text-align: center;">
+                <div style="margin-bottom: 1.5rem;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--neon-blue)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.5;"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                </div>
+                <h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.25rem; margin-bottom: 0.5rem;">team management</h3>
+                <p style="color: var(--text-muted); font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; max-width: 400px; margin: 0 auto 2rem auto; line-height: 1.6;">
+                    invite team members to collaborate on your organization projects and manage their access levels.
+                </p>
+                <button class="auth-nav-btn" style="cursor: pointer;">
+                    invite member
+                </button>
+            </div>
+        </div>
     </main>
 
     <!-- API Key Modal -->
@@ -1398,13 +1429,6 @@
                     <button class="btn-cancel" id="btn-cancel-roll">cancel</button>
                     <button class="btn-confirm-red" id="btn-confirm-roll-action">confirm roll</button>
                 </div>
-            </div>
-        </div>
-        <!-- ORGANIZATION DASHBOARD VIEW (Specific Org) -->
-        <div id="org-dashboard-view" class="hidden" style="width: 100%; display: flex; flex-direction: column; gap: 2rem;">
-            <!-- This will be populated later, currently empty as requested -->
-            <div style="padding: 4rem; text-align: center; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; opacity: 0.5;">
-                initializing secure workspace environment...
             </div>
         </div>
     </div>
