@@ -46,6 +46,18 @@
         <a href="https://sentinelpay.org" class="auth-nav-btn">return to sentinelpay</a>
     </header>
     <main class="kb-wrapper article-layout">
+
+        <!-- Search bar -->
+        <div class="cat-search-wrapper">
+            <div class="search-container" id="search-container">
+                <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input type="text" id="search-input" class="search-input" placeholder="search articles, endpoints, error codes..." autocomplete="off">
+            </div>
+        </div>
+
         <nav class="breadcrumb">
             <a href="/" class="breadcrumb-link">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
@@ -100,6 +112,11 @@
         </footer>
     </main>
     <script>
+        const searchInput = document.getElementById('search-input');
+        const searchContainer = document.getElementById('search-container');
+        searchInput.addEventListener('focus', () => searchContainer.classList.add('focused'));
+        searchInput.addEventListener('blur', () => searchContainer.classList.remove('focused'));
+
         (function() {
             var pupils = document.querySelectorAll('.eye-pupil');
             if (pupils.length > 0) {
@@ -118,3 +135,4 @@
     </script>
 </body>
 </html>
+
