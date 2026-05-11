@@ -181,6 +181,16 @@ function renderDashboard(session) {
             };
         }
 
+        // 2.4 HYDRATE TEAM VIEW (Owner)
+        const teamEmailEl = document.getElementById('current-user-email');
+        if (teamEmailEl && user.email) {
+            teamEmailEl.textContent = user.email;
+        }
+        const teamAvatarEl = document.querySelector('#org-team-view .org-avatar.small');
+        if (teamAvatarEl && user.email) {
+            teamAvatarEl.textContent = user.email.charAt(0).toUpperCase();
+        }
+
         // 2.5 ROUTING LOGIC
         const path = window.location.pathname;
         const orgMatch = path.match(/\/dashboard\/org\/([a-z0-9]{20})(\/[a-z0-9-]+)?/);
