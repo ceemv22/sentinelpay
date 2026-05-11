@@ -228,6 +228,10 @@
                 background: var(--neon-blue);
                 border-radius: 50%;
             }
+            .table-row-hover:hover {
+                background: rgba(255, 255, 255, 0.03) !important;
+                box-shadow: inset 0 0 20px rgba(0, 240, 255, 0.02);
+            }
         }
 
         body {
@@ -1343,7 +1347,89 @@
 
         <!-- ORGANIZATION TEAM VIEW -->
         <div id="org-team-view" class="hidden" style="width: 100%; display: flex; flex-direction: column; gap: 2rem;">
-            <!-- Content will be injected via JS -->
+            <!-- View Header -->
+            <div class="page-header" style="margin-bottom: 2.5rem;">
+                <div class="header-title">
+                    <h1>team</h1>
+                    <p>manage your organization members and access levels</p>
+                </div>
+            </div>
+
+            <!-- Table Actions Row -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <div class="org-search-wrapper" style="max-width: 300px; width: 100%;">
+                    <svg class="org-search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <input type="text" class="org-search-input" placeholder="filter members..." id="team-search">
+                </div>
+                
+                <div style="display: flex; gap: 0.75rem;">
+                    <a href="https://help.sentinelpay.org/docs/team" target="_blank" class="btn-icon" style="text-decoration: none; padding: 0.6rem 1rem; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; display: flex; gap: 8px; align-items: center;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                        docs
+                    </a>
+                    <button class="btn-new-org" id="btn-invite-member" style="font-size: 0.75rem; padding: 0.6rem 1.2rem; border-radius: 8px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><line x1="19" y1="8" x2="19" y2="14"></line><line x1="22" y1="11" x2="16" y2="11"></line></svg>
+                        invite members
+                    </button>
+                </div>
+            </div>
+
+            <!-- Team Table Container -->
+            <div class="glass-panel" style="padding: 0; overflow: hidden; border-radius: 12px;">
+                <div class="table-container">
+                    <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                        <thead style="background: rgba(255, 255, 255, 0.02); border-bottom: 1px solid var(--border-glass);">
+                            <tr>
+                                <th style="padding: 1rem 1.5rem; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700;">member</th>
+                                <th style="padding: 1rem 1.5rem; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700;">mfa</th>
+                                <th style="padding: 1rem 1.5rem; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700;">role</th>
+                                <th style="padding: 1rem 1.5rem;"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="team-table-body">
+                            <!-- Mock Row 1 (Current User) -->
+                            <tr style="border-bottom: 1px solid var(--border-glass); transition: background 0.2s ease;" class="table-row-hover">
+                                <td style="padding: 1.25rem 1.5rem;">
+                                    <div style="display: flex; align-items: center; gap: 1rem;">
+                                        <div class="org-avatar small" style="background: linear-gradient(135deg, var(--neon-blue), #a020f0); border: none;">C</div>
+                                        <div style="display: flex; flex-direction: column;">
+                                            <div style="display: flex; align-items: center; gap: 8px;">
+                                                <span style="font-family: 'Inter', sans-serif; font-size: 0.85rem; font-weight: 600; color: #fff;" id="current-user-email">ceemv22@aol.com</span>
+                                                <span style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: var(--text-muted); font-size: 0.6rem; padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; text-transform: lowercase;">you</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td style="padding: 1.25rem 1.5rem;">
+                                    <div style="display: flex; align-items: center; gap: 6px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;">
+                                        disabled
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.5;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                    </div>
+                                </td>
+                                <td style="padding: 1.25rem 1.5rem;">
+                                    <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: #fff; opacity: 0.9;">owner</span>
+                                </td>
+                                <td style="padding: 1.25rem 1.5rem; text-align: right;">
+                                    <button class="btn-cancel" style="padding: 0.4rem 0.8rem; font-size: 0.7rem; border-radius: 6px;">leave team</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Table Footer -->
+                <div style="padding: 1rem 1.5rem; background: rgba(255, 255, 255, 0.01); display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--text-muted);">1 member</span>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button class="btn-icon" style="padding: 0.4rem; border-radius: 6px; opacity: 0.5; cursor: not-allowed;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                        </button>
+                        <button class="btn-icon" style="padding: 0.4rem; border-radius: 6px; opacity: 0.5; cursor: not-allowed;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     </main>
 
