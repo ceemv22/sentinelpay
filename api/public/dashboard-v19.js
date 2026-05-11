@@ -439,6 +439,12 @@ function switchToHomeView() {
     document.getElementById('org-home-view').classList.remove('hidden');
     document.getElementById('org-dashboard-view').classList.add('hidden');
     document.getElementById('dashboard-view').classList.add('hidden');
+    
+    // Toggle Sidebar Nav
+    const globalNav = document.getElementById('sidebar-global-nav');
+    const orgNav = document.getElementById('sidebar-org-nav');
+    if (globalNav) globalNav.classList.remove('hidden');
+    if (orgNav) orgNav.classList.add('hidden');
 }
 
 function switchToOrgView(slug) {
@@ -446,6 +452,12 @@ function switchToOrgView(slug) {
     document.getElementById('org-home-view').classList.add('hidden');
     document.getElementById('org-dashboard-view').classList.remove('hidden');
     document.getElementById('dashboard-view').classList.add('hidden');
+    
+    // Toggle Sidebar Nav
+    const globalNav = document.getElementById('sidebar-global-nav');
+    const orgNav = document.getElementById('sidebar-org-nav');
+    if (globalNav) globalNav.classList.add('hidden');
+    if (orgNav) orgNav.classList.remove('hidden');
     
     // In the future, we fetch org data by slug here
     console.log(`[sentinel-router] navigated to organization: ${slug}`);
