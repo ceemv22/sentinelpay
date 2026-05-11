@@ -531,6 +531,7 @@ async function fetchProfile(token) {
     try {
         const response = await fetch('/v1/user/profile', { headers: { 'Authorization': `Bearer ${token}` } });
         if (!response.ok) return;
+        const profile = await response.json();
         // 1. Update Team View (Dynamic Email/Username)
         const teamEmailEl = document.getElementById('current-user-email');
         const displayId = profile.username || profile.email;
