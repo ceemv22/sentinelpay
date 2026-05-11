@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>sentinelpay | reset</title>
+    <meta name="theme-color" content="#040404">
+    <link rel="icon" type="image/svg+xml" href="logo.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=JetBrains+Mono:wght@400;700;800&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=11.8">
+    <script src="lib/supabase.js"></script>
+</head>
+<body style="min-height: 100vh; overflow-x: hidden;">
+    <noscript>
+        <div class="noscript-overlay">
+            <div class="cyber-grid"></div>
+            <div class="noscript-card glass-panel" style="text-align: center;">
+                <div class="noscript-icon">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--color-red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin: 0 auto;">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                        <line x1="12" y1="9" x2="12" y2="13"/>
+                        <line x1="12" y1="17" x2="12" y2="17"/>
+                    </svg>
+                </div>
+                <h1 class="noscript-title">javascript_required</h1>
+                <p class="noscript-text">sentinelpay recovery protocol requires script execution to finalize password updates.</p>
+                <div class="noscript-status">> status: blocked_</div>
+            </div>
+        </div>
+    </noscript>
+
+    <div class="cyber-grid"></div>
+    <div class="glow-orb"></div>
+
+    <!-- Fixed Top Bar Consistency -->
+    <div class="auth-topbar">
+        <div class="auth-top-logo mobile-only">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" style="width: 32px; height: 32px;">
+              <defs>
+                <linearGradient id="neonGradientNav" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#00ffff" />
+                  <stop offset="100%" stop-color="#a020f0" />
+                </linearGradient>
+                <filter id="neonGlowNav" x="-50%" y="-50%" width="200%" height="200%">
+                  <feGaussianBlur stdDeviation="3.5" result="coloredBlur"/>
+                  <feMerge>
+                    <feMergeNode in="coloredBlur"/>
+                    <feMergeNode in="SourceGraphic"/>
+                  </feMerge>
+                </filter>
+              </defs>
+              <g filter="url(#neonGlowNav)" fill="none" stroke="url(#neonGradientNav)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z" />
+                <path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z" />
+                <g class="eye-pupil" style="transition: transform 0.1s ease-out;">
+                  <circle cx="60" cy="60" r="6" />
+                  <circle cx="60" cy="60" r="2" fill="url(#neonGradientNav)" stroke="none"/>
+                </g>
+                <path d="M60 15 V 30" stroke-width="2" opacity="0.6"/>
+                <path d="M60 90 V 105" stroke-width="2" opacity="0.6"/>
+              </g>
+            </svg>
+        </div>
+        <a href="/auth" class="auth-nav-btn" style="background: transparent; border-color: rgba(255,255,255,0.1); color: var(--text-muted);">back to login</a>
+    </div>
+
+    <div class="auth-page-wrap">
+        <!-- Interactive Center Logo (Desktop Only) -->
+        <div class="auth-center-logo desktop-only" style="margin-bottom: 2rem;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" style="width: 80px; height: 80px;">
+              <defs>
+                <linearGradient id="neonGradientCard" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#00ffff" />
+                  <stop offset="100%" stop-color="#a020f0" />
+                </linearGradient>
+                <filter id="neonGlowCard" x="-50%" y="-50%" width="200%" height="200%">
+                  <feGaussianBlur stdDeviation="3.5" result="coloredBlur"/>
+                  <feMerge>
+                    <feMergeNode in="coloredBlur"/>
+                    <feMergeNode in="SourceGraphic"/>
+                  </feMerge>
+                </filter>
+              </defs>
+              <g filter="url(#neonGlowCard)" fill="none" stroke="url(#neonGradientCard)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z" />
+                <path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z" />
+                <g class="eye-pupil" style="transition: transform 0.1s ease-out;">
+                  <circle cx="60" cy="60" r="6" />
+                  <circle cx="60" cy="60" r="2" fill="url(#neonGradientCard)" stroke="none"/>
+                </g>
+                <path d="M60 15 V 30" stroke-width="2" opacity="0.6"/>
+                <path d="M60 90 V 105" stroke-width="2" opacity="0.6"/>
+              </g>
+            </svg>
+        </div>
+
+        <!-- Clean Auth Card as per original design -->
+        <div id="reset-panel" class="auth-card active" style="position: relative; z-index: 500;">
+            <div class="auth-tabs" id="reset-tabs" style="margin-bottom: 2rem;">
+                <button class="auth-tab active" style="width: 100%; cursor: default; pointer-events: none;">update password</button>
+            </div>
+            
+            <p id="reset-intro-text" style="color: var(--text-muted); font-size: 0.82rem; font-family: 'JetBrains Mono', monospace; line-height: 1.8; margin-bottom: 2.5rem; width: 100%; text-align: center; max-width: 340px; margin-left: auto; margin-right: auto;">
+                enter your new security credentials below to regain access to your profile.
+            </p>
+
+            <form id="reset-password-form" class="auth-form" style="display: none; flex-direction: column;" novalidate>
+                <div class="input-group">
+                    <div style="display: flex; justify-content: space-between; align-items: center; position: relative;">
+                        <label for="new-password" style="margin-bottom: 0;">new password</label>
+                        <span id="pw-rules-toggle" class="pw-toggle">?</span>
+                        <div id="pw-rules-tooltip" class="pw-tooltip">
+                            <span id="rule-len" class="rule">✕</span> min 8 characters<br>
+                            <span id="rule-upper" class="rule">✕</span> one uppercase letter<br>
+                            <span id="rule-num" class="rule">✕</span> one number
+                        </div>
+                    </div>
+                    <div class="password-field-wrap">
+                        <input type="password" id="new-password" placeholder="••••••••" required minlength="8" autocomplete="new-password">
+                        <span class="pw-eye-toggle" role="button" data-target="new-password">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="eye-off"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="eye-on" style="display:none;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="input-group" style="margin-top: 1.5rem;">
+                    <label for="confirm-password">confirm new password</label>
+                    <div class="password-field-wrap">
+                        <input type="password" id="confirm-password" placeholder="••••••••" required minlength="8" autocomplete="new-password">
+                        <span class="pw-eye-toggle" role="button" data-target="confirm-password">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="eye-off"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="eye-on" style="display:none;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        </span>
+                    </div>
+                </div>
+                
+                <p id="reset-error-msg" class="error-msg" style="display: none;"></p>
+                <button type="submit" id="reset-submit-btn" class="submit-btn" style="margin-top: 2.5rem;">update password</button>
+            </form>
+
+            <div id="reset-invalid-state" class="reset-state-window" style="display: none; flex-direction: column; align-items: center; text-align: center; width: 100%;">
+                <div style="flex: 1; display: flex; align-items: center; justify-content: center; width: 100%;">
+                    <p style="color: var(--color-red); font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; line-height: 1.8; text-transform: lowercase; max-width: 250px; margin: 0;">recovery link expired or invalid.</p>
+                </div>
+                <button id="back-to-login-invalid" class="submit-btn reset-state-btn" style="width: 100%; margin-top: auto;">back to login</button>
+            </div>
+
+            <!-- Success State -->
+            <div id="reset-success-state" class="reset-state-window" style="display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; width: 100%;">
+                <div class="success-icon-wrap" style="margin-bottom: 2rem; filter: drop-shadow(0 0 20px rgba(0, 240, 255, 0.25)); display: flex; justify-content: center;">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" style="width: 90px; height: 90px;">
+                        <defs>
+                            <linearGradient id="checkGradReset" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#00f0ff" />
+                                <stop offset="100%" stop-color="#a020f0" />
+                            </linearGradient>
+                        </defs>
+                        <g fill="none" stroke="url(#checkGradReset)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z" style="opacity: 0.25;" />
+                            <path d="M45 60 L55 70 L75 50" stroke-width="4.5">
+                                <animate attributeName="stroke-dasharray" from="0, 50" to="50, 0" dur="0.8s" fill="freeze" />
+                            </path>
+                        </g>
+                    </svg>
+                </div>
+                <h2 style="font-size: 2rem; font-weight: 800; letter-spacing: -1.75px; color: #fff; margin-bottom: 0.8rem; font-family: 'JetBrains Mono', monospace; text-transform: lowercase;">password updated</h2>
+                <p style="color: rgba(255,255,255,0.4); font-size: 0.9rem; font-family: 'JetBrains Mono', monospace; line-height: 1.8; max-width: 280px; margin: 0 auto; margin-bottom: 2.5rem; text-transform: lowercase;">your credentials has been updated successfully. you can now return to core.</p>
+                <button id="reset-login-btn" class="submit-btn reset-state-btn" style="width: 100%; margin-top: auto;">back to login</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="toast.js"></script>
+    <script src="reset.js?v=11.6"></script>
+    <script src="eye-track.js?v=11.0"></script>
+</body>
+</html>

@@ -1,41 +1,50 @@
-# sentinelpay public core
+<p align="center">
+  <img src="dashboard/logo.svg" alt="sentinelpay logo" width="220"/>
+</p>
 
-the transparency layer for the sentinelpay security infrastructure.
+<p align="center">
+  <a href="https://sentinelpay.org"><img src="https://img.shields.io/badge/status-production_hardened-00f0ff?style=flat-square" alt="status"></a>
+</p>
 
-sentinelpay is a high-performance b2b risk scoring engine designed for crypto operators, casinos, and financial platforms. this repository contains the public-facing sdk documentation, integration examples, and auditable frontend components.
+<h3 align="center">
+  sentinelpay // public core
+</h3>
 
-## mission
-our mission is to eliminate deposit-related fraud in the crypto ecosystem. we provide sub-second risk assessment for any evm wallet, allowing operators to block high-risk actors before they interact with their smart contracts.
+<p align="center">
+  this repository contains the public-facing core of the sentinelpay platform, showcasing our architectural standards, security protocols, and premium user experience.
+</p>
 
-## integration
-to integrate sentinelpay into your platform, you simply need to interact with our rest api.
+---
 
-### example scan (node.js)
-```javascript
-const axios = require('axios');
+## overview
 
-async function scanwallet(address) {
-    try {
-        const response = await axios.post('https://api.sentinelpay.org/v1/scan', {
-            address: address
-        }, {
-            headers: { 'x-api-key': 'your_sentinel_key' }
-        });
-        
-        console.log(`risk score: ${response.data.score}/100`);
-        console.log(`flags: ${response.data.flags.join(', ')}`);
-    } catch (err) {
-        console.error('scan failed:', err.response?.data?.error || err.message);
-    }
-}
+this is a sanitized version of the sentinelpay codebase, released for technical review and integration demonstrations. while the proprietary heuristics engine remains private, this repository illustrates our standards for:
 
-scanwallet('0x...');
-```
+- **premium full-stack architecture:** node.js api with prisma/supabase integration.
+- **security by design:** advanced content security policies (csp), hpp protection, and atomic data integrity.
+- **institutional-grade ui/ux:** high-performance glassmorphic dashboard and documentation hub.
 
-## security and privacy
-while our core scoring engine logic remains proprietary (private) to prevent bypass attempts, we maintain this public repository to provide transparent sdks and document our security standards.
+## structure
 
-## links
-- [official website](https://sentinelpay.org)
-- [api documentation](https://sentinelpay.org/docs)
-- [twitter / x](https://x.com/sentinelpayorg)
+- `/api`: backend architecture, security middlewares, and api design.
+- `/dashboard`: the complete premium frontend interface.
+- `/help-center`: a comprehensive, production-ready documentation portal.
+- `/prisma`: database schema design for scalable crypto-commerce audit logs.
+
+## security implementation
+
+sentinelpay is built to withstand high-stakes environments. key security features demonstrated in this core include:
+
+- **edge-level scoring**: architecture designed to block illicit funds before they contaminate user treasuries.
+- **spoof-proof ip resolution**: custom implementation for accurate rate-limiting behind proxies like cloudflare.
+- **authenticated encryption**: aes-256-gcm implementation for sensitive data protection at rest.
+
+## contact
+
+to discuss enterprise integration or the full heuristics engine capability, reach out:
+
+- **portal:** [sentinelpay.org](https://sentinelpay.org)
+- **telegram:** [@ceemv22](https://t.me/ceemv22)
+
+---
+// sentinelpay // security by architecture.
