@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sentinelpay | access control</title>
+    <meta name="description" content="Manage permissions and roles across your SentinelPay organizations and projects.">
+    <meta name="theme-color" content="#050505">
+    <link rel="icon" type="image/svg+xml" href="/logo.svg">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Inter:wght@300;400;500;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/category.css">
+    <link rel="stylesheet" href="/article.css">
+</head>
+<body>
+
+    <div class="cyber-grid"></div>
+    <div class="glow-orb"></div>
+
+    <!-- Top nav -->
+    <header class="top-nav">
+        <div class="mobile-nav-logo mobile-only">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" style="width: 32px; height: 32px;">
+              <defs>
+                <linearGradient id="neonGradientNav" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#00f0ff" />
+                  <stop offset="100%" stop-color="#a020f0" />
+                </linearGradient>
+                <filter id="neonGlowNav" x="-50%" y="-50%" width="200%" height="200%">
+                  <feGaussianBlur stdDeviation="3.5" result="coloredBlur"/>
+                  <feMerge>
+                    <feMergeNode in="coloredBlur"/>
+                    <feMergeNode in="SourceGraphic"/>
+                  </feMerge>
+                </filter>
+              </defs>
+              <g filter="url(#neonGlowNav)" fill="none" stroke="url(#neonGradientNav)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z" />
+                <path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z" />
+                <g class="eye-pupil" style="transition: transform 0.1s ease-out;">
+                  <circle cx="60" cy="60" r="6" />
+                  <circle cx="60" cy="60" r="2" fill="url(#neonGradientNav)" stroke="none"/>
+                </g>
+                <path d="M60 15 V 30" stroke-width="2" opacity="0.6"/>
+                <path d="M60 90 V 105" stroke-width="2" opacity="0.6"/>
+              </g>
+            </svg>
+        </div>
+        <a href="https://sentinelpay.org" class="auth-nav-btn">return to sentinelpay</a>
+    </header>
+
+    <main class="kb-wrapper article-layout">
+
+        <!-- Search bar -->
+        <div class="cat-search-wrapper">
+            <div class="search-container" id="search-container">
+                <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input type="text" id="search-input" class="search-input" placeholder="search articles, endpoints, error codes..." autocomplete="off">
+            </div>
+        </div>
+
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb">
+            <a href="/" class="breadcrumb-link">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                all collections
+            </a>
+            <span class="breadcrumb-sep">/</span>
+            <a href="/getting-started" class="breadcrumb-link">getting started</a>
+            <span class="breadcrumb-sep">/</span>
+            <span class="breadcrumb-current">access control</span>
+        </nav>
+
+        <article class="article-container">
+
+            <header class="article-header">
+                <div class="article-author-row">
+                    <img src="https://github.com/ceemv22.png" alt="ceem" class="article-avatar">
+                    <div class="article-author-info">
+                        <span class="article-author-name">written by ceem</span>
+                        <span class="article-date">last updated: may 2026</span>
+                    </div>
+                </div>
+                <h1 class="article-title">access control</h1>
+                <p class="article-lead">sentinelpay provides granular access controls to manage permissions across your organizations and projects.</p>
+            </header>
+
+            <div class="article-body">
+                <p>for each organization and project, a member can have one of the following roles:</p>
+                <ul>
+                    <li><strong>owner:</strong> full access to everything in organization and project resources.</li>
+                    <li><strong>administrator:</strong> full access to everything in organization and project resources except updating organization settings, transferring projects outside of the organization, and adding new owners.</li>
+                    <li><strong>developer:</strong> read-only access to organization resources and content access to project resources but cannot change any project settings.</li>
+                    <li><strong>read-only:</strong> read-only access to organization and project resources (available on team and enterprise plans).</li>
+                </ul>
+
+                <p>when you first create an account, a default organization is created for you and you'll be assigned as the owner. any organizations you create will assign you as owner as well.</p>
+
+                <h2>manage organization members</h2>
+                <p>to invite others to collaborate, visit your organization's team settings to send an invite link to another user's email. the invite is valid for 24 hours. for project scoped roles, you may only assign a role to a single project for the user when sending the invite. you can assign roles to multiple projects after the user accepts the invite.</p>
+
+                <div class="article-callout">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                    <p>invites sent from a saml sso account can only be accepted by another saml sso account from the same identity provider.</p>
+                </div>
+
+                <h2>viewing members via management api</h2>
+                <p>you can also view organization members using the sentinelpay management api:</p>
+                
+                <div class="code-block-header">bash</div>
+                <pre><code># get your access token from dashboard settings
+export SENTINEL_ACCESS_TOKEN="your-access-token"
+export ORG_ID="your-organization-id"
+
+# list organization members
+curl "https://api.sentinelpay.org/v1/organizations/$ORG_ID/members" \
+  -H "Authorization: Bearer $SENTINEL_ACCESS_TOKEN"</code></pre>
+
+                <h2>transferring ownership</h2>
+                <p>each sentinelpay organization must have at least one owner. if your organization has other owners then you can relinquish ownership and leave the organization by clicking <strong>leave team</strong> in your organization's team settings.</p>
+                <p>otherwise, you'll need to invite a user as owner, and they need to accept the invitation, or promote an existing organization member to owner before you can leave the organization.</p>
+
+                <h2>organization vs project scoped roles</h2>
+                <p>project scoped roles are only available on the team and enterprise plans.</p>
+                <ul>
+                    <li>if a member has an <strong>organization-level role</strong>, they will have the corresponding permissions across all current and future projects within that organization.</li>
+                    <li>if a member is assigned a <strong>project-scoped role</strong>, they will only have access to the specific projects they've been assigned to.</li>
+                </ul>
+
+                <h2>organization permissions table</h2>
+                <div class="article-table-wrapper">
+                    <table class="article-table">
+                        <thead>
+                            <tr>
+                                <th>resource</th>
+                                <th>action</th>
+                                <th>owner</th>
+                                <th>admin</th>
+                                <th>dev</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td rowspan="2">organization</td>
+                                <td>update settings</td>
+                                <td>✅</td>
+                                <td>❌</td>
+                                <td>❌</td>
+                            </tr>
+                            <tr>
+                                <td>delete org</td>
+                                <td>✅</td>
+                                <td>❌</td>
+                                <td>❌</td>
+                            </tr>
+                            <tr>
+                                <td rowspan="4">members</td>
+                                <td>list members</td>
+                                <td>✅</td>
+                                <td>✅</td>
+                                <td>✅</td>
+                            </tr>
+                            <tr>
+                                <td>add owner</td>
+                                <td>✅</td>
+                                <td>❌</td>
+                                <td>❌</td>
+                            </tr>
+                            <tr>
+                                <td>add admin</td>
+                                <td>✅</td>
+                                <td>✅</td>
+                                <td>❌</td>
+                            </tr>
+                            <tr>
+                                <td>revoke invite</td>
+                                <td>✅</td>
+                                <td>✅</td>
+                                <td>❌</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h2>project permissions table</h2>
+                <div class="article-table-wrapper">
+                    <table class="article-table">
+                        <thead>
+                            <tr>
+                                <th>resource</th>
+                                <th>action</th>
+                                <th>owner</th>
+                                <th>admin</th>
+                                <th>dev</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td rowspan="2">project</td>
+                                <td>create/delete</td>
+                                <td>✅</td>
+                                <td>✅</td>
+                                <td>❌</td>
+                            </tr>
+                            <tr>
+                                <td>pause/restart</td>
+                                <td>✅</td>
+                                <td>✅</td>
+                                <td>✅</td>
+                            </tr>
+                            <tr>
+                                <td rowspan="2">api keys</td>
+                                <td>read keys</td>
+                                <td>✅</td>
+                                <td>✅</td>
+                                <td>✅</td>
+                            </tr>
+                            <tr>
+                                <td>rotate secrets</td>
+                                <td>✅</td>
+                                <td>✅</td>
+                                <td>❌</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+            <div class="article-related">
+                <h3 class="related-title">related articles</h3>
+                <div class="related-list">
+                    <a href="/getting-started/inviting-team-members" class="related-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                        inviting team members
+                    </a>
+                    <a href="/getting-started/creating-your-organization" class="related-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                        creating your organization
+                    </a>
+                </div>
+            </div>
+
+            <div class="article-support">
+                <div class="support-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                </div>
+                <div class="support-text">
+                    <h4>still need help?</h4>
+                    <p>our team is here for you. reach out via email or jump into live chat.</p>
+                </div>
+                <div class="support-actions">
+                    <a href="mailto:support@sentinelpay.org" class="support-btn support-btn-secondary">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                        email support
+                    </a>
+                    <a href="https://sentinelpay.org" class="support-btn support-btn-primary">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                        live chat
+                    </a>
+                </div>
+            </div>
+
+        </article>
+
+        <footer class="kb-footer">
+            <a href="mailto:support@sentinelpay.org" class="footer-link">support@sentinelpay.org</a>
+        </footer>
+
+    </main>
+
+    <script>
+        const searchInput = document.getElementById('search-input');
+        const searchContainer = document.getElementById('search-container');
+        if (searchInput && searchContainer) {
+            searchInput.addEventListener('focus', () => searchContainer.classList.add('focused'));
+            searchInput.addEventListener('blur', () => searchContainer.classList.remove('focused'));
+        }
+
+        (function() {
+            var pupils = document.querySelectorAll('.eye-pupil');
+            if (pupils.length > 0) {
+                document.addEventListener('mousemove', function(e) {
+                    var cx = window.innerWidth / 2;
+                    var cy = window.innerHeight / 2;
+                    var ox = (e.clientX - cx) / cx;
+                    var oy = (e.clientY - cy) / cy;
+                    var m = 3;
+                    pupils.forEach(function(pupil) {
+                        pupil.style.transform = 'translate(' + (ox * m) + 'px, ' + (oy * m) + 'px)';
+                    });
+                });
+            }
+        })();
+    </script>
+
+</body>
+</html>
