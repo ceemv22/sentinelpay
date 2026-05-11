@@ -3,9 +3,9 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/ceemv22/sentinelpay/releases/latest"><img src="https://img.shields.io/github/v/release/ceemv22/sentinelpay?color=00f0ff&label=version&style=flat-square" alt="Version"></a>
-  <a href="https://sentinelpay.org"><img src="https://img.shields.io/badge/status-production_hardened-00f0ff?style=flat-square" alt="Status"></a>
-  <a href="https://x.com/sentinelpayorg"><img src="https://img.shields.io/twitter/follow/sentinelpayorg?style=social" alt="Twitter"></a>
+  <a href="https://github.com/ceemv22/sentinelpay/releases/latest"><img src="https://img.shields.io/github/v/release/ceemv22/sentinelpay?color=00f0ff&label=version&style=flat-square" alt="version"></a>
+  <a href="https://sentinelpay.org"><img src="https://img.shields.io/badge/status-production_hardened-00f0ff?style=flat-square" alt="status"></a>
+  <a href="https://x.com/sentinelpayorg"><img src="https://img.shields.io/twitter/follow/sentinelpayorg?style=social" alt="twitter"></a>
 </p>
 
 <h3 align="center">
@@ -13,79 +13,89 @@
 </h3>
 
 <p align="center">
-  sentinelpay is a high-performance risk scoring engine designed to sit at the edge of your payment flow.<br>
-  <b>detect. block. comply.</b>
+  sentinelpay is a high-performance risk scoring engine designed to sit at the edge of the payment flow.
+  it provides pre-deposit verification to protect treasury integrity.
 </p>
 
 ---
 
-## 🛡️ state of the protocol: phase 3 (production hardened)
+## overview
 
-sentinelpay has graduated from active development to **production stable**. the current architecture is hardened against advanced evasion techniques and infrastructure-level attacks.
+sentinelpay is a real-time risk assessment protocol for decentralized commerce. unlike traditional aml tools that scan wallets after a transaction has occurred, sentinelpay enables b2b operators to assess wallet risk before accepting funds. this prevents the contamination of treasury accounts and ensures regulatory compliance at the gateway level.
 
-### why sentinelpay?
-most risk scoring happens *after* a transaction is mined. for b2b operators, this is too late. sentinelpay provides **sub-second pre-deposit verification**, allowing you to reject illicit funds before they contaminate your treasury.
+the system utilizes a proprietary heuristics engine (v3.5) to perform deep forensic scans across multiple chains, identifying illicit patterns with sub-second latency.
 
----
+## protocol architecture
 
-## ⚙️ the engine (heuristics v3.5)
+```mermaid
+graph TD
+    user[user / wallet] -->|initiates transaction| operator[b2b operator]
+    operator -->|v1/score| oracle[sentinelpay oracle]
+    oracle -->|transaction graph scan| engine[heuristics engine]
+    engine -->|on-chain forensic analysis| nodes[blockchain nodes]
+    nodes -->|raw transaction data| engine
+    engine -->|risk score & flags| oracle
+    oracle -->|json response| operator
+    operator -->|decision: accept/block/review| user
 
-our proprietary engine performs a deep forensic scan across all transaction types (normal, internal, and erc-20) with a depth of up to **10,000 transactions** per wallet.
+    style oracle stroke:#00f0ff,stroke-width:2px
+    style engine stroke:#00f0ff,stroke-width:2px
+    style operator stroke:#a020f0,stroke-width:2px
+```
 
-| heuristic | description | status |
-|-----------|-------------|--------|
-| `sanctioned_entity` | direct match with ofac, mixers, or known sanctioned addresses. | **active** |
-| `mixer_interaction` | inbound/outbound flow from tornado cash, sinbad, and 140+ others. | **active** |
-| `history_incomplete` | detection of **history flooding** (evasion attempts using 10k+ tx). | **new** |
-| `high_velocity` | > 50 transactions broadcasted within a 24h rolling window. | **active** |
-| `new_wallet` | on-chain birth timestamp < 30 days. | **active** |
-| `io_imbalance` | highly skewed inbound vs outbound capital ratios. | **active** |
+## heuristics engine (v3.5)
 
----
+our engine performs automated forensic analysis on normal, internal, and erc-20 transactions, reaching a depth of up to 10,000 operations per wallet.
 
-## 🔒 s-tier cybersecurity architecture
+| identifier | description | status |
+|------------|-------------|--------|
+| `sanctioned_entity` | direct correlation with ofac, mixers, or known illicit addresses. | active |
+| `mixer_interaction` | inbound or outbound flow through coin mixers (140+ protocols supported). | active |
+| `history_incomplete` | detection of history flooding (evasion attempts using 10k+ junk tx). | active |
+| `high_velocity` | > 50 transactions broadcasted within a 24h rolling window. | active |
+| `new_wallet` | on-chain deployment timestamp < 30 days. | active |
+| `io_imbalance` | highly skewed inbound vs outbound capital ratios indicative of laundering. | active |
 
-we don't just secure your payments; we secure our own infrastructure to protect your data.
+## security and compliance infrastructure
 
-- **hybrid trust ip resolution**: advanced cloudflare + railway header verification for accurate rate-limiting and audit logging.
-- **atomic billing**: credits and api key provisioning are handled via isolated prisma transactions.
-- **aes-256-gcm encryption**: sensitive data is encrypted at rest using industry-standard authenticated encryption with versioned rotation support.
-- **hpp & clickjacking protection**: implementation of http parameter pollution (hpp) protection and strict `frame-ancestors` csp directives.
-- **zero-retention policy**: raw api keys are permanently erased from the database immediately after the one-time user reveal.
+sentinelpay is built on an architecture of extreme security, ensuring that both the oracle and its users are protected from exploitation.
 
----
+- **pre-execution verification**: scoring occurs at the edge, allowing operators to reject illicit funds before they are committed to the blockchain.
+- **hybrid trust resolution**: integrated header verification for authenticated rate-limiting and tamper-proof audit logging.
+- **atomic data integrity**: all internal states, including credit management and api provisioning, are handled via isolated acid-compliant transactions.
+- **authenticated encryption**: sensitive data is protected using aes-256-gcm with versioned key rotation to ensure long-term data security.
+- **zero-retention keys**: raw api keys are permanently erased from the system immediately after a one-time cryptographic reveal to the user.
 
-## 🚀 integration in < 60 seconds
+## api integration
 
-sentinelpay is designed for seamless b2b integration. use your `x-api-key` to secure your deposit flows.
+integration is designed to be seamless. utilize the sentinelpay api to secure your deposit gateway.
 
 ```bash
-curl -X POST https://api.sentinelpay.org/v1/score \
-  -H "x-api-key: sp_live_xxxxxxxxxxxxxxxx" \
+curl -x post https://api.sentinelpay.org/v1/score \
+  -h "x-api-key: sp_live_xxxxxxxxxxxxxxxx" \
   -d '{"wallet": "0x..."}'
 ```
 
-**sample response:**
+**example response:**
+
 ```json
 {
   "wallet": "0x...",
   "score": 85,
   "category": "high",
   "flags": ["mixer_interaction", "history_incomplete"],
-  "timestamp": "2026-05-04T00:00:00.000Z"
+  "timestamp": "2026-05-11t20:21:00.000z"
 }
 ```
 
----
-
-## 🌐 ecosystem
+## ecosystem
 
 | node | url |
 |------|-----|
-| **official portal** | [sentinelpay.org](https://sentinelpay.org) |
-| **b2b dashboard** | [sentinelpay.org/dashboard](https://sentinelpay.org/dashboard) |
-| **public core** | [github.com/ceemv22/sentinelpay-public](https://github.com/ceemv22/sentinelpay-public) |
-| **x / twitter** | [@sentinelpayorg](https://x.com/sentinelpayorg) |
+| official portal | [sentinelpay.org](https://sentinelpay.org) |
+| b2b dashboard | [sentinelpay.org/dashboard](https://sentinelpay.org/dashboard) |
+| documentation | [help.sentinelpay.org](https://help.sentinelpay.org) |
+| x / twitter | [@sentinelpayorg](https://x.com/sentinelpayorg) |
 
 ---
 // sentinelpay // security by architecture.
