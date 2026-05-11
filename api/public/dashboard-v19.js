@@ -153,12 +153,14 @@ function renderDashboard(session) {
         document.body.classList.add('state-org-home');
 
         // 2. Immediate Identifiers
+        let rawUsername = user.email || 'user';
         let displayIdentifier = user.email || 'user';
         let avatarInitial = '?';
         if (user.user_metadata) {
             if (user.user_metadata.user_name) {
-                displayIdentifier = `@${user.user_metadata.user_name}`;
-                avatarInitial = user.user_metadata.user_name.charAt(0);
+                rawUsername = user.user_metadata.user_name;
+                displayIdentifier = `@${rawUsername}`;
+                avatarInitial = rawUsername.charAt(0);
             } else if (user.user_metadata.full_name) {
                 avatarInitial = user.user_metadata.full_name.charAt(0);
             }
@@ -173,7 +175,7 @@ function renderDashboard(session) {
         if (teamAvatarEl) teamAvatarEl.textContent = avatarInitial.toUpperCase();
         
         const teamEmailEl = document.getElementById('current-user-email');
-        if (teamEmailEl) teamEmailEl.textContent = displayIdentifier;
+        if (teamEmailEl) teamEmailEl.textContent = rawUsername;
 
         const dropdownEmailEl = document.getElementById('dropdown-email');
         if (dropdownEmailEl) dropdownEmailEl.textContent = displayIdentifier;
