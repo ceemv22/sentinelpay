@@ -55,6 +55,25 @@ app.use((req, res, next) => {
     req.realIp = cfIp || (forwardedFor ? forwardedFor.split(',')[0].trim() : req.ip);
     next();
 });
+
+// [MONITOR] S-Tier Global Traffic Watcher (Server-Side Only)
+app.use((req, res, next) => {
+    const start = Date.now();
+    const timestamp = new Date().toISOString().replace('T', ' ').split('.')[0];
+    const ip = req.realIp || req.ip;
+    
+    // Skip logging for static assets to keep logs clean and high-value
+    const isStatic = req.path.match(/\.(css|js|png|jpg|jpeg|svg|gif|ico|woff|woff2|webp)$/);
+    
+    res.on('finish', () => {
+        if (!isStatic) {
+            const duration = Date.now() - start;
+            console.log(`[MONITOR] ${timestamp} | IP: ${ip.padEnd(15)} | ${req.method.padEnd(4)} | ${res.statusCode} | ${req.originalUrl} (${duration}ms)`);
+        }
+    });
+    next();
+});
+
 app.use(hpp()); // Prevent HTTP Parameter Pollution
 app.use(helmet({
     contentSecurityPolicy: {
