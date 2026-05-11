@@ -523,6 +523,16 @@ async function fetchProfile(token) {
     try {
         const response = await fetch('/v1/user/profile', { headers: { 'Authorization': `Bearer ${token}` } });
         if (!response.ok) return;
+        const profile = await response.json();
+
+        // 1. Update Team View (Dynamic Email/Username)
+        const teamEmailEl = document.getElementById('current-user-email');
+        const displayId = profile.username || profile.email;
+        if (teamEmailEl && displayId) {
+            teamEmailEl.textContent = displayId;
+            const teamAvatarEl = document.querySelector('#org-team-view .org-avatar.small');
+            if (teamAvatarEl) teamAvatarEl.textContent = displayId.charAt(0).toUpperCase();
+        }
         
         const orgsRes = await fetch('/v1/organizations', { headers: { 'Authorization': `Bearer ${token}` } });
         const orgs = await orgsRes.json();
