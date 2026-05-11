@@ -74,6 +74,7 @@ body {
 
 /* --- GLOW ORB (matches main site) --- */
 .glow-orb {
+    display: none;
     position: fixed;
     width: 700px;
     height: 700px;
