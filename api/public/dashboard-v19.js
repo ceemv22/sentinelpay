@@ -320,8 +320,16 @@ function setupCreateOrgModal(token) {
                 if (!available) {
                     const random = Math.floor(100000 + Math.random() * 900000);
                     const rec = `${val.toLowerCase().replace(/\s+/g, '-')}-${random}`;
-                    recEl.textContent = `${val.toLowerCase()} is taken. try ${rec} instead.`;
+                    recEl.innerHTML = `${val.toLowerCase()} is taken. try <span class="org-rec-link" id="btn-use-rec">${rec}</span> instead.`;
                     recEl.style.display = 'block';
+                    
+                    const recLink = document.getElementById('btn-use-rec');
+                    if (recLink) {
+                        recLink.onclick = () => {
+                            nameInput.value = rec;
+                            nameInput.dispatchEvent(new Event('input')); // Trigger re-check
+                        };
+                    }
                     if (successIcon) successIcon.style.display = 'none';
                 } else {
                     recEl.style.display = 'none';

@@ -1428,11 +1428,24 @@ button:hover:not(:disabled) {
 .org-rec-text {
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.72rem;
-    color: var(--neon-blue);
-    opacity: 0.7;
+    color: var(--text-muted);
     margin-top: 0.6rem;
     text-transform: lowercase;
     animation: fadeIn 0.3s ease-out;
+}
+
+.org-rec-link {
+    color: var(--neon-blue);
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    opacity: 0.9;
+    transition: all 0.2s;
+}
+
+.org-rec-link:hover {
+    opacity: 1;
+    filter: drop-shadow(0 0 5px var(--neon-blue));
 }
 
 /* Sidebar Blur when modal is open */
