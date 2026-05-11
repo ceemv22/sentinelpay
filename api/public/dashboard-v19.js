@@ -167,6 +167,14 @@ function renderDashboard(session) {
         
         const avatarEl = document.getElementById('org-avatar-circle');
         if (avatarEl) avatarEl.textContent = avatarInitial.toUpperCase();
+        
+        // Sync Team View Avatar and Email Instantly
+        const teamAvatarEl = document.getElementById('team-owner-avatar');
+        if (teamAvatarEl) teamAvatarEl.textContent = avatarInitial.toUpperCase();
+        
+        const teamEmailEl = document.getElementById('current-user-email');
+        if (teamEmailEl) teamEmailEl.textContent = displayIdentifier;
+
         const dropdownEmailEl = document.getElementById('dropdown-email');
         if (dropdownEmailEl) dropdownEmailEl.textContent = displayIdentifier;
 
@@ -523,14 +531,12 @@ async function fetchProfile(token) {
     try {
         const response = await fetch('/v1/user/profile', { headers: { 'Authorization': `Bearer ${token}` } });
         if (!response.ok) return;
-        const profile = await response.json();
-
         // 1. Update Team View (Dynamic Email/Username)
         const teamEmailEl = document.getElementById('current-user-email');
         const displayId = profile.username || profile.email;
         if (teamEmailEl && displayId) {
             teamEmailEl.textContent = displayId;
-            const teamAvatarEl = document.querySelector('#org-team-view .org-avatar.small');
+            const teamAvatarEl = document.getElementById('team-owner-avatar');
             if (teamAvatarEl) teamAvatarEl.textContent = displayId.charAt(0).toUpperCase();
         }
         
