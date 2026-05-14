@@ -84,7 +84,7 @@
                     <a href="/auth#register" id="nav-register-btn" class="auth-nav-btn">register</a>
                 </div>
             </div>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" style="width: 80px; height: 80px; margin-bottom: -15px;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" style="width: 54px; height: 54px; margin-bottom: 1.5rem;">
               <title>SentinelPay Logo - Crypto Risk Oracle</title>
               <desc>Cybernetic shield and eye representing on-chain security and risk monitoring.</desc>
               <defs>
@@ -111,14 +111,16 @@
                 <path d="M60 90 V 105" stroke-width="2" opacity="0.6"/>
               </g>
             </svg>
-            <div class="logo">sentinelpay</div>
-            <p class="subtitle">> initialize risk scan sequence_</p>
+            <div class="logo-claude-style">welcome to sentinelpay</div>
+            <p class="subtitle-claude-style">advanced risk oracle for on-chain flows.</p>
         </header>
 
-        <section class="scanner-card glass-panel">
-            <div class="input-group">
-                <input type="text" id="wallet-input" placeholder="0x..." autocomplete="off" spellcheck="false" maxlength="42">
-                <button id="scan-btn">scan wallet</button>
+        <section class="scanner-card-claude">
+            <div class="unified-input-wrapper">
+                <input type="text" id="wallet-input" placeholder="enter wallet address to scan..." autocomplete="off" spellcheck="false" maxlength="42">
+                <button id="scan-btn" class="unified-scan-btn" title="Scan Wallet">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                </button>
             </div>
             
             <div id="turnstile-scanner" style="display: flex; justify-content: center; margin-top: 1rem;"></div>
