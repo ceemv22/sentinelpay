@@ -163,6 +163,7 @@ function renderDashboard(session) {
     try {
         const token = session.access_token;
         const user = session.user;
+        window.supabaseAuthToken = token;
         
         // 1. INSTANT UI STATE
         document.body.classList.add('state-org-home');
