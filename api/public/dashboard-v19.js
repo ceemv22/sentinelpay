@@ -142,6 +142,20 @@ if (logoutBtn) {
 }
 
 function renderDashboard(session) {
+    // S-Tier Redirect: If we have a pending invitation from join.html, go back there
+    const pendingToken = sessionStorage.getItem('sentinel_join_token');
+    const pendingSlug = sessionStorage.getItem('sentinel_join_slug');
+    const pendingName = sessionStorage.getItem('sentinel_join_name');
+
+    if (pendingToken && pendingSlug) {
+        sessionStorage.removeItem('sentinel_join_token');
+        sessionStorage.removeItem('sentinel_join_slug');
+        sessionStorage.removeItem('sentinel_join_name');
+        
+        window.location.href = `/join?token=${pendingToken}&slug=${pendingSlug}&name=${encodeURIComponent(pendingName || '')}`;
+        return;
+    }
+
     if (renderDashboard.busy) return;
     renderDashboard.busy = true;
 
