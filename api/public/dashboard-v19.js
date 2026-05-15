@@ -600,23 +600,69 @@ function saveInvitedMember(orgSlug, member) {
     }
 }
 
+let currentTeamPage = 1;
+const teamItemsPerPage = 6;
+let teamMembersFullList = [];
+
 function loadInvitedMembers(orgSlug) {
-    const tableBody = document.getElementById('team-table-body');
-    if (!tableBody) return;
-
-    // Preserve the first row (Owner)
-    const ownerRow = tableBody.querySelector('tr');
-    tableBody.innerHTML = '';
-    if (ownerRow) tableBody.appendChild(ownerRow);
-
     const key = `sentinel-invites-${orgSlug}`;
     const invited = JSON.parse(localStorage.getItem(key) || '[]');
-    invited.forEach(m => {
-        addTeamMemberToTable(m.email, m.role, m.status);
-    });
+    
+    // Aggregate members: Owner (mock for now as first row) + Invited
+    // In a real app, we'd fetch all from DB
+    const ownerEmail = document.getElementById('current-user-email')?.textContent || 'owner@sentinelpay.org';
+    
+    teamMembersFullList = [
+        { email: ownerEmail, role: 'owner', status: 'active', isYou: true },
+        ...invited.map(m => ({ ...m, isYou: false }))
+    ];
+
+    currentTeamPage = 1;
+    renderTeamPage();
 }
 
-function addTeamMemberToTable(email, role, status = 'active') {
+function renderTeamPage() {
+    const tableBody = document.getElementById('team-table-body');
+    const pageInfo = document.getElementById('team-pagination-info');
+    const btnPrev = document.getElementById('btn-team-prev');
+    const btnNext = document.getElementById('btn-team-next');
+    if (!tableBody || !pageInfo) return;
+
+    tableBody.innerHTML = '';
+    
+    const start = (currentTeamPage - 1) * teamItemsPerPage;
+    const end = start + teamItemsPerPage;
+    const pageItems = teamMembersFullList.slice(start, end);
+
+    pageItems.forEach(m => {
+        addTeamMemberToTable(m.email, m.role, m.status, m.isYou);
+    });
+
+    // Update pagination UI
+    const total = teamMembersFullList.length;
+    const showingStart = total === 0 ? 0 : start + 1;
+    const showingEnd = Math.min(end, total);
+    
+    pageInfo.textContent = `showing ${showingStart}-${showingEnd} of ${total}`;
+    
+    btnPrev.disabled = currentTeamPage === 1;
+    btnPrev.style.opacity = btnPrev.disabled ? '0.3' : '1';
+    btnPrev.style.cursor = btnPrev.disabled ? 'not-allowed' : 'pointer';
+
+    btnNext.disabled = end >= total;
+    btnNext.style.opacity = btnNext.disabled ? '0.3' : '1';
+    btnNext.style.cursor = btnNext.disabled ? 'not-allowed' : 'pointer';
+}
+
+// Global pagination listeners
+document.addEventListener('DOMContentLoaded', () => {
+    const btnPrev = document.getElementById('btn-team-prev');
+    const btnNext = document.getElementById('btn-team-next');
+    if (btnPrev) btnPrev.onclick = () => { if (currentTeamPage > 1) { currentTeamPage--; renderTeamPage(); } };
+    if (btnNext) btnNext.onclick = () => { if (currentTeamPage * teamItemsPerPage < teamMembersFullList.length) { currentTeamPage++; renderTeamPage(); } };
+});
+
+function addTeamMemberToTable(email, role, status = 'active', isYou = false) {
     const tableBody = document.getElementById('team-table-body');
     if (!tableBody) return;
 
@@ -629,7 +675,17 @@ function addTeamMemberToTable(email, role, status = 'active') {
     let statusBadge = '';
     let actionButtons = '';
     
-    if (status === 'invited') {
+    if (isYou) {
+        statusBadge = `<span style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: var(--text-muted); font-size: 0.6rem; padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; text-transform: lowercase; margin-left: 8px;">you</span>`;
+        actionButtons = `
+            <div class="tooltip-wrapper">
+                <button class="btn-cancel" style="padding: 0.4rem 0.8rem; font-size: 0.7rem; border-radius: 6px; opacity: 0.5; cursor: not-allowed; pointer-events: none;" disabled>leave team</button>
+                <div class="pw-tooltip team-tooltip">
+                    an organization requires at least 1 owner
+                </div>
+            </div>
+        `;
+    } else if (status === 'invited') {
         statusBadge = `<span class="status-badge invited-badge">invited</span>`;
         actionButtons = `
             <div style="display: flex; align-items: center; gap: 0.75rem; justify-content: flex-end;">
