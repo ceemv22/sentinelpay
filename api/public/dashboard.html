@@ -1403,7 +1403,12 @@
                                     <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: #fff; opacity: 0.9;">owner</span>
                                 </td>
                                 <td style="padding: 1.25rem 1.5rem; text-align: right;">
-                                    <button class="btn-cancel" style="padding: 0.4rem 0.8rem; font-size: 0.7rem; border-radius: 6px; opacity: 0.5; cursor: not-allowed;" disabled title="an organization requires at least 1 owner">leave team</button>
+                                    <div class="tooltip-wrapper">
+                                        <button class="btn-cancel" style="padding: 0.4rem 0.8rem; font-size: 0.7rem; border-radius: 6px; opacity: 0.5; cursor: not-allowed; pointer-events: none;" disabled>leave team</button>
+                                        <div class="pw-tooltip team-tooltip">
+                                            > an organization requires at least 1 owner
+                                        </div>
+                                    </div>
                                 </td>
                             </tr>
                         </tbody>
