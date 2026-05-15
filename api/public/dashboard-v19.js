@@ -550,7 +550,7 @@ function addTeamMemberToTable(email, role, status = 'active') {
             <div style="display: flex; align-items: center; gap: 0.75rem; justify-content: flex-end;">
                 <div class="tooltip-wrapper">
                     <button class="btn-manage-access" style="opacity: 0.5; cursor: not-allowed; pointer-events: none;" disabled>Manage access</button>
-                    <div class="pw-tooltip team-tooltip" style="width: 200px; left: 50%; transform: translateX(-50%); bottom: calc(100% + 10px);">
+                    <div class="pw-tooltip team-tooltip">
                         access can be managed after the invite is accepted
                     </div>
                 </div>
