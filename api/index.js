@@ -209,6 +209,10 @@ app.get('/dashboard/org/:slug/team', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
 });
 
+app.get('/join', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'join.html'));
+});
+
 app.use(express.static(path.join(__dirname, 'public'), { extensions: ['html'] }));
 
 // Redis Setup & Rate Limiter Store
@@ -827,6 +831,57 @@ app.post('/v1/organizations/:slug/team/invite', requireSupabaseAuth, async (req,
     } catch (err) {
         console.error('[invitation-service] error:', err);
         res.status(500).json({ error: 'failed to dispatch invitations' });
+    }
+});
+
+app.post('/v1/organizations/:slug/team/join', requireSupabaseAuth, async (req, res) => {
+    const { slug } = req.params;
+    const { token } = req.body;
+
+    if (!token) return res.status(400).json({ error: 'missing invitation token' });
+
+    try {
+        // 1. Find invitation and org
+        const invite = await prisma.invitation.findUnique({
+            where: { token },
+            include: { org: true }
+        });
+
+        if (!invite || invite.accepted) {
+            return res.status(404).json({ error: 'invalid or already used invitation' });
+        }
+
+        if (invite.expiresAt < new Date()) {
+            return res.status(403).json({ error: 'invitation has expired' });
+        }
+
+        // 2. S-Tier Security: Verify email matches
+        // Note: We are flexible if the user signed up with a different email but has the token, 
+        // however, strict B2B requires matching. Let's enforce matching.
+        if (invite.email.toLowerCase() !== req.user.email.toLowerCase()) {
+            return res.status(403).json({ error: 'this invitation was sent to a different email address' });
+        }
+
+        // 3. Atomic Join
+        await prisma.$transaction([
+            prisma.organization.update({
+                where: { id: invite.orgId },
+                data: {
+                    members: {
+                        connect: [{ id: req.user.id }]
+                    }
+                }
+            }),
+            prisma.invitation.update({
+                where: { id: invite.id },
+                data: { accepted: true }
+            })
+        ]);
+
+        res.json({ message: 'successfully joined organization', slug: invite.org.slug });
+    } catch (err) {
+        console.error('[invitation-service] join error:', err);
+        res.status(500).json({ error: 'failed to join organization' });
     }
 });
 
