@@ -12,6 +12,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
     
     <link rel="stylesheet" href="style.css?v=21.3">
     <script src="lib/supabase.js"></script>
@@ -1640,6 +1641,8 @@
                         <label for="invite-emails">email addresses</label>
                         <textarea id="invite-emails" class="auth-input" placeholder="name@example.com, name2@example.com, ..." required style="min-height: 80px; resize: vertical; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; padding: 1rem; width: 100%; box-sizing: border-box; background: rgba(10, 12, 16, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); color: #fff; border-radius: 8px; transition: border-color 0.2s, box-shadow 0.2s; outline: none;"></textarea>
                     </div>
+
+                    <div id="turnstile-invite" style="margin-top: 0.5rem; display: flex; justify-content: center;"></div>
 
                     <button type="submit" class="submit-btn" id="btn-submit-invite">
                         send invitation

@@ -403,6 +403,8 @@ function setupCreateOrgModal(token) {
     };
 }
 
+let inviteTurnstileId = null;
+
 function setupInviteMemberModal(token) {
     const modal = document.getElementById('invite-member-modal-overlay');
     const openBtn = document.getElementById('btn-invite-member');
@@ -414,10 +416,46 @@ function setupInviteMemberModal(token) {
     if (openBtn.dataset.bound) return;
     openBtn.dataset.bound = "true";
 
+    const getInviteCooldown = () => {
+        const last = localStorage.getItem('sentinel-last-invite-sent');
+        if (!last) return 0;
+        const remaining = 60000 - (Date.now() - parseInt(last));
+        return Math.max(0, Math.ceil(remaining / 1000));
+    };
+
+    const updateSubmitBtnState = () => {
+        const remaining = getInviteCooldown();
+        if (remaining > 0) {
+            submitBtn.disabled = true;
+            submitBtn.textContent = `wait ${remaining}s...`;
+            setTimeout(updateSubmitBtnState, 1000);
+        } else {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'send invitation';
+        }
+    };
+
     const openModal = () => {
         modal.classList.add('active');
         document.body.classList.add('modal-open');
         form.reset();
+        
+        // Render Turnstile
+        if (window.turnstile) {
+            const container = document.getElementById('turnstile-invite');
+            if (container) {
+                container.innerHTML = ''; 
+                inviteTurnstileId = window.turnstile.render(container, {
+                    sitekey: '0x4AAAAAADGpMozD1QOtWPkP',
+                    theme: 'dark',
+                    callback: (token) => {
+                        submitBtn.setAttribute('data-captcha-token', token);
+                    }
+                });
+            }
+        }
+
+        updateSubmitBtnState();
         document.querySelectorAll('.sentinel-select-trigger').forEach(t => t.classList.remove('active'));
         document.querySelectorAll('.sentinel-select-dropdown').forEach(d => d.classList.remove('active'));
     };
@@ -425,6 +463,10 @@ function setupInviteMemberModal(token) {
     const closeModal = () => {
         modal.classList.remove('active');
         document.body.classList.remove('modal-open');
+        if (window.turnstile && inviteTurnstileId !== null) {
+            window.turnstile.reset(inviteTurnstileId);
+        }
+        submitBtn.removeAttribute('data-captcha-token');
     };
 
     openBtn.onclick = (e) => { e.preventDefault(); openModal(); };
@@ -462,10 +504,21 @@ function setupInviteMemberModal(token) {
     form.onsubmit = async (e) => {
         e.preventDefault();
         
+        const remaining = getInviteCooldown();
+        if (remaining > 0) {
+            if (window.SentinelToast) window.SentinelToast.show(`please wait ${remaining}s before sending more invitations.`, "warning");
+            return;
+        }
+
+        const captchaToken = submitBtn.getAttribute('data-captcha-token');
+        if (!captchaToken && window.turnstile) {
+            if (window.SentinelToast) window.SentinelToast.show("please verify the captcha.", "error");
+            return;
+        }
+
         const rawEmails = document.getElementById('invite-emails').value;
         const role = hiddenInput.value;
 
-        // Parse emails: handle comma, space, or newline separators
         const emailList = rawEmails.split(/[\s,]+/).filter(email => {
             return email.trim().length > 0 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
         });
@@ -477,30 +530,28 @@ function setupInviteMemberModal(token) {
 
         try {
             submitBtn.disabled = true;
-            submitBtn.textContent = 'sending...';
+            submitBtn.textContent = 'verifying...';
 
-            // Simulate API request
-            await new Promise(r => setTimeout(r, 800));
+            await new Promise(r => setTimeout(r, 1000));
 
-            // Current org slug from URL
             const path = window.location.pathname;
             const orgMatch = path.match(/\/dashboard\/org\/([a-z0-9]{20})/);
             const orgSlug = orgMatch ? orgMatch[1] : null;
 
-            // Add each email to the table
             emailList.forEach(email => {
-                const member = { email, role, status: 'invited' };
+                const member = { email, role, status: 'invited', invitedAt: Date.now() };
                 addTeamMemberToTable(email, role, 'invited');
                 if (orgSlug) saveInvitedMember(orgSlug, member);
             });
+
+            localStorage.setItem('sentinel-last-invite-sent', Date.now().toString());
 
             if (window.SentinelToast) window.SentinelToast.show(`${emailList.length} invitation${emailList.length > 1 ? 's' : ''} sent successfully.`, "success");
             closeModal();
         } catch (err) {
             if (window.SentinelToast) window.SentinelToast.show("failed to send invitations.", "error");
-        } finally {
             submitBtn.disabled = false;
-            submitBtn.textContent = 'Send invitation';
+            submitBtn.textContent = 'send invitation';
         }
     };
 }
@@ -637,9 +688,25 @@ document.addEventListener('click', () => {
 });
 
 async function resendInvite(email) {
+    const cooldownKey = `sentinel-resend-cooldown-${email}`;
+    const last = localStorage.getItem(cooldownKey);
+    if (last) {
+        const remaining = 60000 - (Date.now() - parseInt(last));
+        if (remaining > 0) {
+            const secs = Math.ceil(remaining / 1000);
+            if (window.SentinelToast) window.SentinelToast.show(`please wait ${secs}s before resending to this email.`, "warning");
+            return;
+        }
+    }
+
     if (window.SentinelToast) window.SentinelToast.show(`resending invitation to ${email}...`, "info");
+    
     // Simulate API
-    await new Promise(r => setTimeout(r, 600));
+    await new Promise(r => setTimeout(r, 800));
+    
+    // Set cooldown
+    localStorage.setItem(cooldownKey, Date.now().toString());
+    
     if (window.SentinelToast) window.SentinelToast.show(`invitation resent to ${email}`, "success");
 }
 
