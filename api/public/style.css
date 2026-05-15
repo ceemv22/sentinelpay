@@ -834,12 +834,11 @@ button:hover:not(:disabled) {
     /* Animation */
     transform: translateY(10px) scale(0.95) !important;
     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
-    pointer-events: auto !important;
+    pointer-events: none !important;
 }
 
-/* Show tooltip ONLY when hovering the icon specifically or the tooltip itself */
-.pw-toggle:hover + .pw-tooltip,
-.pw-tooltip:hover {
+/* Show tooltip ONLY when hovering the icon specifically */
+.pw-toggle:hover + .pw-tooltip {
     opacity: 1;
     visibility: visible;
     transform: translateY(0) scale(1);
