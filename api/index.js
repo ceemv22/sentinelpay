@@ -725,6 +725,111 @@ app.post('/v1/organizations', requireSupabaseAuth, async (req, res) => {
     }
 });
 
+// --- Team Invitation System (S-Tier Email Flow) ---
+app.post('/v1/organizations/:slug/team/invite', requireSupabaseAuth, async (req, res) => {
+    const { slug } = req.params;
+    const { emailList, role } = req.body; // emailList is an array of emails
+    const { Resend } = require('resend');
+    const resend = new Resend(process.env.RESEND_API_KEY);
+    const crypto = require('crypto');
+
+    if (!emailList || !Array.isArray(emailList) || emailList.length === 0) {
+        return res.status(400).json({ error: 'no recipients specified' });
+    }
+
+    try {
+        // 1. Verify organization ownership
+        const org = await prisma.organization.findUnique({
+            where: { slug },
+            include: { owner: true }
+        });
+
+        if (!org) return res.status(404).json({ error: 'organization not found' });
+        if (org.ownerId !== req.user.id) {
+            return res.status(403).json({ error: 'only owners can invite members' });
+        }
+
+        const invitations = [];
+        const inviterName = req.user.username || req.user.email;
+
+        for (const email of emailList) {
+            const token = crypto.randomBytes(32).toString('hex');
+            const expiresAt = new Date();
+            expiresAt.setDate(expiresAt.getDate() + 7); // 7 days expiry
+
+            // Create in DB
+            const inv = await prisma.invitation.create({
+                data: {
+                    email,
+                    role: role || 'developer',
+                    orgId: org.id,
+                    token,
+                    invitedBy: inviterName,
+                    expiresAt
+                }
+            });
+
+            // Send Email
+            const joinUrl = `https://sentinelpay.org/join?token=${token}&slug=${org.slug}&name=${encodeURIComponent(inviterName)}`;
+            
+            await resend.emails.send({
+                from: 'SentinelPay <invitations@sentinelpay.org>',
+                to: email,
+                subject: `Handshake Triggered: Join ${org.name}`,
+                html: `
+                <!DOCTYPE html>
+                <html lang="en">
+                <head>
+                    <meta charset="utf-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>S-Tier Handshake | SentinelPay</title>
+                    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
+                </head>
+                <body style="margin: 0; padding: 0; background-color: #050505; color: #ffffff; font-family: 'JetBrains Mono', 'Courier New', monospace; -webkit-font-smoothing: antialiased;">
+                    <div style="background-color: #050505; padding: 100px 20px; text-align: center;">
+                        <table align="center" border="0" cellpadding="0" cellspacing="0" style="margin-bottom: 50px;">
+                            <tr>
+                                <td align="center">
+                                    <img src="https://sentinelpay.org/logo.png" alt="SentinelPay" width="64" height="64" style="display: block; border: 0;">
+                                </td>
+                            </tr>
+                        </table>
+                        <table align="center" border="0" cellpadding="0" cellspacing="0" style="max-width: 420px; width: 100%; border-top: 1px solid rgba(255,255,255,0.05);">
+                            <tr>
+                                <td style="padding: 40px 0;">
+                                    <h1 style="font-family: 'JetBrains Mono', monospace; font-size: 24px; font-weight: 800; letter-spacing: -1.5px; margin: 0 0 25px 0; color: #ffffff; text-transform: lowercase;">you've been invited</h1>
+                                    <p style="font-family: 'JetBrains Mono', monospace; font-size: 14px; line-height: 1.6; color: #777777; margin: 0 0 45px 0; text-transform: lowercase;">
+                                        <strong>${inviterName}</strong> invited you to join the <strong>${org.name}</strong> organization on SentinelPay. Complete the signature check to bridge your account to the scanning core.
+                                    </p>
+                                    <div style="margin-bottom: 45px;">
+                                        <a href="${joinUrl}" style="background-color: #ffffff; color: #000000; padding: 20px 40px; text-decoration: none; font-weight: 800; font-size: 13px; font-family: 'JetBrains Mono', monospace; text-transform: lowercase; display: inline-block; box-shadow: 0 8px 24px rgba(0, 240, 255, 0.15);">
+                                            accept invitation
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <div style="max-width: 420px; margin: 0 auto; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.03); text-align: left;">
+                            <div style="font-size: 10px; font-family: 'JetBrains Mono', monospace; color: #222; text-transform: uppercase; letter-spacing: 1px; line-height: 1.8;">
+                                if you did not request this, ignore.
+                            </div>
+                        </div>
+                    </div>
+                </body>
+                </html>
+                `
+            });
+
+            invitations.push(inv);
+        }
+
+        res.status(201).json({ message: 'invitations dispatched successfully', count: invitations.length });
+    } catch (err) {
+        console.error('[invitation-service] error:', err);
+        res.status(500).json({ error: 'failed to dispatch invitations' });
+    }
+});
+
 async function start() {
     if (isProduction && !redisUrl) {
         throw new Error('REDIS_URL must be configured in production.');
