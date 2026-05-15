@@ -30,6 +30,7 @@ const supabaseKey = 'sb_publishable_bRfAssaGT6D8oFDQtPARbw_5fyYGWM6';
 let sentinelAuth = null;
 let isInitialized = false;
 let authStartTime = Date.now();
+const API_URL = window.location.origin;
 
 const initialSearch = window.location.search;
 const initialHash = window.location.hash;
