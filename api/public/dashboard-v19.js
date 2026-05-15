@@ -530,26 +530,45 @@ function setupInviteMemberModal(token) {
 
         try {
             submitBtn.disabled = true;
-            submitBtn.textContent = 'verifying...';
-
-            await new Promise(r => setTimeout(r, 1000));
+            submitBtn.textContent = 'dispatching...';
 
             const path = window.location.pathname;
             const orgMatch = path.match(/\/dashboard\/org\/([a-z0-9]{20})/);
             const orgSlug = orgMatch ? orgMatch[1] : null;
 
+            if (!orgSlug) throw new Error("organization context missing");
+
+            const response = await fetch(`${API_URL}/v1/organizations/${orgSlug}/team/invite`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    emailList,
+                    role,
+                    'cf-turnstile-response': captchaToken
+                })
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.error || 'failed to send invitations');
+            }
+
             emailList.forEach(email => {
                 const member = { email, role, status: 'invited', invitedAt: Date.now() };
                 addTeamMemberToTable(email, role, 'invited');
-                if (orgSlug) saveInvitedMember(orgSlug, member);
+                saveInvitedMember(orgSlug, member);
             });
 
             localStorage.setItem('sentinel-last-invite-sent', Date.now().toString());
 
-            if (window.SentinelToast) window.SentinelToast.show(`${emailList.length} invitation${emailList.length > 1 ? 's' : ''} sent successfully.`, "success");
+            if (window.SentinelToast) window.SentinelToast.show(`${emailList.length} invitation${emailList.length > 1 ? 's' : ''} dispatched successfully.`, "success");
             closeModal();
         } catch (err) {
-            if (window.SentinelToast) window.SentinelToast.show("failed to send invitations.", "error");
+            if (window.SentinelToast) window.SentinelToast.show(err.message, "error");
             submitBtn.disabled = false;
             submitBtn.textContent = 'send invitation';
         }
@@ -701,13 +720,42 @@ async function resendInvite(email) {
 
     if (window.SentinelToast) window.SentinelToast.show(`resending invitation to ${email}...`, "info");
     
-    // Simulate API
-    await new Promise(r => setTimeout(r, 800));
-    
-    // Set cooldown
-    localStorage.setItem(cooldownKey, Date.now().toString());
-    
-    if (window.SentinelToast) window.SentinelToast.show(`invitation resent to ${email}`, "success");
+    try {
+        // Current org slug from URL
+        const path = window.location.pathname;
+        const orgMatch = path.match(/\/dashboard\/org\/([a-z0-9]{20})/);
+        const orgSlug = orgMatch ? orgMatch[1] : null;
+
+        if (!orgSlug) throw new Error("organization context missing");
+
+        // Get auth token (from global context)
+        const token = window.supabaseAuthToken; 
+
+        const response = await fetch(`${API_URL}/v1/organizations/${orgSlug}/team/invite`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                emailList: [email],
+                role: 'developer' // Default for resend for now
+            })
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            throw new Error(result.error || 'failed to resend invitation');
+        }
+
+        // Set cooldown
+        localStorage.setItem(cooldownKey, Date.now().toString());
+        
+        if (window.SentinelToast) window.SentinelToast.show(`invitation resent to ${email}`, "success");
+    } catch (err) {
+        if (window.SentinelToast) window.SentinelToast.show(err.message, "error");
+    }
 }
 
 function cancelInvite(email, btnEl) {
