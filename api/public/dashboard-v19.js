@@ -548,7 +548,7 @@ function addTeamMemberToTable(email, role, status = 'active') {
             </div>
         </td>
         <td style="padding: 1.25rem 1.5rem;">
-            <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: #fff; opacity: 0.9; text-transform: capitalize;">${role}</span>
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: #fff; opacity: 0.9;">${role}</span>
         </td>
         <td style="padding: 1.25rem 1.5rem; text-align: right;">
             ${actionButtons}

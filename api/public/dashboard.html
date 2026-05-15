@@ -235,18 +235,18 @@
 
             /* Status Badges */
             .status-badge {
-                padding: 2px 8px;
-                border-radius: 50px; /* Pillow style like screenshot */
+                padding: 2px 6px;
+                border-radius: 4px; /* Matching 'you' badge */
                 font-family: 'JetBrains Mono', monospace;
                 font-size: 0.6rem;
                 font-weight: 700;
-                text-transform: uppercase;
+                text-transform: lowercase; /* Matching 'you' badge */
                 letter-spacing: 0.5px;
             }
             .invited-badge {
                 background: rgba(255, 184, 0, 0.1);
                 color: var(--color-yellow);
-                border: 1px solid rgba(255, 184, 0, 0.3);
+                border: 1px solid rgba(255, 184, 0, 0.2);
             }
 
             /* Team Action Buttons */
@@ -1444,12 +1444,12 @@
                                 </td>
                                 <td style="padding: 1.25rem 1.5rem;">
                                     <div style="display: flex; align-items: center; gap: 6px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;">
-                                        Disabled
+                                        disabled
                                         <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.5;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                                     </div>
                                 </td>
                                 <td style="padding: 1.25rem 1.5rem;">
-                                    <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: #fff; opacity: 0.9;">Owner</span>
+                                    <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: #fff; opacity: 0.9;">owner</span>
                                 </td>
                                 <td style="padding: 1.25rem 1.5rem; text-align: right;">
                                     <div class="tooltip-wrapper">
