@@ -620,6 +620,7 @@ function loadInvitedMembers(orgSlug) {
     ];
 
     currentTeamPage = 1;
+    initTeamPagination();
     renderTeamPage();
 }
 
@@ -663,13 +664,16 @@ function renderTeamPage() {
     }
 }
 
-// Global pagination listeners
-document.addEventListener('DOMContentLoaded', () => {
+function initTeamPagination() {
     const btnPrev = document.getElementById('btn-team-prev');
     const btnNext = document.getElementById('btn-team-next');
-    if (btnPrev) btnPrev.onclick = () => { if (currentTeamPage > 1) { currentTeamPage--; renderTeamPage(); } };
-    if (btnNext) btnNext.onclick = () => { if (currentTeamPage * teamItemsPerPage < teamMembersFullList.length) { currentTeamPage++; renderTeamPage(); } };
-});
+    if (btnPrev) {
+        btnPrev.onclick = () => { if (currentTeamPage > 1) { currentTeamPage--; renderTeamPage(); } };
+    }
+    if (btnNext) {
+        btnNext.onclick = () => { if (currentTeamPage * teamItemsPerPage < teamMembersFullList.length) { currentTeamPage++; renderTeamPage(); } };
+    }
+}
 
 function addTeamMemberToTable(email, role, status = 'active', isYou = false) {
     const tableBody = document.getElementById('team-table-body');
@@ -699,7 +703,7 @@ function addTeamMemberToTable(email, role, status = 'active', isYou = false) {
         actionButtons = `
             <div style="display: flex; align-items: center; gap: 0.75rem; justify-content: flex-end;">
                 <div class="tooltip-wrapper">
-                    <button class="btn-manage-access" style="opacity: 0.5; cursor: not-allowed; pointer-events: none;" disabled>Manage access</button>
+                    <button class="btn-manage-access" style="opacity: 0.5; cursor: not-allowed; pointer-events: none; font-family: 'JetBrains Mono', monospace;" disabled>manage access</button>
                     <div class="pw-tooltip team-tooltip">
                         access can be managed after the invite is accepted
                     </div>
@@ -709,11 +713,11 @@ function addTeamMemberToTable(email, role, status = 'active', isYou = false) {
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.6;"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
                     </button>
                     <div class="dropdown-menu row-actions-dropdown" style="top: calc(100% + 8px); right: 0; width: 210px; padding: 8px; background: rgba(8, 10, 12, 0.96); border: 1px solid rgba(0, 240, 255, 0.15); border-radius: 12px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7), 0 0 20px rgba(0, 240, 255, 0.05); z-index: 1000;">
-                        <div class="dropdown-item" onclick="resendInvite('${email}')" style="font-size: 0.75rem; gap: 10px; padding: 10px; cursor: pointer;">
+                        <div class="dropdown-item" onclick="resendInvite('${email}')" style="font-size: 0.75rem; gap: 10px; padding: 10px; cursor: pointer; font-family: 'JetBrains Mono', monospace;">
                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.7;"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
                             resend invitation
                         </div>
-                        <div class="dropdown-item text-red" onclick="cancelInvite('${email}', this)" style="font-size: 0.75rem; gap: 10px; padding: 10px; cursor: pointer;">
+                        <div class="dropdown-item text-red" onclick="cancelInvite('${email}', this)" style="font-size: 0.75rem; gap: 10px; padding: 10px; cursor: pointer; font-family: 'JetBrains Mono', monospace;">
                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.7;"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
                             cancel invitation
                         </div>
@@ -724,7 +728,7 @@ function addTeamMemberToTable(email, role, status = 'active', isYou = false) {
     } else {
         actionButtons = `
             <div style="display: flex; justify-content: flex-end;">
-                <button class="btn-cancel" style="padding: 0.4rem 0.8rem; font-size: 0.7rem; border-radius: 6px;">remove</button>
+                <button class="btn-cancel" style="padding: 0.4rem 0.8rem; font-size: 0.7rem; border-radius: 6px; font-family: 'JetBrains Mono', monospace;">remove</button>
             </div>
         `;
     }
