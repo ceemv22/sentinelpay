@@ -482,9 +482,16 @@ function setupInviteMemberModal(token) {
             // Simulate API request
             await new Promise(r => setTimeout(r, 800));
 
+            // Current org slug from URL
+            const path = window.location.pathname;
+            const orgMatch = path.match(/\/dashboard\/org\/([a-z0-9]{20})/);
+            const orgSlug = orgMatch ? orgMatch[1] : null;
+
             // Add each email to the table
             emailList.forEach(email => {
+                const member = { email, role, status: 'invited' };
                 addTeamMemberToTable(email, role, 'invited');
+                if (orgSlug) saveInvitedMember(orgSlug, member);
             });
 
             if (window.SentinelToast) window.SentinelToast.show(`${emailList.length} invitation${emailList.length > 1 ? 's' : ''} sent successfully.`, "success");
@@ -496,6 +503,32 @@ function setupInviteMemberModal(token) {
             submitBtn.textContent = 'Send invitation';
         }
     };
+}
+
+function saveInvitedMember(orgSlug, member) {
+    const key = `sentinel-invites-${orgSlug}`;
+    const existing = JSON.parse(localStorage.getItem(key) || '[]');
+    // Avoid duplicates
+    if (!existing.some(m => m.email === member.email)) {
+        existing.push(member);
+        localStorage.setItem(key, JSON.stringify(existing));
+    }
+}
+
+function loadInvitedMembers(orgSlug) {
+    const tableBody = document.getElementById('team-table-body');
+    if (!tableBody) return;
+
+    // Preserve the first row (Owner)
+    const ownerRow = tableBody.querySelector('tr');
+    tableBody.innerHTML = '';
+    if (ownerRow) tableBody.appendChild(ownerRow);
+
+    const key = `sentinel-invites-${orgSlug}`;
+    const invited = JSON.parse(localStorage.getItem(key) || '[]');
+    invited.forEach(m => {
+        addTeamMemberToTable(m.email, m.role, m.status);
+    });
 }
 
 function addTeamMemberToTable(email, role, status = 'active') {
@@ -647,6 +680,9 @@ function switchToOrgView(slug, view = 'projects') {
         if (teamView) teamView.classList.remove('hidden');
         const teamItem = document.getElementById('sidebar-item-team');
         if (teamItem) teamItem.classList.add('active');
+        
+        // Load persistent invites
+        loadInvitedMembers(slug);
     } else {
         // Default to projects/dashboard
         const dashView = document.getElementById('org-dashboard-view');
