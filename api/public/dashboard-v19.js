@@ -407,11 +407,10 @@ function setupInviteMemberModal(token) {
     const modal = document.getElementById('invite-member-modal-overlay');
     const openBtn = document.getElementById('btn-invite-member');
     const closeBtn = document.getElementById('btn-close-invite-modal');
-    const cancelBtn = document.getElementById('btn-cancel-invite');
     const form = document.getElementById('invite-member-form');
     const submitBtn = document.getElementById('btn-submit-invite');
 
-    if (!modal || !openBtn || !closeBtn || !cancelBtn || !form) return;
+    if (!modal || !openBtn || !closeBtn || !form) return;
     if (openBtn.dataset.bound) return;
     openBtn.dataset.bound = "true";
 
@@ -430,7 +429,6 @@ function setupInviteMemberModal(token) {
 
     openBtn.onclick = (e) => { e.preventDefault(); openModal(); };
     closeBtn.onclick = (e) => { e.preventDefault(); closeModal(); };
-    cancelBtn.onclick = (e) => { e.preventDefault(); closeModal(); };
     
     // Close on overlay click
     modal.onclick = (e) => { if (e.target === modal) closeModal(); };
