@@ -548,7 +548,12 @@ function addTeamMemberToTable(email, role, status = 'active') {
         statusBadge = `<span class="status-badge invited-badge">invited</span>`;
         actionButtons = `
             <div style="display: flex; align-items: center; gap: 0.75rem; justify-content: flex-end;">
-                <button class="btn-manage-access">Manage access</button>
+                <div class="tooltip-wrapper">
+                    <button class="btn-manage-access" style="opacity: 0.5; cursor: not-allowed; pointer-events: none;" disabled>Manage access</button>
+                    <div class="pw-tooltip team-tooltip" style="width: 200px; left: 50%; transform: translateX(-50%); bottom: calc(100% + 10px);">
+                        access can be managed after the invite is accepted
+                    </div>
+                </div>
                 <button class="btn-more-actions">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.6;"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
                 </button>
@@ -576,7 +581,7 @@ function addTeamMemberToTable(email, role, status = 'active') {
         </td>
         <td style="padding: 1.25rem 1.5rem;">
             <div style="display: flex; align-items: center; gap: 6px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;">
-                Disabled
+                disabled
                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.5;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             </div>
         </td>
