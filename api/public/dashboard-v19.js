@@ -554,9 +554,21 @@ function addTeamMemberToTable(email, role, status = 'active') {
                         access can be managed after the invite is accepted
                     </div>
                 </div>
-                <button class="btn-more-actions">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.6;"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
-                </button>
+                <div class="dropdown-actions-wrapper" style="position: relative;">
+                    <button class="btn-more-actions">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.6;"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
+                    </button>
+                    <div class="dropdown-menu row-actions-dropdown" style="top: calc(100% + 8px); right: 0; width: 190px; padding: 8px;">
+                        <div class="dropdown-item" onclick="resendInvite('${email}')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+                            resend invitation
+                        </div>
+                        <div class="dropdown-item text-red" onclick="cancelInvite('${email}', this)">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+                            cancel invitation
+                        </div>
+                    </div>
+                </div>
             </div>
         `;
     } else {
@@ -595,12 +607,73 @@ function addTeamMemberToTable(email, role, status = 'active') {
 
     tableBody.appendChild(row);
     
+    // Setup dropdown toggle for this row
+    const moreBtn = row.querySelector('.btn-more-actions');
+    const dropdown = row.querySelector('.row-actions-dropdown');
+    if (moreBtn && dropdown) {
+        moreBtn.onclick = (e) => {
+            e.stopPropagation();
+            // Close other open dropdowns first
+            document.querySelectorAll('.row-actions-dropdown.active').forEach(d => {
+                if (d !== dropdown) d.classList.remove('active');
+            });
+            dropdown.classList.toggle('active');
+        };
+    }
+
     // Update count
     const countEl = document.querySelector('.team-member-count');
     if (countEl) {
-        const currentCount = tableBody.querySelectorAll('tr').length;
-        countEl.textContent = `${currentCount} member${currentCount > 1 ? 's' : ''}`;
+        const total = tableBody.querySelectorAll('tr').length;
+        countEl.textContent = `${total} member${total !== 1 ? 's' : ''}`;
     }
+}
+
+// Global click handler to close dropdowns
+document.addEventListener('click', () => {
+    document.querySelectorAll('.row-actions-dropdown.active').forEach(d => {
+        d.classList.remove('active');
+    });
+});
+
+async function resendInvite(email) {
+    if (window.SentinelToast) window.SentinelToast.show(`resending invitation to ${email}...`, "info");
+    // Simulate API
+    await new Promise(r => setTimeout(r, 600));
+    if (window.SentinelToast) window.SentinelToast.show(`invitation resent to ${email}`, "success");
+}
+
+function cancelInvite(email, btnEl) {
+    // Current org slug from URL
+    const path = window.location.pathname;
+    const orgMatch = path.match(/\/dashboard\/org\/([a-z0-9]{20})/);
+    const orgSlug = orgMatch ? orgMatch[1] : null;
+
+    if (orgSlug) {
+        const key = `sentinel-invites-${orgSlug}`;
+        const existing = JSON.parse(localStorage.getItem(key) || '[]');
+        const updated = existing.filter(m => m.email !== email);
+        localStorage.setItem(key, JSON.stringify(updated));
+    }
+
+    // Remove from UI
+    const row = btnEl.closest('tr');
+    if (row) {
+        row.style.opacity = '0';
+        row.style.transform = 'translateX(20px)';
+        setTimeout(() => {
+            row.remove();
+            // Update count
+            const countEl = document.querySelector('.team-member-count');
+            const tableBody = document.getElementById('team-table-body');
+            if (countEl && tableBody) {
+                const total = tableBody.querySelectorAll('tr').length;
+                countEl.textContent = `${total} member${total !== 1 ? 's' : ''}`;
+            }
+        }, 300);
+    }
+    
+    if (window.SentinelToast) window.SentinelToast.show(`invitation for ${email} cancelled`, "info");
 }
 
 function updateOrgGrid(orgs) {
