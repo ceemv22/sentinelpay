@@ -777,9 +777,9 @@ app.post('/v1/organizations/:slug/team/invite', requireSupabaseAuth, async (req,
             const joinUrl = `https://sentinelpay.org/join?token=${token}&slug=${org.slug}&name=${encodeURIComponent(inviterName)}`;
             
             await resend.emails.send({
-                from: 'SentinelPay <noreply@sentinelpay.org>',
+                from: 'sentinelpay <noreply@sentinelpay.org>',
                 to: email,
-                subject: `Handshake Triggered: Join ${org.name}`,
+                subject: `${inviterName} has invited you to join ${org.name}`,
                 html: `
                 <!DOCTYPE html>
                 <html lang="en">
