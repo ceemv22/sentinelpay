@@ -244,6 +244,7 @@ function renderDashboard(session) {
         setupInviteMemberModal(token);
         setupSidebar();
     } catch (e) {
+        console.error('[sentinel-render] Critical failure:', e);
         showStatus('Render Error', 'error');
     } finally {
         renderDashboard.busy = false;
@@ -627,7 +628,7 @@ function renderTeamPage() {
     const pageInfo = document.getElementById('team-pagination-info');
     const btnPrev = document.getElementById('btn-team-prev');
     const btnNext = document.getElementById('btn-team-next');
-    if (!tableBody || !pageInfo) return;
+    if (!tableBody) return;
 
     tableBody.innerHTML = '';
     
@@ -639,6 +640,8 @@ function renderTeamPage() {
         addTeamMemberToTable(m.email, m.role, m.status, m.isYou);
     });
 
+    if (!pageInfo) return;
+
     // Update pagination UI
     const total = teamMembersFullList.length;
     const showingStart = total === 0 ? 0 : start + 1;
@@ -646,13 +649,18 @@ function renderTeamPage() {
     
     pageInfo.textContent = `showing ${showingStart}-${showingEnd} of ${total}`;
     
-    btnPrev.disabled = currentTeamPage === 1;
-    btnPrev.style.opacity = btnPrev.disabled ? '0.3' : '1';
-    btnPrev.style.cursor = btnPrev.disabled ? 'not-allowed' : 'pointer';
+    if (btnPrev) {
+        btnPrev.disabled = currentTeamPage === 1;
+        btnPrev.style.opacity = btnPrev.disabled ? '0.3' : '1';
+        btnPrev.style.cursor = btnPrev.disabled ? 'not-allowed' : 'pointer';
+    }
 
-    btnNext.disabled = end >= total;
-    btnNext.style.opacity = btnNext.disabled ? '0.3' : '1';
-    btnNext.style.cursor = btnNext.disabled ? 'not-allowed' : 'pointer';
+    if (btnNext) {
+        btnNext.disabled = end >= total;
+        btnNext.style.opacity = btnNext.disabled ? 'not-allowed' : '1'; // Fix: corrected logic
+        btnNext.style.opacity = btnNext.disabled ? '0.3' : '1';
+        btnNext.style.cursor = btnNext.disabled ? 'not-allowed' : 'pointer';
+    }
 }
 
 // Global pagination listeners
