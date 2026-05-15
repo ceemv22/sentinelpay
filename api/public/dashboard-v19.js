@@ -462,8 +462,18 @@ function setupInviteMemberModal(token) {
     form.onsubmit = async (e) => {
         e.preventDefault();
         
-        const emails = document.getElementById('invite-emails').value;
+        const rawEmails = document.getElementById('invite-emails').value;
         const role = hiddenInput.value;
+
+        // Parse emails: handle comma, space, or newline separators
+        const emailList = rawEmails.split(/[\s,]+/).filter(email => {
+            return email.trim().length > 0 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        });
+
+        if (emailList.length === 0) {
+            if (window.SentinelToast) window.SentinelToast.show("please enter at least one valid email.", "error");
+            return;
+        }
 
         try {
             submitBtn.disabled = true;
@@ -472,7 +482,12 @@ function setupInviteMemberModal(token) {
             // Simulate API request
             await new Promise(r => setTimeout(r, 800));
 
-            if (window.SentinelToast) window.SentinelToast.show("invitations sent successfully.", "success");
+            // Add each email to the table
+            emailList.forEach(email => {
+                addTeamMemberToTable(email, role, 'invited');
+            });
+
+            if (window.SentinelToast) window.SentinelToast.show(`${emailList.length} invitation${emailList.length > 1 ? 's' : ''} sent successfully.`, "success");
             closeModal();
         } catch (err) {
             if (window.SentinelToast) window.SentinelToast.show("failed to send invitations.", "error");
@@ -481,6 +496,73 @@ function setupInviteMemberModal(token) {
             submitBtn.textContent = 'Send invitation';
         }
     };
+}
+
+function addTeamMemberToTable(email, role, status = 'active') {
+    const tableBody = document.getElementById('team-table-body');
+    if (!tableBody) return;
+
+    const row = document.createElement('tr');
+    row.className = 'table-row-hover';
+    row.style.cssText = 'border-bottom: 1px solid var(--border-glass); transition: background 0.2s ease;';
+
+    const avatarInitial = email.charAt(0).toUpperCase();
+    
+    let statusBadge = '';
+    let actionButtons = '';
+    
+    if (status === 'invited') {
+        statusBadge = `<span class="status-badge invited-badge">invited</span>`;
+        actionButtons = `
+            <div style="display: flex; align-items: center; gap: 0.75rem; justify-content: flex-end;">
+                <button class="btn-manage-access">Manage access</button>
+                <button class="btn-more-actions">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.6;"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
+                </button>
+            </div>
+        `;
+    } else {
+        actionButtons = `
+            <div style="display: flex; justify-content: flex-end;">
+                <button class="btn-cancel" style="padding: 0.4rem 0.8rem; font-size: 0.7rem; border-radius: 6px;">remove</button>
+            </div>
+        `;
+    }
+
+    row.innerHTML = `
+        <td style="padding: 1.25rem 1.5rem;">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <div class="org-avatar" style="border-radius: 8px; width: 34px; height: 34px; font-weight: 800; font-size: 0.9rem;">${avatarInitial}</div>
+                <div style="display: flex; flex-direction: column;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="font-family: 'Inter', sans-serif; font-size: 0.85rem; font-weight: 600; color: #fff;">${email}</span>
+                        ${statusBadge}
+                    </div>
+                </div>
+            </div>
+        </td>
+        <td style="padding: 1.25rem 1.5rem;">
+            <div style="display: flex; align-items: center; gap: 6px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;">
+                Disabled
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.5;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </div>
+        </td>
+        <td style="padding: 1.25rem 1.5rem;">
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: #fff; opacity: 0.9; text-transform: capitalize;">${role}</span>
+        </td>
+        <td style="padding: 1.25rem 1.5rem; text-align: right;">
+            ${actionButtons}
+        </td>
+    `;
+
+    tableBody.appendChild(row);
+    
+    // Update count
+    const countEl = document.querySelector('.team-member-count');
+    if (countEl) {
+        const currentCount = tableBody.querySelectorAll('tr').length;
+        countEl.textContent = `${currentCount} member${currentCount > 1 ? 's' : ''}`;
+    }
 }
 
 function updateOrgGrid(orgs) {
