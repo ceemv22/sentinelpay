@@ -232,6 +232,55 @@
                 background: rgba(255, 255, 255, 0.03) !important;
                 box-shadow: inset 0 0 20px rgba(0, 240, 255, 0.02);
             }
+
+            /* Status Badges */
+            .status-badge {
+                padding: 2px 8px;
+                border-radius: 50px; /* Pillow style like screenshot */
+                font-family: 'JetBrains Mono', monospace;
+                font-size: 0.6rem;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+            .invited-badge {
+                background: rgba(255, 184, 0, 0.1);
+                color: var(--color-yellow);
+                border: 1px solid rgba(255, 184, 0, 0.3);
+            }
+
+            /* Team Action Buttons */
+            .btn-manage-access {
+                background: rgba(255, 255, 255, 0.03);
+                border: 1px solid rgba(255, 255, 255, 0.08);
+                color: var(--text-main);
+                padding: 0.4rem 0.9rem;
+                border-radius: 6px;
+                font-family: 'Inter', sans-serif;
+                font-size: 0.75rem;
+                font-weight: 500;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                white-space: nowrap;
+            }
+            .btn-manage-access:hover {
+                background: rgba(255, 255, 255, 0.08);
+                border-color: rgba(255, 255, 255, 0.15);
+            }
+            .btn-more-actions {
+                background: transparent;
+                border: none;
+                color: var(--text-muted);
+                cursor: pointer;
+                padding: 4px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: color 0.2s;
+            }
+            .btn-more-actions:hover {
+                color: #fff;
+            }
         }
 
         body {
@@ -1395,12 +1444,12 @@
                                 </td>
                                 <td style="padding: 1.25rem 1.5rem;">
                                     <div style="display: flex; align-items: center; gap: 6px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;">
-                                        disabled
+                                        Disabled
                                         <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.5;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                                     </div>
                                 </td>
                                 <td style="padding: 1.25rem 1.5rem;">
-                                    <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: #fff; opacity: 0.9;">owner</span>
+                                    <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: #fff; opacity: 0.9;">Owner</span>
                                 </td>
                                 <td style="padding: 1.25rem 1.5rem; text-align: right;">
                                     <div class="tooltip-wrapper">
@@ -1417,7 +1466,7 @@
                 
                 <!-- Table Footer -->
                 <div style="padding: 1rem 1.5rem; background: rgba(255, 255, 255, 0.01); display: flex; justify-content: space-between; align-items: center;">
-                    <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--text-muted);">1 member</span>
+                    <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--text-muted);" class="team-member-count">1 member</span>
                     <div style="display: flex; gap: 0.5rem;">
                         <button class="btn-icon" style="padding: 0.4rem; border-radius: 6px; opacity: 0.5; cursor: not-allowed; background: transparent; border: 1px solid rgba(255,255,255,0.08);">
                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
