@@ -575,10 +575,12 @@ function setupInviteMemberModal(token) {
             }
 
             emailList.forEach(email => {
-                const member = { email, role, status: 'invited', invitedAt: Date.now() };
-                addTeamMemberToTable(email, role, 'invited');
+                const member = { email, role, status: 'invited', invitedAt: Date.now(), isYou: false };
                 saveInvitedMember(orgSlug, member);
+                teamMembersFullList.push(member);
             });
+
+            renderTeamPage();
 
             localStorage.setItem('sentinel-last-invite-sent', Date.now().toString());
 
