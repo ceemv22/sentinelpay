@@ -648,7 +648,7 @@ function renderTeamPage() {
     const showingStart = total === 0 ? 0 : start + 1;
     const showingEnd = Math.min(end, total);
     
-    pageInfo.textContent = `showing ${showingStart}-${showingEnd} of ${total}`;
+    pageInfo.textContent = `showing ${showingStart}-${showingEnd} of ${total}, ${total} member${total > 1 ? 's' : ''}`;
     
     if (btnPrev) {
         btnPrev.disabled = currentTeamPage === 1;
