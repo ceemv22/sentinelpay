@@ -1549,3 +1549,22 @@ body.modal-open .sidebar-container {
 .hidden {
     display: none !important;
 }
+
+/* Custom Tooltips */
+.tooltip-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip-wrapper:hover .team-tooltip {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+}
+
+.team-tooltip {
+    top: 35px !important;
+    right: 0 !important;
+    width: 260px !important;
+    text-align: center !important;
+}
