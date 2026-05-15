@@ -225,6 +225,7 @@ function renderDashboard(session) {
 
         // 5. MODAL & SIDEBAR INITIALIZATION
         setupCreateOrgModal(token);
+        setupInviteMemberModal(token);
         setupSidebar();
     } catch (e) {
         showStatus('Render Error', 'error');
@@ -398,6 +399,88 @@ function setupCreateOrgModal(token) {
         } finally {
             submitBtn.disabled = false;
             submitBtn.textContent = 'create organization';
+        }
+    };
+}
+
+function setupInviteMemberModal(token) {
+    const modal = document.getElementById('invite-member-modal-overlay');
+    const openBtn = document.getElementById('btn-invite-member');
+    const closeBtn = document.getElementById('btn-close-invite-modal');
+    const cancelBtn = document.getElementById('btn-cancel-invite');
+    const form = document.getElementById('invite-member-form');
+    const submitBtn = document.getElementById('btn-submit-invite');
+
+    if (!modal || !openBtn || !closeBtn || !cancelBtn || !form) return;
+    if (openBtn.dataset.bound) return;
+    openBtn.dataset.bound = "true";
+
+    const openModal = () => {
+        modal.classList.add('active');
+        document.body.classList.add('modal-open');
+        form.reset();
+        document.querySelectorAll('.sentinel-select-trigger').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.sentinel-select-dropdown').forEach(d => d.classList.remove('active'));
+    };
+
+    const closeModal = () => {
+        modal.classList.remove('active');
+        document.body.classList.remove('modal-open');
+    };
+
+    openBtn.onclick = (e) => { e.preventDefault(); openModal(); };
+    closeBtn.onclick = (e) => { e.preventDefault(); closeModal(); };
+    cancelBtn.onclick = (e) => { e.preventDefault(); closeModal(); };
+    
+    // Close on overlay click
+    modal.onclick = (e) => { if (e.target === modal) closeModal(); };
+
+    // Custom Select Logic
+    const trigger = document.getElementById('invite-role-select-trigger');
+    const dropdown = document.getElementById('invite-role-select-dropdown');
+    const hiddenInput = document.getElementById('invite-role');
+    const options = dropdown.querySelectorAll('.sentinel-select-option');
+    const displayVal = trigger.querySelector('.selected-value');
+
+    trigger.onclick = (e) => {
+        e.stopPropagation();
+        document.querySelectorAll('.sentinel-select-trigger').forEach(t => { if(t!==trigger) t.classList.remove('active') });
+        document.querySelectorAll('.sentinel-select-dropdown').forEach(d => { if(d!==dropdown) d.classList.remove('active') });
+        trigger.classList.toggle('active');
+        dropdown.classList.toggle('active');
+    };
+
+    options.forEach(opt => {
+        opt.onclick = () => {
+            options.forEach(o => o.classList.remove('selected'));
+            opt.classList.add('selected');
+            hiddenInput.value = opt.dataset.value;
+            displayVal.textContent = opt.textContent;
+            trigger.classList.remove('active');
+            dropdown.classList.remove('active');
+        };
+    });
+
+    form.onsubmit = async (e) => {
+        e.preventDefault();
+        
+        const emails = document.getElementById('invite-emails').value;
+        const role = hiddenInput.value;
+
+        try {
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'sending...';
+
+            // Simulate API request
+            await new Promise(r => setTimeout(r, 800));
+
+            if (window.SentinelToast) window.SentinelToast.show("invitations sent successfully.", "success");
+            closeModal();
+        } catch (err) {
+            if (window.SentinelToast) window.SentinelToast.show("failed to send invitations.", "error");
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Send invitation';
         }
     };
 }
