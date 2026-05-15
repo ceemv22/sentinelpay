@@ -72,97 +72,75 @@
     <div class="cyber-grid"></div>
     <div class="glow-orb"></div>
     
-    <nav class="sb-navbar">
-        <div class="sb-nav-left">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" style="width: 28px; height: 28px;">
+    <main class="container">
+        <header>
+            <div class="top-nav">
+                <a href="https://github.com/ceemv22/sentinelpay-public" target="_blank" class="github-link">
+                    <svg height="16" viewBox="0 0 16 16" width="16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
+                    <span>view_source</span>
+                </a>
+                <div id="auth-nav-container" style="display: flex; gap: 0.5rem; align-items: center;">
+                    <a href="/auth#login" id="nav-login-btn" class="auth-nav-btn" style="background: transparent; border-color: rgba(255,255,255,0.05); color: var(--text-muted);">login</a>
+                    <a href="/auth#register" id="nav-register-btn" class="auth-nav-btn">register</a>
+                </div>
+            </div>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" style="width: 80px; height: 80px; margin-bottom: -15px;">
+              <title>SentinelPay Logo - Crypto Risk Oracle</title>
+              <desc>Cybernetic shield and eye representing on-chain security and risk monitoring.</desc>
               <defs>
-                <linearGradient id="neonGradientNav" x1="0%" y1="0%" x2="100%" y2="100%">
+                <linearGradient id="neonGradient" x1="0%" y1="0%" x2="100%" y2="100%">
                   <stop offset="0%" stop-color="#00ffff" />
                   <stop offset="100%" stop-color="#a020f0" />
                 </linearGradient>
+                <filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%">
+                  <feGaussianBlur stdDeviation="3.5" result="coloredBlur"/>
+                  <feMerge>
+                    <feMergeNode in="coloredBlur"/>
+                    <feMergeNode in="SourceGraphic"/>
+                  </feMerge>
+                </filter>
               </defs>
-              <g fill="none" stroke="url(#neonGradientNav)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+              <g filter="url(#neonGlow)" fill="none" stroke="url(#neonGradient)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z" />
                 <path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z" />
-                <circle cx="60" cy="60" r="4" fill="url(#neonGradientNav)" stroke="none"/>
+                <g id="eye-pupil" style="transition: transform 0.1s ease-out;">
+                  <circle cx="60" cy="60" r="6" />
+                  <circle cx="60" cy="60" r="2" fill="url(#neonGradient)" stroke="none"/>
+                </g>
+                <path d="M60 15 V 30" stroke-width="2" opacity="0.6"/>
+                <path d="M60 90 V 105" stroke-width="2" opacity="0.6"/>
               </g>
             </svg>
-            <span class="sb-brand">sentinelpay</span>
-        </div>
-        <div class="sb-nav-center desktop-only">
-            <a href="/help-center" class="sb-nav-link">Documentation</a>
-            <a href="/auth#register" class="sb-nav-link">API</a>
-            <a href="/auth#register" class="sb-nav-link">Pricing</a>
-        </div>
-        <div class="sb-nav-right">
-            <a href="https://github.com/ceemv22/sentinelpay" target="_blank" class="github-btn desktop-only">
-                <svg height="16" viewBox="0 0 16 16" width="16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
-                <span>Star us</span>
-            </a>
-            <div id="auth-nav-container" style="display: flex; gap: 0.5rem; align-items: center;">
-                <a href="/auth#login" class="sb-nav-link" id="nav-login-btn">Sign in</a>
-                <a href="/auth#register" class="sb-btn-primary" id="nav-register-btn">Start your project</a>
-            </div>
-        </div>
-    </nav>
+            <div class="logo">sentinelpay</div>
+            <p class="subtitle">> initialize risk scan sequence_</p>
+        </header>
 
-    <main class="sb-main">
-        <section class="sb-hero">
-            <div class="sb-announcement">
-                <span class="sb-badge">New</span>
-                <span>SentinelPay V2 is now live on mainnet &rarr;</span>
+        <section class="scanner-card glass-panel">
+            <div class="input-group">
+                <input type="text" id="wallet-input" placeholder="0x..." autocomplete="off" spellcheck="false" maxlength="42">
+                <button id="scan-btn">scan wallet</button>
             </div>
             
-            <h1 class="sb-h1">
-                Zero-latency risk oracle.<br>
-                <span class="sb-h1-highlight">Protect your treasury.</span>
-            </h1>
+            <div id="turnstile-scanner" style="display: flex; justify-content: center; margin-top: 1rem;"></div>
             
-            <p class="sb-hero-subtitle">
-                S-tier pre-deposit risk engine for crypto flows. Stop hackers and mixers before they hit your platform with our enterprise-grade API.
-            </p>
+            <div class="status-message" id="status-message"></div>
+        </section>
+
+        <section class="result-card glass-panel hidden" id="result-card">
+            <div class="traffic-lights">
+                <div class="light" id="light-high"></div>
+                <div class="light" id="light-medium"></div>
+                <div class="light" id="light-low"></div>
+            </div>
             
-            <div class="sb-hero-actions">
-                <button class="sb-btn-primary sb-btn-large" onclick="document.getElementById('wallet-input').focus()">Scan Wallet</button>
-                <a href="/help-center" class="sb-btn-secondary sb-btn-large">Documentation</a>
+            <div class="score-display">
+                <h1 class="score-h1" id="score-value">00</h1>
+                <div class="flags" id="flags-container"></div>
+                <button id="share-btn" class="hidden outline-btn">share result to x</button>
             </div>
         </section>
 
-        <section class="sb-showcase">
-            <div class="sb-showcase-card">
-                <div class="sb-showcase-header">
-                    <div class="sb-dots"><span></span><span></span><span></span></div>
-                    <div class="sb-showcase-title">live_scanner.exe</div>
-                </div>
-                <div class="sb-showcase-body">
-                    <div class="unified-input-wrapper">
-                        <input type="text" id="wallet-input" placeholder="enter wallet address to scan..." autocomplete="off" spellcheck="false" maxlength="42">
-                        <button id="scan-btn" class="unified-scan-btn" title="Scan Wallet">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                        </button>
-                    </div>
-                    
-                    <div id="turnstile-scanner" style="display: flex; justify-content: center; margin-top: 1rem;"></div>
-                    <div class="status-message" id="status-message"></div>
-                    
-                    <div class="result-card hidden" id="result-card">
-                        <div class="traffic-lights">
-                            <div class="light" id="light-high"></div>
-                            <div class="light" id="light-medium"></div>
-                            <div class="light" id="light-low"></div>
-                        </div>
-                        
-                        <div class="score-display">
-                            <h1 class="score-h1" id="score-value">00</h1>
-                            <div class="flags" id="flags-container"></div>
-                            <button id="share-btn" class="hidden outline-btn">share result to x</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <footer class="cyber-footer sb-footer">
+        <footer class="cyber-footer">
             <div style="margin-bottom: 1rem; display: flex; justify-content: center; gap: 1.5rem;">
                 <a href="/privacy" style="color: var(--text-muted); text-decoration: none; font-size: 0.7rem;">privacy_policy</a>
                 <a href="/tos" style="color: var(--text-muted); text-decoration: none; font-size: 0.7rem;">terms_of_service</a>
