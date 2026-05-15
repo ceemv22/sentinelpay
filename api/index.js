@@ -802,8 +802,8 @@ app.post('/v1/organizations/:slug/team/invite', requireSupabaseAuth, async (req,
                             <tr>
                                 <td style="padding: 40px 0;">
                                     <h1 style="font-family: 'JetBrains Mono', monospace; font-size: 24px; font-weight: 800; letter-spacing: -1.5px; margin: 0 0 25px 0; color: #ffffff; text-transform: lowercase;">you've been invited</h1>
-                                    <p style="font-family: 'JetBrains Mono', monospace; font-size: 14px; line-height: 1.6; color: #777777; margin: 0 0 45px 0; text-transform: lowercase;">
-                                        <strong>${inviterName}</strong> invited you to join the <strong>${org.name}</strong> organization on SentinelPay. Complete the signature check to bridge your account to the scanning core.
+                                    <p style="font-family: 'JetBrains Mono', monospace; font-size: 14px; line-height: 1.6; color: #777777; margin: 0 0 45px 0;">
+                                        <strong>${inviterName}</strong> invited you to join the <strong>${org.name}</strong> organization on sentinelpay. Complete the signature check to bridge your account to the scanning core.
                                     </p>
                                     <div style="margin-bottom: 45px;">
                                         <a href="${joinUrl}" style="background-color: #ffffff; color: #000000; padding: 20px 40px; text-decoration: none; font-weight: 800; font-size: 13px; font-family: 'JetBrains Mono', monospace; text-transform: lowercase; display: inline-block; box-shadow: 0 8px 24px rgba(0, 240, 255, 0.15);">
