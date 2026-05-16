@@ -38,7 +38,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (wrongAccountState) wrongAccountState.style.display = 'flex';
             
             const wrongEmailLabel = document.getElementById('wrong-account-email');
-            if (wrongEmailLabel) wrongEmailLabel.textContent = session.user.email;
+            if (wrongEmailLabel) {
+                const userEmail = session.user.email || session.user.user_metadata?.email || "unknown user";
+                wrongEmailLabel.textContent = userEmail;
+            }
             
             const btnLogout = document.getElementById('btn-wrong-account-logout');
             if (btnLogout) {
