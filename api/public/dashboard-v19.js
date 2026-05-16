@@ -705,7 +705,7 @@ function addTeamMemberToTable(email, role, status = 'active', isYou = false) {
         actionButtons = `
             <div style="display: flex; align-items: center; gap: 0.75rem; justify-content: flex-end;">
                 <div class="tooltip-wrapper">
-                    <button class="btn-manage-access" style="opacity: 0.5; cursor: not-allowed; pointer-events: none; font-family: 'JetBrains Mono', monospace;" disabled>manage access</button>
+                    <button class="btn-cancel" style="padding: 0.4rem 0.8rem; font-size: 0.7rem; border-radius: 6px; opacity: 0.5; cursor: not-allowed; pointer-events: none; font-family: 'JetBrains Mono', monospace;" disabled>manage access</button>
                     <div class="pw-tooltip team-tooltip">
                         access can be managed after the invite is accepted
                     </div>
