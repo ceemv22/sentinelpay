@@ -1127,6 +1127,17 @@ button:hover:not(:disabled) {
     to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
+@keyframes drawCheckAnim {
+    from { stroke-dashoffset: 50; }
+    to { stroke-dashoffset: 0; }
+}
+
+.animated-check-path {
+    stroke-dasharray: 50;
+    stroke-dashoffset: 50;
+    animation: drawCheckAnim 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
 .success-title-new {
     font-size: 2.25rem !important;
     font-weight: 700 !important;
