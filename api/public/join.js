@@ -33,7 +33,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (session) {
         if (invitedEmail && session.user.email.toLowerCase() !== invitedEmail.toLowerCase()) {
             // WRONG ACCOUNT STATE
-            joinCard.style.display = 'none';
             const wrongAccountState = document.getElementById('wrong-account-state');
             if (wrongAccountState) wrongAccountState.style.display = 'flex';
             
@@ -54,6 +53,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         } else {
             // USER LOGGED IN: Show Accept Screen
+            if (joinCard) joinCard.style.display = 'flex';
             if (authButtonsGroup) authButtonsGroup.style.display = 'none';
             if (joinSubtitle) joinSubtitle.style.display = 'none';
             
@@ -95,6 +95,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         };
     } else {
         // USER NOT LOGGED IN: Show Gatekeeper Screen
+        if (joinCard) joinCard.style.display = 'flex';
+
         btnLogin.onclick = () => {
             sessionStorage.setItem('sentinel_join_token', token);
             sessionStorage.setItem('sentinel_join_slug', slug);

@@ -46,7 +46,7 @@
         </div>
 
         <!-- Join Card — mirrors #auth-success-state layout exactly -->
-        <div id="join-card" class="auth-card" style="position: relative; z-index: 500;">
+        <div id="join-card" class="auth-card" style="display: none; position: relative; z-index: 500;">
 
             <!-- Top section: icon + title + subtitle (flex: 1, centered) -->
             <div id="join-top-section" style="flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%;">
@@ -94,15 +94,15 @@
         <div id="wrong-account-state" class="auth-card" style="display: none; position: relative; z-index: 500;">
             <!-- Top section: icon + title + warning box -->
             <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%;">
-                <div style="margin-bottom: 2rem; filter: drop-shadow(0 0 20px rgba(255, 165, 0, 0.25));">
+                <div style="margin-bottom: 2rem; filter: drop-shadow(0 0 20px rgba(0, 240, 255, 0.25));">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" style="width: 100px; height: 100px;">
                         <defs>
-                            <linearGradient id="warnGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stop-color="#ffcc00" />
-                                <stop offset="100%" stop-color="#ff6600" />
+                            <linearGradient id="joinIconGradWarn" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#00f0ff" />
+                                <stop offset="100%" stop-color="#a020f0" />
                             </linearGradient>
                         </defs>
-                        <g fill="none" stroke="url(#warnGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                        <g fill="none" stroke="url(#joinIconGradWarn)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z" style="opacity: 0.25;" />
                             <!-- Animated X -->
                             <path class="animated-x-path" d="M48 48 L72 72" stroke-width="4" />
