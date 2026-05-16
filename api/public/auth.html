@@ -291,9 +291,9 @@
 
             <!-- Success State: Recovery Email Sent -->
             <div id="forgot-pw-state-success" style="display: none; flex-direction: column; align-items: center; justify-content: space-between; text-align: center; width: 100%; min-height: 380px; padding-top: 1rem;">
-                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%;">
-                    <div class="success-icon-wrap" style="margin-bottom: 1.5rem; filter: drop-shadow(0 0 20px rgba(0, 240, 255, 0.25)); display: flex; justify-content: center;">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" style="width: 80px; height: 80px;">
+                <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%;">
+                    <div class="success-icon-wrap" style="margin-bottom: 2rem; filter: drop-shadow(0 0 20px rgba(0, 240, 255, 0.25)); display: flex; justify-content: center;">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" style="width: 100px; height: 100px;">
                             <defs>
                                 <linearGradient id="checkGradReset" x1="0%" y1="0%" x2="100%" y2="100%">
                                     <stop offset="0%" stop-color="#00f0ff" />
@@ -308,12 +308,12 @@
                             </g>
                         </svg>
                     </div>
-                    <h2 style="font-size: 1.8rem; font-weight: 800; letter-spacing: -1.75px; color: #fff; margin-bottom: 0.8rem; font-family: 'JetBrains Mono', monospace; text-transform: lowercase;">check inbox</h2>
-                    <p style="color: rgba(255,255,255,0.4); font-size: 0.85rem; font-family: 'JetBrains Mono', monospace; line-height: 1.8; max-width: 250px; margin: 0 auto; margin-bottom: 1.5rem;">we've dispatched a secure recovery link to your email.</p>
+                    <h2 style="font-size: 2.25rem; font-weight: 800; letter-spacing: -1.75px; color: #fff; margin-bottom: 1rem; font-family: 'JetBrains Mono', monospace; text-transform: lowercase;">check inbox</h2>
+                    <p style="color: rgba(255,255,255,0.4); font-size: 0.9rem; font-family: 'JetBrains Mono', monospace; line-height: 1.8; max-width: 280px; margin: 0 auto;">we've dispatched a secure recovery link to your email.</p>
                 </div>
                 
                 <!-- Resend Anchor -->
-                <div id="forgot-resend-anchor" style="width: 100%; display: flex; flex-direction: column; align-items: center; padding-bottom: 0.5rem;">
+                <div id="forgot-resend-anchor" style="width: 100%; display: flex; flex-direction: column; align-items: center; padding-bottom: 0.5rem; min-height: 100px; justify-content: flex-end;">
                     <button id="forgot-resend-btn" style="background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.1); padding: 12px 24px; border-radius: 12px; font-size: 0.72rem; cursor: pointer; font-family: 'JetBrains Mono', monospace; transition: all 0.3s ease; display: inline-block; min-width: 180px;">
                         resend email
                     </button>
