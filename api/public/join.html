@@ -10,14 +10,14 @@
     <link rel="stylesheet" href="style.css?v=21.4">
     <script src="lib/supabase.js"></script>
 </head>
-<body style="overflow: hidden;">
+<body style="overflow: hidden; font-family: 'JetBrains Mono', monospace; text-transform: lowercase;">
     <div class="cyber-grid"></div>
     <div class="glow-orb"></div>
 
     <div class="auth-page-wrap">
-        <!-- Center Logo -->
-        <div class="auth-center-logo" style="margin-bottom: 20px;">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" style="width: 70px; height: 70px;">
+        <!-- Center Logo with Eye Tracking -->
+        <div class="auth-center-logo" style="margin-bottom: 25px;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" style="width: 80px; height: 80px;">
               <defs>
                 <linearGradient id="neonGradientJoin" x1="0%" y1="0%" x2="100%" y2="100%">
                   <stop offset="0%" stop-color="#00ffff" />
@@ -34,7 +34,7 @@
               <g filter="url(#neonGlowJoin)" fill="none" stroke="url(#neonGradientJoin)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z" />
                 <path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z" />
-                <g class="eye-pupil">
+                <g id="eye-center-join">
                   <circle cx="60" cy="60" r="6" />
                   <circle cx="60" cy="60" r="2" fill="url(#neonGradientJoin)" stroke="none"/>
                 </g>
@@ -43,28 +43,43 @@
         </div>
 
         <!-- View Invitation Card -->
-        <div class="auth-card" id="join-card" style="position: relative; z-index: 500; max-width: 400px; text-align: center; padding: 3rem 2.5rem;">
-            <h1 class="success-title-new" style="font-size: 1.8rem !important; margin-bottom: 0.75rem;">view invitation</h1>
-            <p id="join-subtitle" class="success-subtitle-new" style="margin-bottom: 2.5rem;">sign in or create an account to view this invitation</p>
+        <div class="auth-card" id="join-card" style="position: relative; z-index: 500; max-width: 420px; text-align: center; padding: 3.5rem 2.5rem; border: 1px solid rgba(0, 240, 255, 0.15); box-shadow: 0 25px 50px rgba(0,0,0,0.5), 0 0 30px rgba(0, 240, 255, 0.05);">
+            <h1 class="success-title-new" style="font-size: 1.6rem !important; margin-bottom: 1rem; letter-spacing: -1px;">view invitation</h1>
+            <p id="join-subtitle" class="success-subtitle-new" style="margin-bottom: 2.5rem; font-size: 0.8rem; color: var(--text-muted); line-height: 1.6;">sign in or create an account to view this invitation</p>
 
-            <div style="display: flex; flex-direction: column; gap: 1rem; width: 100%;">
-                <button id="btn-join-login" class="submit-btn" style="margin-top: 0;">sign in</button>
-                <button id="btn-join-register" class="submit-btn" style="margin-top: 0; background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.15);">create an account</button>
+            <div id="auth-buttons-group" style="display: flex; flex-direction: column; gap: 0.75rem; width: 100%;">
+                <button id="btn-join-login" class="submit-btn" style="margin-top: 0; height: 50px; font-weight: 700; font-size: 0.8rem; letter-spacing: 1px;">sign in</button>
+                <button id="btn-join-register" class="submit-btn" style="margin-top: 0; height: 50px; background: rgba(255,255,255,0.03); color: #fff; border: 1px solid rgba(255,255,255,0.1); font-weight: 700; font-size: 0.8rem; letter-spacing: 1px;">create account</button>
             </div>
             
-            <!-- Information for Logged In users will be injected here via JS -->
-            <div id="accept-section" style="display: none; flex-direction: column; width: 100%; margin-top: 1rem;">
-                <div style="background: rgba(0, 240, 255, 0.05); border: 1px solid rgba(0, 240, 255, 0.2); border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem;">
-                    <p style="color: var(--text-muted); font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; line-height: 1.6; margin: 0;">
-                        <strong id="inviter-name" style="color: #fff;">someone</strong> invited you to join organization <strong id="org-slug-name" style="color: var(--neon-blue);">...</strong>
+            <!-- Accept Section -->
+            <div id="accept-section" style="display: none; flex-direction: column; width: 100%;">
+                <div style="background: rgba(0, 240, 255, 0.03); border: 1px solid rgba(0, 240, 255, 0.1); border-radius: 12px; padding: 1.25rem; margin-bottom: 2rem;">
+                    <p style="color: var(--text-muted); font-size: 0.75rem; line-height: 1.8; margin: 0;">
+                        <span id="inviter-name" style="color: #fff; font-weight: 700;">...</span> invited you to join organization <span id="org-slug-name" style="color: var(--neon-blue); font-weight: 700;">...</span>
                     </p>
                 </div>
-                <button id="btn-accept-invite" class="submit-btn" style="margin-top: 0;">accept and join team</button>
+                <button id="btn-accept-invite" class="submit-btn" style="margin-top: 0; height: 55px; font-weight: 800; letter-spacing: 1.5px;">accept handshake</button>
             </div>
         </div>
     </div>
 
     <script src="toast.js"></script>
+    <script>
+        // Eye Tracking Logic for Join Page
+        document.addEventListener('mousemove', (e) => {
+            const eyeCenter = document.getElementById('eye-center-join');
+            if (!eyeCenter) return;
+            const rect = eyeCenter.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            const angle = Math.atan2(e.clientY - centerY, e.clientX - centerX);
+            const distance = Math.min(3, Math.hypot(e.clientX - centerX, e.clientY - centerY) / 60);
+            const moveX = Math.cos(angle) * distance;
+            const moveY = Math.sin(angle) * distance;
+            eyeCenter.style.transform = `translate(${moveX}px, ${moveY}px)`;
+        });
+    </script>
     <script src="join.js"></script>
 </body>
 </html>
