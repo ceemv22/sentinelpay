@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const token = params.get('token');
     const slug = params.get('slug');
     const name = params.get('name');
+    const invitedEmail = params.get('email');
 
     if (!token || !slug) {
         if (window.SentinelToast) window.SentinelToast.show("invalid or expired invitation link.", "error");
@@ -30,16 +31,35 @@ document.addEventListener('DOMContentLoaded', async () => {
     const authButtonsGroup = document.getElementById('auth-buttons-group');
 
     if (session) {
-        // USER LOGGED IN: Show Accept Screen
-        if (authButtonsGroup) authButtonsGroup.style.display = 'none';
-        if (joinSubtitle) joinSubtitle.style.display = 'none';
-        
-        const acceptInfoBox = document.getElementById('accept-info-box');
-        if (acceptInfoBox) acceptInfoBox.style.display = 'block';
-        acceptSection.style.display = 'flex';
-        
-        document.getElementById('inviter-name').textContent = name || 'a team member';
-        document.getElementById('org-slug-name').textContent = slug;
+        if (invitedEmail && session.user.email.toLowerCase() !== invitedEmail.toLowerCase()) {
+            // WRONG ACCOUNT STATE
+            joinCard.style.display = 'none';
+            const wrongAccountState = document.getElementById('wrong-account-state');
+            if (wrongAccountState) wrongAccountState.style.display = 'flex';
+            
+            const wrongEmailLabel = document.getElementById('wrong-account-email');
+            if (wrongEmailLabel) wrongEmailLabel.textContent = session.user.email;
+            
+            const btnLogout = document.getElementById('btn-wrong-account-logout');
+            if (btnLogout) {
+                btnLogout.onclick = async () => {
+                    btnLogout.disabled = true;
+                    btnLogout.textContent = 'signing out...';
+                    await supabase.auth.signOut();
+                    window.location.reload();
+                };
+            }
+        } else {
+            // USER LOGGED IN: Show Accept Screen
+            if (authButtonsGroup) authButtonsGroup.style.display = 'none';
+            if (joinSubtitle) joinSubtitle.style.display = 'none';
+            
+            const acceptInfoBox = document.getElementById('accept-info-box');
+            if (acceptInfoBox) acceptInfoBox.style.display = 'block';
+            acceptSection.style.display = 'flex';
+            
+            document.getElementById('inviter-name').textContent = name || 'a team member';
+            document.getElementById('org-slug-name').textContent = slug;
 
         btnAccept.onclick = async () => {
             try {

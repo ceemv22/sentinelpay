@@ -774,7 +774,7 @@ app.post('/v1/organizations/:slug/team/invite', requireSupabaseAuth, async (req,
             });
 
             // Send Email
-            const joinUrl = `https://sentinelpay.org/join?token=${token}&slug=${org.slug}&name=${encodeURIComponent(inviterName)}`;
+            const joinUrl = `https://sentinelpay.org/join?token=${token}&slug=${org.slug}&name=${encodeURIComponent(inviterName)}&email=${encodeURIComponent(email)}`;
             
             await resend.emails.send({
                 from: 'sentinelpay <noreply@sentinelpay.org>',
