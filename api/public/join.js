@@ -27,13 +27,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     const btnRegister = document.getElementById('btn-join-register');
     const acceptSection = document.getElementById('accept-section');
     const btnAccept = document.getElementById('btn-accept-invite');
-    
-    // Auth UI buttons (Sign in / Create Account)
-    const authButtons = btnLogin.parentElement;
+    const authButtonsGroup = document.getElementById('auth-buttons-group');
 
     if (session) {
         // USER LOGGED IN: Show Accept Screen
-        authButtons.style.display = 'none';
+        if (authButtonsGroup) authButtonsGroup.style.display = 'none';
         joinSubtitle.style.display = 'none';
         acceptSection.style.display = 'flex';
         
