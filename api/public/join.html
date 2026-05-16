@@ -6,18 +6,19 @@
     <title>sentinelpay | view invitation</title>
     <meta name="theme-color" content="#040404">
     <link rel="icon" type="image/svg+xml" href="logo.svg">
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=JetBrains+Mono:wght@400;700;800&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css?v=21.4">
     <script src="lib/supabase.js"></script>
 </head>
-<body style="overflow: hidden; font-family: 'JetBrains Mono', monospace; text-transform: lowercase;">
+<body style="overflow: hidden;">
     <div class="cyber-grid"></div>
     <div class="glow-orb"></div>
 
     <div class="auth-page-wrap">
-        <!-- Center Logo with Eye Tracking -->
-        <div class="auth-center-logo" style="margin-bottom: 25px;">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" style="width: 80px; height: 80px;">
+
+        <!-- Center Logo with Eye Tracking (matches auth.html desktop pattern) -->
+        <div class="auth-center-logo desktop-only">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" style="width: 80px; height: 80px; margin-bottom: -10px;">
               <defs>
                 <linearGradient id="neonGradientJoin" x1="0%" y1="0%" x2="100%" y2="100%">
                   <stop offset="0%" stop-color="#00ffff" />
@@ -34,39 +35,67 @@
               <g filter="url(#neonGlowJoin)" fill="none" stroke="url(#neonGradientJoin)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z" />
                 <path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z" />
-                <g id="eye-center-join">
+                <g id="eye-center-join" style="transition: transform 0.1s ease-out;">
                   <circle cx="60" cy="60" r="6" />
                   <circle cx="60" cy="60" r="2" fill="url(#neonGradientJoin)" stroke="none"/>
                 </g>
+                <path d="M60 15 V 30" stroke-width="2" opacity="0.6"/>
+                <path d="M60 90 V 105" stroke-width="2" opacity="0.6"/>
               </g>
             </svg>
         </div>
 
-        <!-- View Invitation Card -->
-        <div class="auth-card" id="join-card" style="position: relative; z-index: 500; max-width: 420px; text-align: center; padding: 3.5rem 2.5rem; border: 1px solid rgba(0, 240, 255, 0.15); box-shadow: 0 25px 50px rgba(0,0,0,0.5), 0 0 30px rgba(0, 240, 255, 0.05);">
-            <h1 class="success-title-new" style="font-size: 1.6rem !important; margin-bottom: 1rem; letter-spacing: -1px;">view invitation</h1>
-            <p id="join-subtitle" class="success-subtitle-new" style="margin-bottom: 2.5rem; font-size: 0.8rem; color: var(--text-muted); line-height: 1.6;">sign in or create an account to view this invitation</p>
+        <!-- Join Card — mirrors #auth-success-state layout exactly -->
+        <div id="join-card" class="auth-card" style="position: relative; z-index: 500;">
 
-            <div id="auth-buttons-group" style="display: flex; flex-direction: column; gap: 0.75rem; width: 100%;">
-                <button id="btn-join-login" class="submit-btn" style="margin-top: 0; height: 50px; font-weight: 700; font-size: 0.8rem; letter-spacing: 1px;">sign in</button>
-                <button id="btn-join-register" class="submit-btn" style="margin-top: 0; height: 50px; background: rgba(255,255,255,0.03); color: #fff; border: 1px solid rgba(255,255,255,0.1); font-weight: 700; font-size: 0.8rem; letter-spacing: 1px;">create account</button>
-            </div>
-            
-            <!-- Accept Section -->
-            <div id="accept-section" style="display: none; flex-direction: column; width: 100%;">
-                <div style="background: rgba(0, 240, 255, 0.03); border: 1px solid rgba(0, 240, 255, 0.1); border-radius: 12px; padding: 1.25rem; margin-bottom: 2rem;">
-                    <p style="color: var(--text-muted); font-size: 0.75rem; line-height: 1.8; margin: 0;">
-                        <span id="inviter-name" style="color: #fff; font-weight: 700;">...</span> invited you to join organization <span id="org-slug-name" style="color: var(--neon-blue); font-weight: 700;">...</span>
+            <!-- Top section: icon + title + subtitle (flex: 1, centered) -->
+            <div id="join-top-section" style="flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%;">
+                <div style="margin-bottom: 2rem; filter: drop-shadow(0 0 20px rgba(0, 240, 255, 0.25));">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" style="width: 100px; height: 100px;">
+                        <defs>
+                            <linearGradient id="joinIconGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#00f0ff" />
+                                <stop offset="100%" stop-color="#a020f0" />
+                            </linearGradient>
+                        </defs>
+                        <g fill="none" stroke="url(#joinIconGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z" style="opacity: 0.25;" />
+                            <!-- Envelope / handshake icon -->
+                            <rect x="30" y="45" width="60" height="38" rx="4" stroke-width="3"/>
+                            <polyline points="30,45 60,67 90,45" stroke-width="3"/>
+                        </g>
+                    </svg>
+                </div>
+
+                <h2 style="font-size: 2.25rem; font-weight: 800; letter-spacing: -1.75px; color: #fff; margin-bottom: 1rem; font-family: 'JetBrains Mono', monospace; text-transform: lowercase; text-align: center;">view invitation</h2>
+                <p id="join-subtitle" style="color: rgba(255,255,255,0.4); font-size: 0.9rem; font-family: 'JetBrains Mono', monospace; line-height: 1.8; max-width: 280px; margin: 0 auto; text-align: center;">sign in or create an account to view this invitation</p>
+
+                <!-- Logged-in: org info box -->
+                <div id="accept-info-box" style="display: none; margin-top: 2rem; width: 100%;">
+                    <p style="color: rgba(255,255,255,0.4); font-size: 0.85rem; font-family: 'JetBrains Mono', monospace; line-height: 1.8; text-align: center;">
+                        <span id="inviter-name" style="color: #fff; font-weight: 700;"></span> invited you to join<br>
+                        <span id="org-slug-name" style="color: var(--neon-blue); font-weight: 700;"></span>
                     </p>
                 </div>
-                <button id="btn-accept-invite" class="submit-btn" style="margin-top: 0; height: 55px; font-weight: 800; letter-spacing: 1.5px;">accept handshake</button>
             </div>
+
+            <!-- Bottom section: buttons pinned to bottom (matches resend-anchor pattern) -->
+            <div id="auth-buttons-group" style="min-height: 120px; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; width: 100%; gap: 0.75rem; padding-bottom: 0.5rem;">
+                <button id="btn-join-login" class="submit-btn" style="margin-top: 0;">sign in</button>
+                <button id="btn-join-register" class="submit-btn" style="margin-top: 0; background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.12);">create account</button>
+            </div>
+
+            <!-- Logged-in: accept button (hidden by default, shown by JS) -->
+            <div id="accept-section" style="display: none; min-height: 120px; flex-direction: column; justify-content: flex-end; align-items: center; width: 100%; padding-bottom: 0.5rem;">
+                <button id="btn-accept-invite" class="submit-btn" style="margin-top: 0;">accept handshake</button>
+            </div>
+
         </div>
     </div>
 
     <script src="toast.js"></script>
     <script>
-        // Eye Tracking Logic for Join Page
+        // Eye tracking — same as auth.html / dashboard.html
         document.addEventListener('mousemove', (e) => {
             const eyeCenter = document.getElementById('eye-center-join');
             if (!eyeCenter) return;
@@ -74,7 +103,7 @@
             const centerX = rect.left + rect.width / 2;
             const centerY = rect.top + rect.height / 2;
             const angle = Math.atan2(e.clientY - centerY, e.clientX - centerX);
-            const distance = Math.min(3, Math.hypot(e.clientX - centerX, e.clientY - centerY) / 60);
+            const distance = Math.min(4, Math.hypot(e.clientX - centerX, e.clientY - centerY) / 50);
             const moveX = Math.cos(angle) * distance;
             const moveY = Math.sin(angle) * distance;
             eyeCenter.style.transform = `translate(${moveX}px, ${moveY}px)`;

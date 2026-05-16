@@ -32,7 +32,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (session) {
         // USER LOGGED IN: Show Accept Screen
         if (authButtonsGroup) authButtonsGroup.style.display = 'none';
-        joinSubtitle.style.display = 'none';
+        if (joinSubtitle) joinSubtitle.style.display = 'none';
+        
+        const acceptInfoBox = document.getElementById('accept-info-box');
+        if (acceptInfoBox) acceptInfoBox.style.display = 'block';
         acceptSection.style.display = 'flex';
         
         document.getElementById('inviter-name').textContent = name || 'a team member';
@@ -63,7 +66,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             } catch (err) {
                 if (window.SentinelToast) window.SentinelToast.show(err.message, "error");
                 btnAccept.disabled = false;
-                btnAccept.textContent = 'accept and join team';
+                btnAccept.textContent = 'accept handshake';
             }
         };
     } else {
