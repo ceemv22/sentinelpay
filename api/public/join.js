@@ -60,6 +60,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             
             document.getElementById('inviter-name').textContent = name || 'a team member';
             document.getElementById('org-slug-name').textContent = slug;
+        }
 
         btnAccept.onclick = async () => {
             try {
