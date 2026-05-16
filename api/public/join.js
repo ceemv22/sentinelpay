@@ -31,15 +31,22 @@ document.addEventListener('DOMContentLoaded', async () => {
     const authButtonsGroup = document.getElementById('auth-buttons-group');
 
     if (session) {
-        if (invitedEmail && session.user.email.toLowerCase() !== invitedEmail.toLowerCase()) {
+        const currentUserEmail = session.user.email || session.user.user_metadata?.email || "";
+        const currentUserDisplay = currentUserEmail || 
+                                   session.user.user_metadata?.user_name || 
+                                   session.user.user_metadata?.preferred_username || 
+                                   session.user.user_metadata?.full_name || 
+                                   session.user.user_metadata?.name || 
+                                   "unknown account";
+
+        if (invitedEmail && currentUserEmail.toLowerCase() !== invitedEmail.toLowerCase()) {
             // WRONG ACCOUNT STATE
             const wrongAccountState = document.getElementById('wrong-account-state');
             if (wrongAccountState) wrongAccountState.style.display = 'flex';
             
             const wrongEmailLabel = document.getElementById('wrong-account-email');
             if (wrongEmailLabel) {
-                const userEmail = session.user.email || session.user.user_metadata?.email || "unknown user";
-                wrongEmailLabel.textContent = userEmail;
+                wrongEmailLabel.textContent = currentUserDisplay;
             }
             
             const btnLogout = document.getElementById('btn-wrong-account-logout');
