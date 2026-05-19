@@ -765,7 +765,20 @@ app.post('/v1/organizations/:slug/team/invite', requireSupabaseAuth, async (req,
         const invitations = [];
         const inviterName = req.user.username || req.user.email;
 
-        for (const email of emailList) {
+        for (const identifier of emailList) {
+            let targetEmail = identifier;
+            
+            // If it's a username (no '@'), look up the email
+            if (!identifier.includes('@')) {
+                const user = await prisma.user.findFirst({
+                    where: { username: { equals: identifier, mode: 'insensitive' } }
+                });
+                if (!user || !user.email) {
+                    throw new Error(`user '${identifier}' not found or has no email address`);
+                }
+                targetEmail = user.email;
+            }
+
             const token = crypto.randomBytes(32).toString('hex');
             const expiresAt = new Date();
             expiresAt.setDate(expiresAt.getDate() + 7); // 7 days expiry
@@ -773,7 +786,7 @@ app.post('/v1/organizations/:slug/team/invite', requireSupabaseAuth, async (req,
             // Create in DB
             const inv = await prisma.invitation.create({
                 data: {
-                    email,
+                    email: targetEmail,
                     role: role || 'developer',
                     orgId: org.id,
                     token,
@@ -783,11 +796,11 @@ app.post('/v1/organizations/:slug/team/invite', requireSupabaseAuth, async (req,
             });
 
             // Send Email
-            const joinUrl = `https://sentinelpay.org/join?token=${token}&slug=${org.slug}&name=${encodeURIComponent(inviterName)}&email=${encodeURIComponent(email)}`;
+            const joinUrl = `https://sentinelpay.org/join?token=${token}&slug=${org.slug}&name=${encodeURIComponent(inviterName)}&email=${encodeURIComponent(targetEmail)}`;
             
             await resend.emails.send({
                 from: 'sentinelpay <noreply@sentinelpay.org>',
-                to: email,
+                to: targetEmail,
                 subject: `${inviterName} has invited you to join ${org.name}`,
                 html: `
                 <!DOCTYPE html>
