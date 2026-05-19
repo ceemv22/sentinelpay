@@ -536,8 +536,8 @@ function setupInviteMemberModal(token) {
         const rawEmails = document.getElementById('invite-emails').value;
         const role = hiddenInput.value;
 
-        const emailList = rawEmails.split(/[\s,]+/).filter(email => {
-            return email.trim().length > 0 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        const emailList = rawEmails.split(/[\s,]+/).filter(item => {
+            return item.trim().length > 0 && /^([^\s@]+@[^\s@]+\.[^\s@]+|[a-zA-Z0-9_.-]+)$/.test(item);
         });
 
         if (emailList.length === 0) {
