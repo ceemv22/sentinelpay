@@ -96,7 +96,7 @@ html {
 body {
     background-color: var(--bg-dark);
     color: var(--text-main);
-    font-family: 'JetBrains Mono', 'Inter', -apple-system, sans-serif;
+    font-family: 'JetBrains Mono', monospace;
     min-height: 100vh;
     min-height: 100dvh; /* Dynamic viewport height for mobile */
     display: flex;
