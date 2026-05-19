@@ -213,6 +213,15 @@ app.get('/join', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'join.html'));
 });
 
+// Auth SPA Routes - serve auth.html for /auth/login and /auth/register (supports returnTo)
+app.get('/auth/login', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'auth.html'));
+});
+
+app.get('/auth/register', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'auth.html'));
+});
+
 app.use(express.static(path.join(__dirname, 'public'), { extensions: ['html'] }));
 
 // Redis Setup & Rate Limiter Store
