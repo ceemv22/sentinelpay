@@ -104,18 +104,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         // USER NOT LOGGED IN: Show Gatekeeper Screen
         if (joinCard) joinCard.style.display = 'flex';
 
+        const returnPath = `/join?token=${encodeURIComponent(token)}&slug=${encodeURIComponent(slug)}`;
+
         btnLogin.onclick = () => {
-            sessionStorage.setItem('sentinel_join_token', token);
-            sessionStorage.setItem('sentinel_join_slug', slug);
-            sessionStorage.setItem('sentinel_join_name', name);
-            window.location.href = '/auth#login';
+            window.location.href = `/auth/login?returnTo=${encodeURIComponent(returnPath)}`;
         };
 
         btnRegister.onclick = () => {
-            sessionStorage.setItem('sentinel_join_token', token);
-            sessionStorage.setItem('sentinel_join_slug', slug);
-            sessionStorage.setItem('sentinel_join_name', name);
-            window.location.href = '/auth#register';
+            window.location.href = `/auth/register?returnTo=${encodeURIComponent(returnPath)}`;
         };
     }
 });

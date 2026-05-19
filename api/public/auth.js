@@ -89,6 +89,10 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('[sentinel-auth] initializing v18.0...');
     const s = getSupabase();
 
+    // Extract returnTo for post-auth redirect (used by invitation flow)
+    const urlParams = new URLSearchParams(window.location.search);
+    const returnTo = urlParams.get('returnTo');
+
     // FORM: LOGIN
     const loginForm = document.getElementById('login-form');
     if (loginForm) {
@@ -128,7 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     btn.removeAttribute('data-captcha-token');
                     isBusy = false;
                 } else {
-                    window.location.href = '/dashboard/organizations';
+                    window.location.href = returnTo || '/dashboard/organizations';
                 }
             } catch (err) { console.error(err); isBusy = false; btn.disabled = false; }
         };
@@ -240,18 +244,17 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
-    // Tab Auto-Switch (based on URL hash or session)
+    // Tab Auto-Switch (based on URL path, hash, or session)
     const hash = window.location.hash.toLowerCase();
+    const authPath = window.location.pathname.toLowerCase();
     const lastTab = sessionStorage.getItem('sentinel_auth_tab');
 
-    if (hash.includes('register')) {
+    if (authPath.includes('/auth/register') || hash.includes('register')) {
         window.switchManual('register');
-        // Instantly scrub hash for a clean URL
-        window.history.replaceState(null, document.title, window.location.pathname);
-    } else if (hash.includes('login')) {
+        if (hash) window.history.replaceState(null, document.title, window.location.pathname + window.location.search);
+    } else if (authPath.includes('/auth/login') || hash.includes('login')) {
         window.switchManual('login');
-        // Instantly scrub hash for a clean URL
-        window.history.replaceState(null, document.title, window.location.pathname);
+        if (hash) window.history.replaceState(null, document.title, window.location.pathname + window.location.search);
     } else if (lastTab) {
         window.switchManual(lastTab);
     }
