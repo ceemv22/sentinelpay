@@ -741,7 +741,7 @@ function addTeamMemberToTable(email, role, status = 'active', isYou = false) {
                 <div class="org-avatar" style="border-radius: 8px; width: 34px; height: 34px; font-weight: 800; font-size: 0.9rem;">${avatarInitial}</div>
                 <div style="display: flex; flex-direction: column;">
                     <div style="display: flex; align-items: center; gap: 8px;">
-                        <span style="font-family: 'Inter', sans-serif; font-size: 0.85rem; font-weight: 600; color: #fff;">${email}</span>
+                        <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; font-weight: 600; color: #fff;">${email}</span>
                         ${statusBadge}
                     </div>
                 </div>
