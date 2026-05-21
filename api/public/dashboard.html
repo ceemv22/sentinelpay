@@ -14,7 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
     
-    <link rel="stylesheet" href="style.css?v=22.0">
+    <link rel="stylesheet" href="style.css?v=22.1">
     <script src="lib/supabase.js"></script>
     <style>
         :root {
@@ -1172,25 +1172,40 @@
                 display: none !important;
             }
 
-            /* === EYE-TRACKING LOGO TRIGGER (Left Corner) === */
+            /* === EYE-TRACKING LOGO TRIGGER (Left Corner) — auth mobile style pattern === */
             .mobile-logo-trigger {
                 display: flex !important;
                 align-items: center;
                 justify-content: center;
-                width: 40px;
-                height: 40px;
-                background: rgba(0, 240, 255, 0.04);
-                border: 1px solid rgba(0, 240, 255, 0.12);
-                border-radius: 50%;
+                width: 32px;
+                height: 32px;
+                background: transparent !important;
+                border: none !important;
+                border-radius: 0 !important;
                 cursor: pointer;
-                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-                box-shadow: 0 0 12px rgba(0, 240, 255, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+                transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+                box-shadow: none !important;
+                padding: 0 !important;
             }
             .mobile-logo-trigger:active {
-                background: rgba(0, 240, 255, 0.12);
-                border-color: rgba(0, 240, 255, 0.4);
-                transform: scale(0.93);
-                box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
+                background: transparent !important;
+                border-color: transparent !important;
+                transform: scale(0.9) !important;
+                box-shadow: none !important;
+            }
+
+            /* === SMOOTH BLUR TRANSITIONS FOR MODAL OPENING === */
+            .content-area,
+            .dashboard-header {
+                transition: filter 0.3s ease-out !important;
+            }
+
+            /* === FULL DASHBOARD BLUR ON MODAL OPEN (Matches forgot password modal mobile pattern) === */
+            body.modal-open .content-area,
+            body.modal-open .dashboard-header,
+            body.modal-open .sidebar {
+                filter: blur(8px) !important;
+                pointer-events: none !important;
             }
 
             /* === SIDEBAR AS MOBILE DRAWER === */
@@ -1206,7 +1221,7 @@
                 border-right: 1px solid rgba(0, 240, 255, 0.1);
                 z-index: 10002;
                 transform: translateX(-100%);
-                transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+                transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), filter 0.3s ease-out !important;
                 overflow-y: auto;
                 display: flex;
                 flex-direction: column;
@@ -1679,8 +1694,8 @@
     <header class="dashboard-header">
         <!-- Mobile Logo & Sidebar Toggle (Clickable BRANDMARK with Eye Tracking) -->
         <div class="mobile-logo-trigger" id="mobile-nav-toggle" role="button" aria-label="Toggle Navigation">
-            <div class="logo-container" style="width: 26px; height: 26px; flex-shrink: 0; display: flex; align-items: center; justify-content: center;">
-                <svg viewBox="0 0 120 120" width="26" height="26">
+            <div class="logo-container" style="width: 32px; height: 32px; flex-shrink: 0; display: flex; align-items: center; justify-content: center;">
+                <svg viewBox="0 0 120 120" width="32" height="32">
                   <defs>
                     <linearGradient id="neonGradientMobile" x1="0%" y1="0%" x2="100%" y2="100%">
                       <stop offset="0%" stop-color="#00ffff" />
