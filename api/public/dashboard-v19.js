@@ -843,10 +843,18 @@ function addTeamMemberToTable(email, role, status = 'active', isYou = false) {
 }
 
 // Global click handler to close dropdowns
-document.addEventListener('click', () => {
+document.addEventListener('click', (e) => {
     document.querySelectorAll('.row-actions-dropdown.active').forEach(d => {
         d.classList.remove('active');
     });
+    
+    // Close user dropdown when clicking outside trigger and menu
+    const trigger = document.getElementById('user-menu-trigger');
+    const dropdown = document.getElementById('user-dropdown');
+    if (trigger && dropdown && !trigger.contains(e.target) && !dropdown.contains(e.target)) {
+        trigger.classList.remove('active');
+        dropdown.classList.remove('active');
+    }
 });
 
 async function resendInvite(email) {
