@@ -243,12 +243,69 @@ function renderDashboard(session) {
         setupCreateOrgModal(token);
         setupInviteMemberModal(token);
         setupSidebar();
+        setupMobileNav();
     } catch (e) {
         console.error('[sentinel-render] Critical failure:', e);
         showStatus('Render Error', 'error');
     } finally {
         renderDashboard.busy = false;
     }
+}
+
+// --- Mobile Navigation Setup ---
+function setupMobileNav() {
+    const toggle = document.getElementById('mobile-nav-toggle');
+    const overlay = document.getElementById('mobile-sidebar-overlay');
+    const sidebar = document.querySelector('.sidebar');
+
+    if (!toggle || !overlay) return;
+    if (toggle.dataset.mobileBound) return;
+    toggle.dataset.mobileBound = 'true';
+
+    const openMobileNav = () => {
+        document.body.classList.add('mobile-sidebar-open');
+    };
+
+    const closeMobileNav = () => {
+        document.body.classList.remove('mobile-sidebar-open');
+    };
+
+    // Hamburger click
+    toggle.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        document.body.classList.toggle('mobile-sidebar-open');
+    });
+
+    // Backdrop click closes drawer
+    overlay.addEventListener('click', closeMobileNav);
+
+    // Any sidebar nav item click closes drawer (after a short delay for UX)
+    if (sidebar) {
+        sidebar.querySelectorAll('.sidebar-item').forEach(item => {
+            item.addEventListener('click', () => {
+                setTimeout(closeMobileNav, 200);
+            });
+        });
+    }
+
+    // Sync mobile API key suffix from desktop element
+    const observer = new MutationObserver(() => {
+        const desktopSuffix = document.getElementById('api-key-suffix');
+        const mobileSuffix = document.getElementById('mobile-api-key-suffix');
+        if (desktopSuffix && mobileSuffix) {
+            mobileSuffix.textContent = desktopSuffix.textContent;
+        }
+    });
+    const desktopSuffix = document.getElementById('api-key-suffix');
+    if (desktopSuffix) {
+        observer.observe(desktopSuffix, { childList: true, characterData: true, subtree: true });
+    }
+
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeMobileNav();
+    });
 }
 
 function setupCreateOrgModal(token) {
