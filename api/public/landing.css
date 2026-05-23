@@ -160,8 +160,13 @@ body.lp-body {
     color: var(--color-green);
     text-transform: lowercase;
     letter-spacing: 0.03em;
-    cursor: default;
-    user-select: none;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.lp-status-pill:hover {
+    background: rgba(0, 255, 136, 0.1);
+    border-color: rgba(0, 255, 136, 0.35);
 }
 
 .lp-status-dot {
@@ -208,7 +213,7 @@ body.lp-body {
 }
 
 .lp-h1 {
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: 'JetBrains Mono', monospace;
     font-size: clamp(2.4rem, 6vw, 3.75rem);
     font-weight: 700;
     line-height: 1.1;
@@ -221,7 +226,7 @@ body.lp-body {
 }
 
 .lp-hero-sub {
-    font-family: 'Inter', sans-serif;
+    font-family: 'JetBrains Mono', monospace;
     font-size: 1.05rem;
     color: var(--text-muted);
     line-height: 1.65;
@@ -388,7 +393,7 @@ body.lp-body {
 }
 
 .lp-diag-node-sub {
-    font-family: 'Inter', sans-serif;
+    font-family: 'JetBrains Mono', monospace;
     font-size: 0.68rem;
     color: var(--text-muted);
     font-weight: 300;
@@ -633,7 +638,7 @@ body.lp-body {
 }
 
 .lp-stat-value {
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: 'JetBrains Mono', monospace;
     font-size: 1.75rem;
     font-weight: 700;
     color: #fff;
@@ -642,7 +647,7 @@ body.lp-body {
 }
 
 .lp-stat-label {
-    font-family: 'Inter', sans-serif;
+    font-family: 'JetBrains Mono', monospace;
     font-size: 0.75rem;
     color: var(--text-muted);
     text-transform: lowercase;
@@ -676,7 +681,7 @@ body.lp-body {
 }
 
 .lp-h2 {
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: 'JetBrains Mono', monospace;
     font-size: clamp(1.75rem, 3.5vw, 2.4rem);
     font-weight: 700;
     letter-spacing: -0.03em;
@@ -726,7 +731,7 @@ body.lp-body {
 }
 
 .lp-step-title {
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: 'JetBrains Mono', monospace;
     font-size: 1.15rem;
     font-weight: 600;
     color: #fff;
@@ -735,7 +740,7 @@ body.lp-body {
 }
 
 .lp-step-desc {
-    font-family: 'Inter', sans-serif;
+    font-family: 'JetBrains Mono', monospace;
     font-size: 0.875rem;
     color: var(--text-muted);
     line-height: 1.6;
@@ -806,7 +811,7 @@ body.lp-body {
 .lp-score-blue { color: var(--neon-blue); }
 
 .lp-signal-desc {
-    font-family: 'Inter', sans-serif;
+    font-family: 'JetBrains Mono', monospace;
     font-size: 0.84rem;
     color: var(--text-muted);
     line-height: 1.55;
@@ -867,7 +872,7 @@ body.lp-body {
 .lp-c-bool { color: #a78bfa; }
 
 .lp-code-note {
-    font-family: 'Inter', sans-serif;
+    font-family: 'JetBrains Mono', monospace;
     font-size: 0.84rem;
     color: var(--text-muted);
     font-weight: 300;
@@ -939,14 +944,14 @@ body.lp-body {
 }
 
 .lp-plan-currency {
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: 'JetBrains Mono', monospace;
     font-size: 1.2rem;
     font-weight: 500;
     color: var(--text-muted);
 }
 
 .lp-plan-amount {
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: 'JetBrains Mono', monospace;
     font-size: 3rem;
     font-weight: 700;
     color: #fff;
@@ -966,7 +971,7 @@ body.lp-body {
 }
 
 .lp-plan-amount-custom {
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: 'JetBrains Mono', monospace;
     font-size: 2.4rem;
     font-weight: 700;
     color: #fff;
@@ -975,7 +980,7 @@ body.lp-body {
 }
 
 .lp-plan-desc {
-    font-family: 'Inter', sans-serif;
+    font-family: 'JetBrains Mono', monospace;
     font-size: 0.84rem;
     color: var(--text-muted);
     line-height: 1.55;
@@ -1000,7 +1005,7 @@ body.lp-body {
     display: flex;
     align-items: flex-start;
     gap: 0.65rem;
-    font-family: 'Inter', sans-serif;
+    font-family: 'JetBrains Mono', monospace;
     font-size: 0.84rem;
     color: var(--text-muted);
     text-transform: lowercase;
@@ -1085,7 +1090,7 @@ body.lp-body {
 .lp-usecase-icon svg { width: 100%; height: 100%; }
 
 .lp-usecase-title {
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: 'JetBrains Mono', monospace;
     font-size: 0.95rem;
     font-weight: 600;
     color: #fff;
@@ -1095,7 +1100,7 @@ body.lp-body {
 }
 
 .lp-usecase-desc {
-    font-family: 'Inter', sans-serif;
+    font-family: 'JetBrains Mono', monospace;
     font-size: 0.84rem;
     color: var(--text-muted);
     line-height: 1.6;
@@ -1124,7 +1129,7 @@ body.lp-body {
 .lp-cta-h2 { margin-bottom: 0; }
 
 .lp-cta-sub {
-    font-family: 'Inter', sans-serif;
+    font-family: 'JetBrains Mono', monospace;
     font-size: 1rem;
     color: var(--text-muted);
     font-weight: 300;
@@ -1158,7 +1163,7 @@ body.lp-body {
 .lp-footer-logo { font-size: 1rem; }
 
 .lp-footer-tagline {
-    font-family: 'Inter', sans-serif;
+    font-family: 'JetBrains Mono', monospace;
     font-size: 0.84rem;
     color: var(--text-muted);
     line-height: 1.55;
@@ -1189,7 +1194,7 @@ body.lp-body {
 }
 
 .lp-footer-link {
-    font-family: 'Inter', sans-serif;
+    font-family: 'JetBrains Mono', monospace;
     font-size: 0.84rem;
     color: var(--text-muted);
     text-decoration: none;
@@ -1208,7 +1213,7 @@ body.lp-body {
 }
 
 .lp-footer-copy {
-    font-family: 'Inter', sans-serif;
+    font-family: 'JetBrains Mono', monospace;
     font-size: 0.75rem;
     color: var(--text-muted);
     text-transform: lowercase;
