@@ -1257,6 +1257,7 @@ body.lp-body {
 }
 
 .lp-hamburger:hover { background: none; }
+.lp-hamburger:focus { outline: none; }
 
 .lp-hb-line {
     width: 20px;
@@ -1348,6 +1349,7 @@ html.lp-scroll-lock body {
 }
 
 .lp-mm-acc-btn:active { background: rgba(255, 255, 255, 0.04); }
+.lp-mm-acc-btn:focus { outline: none; }
 
 .lp-mm-acc-chev {
     width: 14px;
@@ -1402,6 +1404,9 @@ html.lp-scroll-lock body {
     gap: 0.5rem;
     padding: 0.5rem 0.25rem 0;
 }
+
+.lp-mm-btn-ghost:focus,
+.lp-mm-btn-solid:focus { outline: none; }
 
 .lp-mm-btn-ghost,
 .lp-mm-btn-solid {
