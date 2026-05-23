@@ -156,10 +156,10 @@
                     </div>
                     <div class="lp-diag-node-name">sentinelpay engine</div>
                     <div class="lp-diag-node-sub">24/7 risk analysis</div>
-                    <div class="lp-diag-score-badge">
-                        <span class="lp-diag-score-num">72</span>
+                    <div class="lp-diag-score-badge lp-risk-high" id="diag-score-badge">
+                        <span class="lp-diag-score-num" id="diag-score-num">72</span>
                         <span class="lp-diag-score-sep">/</span>
-                        <span class="lp-diag-score-cat">high risk</span>
+                        <span class="lp-diag-score-cat" id="diag-score-cat">high risk</span>
                     </div>
                 </div>
 
@@ -179,7 +179,7 @@
                     </div>
                     <div class="lp-diag-node-name">email alert</div>
                     <div class="lp-diag-node-sub">instant notification</div>
-                    <div class="lp-diag-email-toast">⚠ high risk · score 72</div>
+                    <div class="lp-diag-email-toast lp-risk-high" id="diag-email-toast">⚠ high risk · score 72</div>
                 </div>
             </div>
 
@@ -532,6 +532,36 @@
                     }
                 });
             });
+
+            var badge = document.getElementById('diag-score-badge');
+            var scoreNum = document.getElementById('diag-score-num');
+            var scoreCat = document.getElementById('diag-score-cat');
+            var emailToast = document.getElementById('diag-email-toast');
+
+            function randomScore() {
+                var n = Math.floor(Math.random() * 101);
+                var cat, lvl;
+                if (n >= 60)      { cat = 'high risk';   lvl = 'high'; }
+                else if (n >= 30) { cat = 'medium risk'; lvl = 'medium'; }
+                else              { cat = 'low risk';    lvl = 'low'; }
+                return { n: n, cat: cat, lvl: lvl };
+            }
+
+            function applyScore(r) {
+                scoreNum.textContent = r.n;
+                scoreCat.textContent = r.cat;
+                badge.className = 'lp-diag-score-badge lp-risk-' + r.lvl;
+                if (emailToast) {
+                    emailToast.textContent = (r.lvl === 'low' ? '✓' : '⚠') + ' ' + r.cat + ' · score ' + r.n;
+                    emailToast.className = 'lp-diag-email-toast lp-risk-' + r.lvl;
+                }
+            }
+
+            if (badge) {
+                badge.addEventListener('animationiteration', function() {
+                    applyScore(randomScore());
+                });
+            }
         })();
     </script>
     <script src="toast.js"></script>
