@@ -92,15 +92,6 @@
             </a>
             <div class="lp-nav-links">
                 <div class="lp-nav-dd-wrap">
-                    <button class="lp-nav-link lp-nav-dd-btn">products<svg class="lp-nav-chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
-                    <div class="lp-nav-dd">
-                        <a href="#how-it-works" class="lp-nav-dd-item">blockchain monitoring</a>
-                        <a href="/auth#register" class="lp-nav-dd-item">risk scoring api</a>
-                        <a href="/auth#register" class="lp-nav-dd-item">wallet screening</a>
-                        <a href="/auth#register" class="lp-nav-dd-item">webhook alerts</a>
-                    </div>
-                </div>
-                <div class="lp-nav-dd-wrap">
                     <button class="lp-nav-link lp-nav-dd-btn">enterprise<svg class="lp-nav-chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
                     <div class="lp-nav-dd">
                         <a href="#pricing" class="lp-nav-dd-item">enterprise plans</a>
@@ -144,23 +135,27 @@
 
     <div class="lp-mobile-menu" id="lp-mobile-menu">
         <div class="lp-mobile-menu-inner">
-            <a href="#how-it-works" class="lp-mobile-link">how it works</a>
             <a href="#pricing" class="lp-mobile-link">pricing</a>
             <a href="https://help.sentinelpay.org" class="lp-mobile-link">docs</a>
             <div class="lp-mobile-divider"></div>
-            <span class="lp-mobile-group-label">products</span>
-            <a href="#how-it-works" class="lp-mobile-link lp-mobile-link-sub">blockchain monitoring</a>
-            <a href="/auth#register" class="lp-mobile-link lp-mobile-link-sub">risk scoring api</a>
-            <a href="/auth#register" class="lp-mobile-link lp-mobile-link-sub">wallet screening</a>
-            <a href="/auth#register" class="lp-mobile-link lp-mobile-link-sub">webhook alerts</a>
+            <span class="lp-mobile-group-label">enterprise</span>
+            <a href="#pricing" class="lp-mobile-sub-link">enterprise plans</a>
+            <a href="/auth#register" class="lp-mobile-sub-link">custom integrations</a>
+            <a href="/auth#register" class="lp-mobile-sub-link">dedicated support</a>
+            <div class="lp-mobile-divider"></div>
+            <span class="lp-mobile-group-label">resources</span>
+            <a href="https://help.sentinelpay.org" class="lp-mobile-sub-link">documentation</a>
+            <a href="https://help.sentinelpay.org/api-integration" class="lp-mobile-sub-link">api reference</a>
+            <a href="https://help.sentinelpay.org/getting-started" class="lp-mobile-sub-link">quickstart</a>
+            <div class="lp-mobile-divider"></div>
             <span class="lp-mobile-group-label">company</span>
-            <a href="#" class="lp-mobile-link lp-mobile-link-sub">about</a>
-            <a href="#" class="lp-mobile-link lp-mobile-link-sub">careers</a>
-            <a href="mailto:support@sentinelpay.org" class="lp-mobile-link lp-mobile-link-sub">contact</a>
+            <a href="#" class="lp-mobile-sub-link">about</a>
+            <a href="#" class="lp-mobile-sub-link">careers</a>
+            <a href="mailto:support@sentinelpay.org" class="lp-mobile-sub-link">contact</a>
             <div class="lp-mobile-divider"></div>
             <div class="lp-mobile-ctas">
-                <a href="/auth#login" class="auth-nav-btn lp-btn-ghost">login</a>
-                <a href="/auth#register" class="auth-nav-btn lp-btn-solid">get started</a>
+                <a href="/auth#login" class="lp-mm-btn-ghost">login</a>
+                <a href="/auth#register" class="lp-mm-btn-solid">get started</a>
             </div>
         </div>
     </div>
@@ -611,15 +606,22 @@
             var hamburger = document.getElementById('lp-hamburger');
             var mobileMenu = document.getElementById('lp-mobile-menu');
             if (hamburger && mobileMenu) {
-                hamburger.addEventListener('click', function() {
+                function closeMobileMenu() {
+                    hamburger.classList.remove('lp-hb-open');
+                    mobileMenu.classList.remove('lp-mm-open');
+                }
+                hamburger.addEventListener('click', function(e) {
+                    e.stopPropagation();
                     var open = hamburger.classList.toggle('lp-hb-open');
                     mobileMenu.classList.toggle('lp-mm-open', open);
                 });
                 mobileMenu.querySelectorAll('a').forEach(function(a) {
-                    a.addEventListener('click', function() {
-                        hamburger.classList.remove('lp-hb-open');
-                        mobileMenu.classList.remove('lp-mm-open');
-                    });
+                    a.addEventListener('click', closeMobileMenu);
+                });
+                document.addEventListener('click', function(e) {
+                    if (mobileMenu.classList.contains('lp-mm-open') && !mobileMenu.contains(e.target) && !hamburger.contains(e.target)) {
+                        closeMobileMenu();
+                    }
                 });
             }
 
