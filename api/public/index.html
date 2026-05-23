@@ -131,11 +131,39 @@
                 </div>
             </div>
             <div id="auth-nav-container" style="display: flex; gap: 0.5rem; align-items: center;">
-                <a href="/auth#login" id="nav-login-btn" class="auth-nav-btn lp-btn-ghost">login</a>
-                <a href="/auth#register" id="nav-register-btn" class="auth-nav-btn lp-btn-solid">get started</a>
+                <a href="/auth#login" id="nav-login-btn" class="auth-nav-btn lp-btn-ghost lp-desktop-auth">login</a>
+                <a href="/auth#register" id="nav-register-btn" class="auth-nav-btn lp-btn-solid lp-desktop-auth">get started</a>
+                <button class="lp-hamburger" id="lp-hamburger" aria-label="menu">
+                    <span class="lp-hb-line"></span>
+                    <span class="lp-hb-line"></span>
+                    <span class="lp-hb-line"></span>
+                </button>
             </div>
         </div>
     </nav>
+
+    <div class="lp-mobile-menu" id="lp-mobile-menu">
+        <div class="lp-mobile-menu-inner">
+            <a href="#how-it-works" class="lp-mobile-link">how it works</a>
+            <a href="#pricing" class="lp-mobile-link">pricing</a>
+            <a href="https://help.sentinelpay.org" class="lp-mobile-link">docs</a>
+            <div class="lp-mobile-divider"></div>
+            <span class="lp-mobile-group-label">products</span>
+            <a href="#how-it-works" class="lp-mobile-link lp-mobile-link-sub">blockchain monitoring</a>
+            <a href="/auth#register" class="lp-mobile-link lp-mobile-link-sub">risk scoring api</a>
+            <a href="/auth#register" class="lp-mobile-link lp-mobile-link-sub">wallet screening</a>
+            <a href="/auth#register" class="lp-mobile-link lp-mobile-link-sub">webhook alerts</a>
+            <span class="lp-mobile-group-label">company</span>
+            <a href="#" class="lp-mobile-link lp-mobile-link-sub">about</a>
+            <a href="#" class="lp-mobile-link lp-mobile-link-sub">careers</a>
+            <a href="mailto:support@sentinelpay.org" class="lp-mobile-link lp-mobile-link-sub">contact</a>
+            <div class="lp-mobile-divider"></div>
+            <div class="lp-mobile-ctas">
+                <a href="/auth#login" class="auth-nav-btn lp-btn-ghost">login</a>
+                <a href="/auth#register" class="auth-nav-btn lp-btn-solid">get started</a>
+            </div>
+        </div>
+    </div>
 
     <section class="lp-hero">
         <div class="lp-hero-inner">
@@ -579,6 +607,21 @@
                     document.querySelectorAll('.lp-nav-dd-wrap.lp-dd-open').forEach(function(w) { w.classList.remove('lp-dd-open'); });
                 }
             });
+
+            var hamburger = document.getElementById('lp-hamburger');
+            var mobileMenu = document.getElementById('lp-mobile-menu');
+            if (hamburger && mobileMenu) {
+                hamburger.addEventListener('click', function() {
+                    var open = hamburger.classList.toggle('lp-hb-open');
+                    mobileMenu.classList.toggle('lp-mm-open', open);
+                });
+                mobileMenu.querySelectorAll('a').forEach(function(a) {
+                    a.addEventListener('click', function() {
+                        hamburger.classList.remove('lp-hb-open');
+                        mobileMenu.classList.remove('lp-mm-open');
+                    });
+                });
+            }
 
             var badge = document.getElementById('diag-score-badge');
             var scoreNum = document.getElementById('diag-score-num');
