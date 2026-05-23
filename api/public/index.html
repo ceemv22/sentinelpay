@@ -550,7 +550,7 @@
                 scoreCat.textContent = r.cat;
                 badge.className = 'lp-diag-score-badge lp-risk-' + r.lvl;
                 if (emailToast) {
-                    emailToast.textContent = (r.lvl === 'low' ? '✓' : '⚠') + ' ' + r.cat + ' · score ' + r.n;
+                    emailToast.textContent = r.cat + ' · score ' + r.n;
                     emailToast.className = 'lp-diag-email-toast lp-risk-' + r.lvl;
                 }
             }
