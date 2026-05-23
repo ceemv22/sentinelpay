@@ -3,27 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>sentinelpay</title>
-    <meta name="description" content="S-Tier pre-deposit risk tool for crypto flows. Protect your platform from mixers, hackers, and high-risk entities with real-time on-chain scoring.">
+    <title>sentinelpay — crypto risk oracle</title>
+    <meta name="description" content="Real-time wallet risk scoring for crypto payment operators. Detect illicit funds before they hit your treasury.">
     <meta name="keywords" content="sentinelpay, crypto security, risk scoring, aml compliance, blockchain analytics, ethereum risk tool, b2b crypto security">
     <meta name="google-site-verification" content="eJA6iy1k02Jx0DsiCQeXU9TvMZyPqaZaTVvOPop3hY8" />
     <link rel="canonical" href="https://sentinelpay.org">
-    
-    <!-- Open Graph / Facebook -->
+
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://sentinelpay.org">
     <meta property="og:title" content="sentinelpay | crypto risk oracle">
     <meta property="og:description" content="Real-time risk scoring for on-chain payment flows. Detect illicit funds before they hit your treasury.">
     <meta property="og:image" content="https://sentinelpay.org/logo.png">
 
-    <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://sentinelpay.org">
     <meta property="twitter:title" content="sentinelpay | crypto risk oracle">
     <meta property="twitter:description" content="S-Tier pre-deposit risk tool for crypto flows. Stop illicit funds before they contaminate your treasury.">
     <meta property="twitter:image" content="https://sentinelpay.org/logo.png">
 
-    <!-- Structured Data -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -31,27 +28,21 @@
       "name": "SentinelPay",
       "operatingSystem": "Web",
       "applicationCategory": "SecurityApplication",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
-      },
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
       "description": "Real-time risk scoring engine for on-chain payment flows. Designed for crypto casinos, OTC desks, and high-risk merchants.",
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": "5",
-        "ratingCount": "100"
-      }
+      "aggregateRating": { "@type": "AggregateRating", "ratingValue": "5", "ratingCount": "100" }
     }
     </script>
 
     <link rel="icon" type="image/svg+xml" href="logo.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css?v=4.0">
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="landing.css?v=1.0">
     <script src="lib/supabase.js"></script>
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
 </head>
-<body>
+<body class="lp-body">
+
     <noscript>
         <div class="noscript-overlay">
             <div class="cyber-grid"></div>
@@ -69,86 +60,316 @@
             </div>
         </div>
     </noscript>
+
     <div class="cyber-grid"></div>
-    <div class="glow-orb"></div>
-    
-    <main class="container">
-        <header>
-            <div class="top-nav">
-                <a href="https://github.com/ceemv22/sentinelpay-public" target="_blank" class="github-link">
-                    <svg height="16" viewBox="0 0 16 16" width="16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
-                    <span>view_source</span>
-                </a>
-                <div id="auth-nav-container" style="display: flex; gap: 0.5rem; align-items: center;">
-                    <a href="/auth#login" id="nav-login-btn" class="auth-nav-btn" style="background: transparent; border-color: rgba(255,255,255,0.05); color: var(--text-muted);">login</a>
-                    <a href="/auth#register" id="nav-register-btn" class="auth-nav-btn">register</a>
+    <div class="glow-orb lp-glow-orb"></div>
+
+    <nav class="lp-nav">
+        <div class="lp-nav-inner">
+            <a href="/" class="lp-logo-link">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" class="lp-logo-svg">
+                  <defs>
+                    <linearGradient id="neonGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stop-color="#00ffff" />
+                      <stop offset="100%" stop-color="#a020f0" />
+                    </linearGradient>
+                    <filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%">
+                      <feGaussianBlur stdDeviation="3.5" result="coloredBlur"/>
+                      <feMerge>
+                        <feMergeNode in="coloredBlur"/>
+                        <feMergeNode in="SourceGraphic"/>
+                      </feMerge>
+                    </filter>
+                  </defs>
+                  <g filter="url(#neonGlow)" fill="none" stroke="url(#neonGradient)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z" />
+                    <path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z" />
+                    <g id="eye-pupil" style="transition: transform 0.1s ease-out;">
+                      <circle cx="60" cy="60" r="6" />
+                      <circle cx="60" cy="60" r="2" fill="url(#neonGradient)" stroke="none"/>
+                    </g>
+                    <path d="M60 15 V 30" stroke-width="2" opacity="0.6"/>
+                    <path d="M60 90 V 105" stroke-width="2" opacity="0.6"/>
+                  </g>
+                </svg>
+                <span class="lp-logo-text">sentinelpay</span>
+            </a>
+            <div class="lp-nav-links">
+                <a href="/help-center" class="lp-nav-link">docs</a>
+                <a href="https://github.com/ceemv22/sentinelpay-public" target="_blank" class="lp-nav-link">github</a>
+            </div>
+            <div id="auth-nav-container" style="display: flex; gap: 0.5rem; align-items: center;">
+                <a href="/auth#login" id="nav-login-btn" class="auth-nav-btn lp-btn-ghost">login</a>
+                <a href="/auth#register" id="nav-register-btn" class="auth-nav-btn lp-btn-solid">register</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="lp-hero">
+        <div class="lp-hero-inner">
+            <div class="lp-badge">
+                <span class="lp-badge-dot"></span>
+                ethereum · live on-chain risk oracle
+            </div>
+            <h1 class="lp-h1">know who's sending<br>before funds arrive.</h1>
+            <p class="lp-hero-sub">real-time wallet risk scoring for crypto payment operators. detect illicit funds before they contaminate your treasury.</p>
+
+            <div class="lp-scanner-wrap scanner-card glass-panel">
+                <div class="input-group">
+                    <input type="text" id="wallet-input" placeholder="0x..." autocomplete="off" spellcheck="false" maxlength="42">
+                    <button id="scan-btn">scan wallet</button>
+                </div>
+                <div id="turnstile-scanner" style="display: flex; justify-content: center; margin-top: 1rem;"></div>
+                <div class="status-message" id="status-message"></div>
+            </div>
+
+            <div class="result-card glass-panel hidden lp-result-card" id="result-card">
+                <div class="traffic-lights">
+                    <div class="light" id="light-high"></div>
+                    <div class="light" id="light-medium"></div>
+                    <div class="light" id="light-low"></div>
+                </div>
+                <div class="score-display">
+                    <h1 class="score-h1" id="score-value">00</h1>
+                    <div class="flags" id="flags-container"></div>
+                    <button id="share-btn" class="hidden outline-btn">share result to x</button>
                 </div>
             </div>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" style="width: 80px; height: 80px; margin-bottom: -15px;">
-              <title>SentinelPay Logo - Crypto Risk Oracle</title>
-              <desc>Cybernetic shield and eye representing on-chain security and risk monitoring.</desc>
-              <defs>
-                <linearGradient id="neonGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stop-color="#00ffff" />
-                  <stop offset="100%" stop-color="#a020f0" />
-                </linearGradient>
-                <filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%">
-                  <feGaussianBlur stdDeviation="3.5" result="coloredBlur"/>
-                  <feMerge>
-                    <feMergeNode in="coloredBlur"/>
-                    <feMergeNode in="SourceGraphic"/>
-                  </feMerge>
-                </filter>
-              </defs>
-              <g filter="url(#neonGlow)" fill="none" stroke="url(#neonGradient)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z" />
-                <path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z" />
-                <g id="eye-pupil" style="transition: transform 0.1s ease-out;">
-                  <circle cx="60" cy="60" r="6" />
-                  <circle cx="60" cy="60" r="2" fill="url(#neonGradient)" stroke="none"/>
-                </g>
-                <path d="M60 15 V 30" stroke-width="2" opacity="0.6"/>
-                <path d="M60 90 V 105" stroke-width="2" opacity="0.6"/>
-              </g>
-            </svg>
-            <div class="logo">sentinelpay</div>
-            <p class="subtitle">> initialize risk scan sequence_</p>
-        </header>
 
-        <section class="scanner-card glass-panel">
-            <div class="input-group">
-                <input type="text" id="wallet-input" placeholder="0x..." autocomplete="off" spellcheck="false" maxlength="42">
-                <button id="scan-btn">scan wallet</button>
+            <div class="lp-hero-ctas">
+                <a href="/auth#register" class="lp-cta-primary">get api access — free</a>
+                <a href="/help-center" class="lp-cta-ghost">read the docs →</a>
             </div>
-            
-            <div id="turnstile-scanner" style="display: flex; justify-content: center; margin-top: 1rem;"></div>
-            
-            <div class="status-message" id="status-message"></div>
-        </section>
+        </div>
+    </section>
 
-        <section class="result-card glass-panel hidden" id="result-card">
-            <div class="traffic-lights">
-                <div class="light" id="light-high"></div>
-                <div class="light" id="light-medium"></div>
-                <div class="light" id="light-low"></div>
+    <div class="lp-stats">
+        <div class="lp-stats-grid">
+            <div class="lp-stat">
+                <span class="lp-stat-value">10,000+</span>
+                <span class="lp-stat-label">transactions analyzed per wallet</span>
             </div>
-            
-            <div class="score-display">
-                <h1 class="score-h1" id="score-value">00</h1>
-                <div class="flags" id="flags-container"></div>
-                <button id="share-btn" class="hidden outline-btn">share result to x</button>
+            <div class="lp-stat">
+                <span class="lp-stat-value">5</span>
+                <span class="lp-stat-label">on-chain risk heuristics</span>
             </div>
-        </section>
+            <div class="lp-stat">
+                <span class="lp-stat-value">&lt;25s</span>
+                <span class="lp-stat-label">average scan time</span>
+            </div>
+            <div class="lp-stat">
+                <span class="lp-stat-value">0 — 100</span>
+                <span class="lp-stat-label">normalized risk scale</span>
+            </div>
+        </div>
+    </div>
 
-        <footer class="cyber-footer">
-            <div style="margin-bottom: 1rem; display: flex; justify-content: center; gap: 1.5rem;">
-                <a href="/privacy" style="color: var(--text-muted); text-decoration: none; font-size: 0.7rem;">privacy_policy</a>
-                <a href="/tos" style="color: var(--text-muted); text-decoration: none; font-size: 0.7rem;">terms_of_service</a>
+    <section class="lp-section lp-how">
+        <div class="lp-section-inner">
+            <p class="lp-eyebrow">integration</p>
+            <h2 class="lp-h2">three steps to full coverage</h2>
+            <div class="lp-steps">
+                <div class="lp-step">
+                    <div class="lp-step-num">01</div>
+                    <h3 class="lp-step-title">integrate</h3>
+                    <p class="lp-step-desc">add a single api call to your deposit flow. no sdk required — standard http with your api key.</p>
+                </div>
+                <div class="lp-step-arrow">→</div>
+                <div class="lp-step">
+                    <div class="lp-step-num">02</div>
+                    <h3 class="lp-step-title">score</h3>
+                    <p class="lp-step-desc">our engine analyzes up to 10,000 on-chain transactions and cross-references known entity sets to return a 0–100 risk score.</p>
+                </div>
+                <div class="lp-step-arrow">→</div>
+                <div class="lp-step">
+                    <div class="lp-step-num">03</div>
+                    <h3 class="lp-step-title">decide</h3>
+                    <p class="lp-step-desc">accept low-risk deposits automatically. flag medium scores for review. block high-risk transactions before they clear.</p>
+                </div>
             </div>
-            <p>// one api call. zero latency. complete risk visibility.</p>
-        </footer>
-    </main>
+        </div>
+    </section>
 
+    <section class="lp-section lp-signals">
+        <div class="lp-section-inner">
+            <p class="lp-eyebrow">heuristics</p>
+            <h2 class="lp-h2">what the engine detects</h2>
+            <div class="lp-signals-grid">
+                <div class="lp-signal-card lp-signal-critical">
+                    <div class="lp-signal-header">
+                        <code class="lp-signal-flag">mixer_interaction</code>
+                        <span class="lp-signal-score lp-score-red">+50</span>
+                    </div>
+                    <p class="lp-signal-desc">direct inbound transfers above 0.001 eth from a known mixing service such as tornado cash.</p>
+                </div>
+                <div class="lp-signal-card lp-signal-critical">
+                    <div class="lp-signal-header">
+                        <code class="lp-signal-flag">sanctioned_entity</code>
+                        <span class="lp-signal-score lp-score-red">→ 100</span>
+                    </div>
+                    <p class="lp-signal-desc">wallet address matched against a known high-risk entity set. triggers maximum risk score immediately.</p>
+                </div>
+                <div class="lp-signal-card lp-signal-medium">
+                    <div class="lp-signal-header">
+                        <code class="lp-signal-flag">new_wallet</code>
+                        <span class="lp-signal-score lp-score-yellow">+20</span>
+                    </div>
+                    <p class="lp-signal-desc">wallet is less than 30 days old with limited on-chain history to establish trust.</p>
+                </div>
+                <div class="lp-signal-card lp-signal-medium">
+                    <div class="lp-signal-header">
+                        <code class="lp-signal-flag">high_velocity</code>
+                        <span class="lp-signal-score lp-score-yellow">+20</span>
+                    </div>
+                    <p class="lp-signal-desc">more than 50 transactions in the last 24 hours — indicative of automated or layering behavior.</p>
+                </div>
+                <div class="lp-signal-card lp-signal-low">
+                    <div class="lp-signal-header">
+                        <code class="lp-signal-flag">io_imbalance</code>
+                        <span class="lp-signal-score lp-score-blue">+10</span>
+                    </div>
+                    <p class="lp-signal-desc">output-to-input value ratio exceeds 10:1 across a minimum of 10 transactions.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="lp-section lp-code-section">
+        <div class="lp-section-inner">
+            <p class="lp-eyebrow">api</p>
+            <h2 class="lp-h2">one call. complete picture.</h2>
+            <div class="lp-code-grid">
+                <div class="lp-code-block">
+                    <div class="lp-code-label">request</div>
+                    <pre class="lp-pre"><code><span class="lp-c-muted">POST</span> https://api.sentinelpay.org/v1/score
+<span class="lp-c-muted">X-API-Key:</span> sk_live_...
+
+{
+  <span class="lp-c-key">"wallet"</span>: <span class="lp-c-val">"0x742d35Cc6634C0532925a3b8D4C9C5Da5e0e0e0"</span>
+}</code></pre>
+                </div>
+                <div class="lp-code-block">
+                    <div class="lp-code-label">response</div>
+                    <pre class="lp-pre"><code>{
+  <span class="lp-c-key">"wallet"</span>: <span class="lp-c-val">"0x742d35Cc..."</span>,
+  <span class="lp-c-key">"score"</span>: <span class="lp-c-num">72</span>,
+  <span class="lp-c-key">"category"</span>: <span class="lp-c-val">"high"</span>,
+  <span class="lp-c-key">"flags"</span>: [
+    <span class="lp-c-val">"mixer_interaction"</span>,
+    <span class="lp-c-val">"high_velocity"</span>
+  ],
+  <span class="lp-c-key">"history_incomplete"</span>: <span class="lp-c-bool">false</span>,
+  <span class="lp-c-key">"timestamp"</span>: <span class="lp-c-val">"2026-05-23T10:00:00Z"</span>
+}</code></pre>
+                </div>
+            </div>
+            <div class="lp-code-cta">
+                <a href="/auth#register" class="lp-cta-primary">start building →</a>
+                <a href="/help-center/api-integration" class="lp-cta-ghost">view full api docs</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="lp-section lp-usecases">
+        <div class="lp-section-inner">
+            <p class="lp-eyebrow">use cases</p>
+            <h2 class="lp-h2">built for high-stakes payment flows</h2>
+            <div class="lp-usecase-grid">
+                <div class="lp-usecase-card glass-panel">
+                    <div class="lp-usecase-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                    </div>
+                    <h3 class="lp-usecase-title">crypto casinos & igaming</h3>
+                    <p class="lp-usecase-desc">screen every deposit before chips are issued. protect your license and treasury from laundered funds in real-time.</p>
+                </div>
+                <div class="lp-usecase-card glass-panel">
+                    <div class="lp-usecase-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                    </div>
+                    <h3 class="lp-usecase-title">payment gateways</h3>
+                    <p class="lp-usecase-desc">add a risk gate before funds clear. reduce frozen accounts, chargebacks, and regulatory exposure at scale.</p>
+                </div>
+                <div class="lp-usecase-card glass-panel">
+                    <div class="lp-usecase-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                    </div>
+                    <h3 class="lp-usecase-title">otc & exchange desks</h3>
+                    <p class="lp-usecase-desc">validate counterparty wallets before large block trades. know who you're dealing with before settlement.</p>
+                </div>
+                <div class="lp-usecase-card glass-panel">
+                    <div class="lp-usecase-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    </div>
+                    <h3 class="lp-usecase-title">aml compliance teams</h3>
+                    <p class="lp-usecase-desc">enrich your existing workflows with live on-chain signal data. surface wallet risk scores inside your case management system.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="lp-cta-section">
+        <div class="lp-section-inner lp-cta-inner">
+            <div class="lp-cta-badge">
+                <span class="lp-badge-dot"></span>
+                10 free scans on signup · no credit card required
+            </div>
+            <h2 class="lp-h2 lp-cta-h2">ready to protect your platform?</h2>
+            <div class="lp-hero-ctas">
+                <a href="/auth#register" class="lp-cta-primary">create free account</a>
+                <a href="mailto:support@sentinelpay.org" class="lp-cta-ghost">contact sales</a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="lp-footer">
+        <div class="lp-section-inner">
+            <div class="lp-footer-top">
+                <div class="lp-footer-brand">
+                    <span class="lp-logo-text lp-footer-logo">sentinelpay</span>
+                    <p class="lp-footer-tagline">on-chain risk intelligence for crypto payment operators.</p>
+                </div>
+                <div class="lp-footer-links">
+                    <div class="lp-footer-col">
+                        <span class="lp-footer-col-title">product</span>
+                        <a href="/help-center" class="lp-footer-link">documentation</a>
+                        <a href="/help-center/api-integration" class="lp-footer-link">api reference</a>
+                        <a href="/help-center/risk-engine" class="lp-footer-link">risk engine</a>
+                    </div>
+                    <div class="lp-footer-col">
+                        <span class="lp-footer-col-title">company</span>
+                        <a href="/privacy" class="lp-footer-link">privacy policy</a>
+                        <a href="/tos" class="lp-footer-link">terms of service</a>
+                        <a href="mailto:support@sentinelpay.org" class="lp-footer-link">contact</a>
+                    </div>
+                    <div class="lp-footer-col">
+                        <span class="lp-footer-col-title">developers</span>
+                        <a href="https://github.com/ceemv22/sentinelpay-public" target="_blank" class="lp-footer-link">github</a>
+                        <a href="/auth#register" class="lp-footer-link">get api key</a>
+                        <a href="/help-center/getting-started" class="lp-footer-link">quickstart</a>
+                    </div>
+                </div>
+            </div>
+            <div class="lp-footer-bottom">
+                <span class="lp-footer-copy">© 2026 sentinelpay. all rights reserved.</span>
+                <a href="mailto:support@sentinelpay.org" class="lp-footer-email">support@sentinelpay.org</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        (function() {
+            var pupil = document.getElementById('eye-pupil');
+            if (pupil) {
+                document.addEventListener('mousemove', function(e) {
+                    var cx = window.innerWidth / 2;
+                    var cy = window.innerHeight / 2;
+                    var ox = (e.clientX - cx) / cx;
+                    var oy = (e.clientY - cy) / cy;
+                    pupil.style.transform = 'translate(' + (ox * 3) + 'px, ' + (oy * 3) + 'px)';
+                });
+            }
+        })();
+    </script>
     <script src="toast.js"></script>
     <script src="app.js"></script>
 </body>
