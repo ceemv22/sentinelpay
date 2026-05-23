@@ -1,8 +1,8 @@
 FROM node:22
 
-RUN apt-get update && apt-get install -y python3 python3-pip && rm -rf /var/lib/apt/lists/*
-
-RUN pip3 install requests --break-system-packages
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends python3 python3-requests \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
