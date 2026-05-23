@@ -1,9 +1,0 @@
-User-agent: *
-Allow: /
-Allow: /auth
-Allow: /dashboard
-Allow: /reset
-Disallow: /v1/
-Disallow: /api/
-
-Sitemap: https://sentinelpay.org/sitemap.xml
