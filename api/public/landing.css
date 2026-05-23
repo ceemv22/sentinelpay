@@ -1345,7 +1345,7 @@ body.lp-body {
     }
 
     .lp-nav-links { display: none; }
-    .lp-nav-inner { padding: 0 1.25rem; }
+    .lp-nav-inner { padding: 0 1.25rem; grid-template-columns: 1fr auto; }
 
     .lp-hero {
         padding: 6rem 1.25rem 3rem;
