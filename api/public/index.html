@@ -135,23 +135,34 @@
 
     <div class="lp-mobile-menu" id="lp-mobile-menu">
         <div class="lp-mobile-menu-inner">
-            <span class="lp-mobile-group-label">enterprise</span>
-            <a href="#pricing" class="lp-mobile-sub-link">enterprise plans</a>
-            <a href="/auth#register" class="lp-mobile-sub-link">custom integrations</a>
-            <a href="/auth#register" class="lp-mobile-sub-link">dedicated support</a>
+            <div class="lp-mm-acc">
+                <button class="lp-mm-acc-btn">enterprise<svg class="lp-mm-acc-chev" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+                <div class="lp-mm-acc-body">
+                    <a href="#pricing" class="lp-mobile-sub-link">enterprise plans</a>
+                    <a href="/auth#register" class="lp-mobile-sub-link">custom integrations</a>
+                    <a href="/auth#register" class="lp-mobile-sub-link">dedicated support</a>
+                </div>
+            </div>
             <div class="lp-mobile-divider"></div>
             <a href="#pricing" class="lp-mobile-link">pricing</a>
             <a href="https://help.sentinelpay.org" class="lp-mobile-link">docs</a>
             <div class="lp-mobile-divider"></div>
-            <span class="lp-mobile-group-label">resources</span>
-            <a href="https://help.sentinelpay.org" class="lp-mobile-sub-link">documentation</a>
-            <a href="https://help.sentinelpay.org/api-integration" class="lp-mobile-sub-link">api reference</a>
-            <a href="https://help.sentinelpay.org/getting-started" class="lp-mobile-sub-link">quickstart</a>
-            <div class="lp-mobile-divider"></div>
-            <span class="lp-mobile-group-label">company</span>
-            <a href="#" class="lp-mobile-sub-link">about</a>
-            <a href="#" class="lp-mobile-sub-link">careers</a>
-            <a href="mailto:support@sentinelpay.org" class="lp-mobile-sub-link">contact</a>
+            <div class="lp-mm-acc">
+                <button class="lp-mm-acc-btn">resources<svg class="lp-mm-acc-chev" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+                <div class="lp-mm-acc-body">
+                    <a href="https://help.sentinelpay.org" class="lp-mobile-sub-link">documentation</a>
+                    <a href="https://help.sentinelpay.org/api-integration" class="lp-mobile-sub-link">api reference</a>
+                    <a href="https://help.sentinelpay.org/getting-started" class="lp-mobile-sub-link">quickstart</a>
+                </div>
+            </div>
+            <div class="lp-mm-acc">
+                <button class="lp-mm-acc-btn">company<svg class="lp-mm-acc-chev" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+                <div class="lp-mm-acc-body">
+                    <a href="#" class="lp-mobile-sub-link">about</a>
+                    <a href="#" class="lp-mobile-sub-link">careers</a>
+                    <a href="mailto:support@sentinelpay.org" class="lp-mobile-sub-link">contact</a>
+                </div>
+            </div>
             <div class="lp-mobile-divider"></div>
             <div class="lp-mobile-ctas">
                 <a href="/auth#login" class="lp-mm-btn-ghost">login</a>
@@ -631,6 +642,15 @@
                     if (mobileMenu.classList.contains('lp-mm-open') && !mobileMenu.contains(e.target) && !hamburger.contains(e.target)) {
                         closeMobileMenu();
                     }
+                });
+
+                mobileMenu.querySelectorAll('.lp-mm-acc-btn').forEach(function(btn) {
+                    btn.addEventListener('click', function() {
+                        var acc = this.closest('.lp-mm-acc');
+                        var isOpen = acc.classList.contains('lp-acc-open');
+                        mobileMenu.querySelectorAll('.lp-mm-acc.lp-acc-open').forEach(function(a) { a.classList.remove('lp-acc-open'); });
+                        if (!isOpen) acc.classList.add('lp-acc-open');
+                    });
                 });
             }
 

@@ -1324,14 +1324,54 @@ html.lp-scroll-lock body {
 
 .lp-mobile-link:active { background: rgba(255, 255, 255, 0.05); }
 
-.lp-mobile-group-label {
-    display: block;
-    padding: 0.9rem 0.75rem 0.2rem;
+.lp-mm-acc {
+    display: flex;
+    flex-direction: column;
+}
+
+.lp-mm-acc-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.75rem 0.75rem;
+    border-radius: 8px;
+    color: var(--text-main);
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.6rem;
-    color: rgba(255, 255, 255, 0.2);
+    font-size: 0.88rem;
     text-transform: lowercase;
-    letter-spacing: 0.1em;
+    text-align: left;
+    transition: background 0.15s ease;
+}
+
+.lp-mm-acc-btn:active { background: rgba(255, 255, 255, 0.04); }
+
+.lp-mm-acc-chev {
+    width: 14px;
+    height: 14px;
+    opacity: 0.45;
+    flex-shrink: 0;
+    transition: transform 0.22s ease, opacity 0.2s ease;
+}
+
+.lp-mm-acc.lp-acc-open .lp-mm-acc-chev {
+    transform: rotate(180deg);
+    opacity: 0.8;
+}
+
+.lp-mm-acc-body {
+    display: flex;
+    flex-direction: column;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.25s ease;
+}
+
+.lp-mm-acc.lp-acc-open .lp-mm-acc-body {
+    max-height: 300px;
 }
 
 .lp-mobile-sub-link {
