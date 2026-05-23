@@ -1256,7 +1256,7 @@ body.lp-body {
     flex-shrink: 0;
 }
 
-.lp-hamburger:hover { background: rgba(255, 255, 255, 0.05); }
+.lp-hamburger:hover { background: none; }
 
 .lp-hb-line {
     width: 20px;
