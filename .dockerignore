@@ -8,13 +8,6 @@ npm-debug.log*
 .secure/
 api/.env
 
-# Dev utilities
-docs/pr_strategy_master.md
-Processor.cs
-ProcessorClean.cs
-remove_bg.py
-clean_bg.py
-
 # IDE & OS
 .vscode/
 .idea/

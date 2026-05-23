@@ -137,8 +137,7 @@ dist
 # Vite logs files
 vite.config.ts.timestamp-*
 
-# SentinelPay Internal & Dev Utils
-docs/pr_strategy_master.md
+# SentinelPay internal (keep out of repo)
 docs/founder_agreement_v1.md
 Processor.cs
 ProcessorClean.cs
