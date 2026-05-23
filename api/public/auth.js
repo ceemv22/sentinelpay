@@ -300,19 +300,106 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     });
 
-    // Socials
-    ['btn-google', 'btn-google-reg', 'btn-x', 'btn-x-reg'].forEach(id => {
-        const b = document.getElementById(id);
-        if (b) {
-            b.onclick = async () => {
-                b.disabled = true;
-                b.textContent = 'connecting...';
-                await s.auth.signInWithOAuth({ 
-                    provider: id.includes('google') ? 'google' : 'twitter', 
-                    options: { redirectTo: window.location.origin + '/dashboard/organizations' } 
-                });
-            };
+    const oauthButtonIds = ['btn-google', 'btn-google-reg', 'btn-x', 'btn-x-reg'];
+
+    const resolveOAuthRedirect = () => {
+        if (returnTo && returnTo.startsWith('/') && !returnTo.startsWith('//')) {
+            return window.location.origin + returnTo;
         }
+        return window.location.origin + '/dashboard/organizations';
+    };
+
+    const resetOAuthButtons = () => {
+        oauthButtonIds.forEach((id) => {
+            const btn = document.getElementById(id);
+            if (!btn || !btn.dataset.defaultHtml) return;
+            btn.disabled = false;
+            btn.removeAttribute('data-oauth-busy');
+            btn.innerHTML = btn.dataset.defaultHtml;
+        });
+        sessionStorage.removeItem('sentinel_oauth_pending');
+    };
+
+    const setOAuthButtonLoading = (btn) => {
+        if (!btn) return;
+        btn.disabled = true;
+        btn.setAttribute('data-oauth-busy', '1');
+        const label = btn.querySelector('.social-btn-label');
+        if (label) label.textContent = 'connecting...';
+    };
+
+    const oauthButtonsStale = () => {
+        if (sessionStorage.getItem('sentinel_oauth_pending')) return true;
+        return oauthButtonIds.some((id) => document.getElementById(id)?.hasAttribute('data-oauth-busy'));
+    };
+
+    oauthButtonIds.forEach((id) => {
+        const btn = document.getElementById(id);
+        if (btn) btn.dataset.defaultHtml = btn.innerHTML;
+    });
+
+    const oauthHash = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+    if (oauthHash.get('error') || oauthHash.get('error_description')) {
+        resetOAuthButtons();
+        const oauthError = oauthHash.get('error_description') || oauthHash.get('error');
+        const loginError = document.getElementById('login-error-msg');
+        const registerError = document.getElementById('register-error-msg');
+        const message = 'error: ' + decodeURIComponent(oauthError || 'oauth cancelled').replace(/\+/g, ' ').toLowerCase();
+        if (loginError) {
+            loginError.textContent = message;
+            loginError.style.display = 'block';
+        }
+        if (registerError) {
+            registerError.textContent = message;
+            registerError.style.display = 'block';
+        }
+        window.history.replaceState(null, document.title, window.location.pathname + window.location.search);
+    }
+
+    window.addEventListener('pageshow', () => {
+        if (oauthButtonsStale()) resetOAuthButtons();
+    });
+
+    window.addEventListener('focus', () => {
+        if (oauthButtonsStale()) resetOAuthButtons();
+    });
+
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible' && oauthButtonsStale()) {
+            resetOAuthButtons();
+        }
+    });
+
+    oauthButtonIds.forEach((id) => {
+        const btn = document.getElementById(id);
+        if (!btn) return;
+        btn.onclick = async () => {
+            if (btn.hasAttribute('data-oauth-busy')) return;
+            setOAuthButtonLoading(btn);
+            sessionStorage.setItem('sentinel_oauth_pending', id);
+            try {
+                const { data, error } = await s.auth.signInWithOAuth({
+                    provider: id.includes('google') ? 'google' : 'twitter',
+                    options: { redirectTo: resolveOAuthRedirect() }
+                });
+                if (error) {
+                    resetOAuthButtons();
+                    const loginError = document.getElementById('login-error-msg');
+                    if (loginError) {
+                        loginError.textContent = 'error: ' + error.message.toLowerCase();
+                        loginError.style.display = 'block';
+                    }
+                    return;
+                }
+                if (data?.url) {
+                    window.location.assign(data.url);
+                    return;
+                }
+                resetOAuthButtons();
+            } catch {
+                resetOAuthButtons();
+            }
+        };
     });
 
     // Password Rules
