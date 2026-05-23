@@ -1245,30 +1245,52 @@ body.lp-body {
     justify-content: center;
     align-items: center;
     gap: 5px;
-    background: none;
-    border: none;
+    background: none !important;
+    border: none !important;
+    box-shadow: none !important;
     cursor: pointer;
-    padding: 6px;
+    padding: 6px !important;
     width: 36px;
     height: 36px;
     border-radius: 8px;
-    transition: background 0.2s ease;
     flex-shrink: 0;
 }
 
-.lp-hamburger:hover { background: none; }
-.lp-hamburger:focus { outline: none; }
 .lp-hamburger,
-.lp-mm-acc-btn,
+.lp-mm-acc-btn {
+    background: none !important;
+    color: var(--text-muted) !important;
+    box-shadow: none !important;
+    outline: none !important;
+    border: none !important;
+    padding: 0 !important;
+    transform: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+    -webkit-appearance: none;
+}
+
+.lp-hamburger:hover,
+.lp-hamburger:focus,
+.lp-hamburger:active,
+.lp-mm-acc-btn:hover,
+.lp-mm-acc-btn:focus,
+.lp-mm-acc-btn:active {
+    background: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+    transform: none !important;
+}
+
 .lp-mm-btn-ghost,
 .lp-mm-btn-solid,
 .lp-mobile-link,
 .lp-mobile-sub-link {
     -webkit-tap-highlight-color: transparent;
-    -webkit-touch-callout: none;
     outline: none;
-    box-shadow: none;
 }
+
+.lp-mm-btn-ghost:focus,
+.lp-mm-btn-solid:focus { outline: none; }
 
 .lp-hb-line {
     width: 20px;
