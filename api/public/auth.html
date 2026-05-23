@@ -7,8 +7,9 @@
     <meta name="description" content="Login or register for SentinelPay to unlock deep scanning and API access.">
     <meta name="theme-color" content="#040404">
     <link rel="icon" type="image/svg+xml" href="/logo.svg">
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=JetBrains+Mono:wght@400;700;800&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/style.css?v=11.8">
+    <link rel="stylesheet" href="/landing.css?v=2.0">
     <script src="/lib/supabase.js"></script>
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
 </head>
@@ -34,69 +35,44 @@
     <div class="cyber-grid"></div>
     <div class="glow-orb"></div>
 
-    <!-- Fixed Top Bar -->
-    <div class="auth-topbar">
-        <div class="auth-top-logo mobile-only">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" style="width: 32px; height: 32px;">
-              <defs>
-                <linearGradient id="neonGradientNav" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stop-color="#00ffff" />
-                  <stop offset="100%" stop-color="#a020f0" />
-                </linearGradient>
-                <filter id="neonGlowNav" x="-50%" y="-50%" width="200%" height="200%">
-                  <feGaussianBlur stdDeviation="3.5" result="coloredBlur"/>
-                  <feMerge>
-                    <feMergeNode in="coloredBlur"/>
-                    <feMergeNode in="SourceGraphic"/>
-                  </feMerge>
-                </filter>
-              </defs>
-              <g filter="url(#neonGlowNav)" fill="none" stroke="url(#neonGradientNav)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z" />
-                <path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z" />
-                <g class="eye-pupil" style="transition: transform 0.1s ease-out;">
-                  <circle cx="60" cy="60" r="6" />
-                  <circle cx="60" cy="60" r="2" fill="url(#neonGradientNav)" stroke="none"/>
-                </g>
-                <path d="M60 15 V 30" stroke-width="2" opacity="0.6"/>
-                <path d="M60 90 V 105" stroke-width="2" opacity="0.6"/>
-              </g>
-            </svg>
+    <nav class="lp-nav">
+        <div class="lp-nav-inner">
+            <a href="/" class="lp-logo-link">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" class="lp-logo-svg">
+                  <defs>
+                    <linearGradient id="neonGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stop-color="#00ffff" />
+                      <stop offset="100%" stop-color="#a020f0" />
+                    </linearGradient>
+                    <filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%">
+                      <feGaussianBlur stdDeviation="3.5" result="coloredBlur"/>
+                      <feMerge>
+                        <feMergeNode in="coloredBlur"/>
+                        <feMergeNode in="SourceGraphic"/>
+                      </feMerge>
+                    </filter>
+                  </defs>
+                  <g filter="url(#neonGlow)" fill="none" stroke="url(#neonGradient)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z" />
+                    <path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z" />
+                    <g id="eye-pupil" style="transition: transform 0.1s ease-out;">
+                      <circle cx="60" cy="60" r="6" />
+                      <circle cx="60" cy="60" r="2" fill="url(#neonGradient)" stroke="none"/>
+                    </g>
+                    <path d="M60 15 V 30" stroke-width="2" opacity="0.6"/>
+                    <path d="M60 90 V 105" stroke-width="2" opacity="0.6"/>
+                  </g>
+                </svg>
+            </a>
+            <div></div>
+            <div style="justify-self: end; display: flex;">
+                <a href="/" class="auth-nav-btn lp-btn-ghost">back to sentinelpay</a>
+            </div>
         </div>
-        <a href="/" class="auth-nav-btn" style="background: transparent; border-color: rgba(255,255,255,0.1); color: var(--text-muted);">back to scanner</a>
-    </div>
+    </nav>
 
     <!-- Centered content area -->
-    <div class="auth-page-wrap">
-        
-        <!-- Center Logo (Visible on desktop only to avoid redundancy in mobile navbar) -->
-        <div class="auth-center-logo desktop-only">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" style="width: 80px; height: 80px; margin-bottom: -10px;">
-              <defs>
-                <linearGradient id="neonGradientCard" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stop-color="#00ffff" />
-                  <stop offset="100%" stop-color="#a020f0" />
-                </linearGradient>
-                <filter id="neonGlowCard" x="-50%" y="-50%" width="200%" height="200%">
-                  <feGaussianBlur stdDeviation="3.5" result="coloredBlur"/>
-                  <feMerge>
-                    <feMergeNode in="coloredBlur"/>
-                    <feMergeNode in="SourceGraphic"/>
-                  </feMerge>
-                </filter>
-              </defs>
-              <g filter="url(#neonGlowCard)" fill="none" stroke="url(#neonGradientCard)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z" />
-                <path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z" />
-                <g class="eye-pupil" style="transition: transform 0.1s ease-out;">
-                  <circle cx="60" cy="60" r="6" />
-                  <circle cx="60" cy="60" r="2" fill="url(#neonGradientCard)" stroke="none"/>
-                </g>
-                <path d="M60 15 V 30" stroke-width="2" opacity="0.6"/>
-                <path d="M60 90 V 105" stroke-width="2" opacity="0.6"/>
-              </g>
-            </svg>
-        </div>
+    <div class="auth-page-wrap" style="padding-top: 64px;">
 
         <!-- Auth Card -->
         <div class="auth-card" id="auth-panel" style="position: relative; z-index: 500;">
