@@ -527,26 +527,28 @@ body.lp-body {
 .lp-diag-packet {
     position: absolute;
     left: 0;
-    width: 7px;
-    height: 7px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
     background: var(--neon-blue);
-    box-shadow: 0 0 8px var(--neon-blue), 0 0 16px rgba(0, 240, 255, 0.3);
-    animation: packet-flow 2.7s var(--pd, 0s) ease-in-out infinite;
+    box-shadow: 0 0 10px var(--neon-blue), 0 0 20px rgba(0, 240, 255, 0.35);
+    animation: packet-flow 2.7s ease-in-out infinite;
+    animation-delay: var(--pd, 0s);
 }
 
 .lp-diag-packet-alert {
     background: var(--color-yellow);
-    box-shadow: 0 0 8px var(--color-yellow), 0 0 16px rgba(255, 184, 0, 0.3);
-    animation: packet-flow 2.7s var(--pd, 0s) ease-in-out infinite;
-    animation-delay: calc(var(--pd) + 1.4s);
+    box-shadow: 0 0 10px var(--color-yellow), 0 0 20px rgba(255, 184, 0, 0.35);
+    animation-delay: calc(var(--pd, 0s) + 1.4s);
 }
 
 @keyframes packet-flow {
-    0% { transform: translateX(0); opacity: 0; }
-    6% { opacity: 1; }
-    88% { opacity: 1; }
-    100% { transform: translateX(calc(var(--pipe-w, 80px) - 7px)); opacity: 0; }
+    0%   { left: 0;                   opacity: 0; }
+    6%   { left: 4%;                  opacity: 1; }
+    90%  { left: calc(100% - 28px);   opacity: 1; }
+    100% { left: calc(100% - 28px);   opacity: 0; }
 }
 
 /* ---- stats ---- */
@@ -1222,17 +1224,23 @@ body.lp-body {
         transform: rotate(90deg);
     }
 
-    @keyframes packet-flow {
-        0% { transform: translateY(0); opacity: 0; }
-        6% { opacity: 1; }
-        88% { opacity: 1; }
-        100% { transform: translateY(33px); opacity: 0; }
+    @keyframes packet-flow-v {
+        0%   { top: 0;                    opacity: 0; }
+        6%   { top: 4%;                   opacity: 1; }
+        90%  { top: calc(100% - 20px);    opacity: 1; }
+        100% { top: calc(100% - 20px);    opacity: 0; }
     }
 
     .lp-diag-packet {
         top: 0;
-        left: -3px;
-        animation: packet-flow 2.7s var(--pd, 0s) ease-in-out infinite;
+        left: 50%;
+        transform: translateX(-50%);
+        animation: packet-flow-v 2.7s ease-in-out infinite;
+        animation-delay: var(--pd, 0s);
+    }
+
+    .lp-diag-packet-alert {
+        animation-delay: calc(var(--pd, 0s) + 1.4s);
     }
 
     .lp-signals-grid {
