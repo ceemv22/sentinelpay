@@ -178,7 +178,7 @@
                     </div>
                     <div class="lp-diag-node-name">email alert</div>
                     <div class="lp-diag-node-sub">instant notification</div>
-                    <div class="lp-diag-email-toast lp-risk-high" id="diag-email-toast">⚠ high risk · score 72</div>
+                    <div class="lp-diag-email-toast lp-risk-high" id="diag-email-toast">high risk · score 72</div>
                 </div>
             </div>
 
@@ -556,6 +556,7 @@
             }
 
             if (badge) {
+                applyScore(randomScore());
                 badge.addEventListener('animationiteration', function() {
                     applyScore(randomScore());
                 });
