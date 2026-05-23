@@ -105,9 +105,9 @@
 
     <section class="lp-hero">
         <div class="lp-hero-inner">
-            <div class="lp-badge">
-                <span class="lp-badge-dot"></span>
-                real-time · auto blockchain listener
+            <div class="lp-status-pill">
+                <span class="lp-status-dot"></span>
+                all systems operational
             </div>
             <h1 class="lp-h1">monitor every transaction.<br>get alerted instantly.</h1>
             <p class="lp-hero-sub">connect your rpc endpoint. sentinelpay listens 24/7 and emails your team the moment a high-risk wallet touches your platform.</p>
@@ -541,9 +541,9 @@
             function randomScore() {
                 var n = Math.floor(Math.random() * 101);
                 var cat, lvl;
-                if (n >= 60)      { cat = 'high risk';   lvl = 'high'; }
-                else if (n >= 30) { cat = 'medium risk'; lvl = 'medium'; }
-                else              { cat = 'low risk';    lvl = 'low'; }
+                if (n >= 60)      { cat = 'high risk'; lvl = 'high'; }
+                else if (n >= 30) { cat = 'mid risk';  lvl = 'medium'; }
+                else              { cat = 'low risk';  lvl = 'low'; }
                 return { n: n, cat: cat, lvl: lvl };
             }
 
