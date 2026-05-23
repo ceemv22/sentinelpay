@@ -129,7 +129,7 @@ body {
 }
 
 .glow-orb {
-    display: none;
+    display: block;
     position: fixed;
     width: 600px;
     height: 600px;
