@@ -91,9 +91,44 @@
                 </svg>
             </a>
             <div class="lp-nav-links">
-                <a href="#how-it-works" class="lp-nav-link">how it works</a>
+                <div class="lp-nav-dd-wrap">
+                    <button class="lp-nav-link lp-nav-dd-btn">products<svg class="lp-nav-chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+                    <div class="lp-nav-dd">
+                        <a href="#how-it-works" class="lp-nav-dd-item">blockchain monitoring</a>
+                        <a href="/auth#register" class="lp-nav-dd-item">risk scoring api</a>
+                        <a href="/auth#register" class="lp-nav-dd-item">wallet screening</a>
+                        <a href="/auth#register" class="lp-nav-dd-item">webhook alerts</a>
+                    </div>
+                </div>
+                <div class="lp-nav-dd-wrap">
+                    <button class="lp-nav-link lp-nav-dd-btn">enterprise<svg class="lp-nav-chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+                    <div class="lp-nav-dd">
+                        <a href="#pricing" class="lp-nav-dd-item">enterprise plans</a>
+                        <a href="/auth#register" class="lp-nav-dd-item">custom integrations</a>
+                        <a href="/auth#register" class="lp-nav-dd-item">dedicated support</a>
+                        <a href="mailto:support@sentinelpay.org" class="lp-nav-dd-item">contact sales</a>
+                    </div>
+                </div>
                 <a href="#pricing" class="lp-nav-link">pricing</a>
-                <a href="/help-center" class="lp-nav-link">docs</a>
+                <a href="https://help.sentinelpay.org" class="lp-nav-link">docs</a>
+                <div class="lp-nav-dd-wrap">
+                    <button class="lp-nav-link lp-nav-dd-btn">resources<svg class="lp-nav-chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+                    <div class="lp-nav-dd">
+                        <a href="https://help.sentinelpay.org" class="lp-nav-dd-item">documentation</a>
+                        <a href="https://help.sentinelpay.org/api-integration" class="lp-nav-dd-item">api reference</a>
+                        <a href="https://help.sentinelpay.org/getting-started" class="lp-nav-dd-item">quickstart</a>
+                        <a href="#" class="lp-nav-dd-item">blog</a>
+                    </div>
+                </div>
+                <div class="lp-nav-dd-wrap">
+                    <button class="lp-nav-link lp-nav-dd-btn">company<svg class="lp-nav-chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+                    <div class="lp-nav-dd">
+                        <a href="#" class="lp-nav-dd-item">about</a>
+                        <a href="#" class="lp-nav-dd-item">careers</a>
+                        <a href="mailto:support@sentinelpay.org" class="lp-nav-dd-item">contact</a>
+                        <a href="#" class="lp-nav-dd-item">legal</a>
+                    </div>
+                </div>
             </div>
             <div id="auth-nav-container" style="display: flex; gap: 0.5rem; align-items: center;">
                 <a href="/auth#login" id="nav-login-btn" class="auth-nav-btn lp-btn-ghost">login</a>
@@ -184,7 +219,7 @@
 
             <div class="lp-hero-ctas">
                 <a href="/auth#register" class="lp-cta-primary">get started</a>
-                <a href="mailto:support@sentinelpay.org" class="lp-cta-ghost">contact sales</a>
+                <a href="#how-it-works" class="lp-cta-ghost">explore features</a>
             </div>
         </div>
     </section>
@@ -529,6 +564,20 @@
                         el.scrollIntoView({ behavior: 'smooth' });
                     }
                 });
+            });
+
+            document.querySelectorAll('.lp-nav-dd-btn').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    var wrap = this.closest('.lp-nav-dd-wrap');
+                    var isOpen = wrap.classList.contains('lp-dd-open');
+                    document.querySelectorAll('.lp-nav-dd-wrap.lp-dd-open').forEach(function(w) { w.classList.remove('lp-dd-open'); });
+                    if (!isOpen) wrap.classList.add('lp-dd-open');
+                });
+            });
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.lp-nav-dd-wrap')) {
+                    document.querySelectorAll('.lp-nav-dd-wrap.lp-dd-open').forEach(function(w) { w.classList.remove('lp-dd-open'); });
+                }
             });
 
             var badge = document.getElementById('diag-score-badge');

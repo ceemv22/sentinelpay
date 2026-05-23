@@ -96,6 +96,75 @@ body.lp-body {
     background: rgba(255, 255, 255, 0.05);
 }
 
+.lp-nav-dd-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.lp-nav-chevron {
+    width: 11px;
+    height: 11px;
+    transition: transform 0.2s ease;
+    opacity: 0.6;
+}
+
+.lp-nav-dd-wrap {
+    position: relative;
+}
+
+.lp-nav-dd-wrap:hover .lp-nav-chevron,
+.lp-nav-dd-wrap.lp-dd-open .lp-nav-chevron {
+    transform: rotate(180deg);
+    opacity: 1;
+}
+
+.lp-nav-dd {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%) translateY(-6px);
+    min-width: 190px;
+    background: rgba(8, 8, 14, 0.97);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid var(--border-glass);
+    border-radius: 10px;
+    padding: 0.35rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.18s ease, transform 0.18s ease;
+    z-index: 200;
+}
+
+.lp-nav-dd-wrap:hover .lp-nav-dd,
+.lp-nav-dd-wrap.lp-dd-open .lp-nav-dd {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+}
+
+.lp-nav-dd-item {
+    display: block;
+    padding: 0.5rem 0.9rem;
+    border-radius: 6px;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.77rem;
+    text-transform: lowercase;
+    transition: background 0.15s ease, color 0.15s ease;
+    white-space: nowrap;
+}
+
+.lp-nav-dd-item:hover {
+    color: var(--text-main);
+    background: rgba(255, 255, 255, 0.05);
+}
+
 .lp-btn-ghost.auth-nav-btn {
     background: transparent !important;
     border-color: rgba(255, 255, 255, 0.06) !important;
