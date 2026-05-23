@@ -47,11 +47,10 @@ body.lp-body {
 }
 
 .lp-logo-link {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 0.6rem;
     text-decoration: none;
-    flex-shrink: 0;
+    justify-self: start;
 }
 
 .lp-logo-svg {
