@@ -3,22 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>sentinelpay — crypto risk oracle</title>
-    <meta name="description" content="Real-time wallet risk scoring for crypto payment operators. Detect illicit funds before they hit your treasury.">
-    <meta name="keywords" content="sentinelpay, crypto security, risk scoring, aml compliance, blockchain analytics, ethereum risk tool, b2b crypto security">
+    <title>sentinelpay — blockchain risk monitoring</title>
+    <meta name="description" content="Connect your RPC. SentinelPay monitors every transaction 24/7 and emails your team the moment a high-risk wallet is detected.">
+    <meta name="keywords" content="sentinelpay, blockchain monitoring, crypto aml, real-time risk detection, rpc listener, wallet screening">
     <meta name="google-site-verification" content="eJA6iy1k02Jx0DsiCQeXU9TvMZyPqaZaTVvOPop3hY8" />
     <link rel="canonical" href="https://sentinelpay.org">
 
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://sentinelpay.org">
-    <meta property="og:title" content="sentinelpay | crypto risk oracle">
-    <meta property="og:description" content="Real-time risk scoring for on-chain payment flows. Detect illicit funds before they hit your treasury.">
+    <meta property="og:title" content="sentinelpay | blockchain risk monitoring">
+    <meta property="og:description" content="Connect your RPC. We monitor every transaction 24/7 and alert your team the moment high-risk wallets are detected.">
     <meta property="og:image" content="https://sentinelpay.org/logo.png">
 
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://sentinelpay.org">
-    <meta property="twitter:title" content="sentinelpay | crypto risk oracle">
-    <meta property="twitter:description" content="S-Tier pre-deposit risk tool for crypto flows. Stop illicit funds before they contaminate your treasury.">
+    <meta property="twitter:title" content="sentinelpay | blockchain risk monitoring">
+    <meta property="twitter:description" content="Connect your RPC. We monitor every transaction 24/7 and alert your team the moment high-risk wallets are detected.">
     <meta property="twitter:image" content="https://sentinelpay.org/logo.png">
 
     <script type="application/ld+json">
@@ -28,18 +28,15 @@
       "name": "SentinelPay",
       "operatingSystem": "Web",
       "applicationCategory": "SecurityApplication",
-      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-      "description": "Real-time risk scoring engine for on-chain payment flows. Designed for crypto casinos, OTC desks, and high-risk merchants.",
-      "aggregateRating": { "@type": "AggregateRating", "ratingValue": "5", "ratingCount": "100" }
+      "description": "Real-time blockchain monitoring platform. Connect your RPC and get instant email alerts when high-risk wallets are detected."
     }
     </script>
 
     <link rel="icon" type="image/svg+xml" href="logo.svg">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css?v=4.0">
-    <link rel="stylesheet" href="landing.css?v=1.0">
+    <link rel="stylesheet" href="landing.css?v=2.0">
     <script src="lib/supabase.js"></script>
-    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
 </head>
 <body class="lp-body">
 
@@ -55,7 +52,7 @@
                     </svg>
                 </div>
                 <h1 class="noscript-title">javascript_required</h1>
-                <p class="noscript-text">sentinelpay core requires active script execution to initialize risk scanning protocols and secure sessions.</p>
+                <p class="noscript-text">sentinelpay requires javascript to initialize secure sessions.</p>
                 <div class="noscript-status">> status: blocked_</div>
             </div>
         </div>
@@ -95,12 +92,13 @@
                 <span class="lp-logo-text">sentinelpay</span>
             </a>
             <div class="lp-nav-links">
+                <a href="#how-it-works" class="lp-nav-link">how it works</a>
+                <a href="#pricing" class="lp-nav-link">pricing</a>
                 <a href="/help-center" class="lp-nav-link">docs</a>
-                <a href="https://github.com/ceemv22/sentinelpay-public" target="_blank" class="lp-nav-link">github</a>
             </div>
             <div id="auth-nav-container" style="display: flex; gap: 0.5rem; align-items: center;">
                 <a href="/auth#login" id="nav-login-btn" class="auth-nav-btn lp-btn-ghost">login</a>
-                <a href="/auth#register" id="nav-register-btn" class="auth-nav-btn lp-btn-solid">register</a>
+                <a href="/auth#register" id="nav-register-btn" class="auth-nav-btn lp-btn-solid">get started</a>
             </div>
         </div>
     </nav>
@@ -109,36 +107,85 @@
         <div class="lp-hero-inner">
             <div class="lp-badge">
                 <span class="lp-badge-dot"></span>
-                ethereum · live on-chain risk oracle
+                real-time · auto blockchain listener
             </div>
-            <h1 class="lp-h1">know who's sending<br>before funds arrive.</h1>
-            <p class="lp-hero-sub">real-time wallet risk scoring for crypto payment operators. detect illicit funds before they contaminate your treasury.</p>
+            <h1 class="lp-h1">monitor every transaction.<br>get alerted instantly.</h1>
+            <p class="lp-hero-sub">connect your rpc endpoint. sentinelpay listens 24/7 and emails your team the moment a high-risk wallet touches your platform.</p>
 
-            <div class="lp-scanner-wrap scanner-card glass-panel">
-                <div class="input-group">
-                    <input type="text" id="wallet-input" placeholder="0x..." autocomplete="off" spellcheck="false" maxlength="42">
-                    <button id="scan-btn">scan wallet</button>
+            <div class="lp-diagram">
+                <div class="lp-diag-node lp-diag-source">
+                    <div class="lp-diag-icon-wrap">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+                    </div>
+                    <div class="lp-diag-node-name">your rpc node</div>
+                    <div class="lp-diag-node-sub">custom blockchain endpoint</div>
                 </div>
-                <div id="turnstile-scanner" style="display: flex; justify-content: center; margin-top: 1rem;"></div>
-                <div class="status-message" id="status-message"></div>
-            </div>
 
-            <div class="result-card glass-panel hidden lp-result-card" id="result-card">
-                <div class="traffic-lights">
-                    <div class="light" id="light-high"></div>
-                    <div class="light" id="light-medium"></div>
-                    <div class="light" id="light-low"></div>
+                <div class="lp-diag-pipe">
+                    <div class="lp-diag-pipe-label">live transactions</div>
+                    <div class="lp-diag-pipe-track">
+                        <div class="lp-diag-track-line"></div>
+                        <div class="lp-diag-packet" style="--pd: 0s"></div>
+                        <div class="lp-diag-packet" style="--pd: 0.9s"></div>
+                        <div class="lp-diag-packet" style="--pd: 1.8s"></div>
+                        <div class="lp-diag-track-arrow">›</div>
+                    </div>
                 </div>
-                <div class="score-display">
-                    <h1 class="score-h1" id="score-value">00</h1>
-                    <div class="flags" id="flags-container"></div>
-                    <button id="share-btn" class="hidden outline-btn">share result to x</button>
+
+                <div class="lp-diag-node lp-diag-engine">
+                    <div class="lp-diag-engine-ring"></div>
+                    <div class="lp-diag-icon-wrap lp-diag-icon-engine">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" style="width:100%;height:100%;">
+                          <defs>
+                            <linearGradient id="dGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                              <stop offset="0%" stop-color="#00ffff"/>
+                              <stop offset="100%" stop-color="#a020f0"/>
+                            </linearGradient>
+                            <filter id="dGlow" x="-50%" y="-50%" width="200%" height="200%">
+                              <feGaussianBlur stdDeviation="2.5" result="blur"/>
+                              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                            </filter>
+                          </defs>
+                          <g filter="url(#dGlow)" fill="none" stroke="url(#dGrad)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z"/>
+                            <path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z"/>
+                            <circle cx="60" cy="60" r="6"/>
+                            <circle cx="60" cy="60" r="2" fill="url(#dGrad)" stroke="none"/>
+                          </g>
+                        </svg>
+                    </div>
+                    <div class="lp-diag-node-name">sentinelpay engine</div>
+                    <div class="lp-diag-node-sub">24/7 risk analysis</div>
+                    <div class="lp-diag-score-badge">
+                        <span class="lp-diag-score-num">72</span>
+                        <span class="lp-diag-score-sep">/</span>
+                        <span class="lp-diag-score-cat">high risk</span>
+                    </div>
+                </div>
+
+                <div class="lp-diag-pipe lp-diag-pipe-right">
+                    <div class="lp-diag-pipe-label">alert dispatched</div>
+                    <div class="lp-diag-pipe-track">
+                        <div class="lp-diag-track-line lp-track-alert"></div>
+                        <div class="lp-diag-packet lp-diag-packet-alert" style="--pd: 0s"></div>
+                        <div class="lp-diag-packet lp-diag-packet-alert" style="--pd: 2.4s"></div>
+                        <div class="lp-diag-track-arrow lp-arrow-alert">›</div>
+                    </div>
+                </div>
+
+                <div class="lp-diag-node lp-diag-alert-node">
+                    <div class="lp-diag-icon-wrap lp-diag-icon-alert">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                    </div>
+                    <div class="lp-diag-node-name">email alert</div>
+                    <div class="lp-diag-node-sub">instant notification</div>
+                    <div class="lp-diag-email-toast">⚠ high risk · score 72</div>
                 </div>
             </div>
 
             <div class="lp-hero-ctas">
-                <a href="/auth#register" class="lp-cta-primary">get api access — free</a>
-                <a href="/help-center" class="lp-cta-ghost">read the docs →</a>
+                <a href="/auth#register" class="lp-cta-primary">get started</a>
+                <a href="mailto:support@sentinelpay.org" class="lp-cta-ghost">contact sales</a>
             </div>
         </div>
     </section>
@@ -146,45 +193,45 @@
     <div class="lp-stats">
         <div class="lp-stats-grid">
             <div class="lp-stat">
-                <span class="lp-stat-value">10,000+</span>
-                <span class="lp-stat-label">transactions analyzed per wallet</span>
+                <span class="lp-stat-value">24/7</span>
+                <span class="lp-stat-label">continuous chain monitoring</span>
+            </div>
+            <div class="lp-stat">
+                <span class="lp-stat-value">&lt;1s</span>
+                <span class="lp-stat-label">transaction analysis latency</span>
             </div>
             <div class="lp-stat">
                 <span class="lp-stat-value">5</span>
                 <span class="lp-stat-label">on-chain risk heuristics</span>
             </div>
             <div class="lp-stat">
-                <span class="lp-stat-value">&lt;25s</span>
-                <span class="lp-stat-label">average scan time</span>
-            </div>
-            <div class="lp-stat">
-                <span class="lp-stat-value">0 — 100</span>
-                <span class="lp-stat-label">normalized risk scale</span>
+                <span class="lp-stat-value">instant</span>
+                <span class="lp-stat-label">email alert dispatch</span>
             </div>
         </div>
     </div>
 
-    <section class="lp-section lp-how">
+    <section class="lp-section lp-how" id="how-it-works">
         <div class="lp-section-inner">
             <p class="lp-eyebrow">integration</p>
-            <h2 class="lp-h2">three steps to full coverage</h2>
+            <h2 class="lp-h2">up and running in minutes</h2>
             <div class="lp-steps">
                 <div class="lp-step">
                     <div class="lp-step-num">01</div>
-                    <h3 class="lp-step-title">integrate</h3>
-                    <p class="lp-step-desc">add a single api call to your deposit flow. no sdk required — standard http with your api key.</p>
+                    <h3 class="lp-step-title">connect your rpc</h3>
+                    <p class="lp-step-desc">paste your blockchain rpc endpoint into the sentinelpay dashboard. we support any evm-compatible node — your own infra or a provider.</p>
                 </div>
                 <div class="lp-step-arrow">→</div>
                 <div class="lp-step">
                     <div class="lp-step-num">02</div>
-                    <h3 class="lp-step-title">score</h3>
-                    <p class="lp-step-desc">our engine analyzes up to 10,000 on-chain transactions and cross-references known entity sets to return a 0–100 risk score.</p>
+                    <h3 class="lp-step-title">we listen 24/7</h3>
+                    <p class="lp-step-desc">sentinelpay subscribes to your chain and runs every transaction through 5 on-chain risk heuristics in real-time. zero manual work required.</p>
                 </div>
                 <div class="lp-step-arrow">→</div>
                 <div class="lp-step">
                     <div class="lp-step-num">03</div>
-                    <h3 class="lp-step-title">decide</h3>
-                    <p class="lp-step-desc">accept low-risk deposits automatically. flag medium scores for review. block high-risk transactions before they clear.</p>
+                    <h3 class="lp-step-title">get the alert</h3>
+                    <p class="lp-step-desc">the moment a wallet scores above your configured threshold, we send an email to your team with the score, flags, and transaction details.</p>
                 </div>
             </div>
         </div>
@@ -193,7 +240,7 @@
     <section class="lp-section lp-signals">
         <div class="lp-section-inner">
             <p class="lp-eyebrow">heuristics</p>
-            <h2 class="lp-h2">what the engine detects</h2>
+            <h2 class="lp-h2">what triggers an alert</h2>
             <div class="lp-signals-grid">
                 <div class="lp-signal-card lp-signal-critical">
                     <div class="lp-signal-header">
@@ -236,36 +283,145 @@
 
     <section class="lp-section lp-code-section">
         <div class="lp-section-inner">
-            <p class="lp-eyebrow">api</p>
-            <h2 class="lp-h2">one call. complete picture.</h2>
+            <p class="lp-eyebrow">alert format</p>
+            <h2 class="lp-h2">everything you need, in one email.</h2>
             <div class="lp-code-grid">
                 <div class="lp-code-block">
-                    <div class="lp-code-label">request</div>
-                    <pre class="lp-pre"><code><span class="lp-c-muted">POST</span> https://api.sentinelpay.org/v1/score
-<span class="lp-c-muted">X-API-Key:</span> sk_live_...
-
-{
-  <span class="lp-c-key">"wallet"</span>: <span class="lp-c-val">"0x742d35Cc6634C0532925a3b8D4C9C5Da5e0e0e0"</span>
+                    <div class="lp-code-label">rpc connection · dashboard config</div>
+                    <pre class="lp-pre"><code>{
+  <span class="lp-c-key">"name"</span>: <span class="lp-c-val">"mainnet-node"</span>,
+  <span class="lp-c-key">"rpc_url"</span>: <span class="lp-c-val">"https://eth.yourprovider.com/..."</span>,
+  <span class="lp-c-key">"alert_email"</span>: <span class="lp-c-val">"ops@yourplatform.com"</span>,
+  <span class="lp-c-key">"risk_threshold"</span>: <span class="lp-c-num">60</span>
 }</code></pre>
                 </div>
                 <div class="lp-code-block">
-                    <div class="lp-code-label">response</div>
+                    <div class="lp-code-label">alert payload · sent to your email</div>
                     <pre class="lp-pre"><code>{
-  <span class="lp-c-key">"wallet"</span>: <span class="lp-c-val">"0x742d35Cc..."</span>,
+  <span class="lp-c-key">"event"</span>: <span class="lp-c-val">"risk_detected"</span>,
   <span class="lp-c-key">"score"</span>: <span class="lp-c-num">72</span>,
   <span class="lp-c-key">"category"</span>: <span class="lp-c-val">"high"</span>,
-  <span class="lp-c-key">"flags"</span>: [
-    <span class="lp-c-val">"mixer_interaction"</span>,
-    <span class="lp-c-val">"high_velocity"</span>
-  ],
-  <span class="lp-c-key">"history_incomplete"</span>: <span class="lp-c-bool">false</span>,
+  <span class="lp-c-key">"wallet"</span>: <span class="lp-c-val">"0x742d35Cc..."</span>,
+  <span class="lp-c-key">"flags"</span>: [<span class="lp-c-val">"mixer_interaction"</span>],
+  <span class="lp-c-key">"tx_hash"</span>: <span class="lp-c-val">"0xabc123..."</span>,
   <span class="lp-c-key">"timestamp"</span>: <span class="lp-c-val">"2026-05-23T10:00:00Z"</span>
 }</code></pre>
                 </div>
             </div>
-            <div class="lp-code-cta">
-                <a href="/auth#register" class="lp-cta-primary">start building →</a>
-                <a href="/help-center/api-integration" class="lp-cta-ghost">view full api docs</a>
+            <p class="lp-code-note">also included: on-demand wallet scans via <code>/v1/score</code> for manual checks at any time.</p>
+        </div>
+    </section>
+
+    <section class="lp-section lp-pricing" id="pricing">
+        <div class="lp-section-inner">
+            <p class="lp-eyebrow">pricing</p>
+            <h2 class="lp-h2">simple, transparent pricing</h2>
+            <div class="lp-pricing-grid">
+                <div class="lp-plan-card glass-panel">
+                    <div class="lp-plan-name">starter</div>
+                    <div class="lp-plan-price">
+                        <span class="lp-plan-currency">$</span>
+                        <span class="lp-plan-amount">99</span>
+                        <span class="lp-plan-period">/mo</span>
+                    </div>
+                    <p class="lp-plan-desc">for teams getting started with automated risk monitoring.</p>
+                    <ul class="lp-plan-features">
+                        <li class="lp-plan-feature">
+                            <span class="lp-feat-check">✓</span>
+                            1 rpc endpoint
+                        </li>
+                        <li class="lp-plan-feature">
+                            <span class="lp-feat-check">✓</span>
+                            up to 250 monitored addresses
+                        </li>
+                        <li class="lp-plan-feature">
+                            <span class="lp-feat-check">✓</span>
+                            real-time email alerts
+                        </li>
+                        <li class="lp-plan-feature">
+                            <span class="lp-feat-check">✓</span>
+                            on-demand api scan access
+                        </li>
+                        <li class="lp-plan-feature">
+                            <span class="lp-feat-check">✓</span>
+                            standard support
+                        </li>
+                    </ul>
+                    <a href="/auth#register" class="lp-plan-cta lp-plan-cta-ghost">get started</a>
+                </div>
+
+                <div class="lp-plan-card lp-plan-featured glass-panel">
+                    <div class="lp-plan-popular">most popular</div>
+                    <div class="lp-plan-name">pro</div>
+                    <div class="lp-plan-price">
+                        <span class="lp-plan-currency">$</span>
+                        <span class="lp-plan-amount">399</span>
+                        <span class="lp-plan-period">/mo</span>
+                    </div>
+                    <p class="lp-plan-desc">for platforms with high transaction volume and compliance requirements.</p>
+                    <ul class="lp-plan-features">
+                        <li class="lp-plan-feature">
+                            <span class="lp-feat-check">✓</span>
+                            up to 5 rpc endpoints
+                        </li>
+                        <li class="lp-plan-feature">
+                            <span class="lp-feat-check">✓</span>
+                            up to 2,500 monitored addresses
+                        </li>
+                        <li class="lp-plan-feature">
+                            <span class="lp-feat-check">✓</span>
+                            real-time email + webhook alerts
+                        </li>
+                        <li class="lp-plan-feature">
+                            <span class="lp-feat-check">✓</span>
+                            custom risk thresholds per endpoint
+                        </li>
+                        <li class="lp-plan-feature">
+                            <span class="lp-feat-check">✓</span>
+                            on-demand api scan access
+                        </li>
+                        <li class="lp-plan-feature">
+                            <span class="lp-feat-check">✓</span>
+                            priority support
+                        </li>
+                    </ul>
+                    <a href="/auth#register" class="lp-plan-cta lp-plan-cta-solid">get started</a>
+                </div>
+
+                <div class="lp-plan-card glass-panel">
+                    <div class="lp-plan-name">enterprise</div>
+                    <div class="lp-plan-price lp-plan-price-custom">
+                        <span class="lp-plan-amount-custom">custom</span>
+                    </div>
+                    <p class="lp-plan-desc">for exchanges, large-scale processors, and compliance-heavy environments.</p>
+                    <ul class="lp-plan-features">
+                        <li class="lp-plan-feature">
+                            <span class="lp-feat-check">✓</span>
+                            unlimited rpc endpoints
+                        </li>
+                        <li class="lp-plan-feature">
+                            <span class="lp-feat-check">✓</span>
+                            unlimited monitored addresses
+                        </li>
+                        <li class="lp-plan-feature">
+                            <span class="lp-feat-check">✓</span>
+                            dedicated infrastructure
+                        </li>
+                        <li class="lp-plan-feature">
+                            <span class="lp-feat-check">✓</span>
+                            custom alert integrations
+                        </li>
+                        <li class="lp-plan-feature">
+                            <span class="lp-feat-check">✓</span>
+                            sla + dedicated support
+                        </li>
+                        <li class="lp-plan-feature">
+                            <span class="lp-feat-check">✓</span>
+                            on-demand api scan access
+                        </li>
+                    </ul>
+                    <a href="mailto:support@sentinelpay.org" class="lp-plan-cta lp-plan-cta-ghost">contact sales</a>
+                </div>
             </div>
         </div>
     </section>
@@ -280,28 +436,28 @@
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
                     </div>
                     <h3 class="lp-usecase-title">crypto casinos & igaming</h3>
-                    <p class="lp-usecase-desc">screen every deposit before chips are issued. protect your license and treasury from laundered funds in real-time.</p>
+                    <p class="lp-usecase-desc">get alerted before laundered funds clear. protect your license without slowing down your deposit flow.</p>
                 </div>
                 <div class="lp-usecase-card glass-panel">
                     <div class="lp-usecase-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
                     </div>
                     <h3 class="lp-usecase-title">payment gateways</h3>
-                    <p class="lp-usecase-desc">add a risk gate before funds clear. reduce frozen accounts, chargebacks, and regulatory exposure at scale.</p>
+                    <p class="lp-usecase-desc">monitor every incoming transaction across your payment rails. act on risky wallets before funds settle.</p>
                 </div>
                 <div class="lp-usecase-card glass-panel">
                     <div class="lp-usecase-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
                     </div>
                     <h3 class="lp-usecase-title">otc & exchange desks</h3>
-                    <p class="lp-usecase-desc">validate counterparty wallets before large block trades. know who you're dealing with before settlement.</p>
+                    <p class="lp-usecase-desc">catch high-risk counterparties the moment they initiate a trade. real-time intelligence before block settlements.</p>
                 </div>
                 <div class="lp-usecase-card glass-panel">
                     <div class="lp-usecase-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                     </div>
                     <h3 class="lp-usecase-title">aml compliance teams</h3>
-                    <p class="lp-usecase-desc">enrich your existing workflows with live on-chain signal data. surface wallet risk scores inside your case management system.</p>
+                    <p class="lp-usecase-desc">automate your first line of defense. route risk alerts directly into your case management workflow.</p>
                 </div>
             </div>
         </div>
@@ -309,13 +465,10 @@
 
     <section class="lp-cta-section">
         <div class="lp-section-inner lp-cta-inner">
-            <div class="lp-cta-badge">
-                <span class="lp-badge-dot"></span>
-                10 free scans on signup · no credit card required
-            </div>
-            <h2 class="lp-h2 lp-cta-h2">ready to protect your platform?</h2>
+            <h2 class="lp-h2 lp-cta-h2">your chain is live. are you watching it?</h2>
+            <p class="lp-cta-sub">connect your rpc and start receiving risk alerts today.</p>
             <div class="lp-hero-ctas">
-                <a href="/auth#register" class="lp-cta-primary">create free account</a>
+                <a href="/auth#register" class="lp-cta-primary">get started</a>
                 <a href="mailto:support@sentinelpay.org" class="lp-cta-ghost">contact sales</a>
             </div>
         </div>
@@ -326,14 +479,14 @@
             <div class="lp-footer-top">
                 <div class="lp-footer-brand">
                     <span class="lp-logo-text lp-footer-logo">sentinelpay</span>
-                    <p class="lp-footer-tagline">on-chain risk intelligence for crypto payment operators.</p>
+                    <p class="lp-footer-tagline">real-time blockchain monitoring for crypto payment operators.</p>
                 </div>
                 <div class="lp-footer-links">
                     <div class="lp-footer-col">
                         <span class="lp-footer-col-title">product</span>
+                        <a href="#how-it-works" class="lp-footer-link">how it works</a>
+                        <a href="#pricing" class="lp-footer-link">pricing</a>
                         <a href="/help-center" class="lp-footer-link">documentation</a>
-                        <a href="/help-center/api-integration" class="lp-footer-link">api reference</a>
-                        <a href="/help-center/risk-engine" class="lp-footer-link">risk engine</a>
                     </div>
                     <div class="lp-footer-col">
                         <span class="lp-footer-col-title">company</span>
@@ -344,7 +497,7 @@
                     <div class="lp-footer-col">
                         <span class="lp-footer-col-title">developers</span>
                         <a href="https://github.com/ceemv22/sentinelpay-public" target="_blank" class="lp-footer-link">github</a>
-                        <a href="/auth#register" class="lp-footer-link">get api key</a>
+                        <a href="/help-center/api-integration" class="lp-footer-link">api reference</a>
                         <a href="/help-center/getting-started" class="lp-footer-link">quickstart</a>
                     </div>
                 </div>
@@ -368,6 +521,17 @@
                     pupil.style.transform = 'translate(' + (ox * 3) + 'px, ' + (oy * 3) + 'px)';
                 });
             }
+
+            document.querySelectorAll('a[href^="#"]').forEach(function(a) {
+                a.addEventListener('click', function(e) {
+                    var id = this.getAttribute('href').slice(1);
+                    var el = document.getElementById(id);
+                    if (el) {
+                        e.preventDefault();
+                        el.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            });
         })();
     </script>
     <script src="toast.js"></script>
