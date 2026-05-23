@@ -80,16 +80,15 @@
                 <h1 class="article-title">the scan endpoint</h1>
                 <p class="article-lead">learn how to interact with the /v1/score endpoint to assess wallet risk.</p>
             </header>
-            <div class="article-body">
+            <div class=”article-body”>
                 <h2>endpoint overview</h2>
-                <p>the <code>/v1/score</code> endpoint accepts a <code>POST</code> request with a wallet address and network identifier.</p>
-                <div class="article-callout">
+                <p>the <code>/v1/score</code> endpoint accepts a <code>POST</code> request with an ethereum wallet address. only ethereum addresses are currently supported.</p>
+                <div class=”article-callout”>
                     <code>POST https://api.sentinelpay.org/v1/score</code>
                 </div>
                 <h2>request parameters</h2>
                 <ul>
-                    <li><code>address</code> (string) â€” the wallet address to scan.</li>
-                    <li><code>chain</code> (string) â€” the network identifier (e.g., <code>eth</code>, <code>sol</code>, <code>btc</code>).</li>
+                    <li><code>wallet</code> (string) — the ethereum wallet address to scan (0x-prefixed, 42 characters).</li>
                 </ul>
             </div>
             <div class="article-support">
@@ -98,11 +97,10 @@
                 </div>
                 <div class="support-text">
                     <h4>still need help?</h4>
-                    <p>our team is here for you. reach out via email or jump into live chat.</p>
+                    <p>our team is here for you. reach out via email.</p>
                 </div>
                 <div class="support-actions">
-                    <a href="mailto:support@sentinelpay.org" class="support-btn support-btn-secondary">email support</a>
-                    <a href="https://sentinelpay.org" class="support-btn support-btn-primary">live chat</a>
+                    <a href="mailto:support@sentinelpay.org" class="support-btn support-btn-primary">email support</a>
                 </div>
             </div>
         </article>

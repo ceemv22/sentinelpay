@@ -80,13 +80,15 @@
                 <h1 class="article-title">api error codes</h1>
                 <p class="article-lead">a guide to the error codes returned by the sentinelpay api.</p>
             </header>
-            <div class="article-body">
+            <div class=”article-body”>
                 <h2>common status codes</h2>
                 <ul>
-                    <li><code>400</code> â€” bad request (missing or invalid parameters).</li>
-                    <li><code>401</code> â€” unauthorized (invalid api key).</li>
-                    <li><code>403</code> â€” forbidden (insufficient credits or rate limited).</li>
-                    <li><code>500</code> â€” internal server error.</li>
+                    <li><code>400</code> — bad request (missing or invalid wallet address).</li>
+                    <li><code>401</code> — unauthorized (invalid or missing api key).</li>
+                    <li><code>403</code> — forbidden (insufficient credits, unverified account, or public scan limit reached).</li>
+                    <li><code>429</code> — rate limit exceeded (30 requests per 15 minutes for api key usage).</li>
+                    <li><code>500</code> — internal server error.</li>
+                    <li><code>504</code> — gateway timeout (scoring engine did not respond within 25 seconds).</li>
                 </ul>
             </div>
             <div class="article-support">
@@ -95,11 +97,10 @@
                 </div>
                 <div class="support-text">
                     <h4>still need help?</h4>
-                    <p>our team is here for you. reach out via email or jump into live chat.</p>
+                    <p>our team is here for you. reach out via email.</p>
                 </div>
                 <div class="support-actions">
-                    <a href="mailto:support@sentinelpay.org" class="support-btn support-btn-secondary">email support</a>
-                    <a href="https://sentinelpay.org" class="support-btn support-btn-primary">live chat</a>
+                    <a href="mailto:support@sentinelpay.org" class="support-btn support-btn-primary">email support</a>
                 </div>
             </div>
         </article>

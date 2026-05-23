@@ -82,9 +82,11 @@
             </header>
             <div class="article-body">
                 <h2>credit consumption</h2>
-                <p>each successful wallet scan consumes 1 credit. failed requests or cached results within a 1-hour window do not consume additional credits.</p>
+                <p>each successful wallet scan via <code>/v1/user/score</code> consumes 1 credit. failed requests do not consume credits.</p>
                 <h2>monitoring balance</h2>
-                <p>you can view your current credit balance and usage history in the <strong>billing</strong> section of your dashboard.</p>
+                <p>your current credit balance is visible in your dashboard profile. scan history is accessible via the dashboard or the <code>GET /v1/user/profile</code> endpoint.</p>
+                <h2>purchasing credits</h2>
+                <p>additional credits can be purchased from the billing section of your dashboard. packs are available in increments of 10 or 100 credits.</p>
             </div>
             <div class="article-support">
                 <div class="support-icon">
@@ -92,11 +94,10 @@
                 </div>
                 <div class="support-text">
                     <h4>still need help?</h4>
-                    <p>our team is here for you. reach out via email or jump into live chat.</p>
+                    <p>our team is here for you. reach out via email.</p>
                 </div>
                 <div class="support-actions">
-                    <a href="mailto:support@sentinelpay.org" class="support-btn support-btn-secondary">email support</a>
-                    <a href="https://sentinelpay.org" class="support-btn support-btn-primary">live chat</a>
+                    <a href="mailto:support@sentinelpay.org" class="support-btn support-btn-primary">email support</a>
                 </div>
             </div>
         </article>

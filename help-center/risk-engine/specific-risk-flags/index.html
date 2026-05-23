@@ -80,13 +80,14 @@
                 <h1 class="article-title">specific risk flags</h1>
                 <p class="article-lead">understand the specific triggers that can impact a wallet's risk score.</p>
             </header>
-            <div class="article-body">
+            <div class=”article-body”>
                 <h2>flag definitions</h2>
                 <ul>
-                    <li><code>MIXER_EXPOSURE</code> â€” direct or indirect interaction with coin mixers like tornado cash.</li>
-                    <li><code>SANCTIONED_ENTITY</code> â€” wallet address is on an ofac or other global sanctions list.</li>
-                    <li><code>DARKNET_MARKET</code> â€” wallet has received or sent funds to known illegal marketplaces.</li>
-                    <li><code>HIGH_TURNOVER</code> â€” unusual volume that doesn't match standard user behavior.</li>
+                    <li><code>mixer_interaction</code> — direct contact with known mixing services. inbound transfers above 0.001 eth from a mixer address are flagged. adds +50 to score.</li>
+                    <li><code>sanctioned_entity</code> — the wallet appears in a known high-risk entity set. triggers an immediate score of 100.</li>
+                    <li><code>new_wallet</code> — the wallet is less than 30 days old. adds +20 to score.</li>
+                    <li><code>high_velocity</code> — more than 50 transactions recorded in the last 24 hours. adds +20 to score.</li>
+                    <li><code>io_imbalance</code> — output-to-input value ratio exceeds 10:1 across a minimum of 10 transactions. adds +10 to score.</li>
                 </ul>
             </div>
             <div class="article-support">
@@ -95,11 +96,10 @@
                 </div>
                 <div class="support-text">
                     <h4>still need help?</h4>
-                    <p>our team is here for you. reach out via email or jump into live chat.</p>
+                    <p>our team is here for you. reach out via email.</p>
                 </div>
                 <div class="support-actions">
-                    <a href="mailto:support@sentinelpay.org" class="support-btn support-btn-secondary">email support</a>
-                    <a href="https://sentinelpay.org" class="support-btn support-btn-primary">live chat</a>
+                    <a href="mailto:support@sentinelpay.org" class="support-btn support-btn-primary">email support</a>
                 </div>
             </div>
         </article>

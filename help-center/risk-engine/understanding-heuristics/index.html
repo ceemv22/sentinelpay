@@ -80,13 +80,15 @@
                 <h1 class="article-title">understanding heuristics</h1>
                 <p class="article-lead">a deep dive into the on-chain signals our engine uses to calculate risk scores.</p>
             </header>
-            <div class="article-body">
+            <div class=”article-body”>
                 <h2>on-chain signals</h2>
-                <p>our engine analyzes thousands of transactions per wallet to identify patterns of illicit activity.</p>
+                <p>our engine analyzes up to 10,000 transactions per wallet to identify patterns associated with illicit activity. the following signals contribute to a wallet's risk score:</p>
                 <ul>
-                    <li><strong>proximity to high-risk entities</strong> â€” how many "hops" away is this wallet from a known mixer or sanctioned address?</li>
-                    <li><strong>transaction velocity</strong> â€” unusual spikes in activity often indicate botting or money laundering.</li>
-                    <li><strong>wallet age</strong> â€” new wallets with high balance are flagged for closer inspection.</li>
+                    <li><strong>mixer interaction</strong> — direct contact with known mixing services (e.g. tornado cash). inbound transfers above 0.001 eth from a mixer address add +50 points.</li>
+                    <li><strong>sanctioned entity</strong> — the wallet address itself appears in a known high-risk entity set. results in an immediate score of 100.</li>
+                    <li><strong>new wallet</strong> — account is less than 30 days old. adds +20 points.</li>
+                    <li><strong>high velocity</strong> — more than 50 transactions in the last 24 hours. adds +20 points.</li>
+                    <li><strong>io imbalance</strong> — output-to-input ratio exceeds 10:1 across at least 10 transactions. adds +10 points.</li>
                 </ul>
             </div>
             <div class="article-support">
@@ -95,11 +97,10 @@
                 </div>
                 <div class="support-text">
                     <h4>still need help?</h4>
-                    <p>our team is here for you. reach out via email or jump into live chat.</p>
+                    <p>our team is here for you. reach out via email.</p>
                 </div>
                 <div class="support-actions">
-                    <a href="mailto:support@sentinelpay.org" class="support-btn support-btn-secondary">email support</a>
-                    <a href="https://sentinelpay.org" class="support-btn support-btn-primary">live chat</a>
+                    <a href="mailto:support@sentinelpay.org" class="support-btn support-btn-primary">email support</a>
                 </div>
             </div>
         </article>

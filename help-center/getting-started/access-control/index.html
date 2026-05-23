@@ -85,144 +85,54 @@
                     </div>
                 </div>
                 <h1 class="article-title">access control</h1>
-                <p class="article-lead">sentinelpay provides granular access controls to manage permissions across your organizations and projects.</p>
+                <p class="article-lead">sentinelpay provides access controls to manage permissions within your organization.</p>
             </header>
 
             <div class="article-body">
-                <p>for each organization and project, a member can have one of the following roles:</p>
+                <p>each organization member is assigned one of two roles:</p>
                 <ul>
-                    <li><strong>owner:</strong> full access to everything in organization and project resources.</li>
-                    <li><strong>administrator:</strong> full access to everything in organization and project resources except updating organization settings, transferring projects outside of the organization, and adding new owners.</li>
-                    <li><strong>developer:</strong> read-only access to organization resources and content access to project resources but cannot change any project settings.</li>
-                    <li><strong>read-only:</strong> read-only access to organization and project resources (available on team and enterprise plans).</li>
+                    <li><strong>owner:</strong> the user who created the organization. has full access to all settings, team management, and api key operations.</li>
+                    <li><strong>developer:</strong> the default role for invited members. can make api requests and view scan history within the organization.</li>
                 </ul>
 
-                <p>when you first create an account, a default organization is created for you and you'll be assigned as the owner. any organizations you create will assign you as owner as well.</p>
+                <p>when you create an organization, you are automatically assigned as the owner. any members you invite will be assigned the developer role.</p>
 
-                <h2>manage organization members</h2>
-                <p>to invite others to collaborate, visit your organization's team settings to send an invite link to another user's email. the invite is valid for 24 hours. for project scoped roles, you may only assign a role to a single project for the user when sending the invite. you can assign roles to multiple projects after the user accepts the invite.</p>
-
-                <div class="article-callout">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-                    <p>invites sent from a saml sso account can only be accepted by another saml sso account from the same identity provider.</p>
-                </div>
-
-                <h2>viewing members via management api</h2>
-                <p>you can also view organization members using the sentinelpay management api:</p>
-                
-                <div class="code-block-header">bash</div>
-                <pre><code># get your access token from dashboard settings
-export SENTINEL_ACCESS_TOKEN="your-access-token"
-export ORG_ID="your-organization-id"
-
-# list organization members
-curl "https://api.sentinelpay.org/v1/organizations/$ORG_ID/members" \
-  -H "Authorization: Bearer $SENTINEL_ACCESS_TOKEN"</code></pre>
+                <h2>managing members</h2>
+                <p>to invite a collaborator, navigate to the <strong>team</strong> tab in your organization dashboard and click <strong>invite member</strong>. enter the recipient's email address and send the invite. invitation links expire after <strong>7 days</strong>.</p>
 
                 <h2>transferring ownership</h2>
-                <p>each sentinelpay organization must have at least one owner. if your organization has other owners then you can relinquish ownership and leave the organization by clicking <strong>leave team</strong> in your organization's team settings.</p>
-                <p>otherwise, you'll need to invite a user as owner, and they need to accept the invitation, or promote an existing organization member to owner before you can leave the organization.</p>
+                <p>each sentinelpay organization must have exactly one owner. to transfer ownership, contact us at <a href="mailto:support@sentinelpay.org">support@sentinelpay.org</a> with your organization details.</p>
 
-                <h2>organization vs project scoped roles</h2>
-                <p>project scoped roles are only available on the team and enterprise plans.</p>
-                <ul>
-                    <li>if a member has an <strong>organization-level role</strong>, they will have the corresponding permissions across all current and future projects within that organization.</li>
-                    <li>if a member is assigned a <strong>project-scoped role</strong>, they will only have access to the specific projects they've been assigned to.</li>
-                </ul>
-
-                <h2>organization permissions table</h2>
+                <h2>permissions overview</h2>
                 <div class="article-table-wrapper">
                     <table class="article-table">
                         <thead>
                             <tr>
-                                <th>resource</th>
                                 <th>action</th>
                                 <th>owner</th>
-                                <th>admin</th>
-                                <th>dev</th>
+                                <th>developer</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td rowspan="2">organization</td>
-                                <td>update settings</td>
-                                <td>✅</td>
-                                <td>❌</td>
-                                <td>❌</td>
-                            </tr>
-                            <tr>
-                                <td>delete org</td>
-                                <td>✅</td>
-                                <td>❌</td>
-                                <td>❌</td>
-                            </tr>
-                            <tr>
-                                <td rowspan="4">members</td>
-                                <td>list members</td>
-                                <td>✅</td>
-                                <td>✅</td>
-                                <td>✅</td>
-                            </tr>
-                            <tr>
-                                <td>add owner</td>
-                                <td>✅</td>
-                                <td>❌</td>
-                                <td>❌</td>
-                            </tr>
-                            <tr>
-                                <td>add admin</td>
-                                <td>✅</td>
+                                <td>invite / remove members</td>
                                 <td>✅</td>
                                 <td>❌</td>
                             </tr>
                             <tr>
-                                <td>revoke invite</td>
-                                <td>✅</td>
-                                <td>✅</td>
-                                <td>❌</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <h2>project permissions table</h2>
-                <div class="article-table-wrapper">
-                    <table class="article-table">
-                        <thead>
-                            <tr>
-                                <th>resource</th>
-                                <th>action</th>
-                                <th>owner</th>
-                                <th>admin</th>
-                                <th>dev</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td rowspan="2">project</td>
-                                <td>create/delete</td>
-                                <td>✅</td>
+                                <td>roll api key</td>
                                 <td>✅</td>
                                 <td>❌</td>
                             </tr>
                             <tr>
-                                <td>pause/restart</td>
-                                <td>✅</td>
-                                <td>✅</td>
-                                <td>✅</td>
-                            </tr>
-                            <tr>
-                                <td rowspan="2">api keys</td>
-                                <td>read keys</td>
-                                <td>✅</td>
+                                <td>make api requests</td>
                                 <td>✅</td>
                                 <td>✅</td>
                             </tr>
                             <tr>
-                                <td>rotate secrets</td>
+                                <td>view scan history</td>
                                 <td>✅</td>
                                 <td>✅</td>
-                                <td>❌</td>
                             </tr>
                         </tbody>
                     </table>
@@ -250,16 +160,12 @@ curl "https://api.sentinelpay.org/v1/organizations/$ORG_ID/members" \
                 </div>
                 <div class="support-text">
                     <h4>still need help?</h4>
-                    <p>our team is here for you. reach out via email or jump into live chat.</p>
+                    <p>our team is here for you. reach out via email.</p>
                 </div>
                 <div class="support-actions">
-                    <a href="mailto:support@sentinelpay.org" class="support-btn support-btn-secondary">
+                    <a href="mailto:support@sentinelpay.org" class="support-btn support-btn-primary">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
                         email support
-                    </a>
-                    <a href="https://sentinelpay.org" class="support-btn support-btn-primary">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-                        live chat
                     </a>
                 </div>
             </div>

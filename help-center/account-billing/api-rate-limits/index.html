@@ -80,13 +80,14 @@
                 <h1 class="article-title">api rate limits</h1>
                 <p class="article-lead">understand the rate limits applied to your organization's api usage.</p>
             </header>
-            <div class="article-body">
-                <h2>rate limit tiers</h2>
-                <p>rate limits are enforced per organization per minute (rpm). reaching these limits will result in a <code>429 too many requests</code> response.</p>
+            <div class=”article-body”>
+                <h2>api key usage (<code>/v1/score</code>)</h2>
+                <p>requests authenticated with an api key are limited to <strong>30 requests per 15 minutes</strong>. exceeding this limit returns a <code>429 too many requests</code> response.</p>
+                <h2>public endpoint (<code>/v1/public/score</code>)</h2>
+                <p>unauthenticated scans are subject to two independent limits:</p>
                 <ul>
-                    <li><strong>starter</strong> â€” 60 rpm.</li>
-                    <li><strong>business</strong> â€” 600 rpm.</li>
-                    <li><strong>enterprise</strong> â€” custom limits tailored to your volume.</li>
+                    <li><strong>20 scans per day</strong> per ip address.</li>
+                    <li><strong>3 scans lifetime</strong> per browser fingerprint.</li>
                 </ul>
             </div>
             <div class="article-support">
@@ -95,11 +96,10 @@
                 </div>
                 <div class="support-text">
                     <h4>still need help?</h4>
-                    <p>our team is here for you. reach out via email or jump into live chat.</p>
+                    <p>our team is here for you. reach out via email.</p>
                 </div>
                 <div class="support-actions">
-                    <a href="mailto:support@sentinelpay.org" class="support-btn support-btn-secondary">email support</a>
-                    <a href="https://sentinelpay.org" class="support-btn support-btn-primary">live chat</a>
+                    <a href="mailto:support@sentinelpay.org" class="support-btn support-btn-primary">email support</a>
                 </div>
             </div>
         </article>
