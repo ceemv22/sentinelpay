@@ -1504,6 +1504,18 @@ html.lp-scroll-lock body {
     max-width: 240px;
 }
 
+.lp-footer-brand-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.lp-footer-icon {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+}
+
 .lp-footer-logo { font-size: 1rem; }
 
 .lp-footer-tagline {
