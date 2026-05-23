@@ -1,101 +1,125 @@
 <p align="center">
-  <img src="api/public/logo.svg" alt="sentinelpay logo" width="220"/>
+  <img src="api/public/logo.svg" alt="sentinelpay" width="200"/>
 </p>
 
 <p align="center">
-  <a href="https://github.com/ceemv22/sentinelpay/releases/latest"><img src="https://img.shields.io/github/v/release/ceemv22/sentinelpay?color=00f0ff&label=version&style=flat-square" alt="version"></a>
-  <a href="https://sentinelpay.org"><img src="https://img.shields.io/badge/status-production_hardened-00f0ff?style=flat-square" alt="status"></a>
-  <a href="https://x.com/sentinelpayorg"><img src="https://img.shields.io/twitter/follow/sentinelpayorg?style=social" alt="twitter"></a>
+  <strong>pre-deposit wallet risk oracle for crypto treasuries</strong>
 </p>
 
-<h3 align="center">
-  the security oracle for high-stakes crypto commerce.
-</h3>
-
 <p align="center">
-  sentinelpay is a high-performance risk scoring engine designed to sit at the edge of the payment flow.
-  it provides pre-deposit verification to protect treasury integrity.
+  <a href="https://sentinelpay.org">sentinelpay.org</a>
+  ·
+  <a href="https://help.sentinelpay.org">docs</a>
+  ·
+  <a href="https://x.com/sentinelpayorg">@sentinelpayorg</a>
 </p>
 
 ---
 
-## overview
+sentinelpay scores ethereum wallets **before** funds hit your deposit address. operators call the api at the gateway, get a risk score and signal flags, then accept, review, or block — no post-settlement aml lag.
 
-sentinelpay is a real-time risk assessment protocol for decentralized commerce. unlike traditional aml tools that scan wallets after a transaction has occurred, sentinelpay enables b2b operators to assess wallet risk before accepting funds. this prevents the contamination of treasury accounts and ensures regulatory compliance at the gateway level.
+built for high-throughput deposit flows: otc desks, crypto casinos, payment processors, and any treasury that cannot afford mixer or sanctioned exposure.
 
-the system utilizes a proprietary heuristics engine (v3.5) to perform deep forensic scans across multiple chains, identifying illicit patterns with sub-second latency.
-
-## protocol architecture
+## how it works
 
 ```mermaid
-graph TD
-    user[user / wallet] -->|initiates transaction| operator[b2b operator]
-    operator -->|v1/score| oracle[sentinelpay oracle]
-    oracle -->|transaction graph scan| engine[heuristics engine]
-    engine -->|on-chain forensic analysis| nodes[blockchain nodes]
-    nodes -->|raw transaction data| engine
-    engine -->|risk score & flags| oracle
-    oracle -->|json response| operator
-    operator -->|decision: accept/block/review| user
-
-    style oracle stroke:#00f0ff,stroke-width:2px
-    style engine stroke:#00f0ff,stroke-width:2px
-    style operator stroke:#a020f0,stroke-width:2px
+flowchart LR
+  wallet[deposit wallet] --> operator[operator gateway]
+  operator -->|POST /v1/score| api[sentinelpay api]
+  api --> engine[heuristics engine]
+  engine --> etherscan[etherscan v2]
+  engine --> mixers[sanctions / mixer set]
+  engine --> api
+  api --> operator
+  operator -->|accept · review · block| wallet
 ```
 
-## heuristics engine (v3.5)
+1. operator receives a deposit intent (address only).
+2. sentinelpay pulls up to **10,000** normal, internal, and erc-20 transfers per wallet via etherscan.
+3. heuristics engine assigns score **0–100**, category, and flags.
+4. operator enforces policy before broadcasting or crediting balance.
 
-our engine performs automated forensic analysis on normal, internal, and erc-20 transactions, reaching a depth of up to 10,000 operations per wallet.
+## risk signals
 
-| identifier | description | status |
-|------------|-------------|--------|
-| `sanctioned_entity` | direct correlation with ofac, mixers, or known illicit addresses. | active |
-| `mixer_interaction` | inbound or outbound flow through coin mixers (140+ protocols supported). | active |
-| `history_incomplete` | detection of history flooding (evasion attempts using 10k+ junk tx). | active |
-| `high_velocity` | > 50 transactions broadcasted within a 24h rolling window. | active |
-| `new_wallet` | on-chain deployment timestamp < 30 days. | active |
-| `io_imbalance` | highly skewed inbound vs outbound capital ratios indicative of laundering. | active |
+| signal | trigger |
+|--------|---------|
+| `sanctioned_entity` | wallet address in ofac / mixer database → score 100 |
+| `mixer_interaction` | inflow or outflow through known mixer contracts |
+| `history_incomplete` | tx history hits 10k cap (possible flooding / evasion) |
+| `high_velocity` | >50 normal txs in 24h |
+| `new_wallet` | first on-chain activity &lt;30 days |
+| `io_imbalance` | inbound/outbound ratio &gt;10:1 |
 
-## security and compliance infrastructure
+categories: **low** (&lt;30) · **medium** (30–59) · **high** (≥60)
 
-sentinelpay is built on an architecture of extreme security, ensuring that both the oracle and its users are protected from exploitation.
+mixer database: ~140 addresses, maintained from ofac and tornado sources (`scripts/update_mixers.py`).
 
-- **pre-execution verification**: scoring occurs at the edge, allowing operators to reject illicit funds before they are committed to the blockchain.
-- **hybrid trust resolution**: integrated header verification for authenticated rate-limiting and tamper-proof audit logging.
-- **atomic data integrity**: all internal states, including credit management and api provisioning, are handled via isolated acid-compliant transactions.
-- **authenticated encryption**: sensitive data is protected using aes-256-gcm with versioned key rotation to ensure long-term data security.
-- **zero-retention keys**: raw api keys are permanently erased from the system immediately after a one-time cryptographic reveal to the user.
+## api
 
-## api integration
+| tier | endpoint | auth |
+|------|----------|------|
+| b2b | `POST /v1/score` | `x-api-key` |
+| public | `POST /v1/public/score` | turnstile + rate limits |
+| dashboard | `POST /v1/user/score` | supabase bearer jwt + credits |
 
-integration is designed to be seamless. utilize the sentinelpay api to secure your deposit gateway.
+production base: `https://sentinelpay.org/v1`
 
 ```bash
-curl -x post https://api.sentinelpay.org/v1/score \
-  -h "x-api-key: sp_live_xxxxxxxxxxxxxxxx" \
-  -d '{"wallet": "0x..."}'
+curl -X POST https://sentinelpay.org/v1/score \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: sp_live_xxxxxxxxxxxxxxxx" \
+  -d '{"wallet":"0x742d35Cc6634C0532925a3b844Bc9e695d487DA2"}'
 ```
-
-**example response:**
 
 ```json
 {
-  "wallet": "0x...",
+  "wallet": "0x742d35cc6634c0532925a3b844bc9e695d487da2",
   "score": 85,
   "category": "high",
-  "flags": ["mixer_interaction", "history_incomplete"],
-  "timestamp": "2026-05-11t20:21:00.000z"
+  "flags": ["mixer_interaction"],
+  "history_incomplete": false,
+  "timestamp": "2026-05-23T00:00:00.000Z"
 }
 ```
 
-## ecosystem
+full contract: [`docs/api.yaml`](docs/api.yaml)
 
-| node | url |
-|------|-----|
-| official portal | [sentinelpay.org](https://sentinelpay.org) |
-| b2b dashboard | [sentinelpay.org/dashboard](https://sentinelpay.org/dashboard) |
-| documentation | [help.sentinelpay.org](https://help.sentinelpay.org) |
-| x / twitter | [@sentinelpayorg](https://x.com/sentinelpayorg) |
+## stack
 
----
-// sentinelpay // security by architecture.
+| layer | tech |
+|-------|------|
+| api + dashboard | node.js 22, express 5, prisma, redis |
+| scoring engine | python 3, etherscan v2 (ethereum mainnet) |
+| auth | supabase (dashboard), sha-256 api keys (b2b) |
+| data | postgresql, audit logs |
+| edge | cloudflare, helmet csp, rate limiting |
+
+## repository
+
+```
+api/           rest api, dashboard static assets, stripe billing
+engine/        score.py — on-chain heuristics
+data/          mixers.json — sanctions / mixer address set
+help-center/   documentation site (help.sentinelpay.org)
+scripts/       mixer list updater
+docs/          openapi spec
+```
+
+## run locally
+
+```bash
+cd api && npm install && npm run dev
+```
+
+requires `DATABASE_URL`, `ETHERSCAN_API_KEY`, `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `MASTER_ENCRYPTION_KEY`. production also needs `REDIS_URL`.
+
+docker:
+
+```bash
+docker build -t sentinelpay .
+docker run -p 8080:8080 --env-file api/.env sentinelpay
+```
+
+## license
+
+mit — see [LICENSE](LICENSE).
