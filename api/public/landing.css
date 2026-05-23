@@ -1258,6 +1258,17 @@ body.lp-body {
 
 .lp-hamburger:hover { background: none; }
 .lp-hamburger:focus { outline: none; }
+.lp-hamburger,
+.lp-mm-acc-btn,
+.lp-mm-btn-ghost,
+.lp-mm-btn-solid,
+.lp-mobile-link,
+.lp-mobile-sub-link {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    outline: none;
+    box-shadow: none;
+}
 
 .lp-hb-line {
     width: 20px;
