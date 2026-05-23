@@ -287,29 +287,40 @@ body.lp-body {
 
 .lp-diag-engine-ring {
     position: absolute;
-    inset: -2px;
-    border-radius: 15px;
-    border: 1px solid transparent;
-    border-top-color: rgba(0, 240, 255, 0.5);
-    border-right-color: rgba(0, 240, 255, 0.15);
-    animation: spin-ring 3s linear infinite;
+    inset: 0;
+    border-radius: 14px;
+    overflow: hidden;
     pointer-events: none;
 }
 
-.lp-diag-engine-ring::after {
+.lp-diag-engine-ring::before {
     content: '';
     position: absolute;
-    inset: 3px;
-    border-radius: 12px;
-    border: 1px solid transparent;
-    border-bottom-color: rgba(0, 240, 255, 0.25);
-    border-left-color: rgba(0, 240, 255, 0.08);
-    animation: spin-ring 3s linear infinite reverse;
+    top: 0;
+    left: -70%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(0, 240, 255, 0.07) 50%,
+        transparent 100%
+    );
+    animation: engine-sweep 3s ease-in-out infinite;
 }
 
-@keyframes spin-ring {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+@keyframes engine-sweep {
+    0%   { left: -70%; }
+    100% { left: 160%; }
+}
+
+.lp-diag-engine {
+    animation: engine-border-pulse 2.5s ease-in-out infinite;
+}
+
+@keyframes engine-border-pulse {
+    0%, 100% { border-color: rgba(0, 240, 255, 0.18); }
+    50%       { border-color: rgba(0, 240, 255, 0.45); box-shadow: 0 0 22px rgba(0, 240, 255, 0.08), 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
 }
 
 .lp-diag-icon-wrap {
