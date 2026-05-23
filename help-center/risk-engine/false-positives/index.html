@@ -82,9 +82,10 @@
             </header>
             <div class="article-body">
                 <h2>why do false positives happen?</h2>
-                <p>sometimes legitimate users unknowingly receive funds that have passed through a mixer several hops ago. our engine identifies these links, which can result in a higher score than expected.</p>
-                <h2>whitelisting addresses</h2>
-                <p>if you have verified a user's identity through kyc, you can whitelist their address in your organization settings to bypass future scans for that specific wallet.</p>
+                <p>sometimes legitimate users unknowingly receive funds that originate from a flagged address. our engine identifies these direct on-chain links, which can result in a higher score than expected.</p>
+                <h2>what to do</h2>
+                <p>review the <code>flags</code> array in the scan response to understand which specific signals contributed to the score. consider whether the flagged behavior is consistent with legitimate use (e.g. high velocity from active defi usage).</p>
+                <p>if you believe a result is inaccurate, you can re-scan the address at a later date as on-chain activity changes over time. for questions about a specific result, contact us at <a href="mailto:support@sentinelpay.org">support@sentinelpay.org</a> with the wallet address and scan details.</p>
             </div>
             <div class="article-support">
                 <div class="support-icon">
@@ -92,11 +93,10 @@
                 </div>
                 <div class="support-text">
                     <h4>still need help?</h4>
-                    <p>our team is here for you. reach out via email or jump into live chat.</p>
+                    <p>our team is here for you. reach out via email.</p>
                 </div>
                 <div class="support-actions">
-                    <a href="mailto:support@sentinelpay.org" class="support-btn support-btn-secondary">email support</a>
-                    <a href="https://sentinelpay.org" class="support-btn support-btn-primary">live chat</a>
+                    <a href="mailto:support@sentinelpay.org" class="support-btn support-btn-primary">email support</a>
                 </div>
             </div>
         </article>

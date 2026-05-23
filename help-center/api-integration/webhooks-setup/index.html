@@ -78,13 +78,12 @@
                     </div>
                 </div>
                 <h1 class="article-title">webhooks setup</h1>
-                <p class="article-lead">configure webhooks to receive real-time notifications about wallet scans.</p>
+                <p class="article-lead">webhooks are not yet available on sentinelpay. scan results are returned synchronously.</p>
             </header>
             <div class="article-body">
-                <h2>what are webhooks?</h2>
-                <p>webhooks allow sentinelpay to push data to your server when certain events occur, such as a high-risk scan completion.</p>
-                <h2>configuration</h2>
-                <p>go to <strong>settings > webhooks</strong> in your dashboard and add your listener url. you can choose which events trigger the webhook.</p>
+                <h2>not yet available</h2>
+                <p>webhooks are not currently available on sentinelpay. the scoring api is synchronous — scan results are returned directly in the api response body, so no callback url is needed.</p>
+                <p>if you need to process results asynchronously, call <code>POST /v1/score</code> in your own async worker and handle the response there. see <a href="/api-integration/scan-endpoint">the scan endpoint</a> for details.</p>
             </div>
             <div class="article-support">
                 <div class="support-icon">
@@ -92,11 +91,10 @@
                 </div>
                 <div class="support-text">
                     <h4>still need help?</h4>
-                    <p>our team is here for you. reach out via email or jump into live chat.</p>
+                    <p>our team is here for you. reach out via email.</p>
                 </div>
                 <div class="support-actions">
-                    <a href="mailto:support@sentinelpay.org" class="support-btn support-btn-secondary">email support</a>
-                    <a href="https://sentinelpay.org" class="support-btn support-btn-primary">live chat</a>
+                    <a href="mailto:support@sentinelpay.org" class="support-btn support-btn-primary">email support</a>
                 </div>
             </div>
         </article>

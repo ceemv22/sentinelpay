@@ -111,17 +111,17 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td><code>0 – 30</code></td>
+                                <td><code>0 – 29</code></td>
                                 <td><span class="badge badge-green">low risk</span></td>
                                 <td>accept deposit</td>
                             </tr>
                             <tr>
-                                <td><code>31 – 69</code></td>
+                                <td><code>30 – 59</code></td>
                                 <td><span class="badge badge-yellow">medium risk</span></td>
                                 <td>accept with manual review</td>
                             </tr>
                             <tr>
-                                <td><code>70 – 100</code></td>
+                                <td><code>60 – 100</code></td>
                                 <td><span class="badge badge-red">high risk</span></td>
                                 <td>block deposit, log event</td>
                             </tr>
@@ -141,11 +141,11 @@
                 <h2>how the risk engine works</h2>
                 <p>our engine combines multiple on-chain heuristics to produce a score. key signals include:</p>
                 <ul>
-                    <li><strong>mixer interaction</strong> — direct or indirect contact with known mixing services</li>
-                    <li><strong>darknet market exposure</strong> — funds linked to known illicit markets</li>
-                    <li><strong>sanction screening</strong> — cross-referenced against ofac and chainalysis datasets</li>
-                    <li><strong>transaction graph analysis</strong> — hop-count analysis from flagged sources</li>
-                    <li><strong>exchange clustering</strong> — classification of counterparty exchanges by risk tier</li>
+                    <li><strong>mixer interaction</strong> — direct contact with known mixing services (e.g. tornado cash)</li>
+                    <li><strong>sanctioned entity</strong> — wallet address matched against a known high-risk entity set</li>
+                    <li><strong>new wallet</strong> — account active for less than 30 days</li>
+                    <li><strong>high velocity</strong> — more than 50 transactions in the past 24 hours</li>
+                    <li><strong>io imbalance</strong> — output-to-input value ratio exceeds 10:1</li>
                 </ul>
 
                 <div class="article-callout">
@@ -184,16 +184,12 @@
                 </div>
                 <div class="support-text">
                     <h4>still need help?</h4>
-                    <p>our team is here for you. reach out via email or jump into live chat.</p>
+                    <p>our team is here for you. reach out via email.</p>
                 </div>
                 <div class="support-actions">
-                    <a href="mailto:support@sentinelpay.org" class="support-btn support-btn-secondary">
+                    <a href="mailto:support@sentinelpay.org" class="support-btn support-btn-primary">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
                         email support
-                    </a>
-                    <a href="https://sentinelpay.org" class="support-btn support-btn-primary">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-                        live chat
                     </a>
                 </div>
             </div>
