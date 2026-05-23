@@ -606,14 +606,23 @@
             var hamburger = document.getElementById('lp-hamburger');
             var mobileMenu = document.getElementById('lp-mobile-menu');
             if (hamburger && mobileMenu) {
+                function openMobileMenu() {
+                    hamburger.classList.add('lp-hb-open');
+                    mobileMenu.classList.add('lp-mm-open');
+                    document.documentElement.classList.add('lp-scroll-lock');
+                }
                 function closeMobileMenu() {
                     hamburger.classList.remove('lp-hb-open');
                     mobileMenu.classList.remove('lp-mm-open');
+                    document.documentElement.classList.remove('lp-scroll-lock');
                 }
                 hamburger.addEventListener('click', function(e) {
                     e.stopPropagation();
-                    var open = hamburger.classList.toggle('lp-hb-open');
-                    mobileMenu.classList.toggle('lp-mm-open', open);
+                    if (hamburger.classList.contains('lp-hb-open')) {
+                        closeMobileMenu();
+                    } else {
+                        openMobileMenu();
+                    }
                 });
                 mobileMenu.querySelectorAll('a').forEach(function(a) {
                     a.addEventListener('click', closeMobileMenu);
