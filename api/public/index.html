@@ -431,11 +431,7 @@
                         <span class="lp-scn-live-dot"></span>
                         <span class="lp-scn-live-text">sentinel scanner · live</span>
                     </div>
-                    <div class="lp-scn-counts">
-                        <span class="lp-scn-cnt lp-scn-pass"><span id="lp-scn-np">0</span> cleared</span>
-                        <span class="lp-scn-cnt lp-scn-fail"><span id="lp-scn-nf">0</span> flagged</span>
                     </div>
-                </div>
                 <div class="lp-scn-body" id="lp-scn-body"></div>
             </div>
 
@@ -913,30 +909,12 @@
     <script>
         (function () {
             var CHAINS = [
-                {
-                    name: 'ethereum', col: '#627EEA',
-                    svg: '<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2L3 10.5L10 14L17 10.5Z" fill="#627EEA"/><path d="M10 15.5L3 10.5L10 18L17 10.5Z" fill="#627EEA" fill-opacity="0.55"/></svg>'
-                },
-                {
-                    name: 'bitcoin', col: '#F7931A',
-                    svg: '<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" fill="#F7931A"/><rect x="7.5" y="6" width="2" height="8" rx="0.5" fill="white"/><rect x="9" y="6" width="3.5" height="3.5" rx="1.75" fill="white"/><rect x="9" y="10.5" width="4" height="3.5" rx="1.75" fill="white"/></svg>'
-                },
-                {
-                    name: 'solana', col: '#9945FF',
-                    svg: '<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><g transform="translate(10,10) skewX(-10) translate(-10,-10)"><rect x="2" y="4" width="16" height="2.5" rx="1.25" fill="#9945FF"/><rect x="2" y="8.75" width="16" height="2.5" rx="1.25" fill="#7B35DB"/><rect x="2" y="13.5" width="16" height="2.5" rx="1.25" fill="#19FB9B"/></g></svg>'
-                },
-                {
-                    name: 'bnb chain', col: '#F3BA2F',
-                    svg: '<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2L18 10L10 18L2 10Z" fill="#F3BA2F"/><path d="M10 7L13 10L10 13L7 10Z" fill="#0B0E14"/></svg>'
-                },
-                {
-                    name: 'polygon', col: '#8247E5',
-                    svg: '<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><polygon points="10,2 17.5,6.5 17.5,13.5 10,18 2.5,13.5 2.5,6.5" fill="#8247E5"/><polygon points="10,6.5 14,8.75 14,13.25 10,15.5 6,13.25 6,8.75" fill="#0B0E14"/></svg>'
-                },
-                {
-                    name: 'avalanche', col: '#E84142',
-                    svg: '<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2L19 17H1Z" fill="#E84142"/><path d="M10 8.5L14.5 16H5.5Z" fill="#0B0E14"/></svg>'
-                }
+                { name: 'ethereum',  img: '/chain-logos/eth.png'  },
+                { name: 'bitcoin',   img: '/chain-logos/btc.png'  },
+                { name: 'solana',    img: '/chain-logos/sol.png'  },
+                { name: 'bnb chain', img: '/chain-logos/bnb.png'  },
+                { name: 'polygon',   img: '/chain-logos/matic.png' },
+                { name: 'avalanche', img: '/chain-logos/avax.png' }
             ];
 
             var body = document.getElementById('lp-scn-body');
@@ -946,18 +924,15 @@
                 var row = document.createElement('div');
                 row.className = 'lp-scn-row';
                 row.innerHTML =
-                    '<div class="lp-scn-chain">' + chain.svg +
+                    '<div class="lp-scn-chain">' +
+                    '<img class="lp-scn-logo" src="' + chain.img + '" alt="' + chain.name + '">' +
                     '<span class="lp-scn-name">' + chain.name + '</span></div>' +
                     '<div class="lp-scn-lane" id="lp-lane-' + i + '">' +
                     '<div class="lp-scn-beam" id="lp-beam-' + i + '"></div>' +
-                    '</div>' +
-                    '<div class="lp-scn-trail" id="lp-trail-' + i + '"></div>';
+                    '</div>';
                 body.appendChild(row);
             });
 
-            var nPass = 0, nFail = 0;
-            var npEl = document.getElementById('lp-scn-np');
-            var nfEl = document.getElementById('lp-scn-nf');
             var FLOW_DUR = 3500;
             var BEAM_HIT = Math.round(FLOW_DUR * 0.52);
 
@@ -965,42 +940,24 @@
                 var chain = CHAINS[idx];
                 var lane  = document.getElementById('lp-lane-' + idx);
                 var beam  = document.getElementById('lp-beam-' + idx);
-                var trail = document.getElementById('lp-trail-' + idx);
-                if (!lane || !beam || !trail) return;
+                if (!lane || !beam) return;
 
-                var pass = Math.random() < 0.72;
+                var rng = Math.random();
+                var outcome = rng < 0.62 ? 'pass' : rng < 0.87 ? 'warn' : 'fail';
 
                 var p = document.createElement('div');
                 p.className = 'lp-scn-particle';
-                p.style.background = chain.col;
-                p.style.boxShadow = '0 0 8px ' + chain.col + '80';
-
-                if (!pass) {
-                    p.style.animationName = 'scn-flow, scn-block';
-                    p.style.animationDuration = FLOW_DUR + 'ms, 560ms';
-                    p.style.animationTimingFunction = 'linear, ease';
-                    p.style.animationFillMode = 'forwards, forwards';
-                    p.style.animationDelay = '0ms, ' + BEAM_HIT + 'ms';
-                }
-
+                p.style.backgroundImage = 'url(' + chain.img + ')';
                 lane.appendChild(p);
 
                 setTimeout(function () {
-                    beam.className = 'lp-scn-beam ' + (pass ? 'lp-beam-pass' : 'lp-beam-fail');
+                    beam.className = 'lp-scn-beam lp-beam-' + outcome;
                     setTimeout(function () { beam.className = 'lp-scn-beam'; }, 480);
-
-                    if (pass) { nPass++; if (npEl) npEl.textContent = nPass; }
-                    else      { nFail++; if (nfEl) nfEl.textContent = nFail; }
-
-                    var dot = document.createElement('span');
-                    dot.className = 'lp-trail-dot ' + (pass ? 'lp-dot-pass' : 'lp-dot-fail');
-                    trail.insertBefore(dot, trail.firstChild);
-                    while (trail.children.length > 7) trail.removeChild(trail.lastChild);
                 }, BEAM_HIT);
 
                 setTimeout(function () {
                     if (p.parentNode) p.parentNode.removeChild(p);
-                }, FLOW_DUR + 500);
+                }, FLOW_DUR + 300);
             }
 
             function scheduleNext(idx) {

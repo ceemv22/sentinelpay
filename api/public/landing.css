@@ -2271,7 +2271,6 @@ html.auth-session-present #lp-cta-dashboard { display: inline-flex !important; }
 
 .lp-scn-header {
     display: flex;
-    justify-content: space-between;
     align-items: center;
     padding: 0.85rem 1.75rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
@@ -2301,22 +2300,6 @@ html.auth-session-present #lp-cta-dashboard { display: inline-flex !important; }
     letter-spacing: 0.05em;
 }
 
-.lp-scn-counts {
-    display: flex;
-    gap: 1.5rem;
-}
-
-.lp-scn-cnt {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.64rem;
-    text-transform: lowercase;
-    letter-spacing: 0.03em;
-    font-weight: 600;
-}
-
-.lp-scn-pass { color: var(--color-green); }
-.lp-scn-fail { color: var(--color-red); }
-
 .lp-scn-body {
     padding: 0.5rem 0;
 }
@@ -2324,7 +2307,7 @@ html.auth-session-present #lp-cta-dashboard { display: inline-flex !important; }
 .lp-scn-row {
     display: flex;
     align-items: center;
-    height: 48px;
+    height: 52px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.03);
 }
 
@@ -2340,6 +2323,15 @@ html.auth-session-present #lp-cta-dashboard { display: inline-flex !important; }
     gap: 0.6rem;
     padding: 0 1.25rem;
     border-right: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.lp-scn-logo {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    object-fit: cover;
+    display: block;
 }
 
 .lp-scn-name {
@@ -2364,9 +2356,9 @@ html.auth-session-present #lp-cta-dashboard { display: inline-flex !important; }
     bottom: 4px;
     left: 52%;
     width: 2px;
-    background: linear-gradient(180deg, transparent, rgba(0, 240, 255, 0.12), transparent);
+    background: linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.06), transparent);
     pointer-events: none;
-    transition: background 0.08s ease, box-shadow 0.08s ease;
+    transition: background 0.07s ease, box-shadow 0.07s ease;
 }
 
 .lp-beam-pass {
@@ -2374,60 +2366,36 @@ html.auth-session-present #lp-cta-dashboard { display: inline-flex !important; }
     box-shadow: 0 0 14px var(--color-green), 0 0 28px rgba(0, 255, 136, 0.3) !important;
 }
 
+.lp-beam-warn {
+    background: linear-gradient(180deg, transparent, var(--color-yellow), transparent) !important;
+    box-shadow: 0 0 14px var(--color-yellow), 0 0 28px rgba(255, 184, 0, 0.3) !important;
+}
+
 .lp-beam-fail {
     background: linear-gradient(180deg, transparent, var(--color-red), transparent) !important;
     box-shadow: 0 0 14px var(--color-red), 0 0 28px rgba(255, 51, 51, 0.3) !important;
 }
 
-.lp-scn-trail {
-    width: 88px;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    padding: 0 1rem;
-    border-left: 1px solid rgba(255, 255, 255, 0.04);
-    overflow: hidden;
-}
-
-.lp-trail-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    flex-shrink: 0;
-    animation: trail-pop 0.28s ease;
-}
-
-@keyframes trail-pop {
-    from { transform: scale(0); opacity: 0; }
-    to   { transform: scale(1); opacity: 1; }
-}
-
-.lp-dot-pass { background: var(--color-green); box-shadow: 0 0 5px rgba(0, 255, 136, 0.5); }
-.lp-dot-fail { background: var(--color-red);   box-shadow: 0 0 5px rgba(255, 51, 51, 0.5); }
-
 @keyframes scn-flow {
-    from { left: -12px; }
-    to   { left: calc(100% + 12px); }
-}
-
-@keyframes scn-block {
-    0%   { transform: translateX(0);    opacity: 1; }
-    22%  { transform: translateX(-8px); }
-    48%  { transform: translateX(6px);  opacity: 0.9; }
-    72%  { transform: translateX(-3px); }
-    100% { transform: translateX(0);    opacity: 0; }
+    0%   { left: -30px; opacity: 0; }
+    5%   { opacity: 1; }
+    78%  { opacity: 1; }
+    100% { left: calc(100% + 30px); opacity: 0; }
 }
 
 .lp-scn-particle {
     position: absolute;
-    width: 10px;
-    height: 10px;
+    width: 26px;
+    height: 26px;
     border-radius: 50%;
-    top: calc(50% - 5px);
-    left: -12px;
+    top: calc(50% - 13px);
+    left: -30px;
     animation: scn-flow 3.5s linear forwards;
     pointer-events: none;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.07);
 }
 
 .lp-chains-grid {
@@ -2480,8 +2448,6 @@ html.auth-session-present #lp-cta-dashboard { display: inline-flex !important; }
     .lp-chains-desc { font-size: 0.84rem; }
     .lp-scn-chain { width: 44px; padding: 0 0.75rem; }
     .lp-scn-name { display: none; }
-    .lp-scn-trail { width: 56px; padding: 0 0.65rem; gap: 4px; }
-    .lp-trail-dot { width: 6px; height: 6px; }
     .lp-chains-grid { gap: 0.4rem; }
     .lp-chain-pill { font-size: 0.7rem; padding: 0.35rem 0.75rem; }
 }
