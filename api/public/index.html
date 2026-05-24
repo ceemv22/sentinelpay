@@ -181,7 +181,7 @@
                 all systems operational
             </a>
             <h1 class="lp-h1">monitor every transaction.<br>get alerted instantly.</h1>
-            <p class="lp-hero-sub">connect your rpc endpoint. sentinelpay listens 24/7 and emails your team the moment a high-risk wallet touches your platform.</p>
+            <p class="lp-hero-sub">connect your rpc endpoint. sentinelpay monitors every transaction across 10+ blockchain networks 24/7 and emails your team the moment a high-risk wallet is detected.</p>
 
             <div class="lp-diagram">
                 <div class="lp-diag-node lp-diag-source">
@@ -272,8 +272,8 @@
                 <span class="lp-stat-label">transaction analysis latency</span>
             </div>
             <div class="lp-stat">
-                <span class="lp-stat-value lp-stat-accent">5</span>
-                <span class="lp-stat-label">on-chain risk heuristics</span>
+                <span class="lp-stat-value lp-stat-accent">10+</span>
+                <span class="lp-stat-label">supported blockchain networks</span>
             </div>
             <div class="lp-stat">
                 <span class="lp-stat-value lp-stat-accent">instant</span>
@@ -291,7 +291,7 @@
                 <div class="lp-how-text">
                     <div class="lp-how-step-num">01</div>
                     <h3 class="lp-how-title">connect your rpc</h3>
-                    <p class="lp-how-desc">paste your blockchain rpc endpoint into the sentinelpay dashboard. we support any evm-compatible node — your own infra or a provider.</p>
+                    <p class="lp-how-desc">paste your blockchain rpc endpoint into the sentinelpay dashboard. we support ethereum, bnb chain, polygon, avalanche, arbitrum, optimism, base, solana, tron and more.</p>
                 </div>
                 <div class="lp-how-visual">
                     <div class="lp-terminal">
@@ -415,6 +415,69 @@
                     <p class="lp-signal-desc">output-to-input value ratio exceeds 10:1 across a minimum of 10 transactions.</p>
                     <div class="lp-signal-meter"><div class="lp-signal-meter-fill lp-meter-blue" style="--meter-w:20%"></div></div>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="lp-section lp-chains-section">
+        <div class="lp-section-inner">
+            <p class="lp-eyebrow lp-reveal">multi-chain coverage</p>
+            <h2 class="lp-h2 lp-reveal">every chain. one sentinel.</h2>
+            <p class="lp-chains-desc lp-reveal">sentinelpay monitors inbound transactions across the most critical blockchain networks. every wallet scored before funds settle.</p>
+
+            <div class="lp-checkpoint lp-reveal" id="lp-checkpoint">
+                <div class="lp-cp-topbar">
+                    <div style="display:flex;align-items:center;gap:0.5rem;">
+                        <span class="lp-cp-live-dot"></span>
+                        <span class="lp-cp-topbar-text">sentinel checkpoint · live</span>
+                    </div>
+                    <div style="display:flex;gap:1.5rem;">
+                        <span class="lp-cp-stat lp-cp-stat-pass"><span id="lp-n-pass">0</span> cleared</span>
+                        <span class="lp-cp-stat lp-cp-stat-fail"><span id="lp-n-fail">0</span> blocked</span>
+                    </div>
+                </div>
+
+                <div class="lp-cp-scene" id="lp-cp-scene">
+                    <div class="lp-cp-track-line"></div>
+                    <div class="lp-cp-label-in">incoming</div>
+
+                    <div id="lp-token" class="lp-cp-token">
+                        <span id="lp-token-sym"></span>
+                    </div>
+
+                    <div class="lp-cp-gate-wrap" id="lp-gate-wrap">
+                        <div id="lp-gate-arm" class="lp-cp-arm"></div>
+                        <div class="lp-cp-post"></div>
+                        <div id="lp-scan-beam" class="lp-cp-scan-beam"></div>
+                    </div>
+
+                    <div id="lp-gate-state" class="lp-cp-state">checkpoint</div>
+
+                    <div class="lp-cp-results-wrap">
+                        <div class="lp-cp-results-col">
+                            <span class="lp-cp-res-label lp-res-pass">cleared</span>
+                            <div id="lp-res-pass" class="lp-cp-res-list"></div>
+                        </div>
+                        <div class="lp-cp-results-col">
+                            <span class="lp-cp-res-label lp-res-fail">blocked</span>
+                            <div id="lp-res-fail" class="lp-cp-res-list"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lp-chains-grid lp-reveal">
+                <div class="lp-chain-pill"><span class="lp-chain-dot" style="background:#627EEA"></span>ethereum</div>
+                <div class="lp-chain-pill"><span class="lp-chain-dot" style="background:#F7931A"></span>bitcoin</div>
+                <div class="lp-chain-pill"><span class="lp-chain-dot" style="background:#9945FF"></span>solana</div>
+                <div class="lp-chain-pill"><span class="lp-chain-dot" style="background:#F3BA2F"></span>bnb chain</div>
+                <div class="lp-chain-pill"><span class="lp-chain-dot" style="background:#8247E5"></span>polygon</div>
+                <div class="lp-chain-pill"><span class="lp-chain-dot" style="background:#E84142"></span>avalanche</div>
+                <div class="lp-chain-pill"><span class="lp-chain-dot" style="background:#12AAFF"></span>arbitrum</div>
+                <div class="lp-chain-pill"><span class="lp-chain-dot" style="background:#FF0420"></span>optimism</div>
+                <div class="lp-chain-pill"><span class="lp-chain-dot" style="background:#0052FF"></span>base</div>
+                <div class="lp-chain-pill"><span class="lp-chain-dot" style="background:#EB0029"></span>tron</div>
+                <div class="lp-chain-pill lp-chain-pill-more">+ more coming</div>
             </div>
         </div>
     </section>
@@ -874,6 +937,165 @@
     </script>
     <script src="toast.js"></script>
     <script src="app.js"></script>
+    <script>
+        (function () {
+            var chains = [
+                { sym: 'ETH',   col: '#627EEA', pass: true  },
+                { sym: 'SOL',   col: '#9945FF', pass: true  },
+                { sym: 'BNB',   col: '#F3BA2F', pass: false },
+                { sym: 'AVAX',  col: '#E84142', pass: true  },
+                { sym: 'BTC',   col: '#F7931A', pass: true  },
+                { sym: 'MATIC', col: '#8247E5', pass: false },
+                { sym: 'ARB',   col: '#12AAFF', pass: true  },
+                { sym: 'TRX',   col: '#EB0029', pass: false },
+                { sym: 'OP',    col: '#FF0420', pass: true  },
+                { sym: 'BASE',  col: '#0052FF', pass: true  },
+                { sym: 'LTC',   col: '#AAAAAA', pass: true  },
+                { sym: 'FTM',   col: '#1969FF', pass: true  },
+            ];
+
+            var idx = 0, nPass = 0, nFail = 0;
+            var scene     = document.getElementById('lp-cp-scene');
+            var tok       = document.getElementById('lp-token');
+            var tokSym    = document.getElementById('lp-token-sym');
+            var arm       = document.getElementById('lp-gate-arm');
+            var beam      = document.getElementById('lp-scan-beam');
+            var stateEl   = document.getElementById('lp-gate-state');
+            var resPL     = document.getElementById('lp-res-pass');
+            var resFL     = document.getElementById('lp-res-fail');
+            var nPassEl   = document.getElementById('lp-n-pass');
+            var nFailEl   = document.getElementById('lp-n-fail');
+
+            if (!scene || !tok) return;
+
+            function hexRgba(hex, a) {
+                var r = parseInt(hex.slice(1, 3), 16);
+                var g = parseInt(hex.slice(3, 5), 16);
+                var b = parseInt(hex.slice(5, 7), 16);
+                return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
+            }
+
+            function addBadge(chain) {
+                var list = chain.pass ? resPL : resFL;
+                var b = document.createElement('div');
+                b.className = 'lp-cp-res-badge ' + (chain.pass ? 'lp-res-pass-badge' : 'lp-res-fail-badge');
+                b.textContent = (chain.pass ? '✓ ' : '✗ ') + chain.sym;
+                b.style.cssText = 'opacity:0;transform:translateX(10px);';
+                list.insertBefore(b, list.firstChild);
+                requestAnimationFrame(function () {
+                    b.style.transition = 'all 0.3s ease';
+                    b.style.opacity = '1';
+                    b.style.transform = 'translateX(0)';
+                });
+                while (list.children.length > 3) list.removeChild(list.lastChild);
+            }
+
+            function run() {
+                var chain = chains[idx % chains.length];
+                idx++;
+
+                var mobile   = window.innerWidth < 600;
+                var sw       = scene.offsetWidth;
+                var gatePerc = 0.44;
+                var gateX    = sw * gatePerc;
+                var armW     = mobile ? 80 : 140;
+                var tokW     = mobile ? 42 : 52;
+                var stopX    = gateX - armW - tokW - 16;
+                var passX    = sw + 80;
+
+                tok.style.cssText = [
+                    'transition:none',
+                    'opacity:0',
+                    'left:-80px',
+                    'width:' + tokW + 'px',
+                    'height:' + tokW + 'px',
+                    'top:calc(50% - ' + (tokW / 2) + 'px)',
+                    'font-size:' + (mobile ? '0.58rem' : '0.68rem'),
+                    'border-color:' + chain.col,
+                    'color:' + chain.col,
+                    'background-color:' + hexRgba(chain.col, 0.1),
+                    'box-shadow:0 0 18px ' + hexRgba(chain.col, 0.28)
+                ].join(';');
+                tok.className = 'lp-cp-token';
+                tokSym.textContent = chain.sym;
+
+                arm.className = 'lp-cp-arm';
+                beam.className = 'lp-cp-scan-beam';
+                stateEl.textContent = 'checkpoint';
+                stateEl.className = 'lp-cp-state';
+
+                setTimeout(function () {
+                    tok.style.transition = 'left 1.25s cubic-bezier(0.4,0,0.2,1), opacity 0.35s';
+                    tok.style.opacity = '1';
+                    tok.style.left = stopX + 'px';
+                }, 80);
+
+                setTimeout(function () {
+                    stateEl.textContent = 'scanning...';
+                    stateEl.className = 'lp-cp-state lp-state-scan';
+                    beam.className = 'lp-cp-scan-beam lp-scan-on';
+                }, 1460);
+
+                setTimeout(function () {
+                    beam.className = 'lp-cp-scan-beam';
+
+                    if (chain.pass) {
+                        stateEl.textContent = 'cleared ✓';
+                        stateEl.className = 'lp-cp-state lp-state-pass';
+                        arm.className = 'lp-cp-arm lp-arm-open';
+
+                        setTimeout(function () {
+                            tok.style.transition = 'left 0.7s ease-in, opacity 0.25s 0.52s';
+                            tok.style.left = passX + 'px';
+                            tok.style.opacity = '0';
+                            nPass++;
+                            if (nPassEl) nPassEl.textContent = nPass;
+                            addBadge(chain);
+
+                            setTimeout(function () {
+                                arm.className = 'lp-cp-arm';
+                                stateEl.textContent = 'checkpoint';
+                                stateEl.className = 'lp-cp-state';
+                                setTimeout(run, 480);
+                            }, 880);
+                        }, 440);
+
+                    } else {
+                        stateEl.textContent = 'blocked ✗';
+                        stateEl.className = 'lp-cp-state lp-state-fail';
+                        tok.className = 'lp-cp-token lp-tok-blocked';
+
+                        setTimeout(function () {
+                            tok.style.transition = 'opacity 0.4s';
+                            tok.style.opacity = '0';
+                            nFail++;
+                            if (nFailEl) nFailEl.textContent = nFail;
+                            addBadge(chain);
+
+                            setTimeout(function () {
+                                stateEl.textContent = 'checkpoint';
+                                stateEl.className = 'lp-cp-state';
+                                setTimeout(run, 480);
+                            }, 500);
+                        }, 950);
+                    }
+                }, 2650);
+            }
+
+            var started = false;
+            var cp = document.getElementById('lp-checkpoint');
+            if (cp) {
+                var cpObs = new IntersectionObserver(function (entries) {
+                    if (entries[0].isIntersecting && !started) {
+                        started = true;
+                        cpObs.disconnect();
+                        setTimeout(run, 380);
+                    }
+                }, { threshold: 0.25 });
+                cpObs.observe(cp);
+            }
+        })();
+    </script>
     <script>
         (function() {
             var reveals = document.querySelectorAll('.lp-reveal');
