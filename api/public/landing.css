@@ -2485,3 +2485,95 @@ html.auth-session-present #lp-cta-dashboard { display: inline-flex !important; }
     .lp-chains-grid { gap: 0.4rem; }
     .lp-chain-pill { font-size: 0.7rem; padding: 0.35rem 0.75rem; }
 }
+
+/* ---- scroll snap indicator ---- */
+
+.lp-snap-ind {
+    position: fixed;
+    right: 1.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+    z-index: 950;
+    animation: ind-arrive 0.7s cubic-bezier(0.2, 0, 0, 1) 0.5s both;
+}
+
+@keyframes ind-arrive {
+    from { opacity: 0; transform: translateY(-50%) translateX(16px); }
+    to   { opacity: 1; transform: translateY(-50%) translateX(0); }
+}
+
+.lp-snap-pip {
+    position: relative;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 5px 0;
+    outline: none;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.lp-snap-pip::after {
+    content: '';
+    display: block;
+    width: 2px;
+    height: 16px;
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.13);
+    transition:
+        height 0.38s cubic-bezier(0.4, 0, 0.2, 1),
+        width  0.38s cubic-bezier(0.4, 0, 0.2, 1),
+        background 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.lp-snap-pip.lp-pip-active::after {
+    height: 32px;
+    width: 3px;
+    background: var(--neon-blue);
+    box-shadow:
+        0 0 10px rgba(0, 240, 255, 0.55),
+        0 0 24px rgba(0, 240, 255, 0.18);
+}
+
+.lp-snap-pip:hover::after {
+    background: rgba(255, 255, 255, 0.32);
+}
+
+.lp-snap-pip.lp-pip-active:hover::after {
+    background: var(--neon-blue);
+}
+
+.lp-snap-pip::before {
+    content: attr(data-label);
+    position: absolute;
+    right: calc(100% + 10px);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.57rem;
+    color: transparent;
+    text-transform: lowercase;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+    transform: translateX(8px);
+    transition: color 0.22s ease, transform 0.22s ease;
+    pointer-events: none;
+    line-height: 1;
+}
+
+.lp-snap-ind:hover .lp-snap-pip::before {
+    color: rgba(255, 255, 255, 0.32);
+    transform: translateX(0);
+}
+
+.lp-snap-ind:hover .lp-snap-pip.lp-pip-active::before {
+    color: var(--neon-blue);
+}
+
+@media (max-width: 900px) {
+    .lp-snap-ind { display: none; }
+}
