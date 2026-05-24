@@ -21,15 +21,27 @@ document.addEventListener('DOMContentLoaded', () => {
     const updateAuthUI = (session) => {
         cachedSession = session;
         if (session) {
+            const loginBtn = document.getElementById('nav-login-btn');
+            const registerBtn = document.getElementById('nav-register-btn');
+            if (loginBtn) loginBtn.style.display = 'none';
+            if (registerBtn) registerBtn.style.display = 'none';
+
             const authContainer = document.getElementById('auth-nav-container');
-            if (authContainer) {
-                authContainer.replaceChildren();
+            if (authContainer && !document.getElementById('nav-dashboard-btn')) {
                 const dashboardLink = document.createElement('a');
+                dashboardLink.id = 'nav-dashboard-btn';
                 dashboardLink.href = '/dashboard/organizations';
-                dashboardLink.className = 'auth-nav-btn';
+                dashboardLink.className = 'auth-nav-btn lp-desktop-auth';
                 dashboardLink.textContent = 'dashboard';
-                authContainer.appendChild(dashboardLink);
+                authContainer.insertBefore(dashboardLink, authContainer.firstChild);
             }
+
+            const mmLogin = document.getElementById('lp-mm-login');
+            const mmRegister = document.getElementById('lp-mm-register');
+            const mmDashboard = document.getElementById('lp-mm-dashboard');
+            if (mmLogin) mmLogin.style.display = 'none';
+            if (mmRegister) mmRegister.style.display = 'none';
+            if (mmDashboard) mmDashboard.style.display = 'block';
         }
     };
 
