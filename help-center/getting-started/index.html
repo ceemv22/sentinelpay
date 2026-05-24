@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -7,7 +7,7 @@
     <meta name="description" content="Organization setup, team members, and core concepts for SentinelPay.">
     <meta name="theme-color" content="#050505">
     <link rel="icon" type="image/svg+xml" href="/logo.svg">
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/style.css">
     <link rel="stylesheet" href="/category.css">
 </head>
@@ -16,37 +16,38 @@
     <div class="cyber-grid"></div>
     <div class="glow-orb"></div>
 
-    <!-- Top nav -->
-    <header class="top-nav">
-        <div class="mobile-nav-logo mobile-only">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" style="width: 32px; height: 32px;">
-              <defs>
-                <linearGradient id="neonGradientNav" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stop-color="#00f0ff" />
-                  <stop offset="100%" stop-color="#a020f0" />
-                </linearGradient>
-                <filter id="neonGlowNav" x="-50%" y="-50%" width="200%" height="200%">
-                  <feGaussianBlur stdDeviation="3.5" result="coloredBlur"/>
-                  <feMerge>
-                    <feMergeNode in="coloredBlur"/>
-                    <feMergeNode in="SourceGraphic"/>
-                  </feMerge>
-                </filter>
-              </defs>
-              <g filter="url(#neonGlowNav)" fill="none" stroke="url(#neonGradientNav)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z" />
-                <path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z" />
-                <g class="eye-pupil" style="transition: transform 0.1s ease-out;">
-                  <circle cx="60" cy="60" r="6" />
-                  <circle cx="60" cy="60" r="2" fill="url(#neonGradientNav)" stroke="none"/>
-                </g>
-                <path d="M60 15 V 30" stroke-width="2" opacity="0.6"/>
-                <path d="M60 90 V 105" stroke-width="2" opacity="0.6"/>
-              </g>
-            </svg>
+    <nav class="lp-nav">
+        <div class="lp-nav-inner">
+            <a href="/" class="lp-logo-link">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" class="lp-logo-svg">
+                  <defs>
+                    <linearGradient id="ngPage" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stop-color="#00ffff"/>
+                      <stop offset="100%" stop-color="#a020f0"/>
+                    </linearGradient>
+                    <filter id="nfPage" x="-50%" y="-50%" width="200%" height="200%">
+                      <feGaussianBlur stdDeviation="3.5" result="coloredBlur"/>
+                      <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                    </filter>
+                  </defs>
+                  <g filter="url(#nfPage)" fill="none" stroke="url(#ngPage)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z"/>
+                    <path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z"/>
+                    <g id="eye-pupil-page" style="transition: transform 0.1s ease-out;">
+                      <circle cx="60" cy="60" r="6"/>
+                      <circle cx="60" cy="60" r="2" fill="url(#ngPage)" stroke="none"/>
+                    </g>
+                    <path d="M60 15 V 30" stroke-width="2" opacity="0.6"/>
+                    <path d="M60 90 V 105" stroke-width="2" opacity="0.6"/>
+                  </g>
+                </svg>
+            </a>
+            <div class="lp-nav-links"></div>
+            <div style="justify-self:end;">
+                <a href="https://sentinelpay.org" class="lp-back-btn">&#8592; back to home</a>
+            </div>
         </div>
-        <a href="https://sentinelpay.org" class="auth-nav-btn">return to sentinelpay</a>
-    </header>
+    </nav>
 
     <main class="kb-wrapper">
 
@@ -133,24 +134,19 @@
     </main>
 
     <script>
-        const searchInput = document.getElementById('search-input');
-        const searchContainer = document.getElementById('search-container');
-        searchInput.addEventListener('focus', () => searchContainer.classList.add('focused'));
-        searchInput.addEventListener('blur', () => searchContainer.classList.remove('focused'));
-
-        // Eye-cursor tracking
         (function() {
-            var pupils = document.querySelectorAll('.eye-pupil');
-            if (pupils.length > 0) {
+            var si = document.getElementById('search-input');
+            var sc = document.getElementById('search-container');
+            if (si) {
+                si.addEventListener('focus', function() { sc.classList.add('focused'); });
+                si.addEventListener('blur', function() { sc.classList.remove('focused'); });
+            }
+            var pupil = document.getElementById('eye-pupil-page');
+            if (pupil) {
                 document.addEventListener('mousemove', function(e) {
-                    var cx = window.innerWidth / 2;
-                    var cy = window.innerHeight / 2;
-                    var ox = (e.clientX - cx) / cx;
-                    var oy = (e.clientY - cy) / cy;
-                    var m = 3;
-                    pupils.forEach(function(pupil) {
-                        pupil.style.transform = 'translate(' + (ox * m) + 'px, ' + (oy * m) + 'px)';
-                    });
+                    var cx = window.innerWidth / 2, cy = window.innerHeight / 2;
+                    var ox = (e.clientX - cx) / cx, oy = (e.clientY - cy) / cy;
+                    pupil.style.transform = 'translate(' + (ox * 3) + 'px, ' + (oy * 3) + 'px)';
                 });
             }
         })();
