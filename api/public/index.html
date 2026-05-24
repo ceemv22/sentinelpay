@@ -36,7 +36,7 @@
     <link rel="icon" type="image/svg+xml" href="logo.svg">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css?v=4.0">
-    <link rel="stylesheet" href="landing.css?v=2.0">
+    <link rel="stylesheet" href="landing.css?v=3.0">
     <script src="lib/supabase.js"></script>
 </head>
 <body class="lp-body">
@@ -261,22 +261,22 @@
         </div>
     </section>
 
-    <div class="lp-stats">
+    <div class="lp-stats lp-reveal">
         <div class="lp-stats-grid">
             <div class="lp-stat">
-                <span class="lp-stat-value">24/7</span>
+                <span class="lp-stat-value lp-stat-accent">24/7</span>
                 <span class="lp-stat-label">continuous chain monitoring</span>
             </div>
             <div class="lp-stat">
-                <span class="lp-stat-value">&lt;1s</span>
+                <span class="lp-stat-value lp-stat-accent">&lt;1s</span>
                 <span class="lp-stat-label">transaction analysis latency</span>
             </div>
             <div class="lp-stat">
-                <span class="lp-stat-value">5</span>
+                <span class="lp-stat-value lp-stat-accent">5</span>
                 <span class="lp-stat-label">on-chain risk heuristics</span>
             </div>
             <div class="lp-stat">
-                <span class="lp-stat-value">instant</span>
+                <span class="lp-stat-value lp-stat-accent">instant</span>
                 <span class="lp-stat-label">email alert dispatch</span>
             </div>
         </div>
@@ -284,25 +284,82 @@
 
     <section class="lp-section lp-how" id="how-it-works">
         <div class="lp-section-inner">
-            <p class="lp-eyebrow">integration</p>
-            <h2 class="lp-h2">up and running in minutes</h2>
-            <div class="lp-steps">
-                <div class="lp-step">
-                    <div class="lp-step-num">01</div>
-                    <h3 class="lp-step-title">connect your rpc</h3>
-                    <p class="lp-step-desc">paste your blockchain rpc endpoint into the sentinelpay dashboard. we support any evm-compatible node — your own infra or a provider.</p>
+            <p class="lp-eyebrow lp-reveal">integration</p>
+            <h2 class="lp-h2 lp-reveal">up and running in minutes</h2>
+
+            <div class="lp-how-row lp-reveal">
+                <div class="lp-how-text">
+                    <div class="lp-how-step-num">01</div>
+                    <h3 class="lp-how-title">connect your rpc</h3>
+                    <p class="lp-how-desc">paste your blockchain rpc endpoint into the sentinelpay dashboard. we support any evm-compatible node — your own infra or a provider.</p>
                 </div>
-                <div class="lp-step-arrow">→</div>
-                <div class="lp-step">
-                    <div class="lp-step-num">02</div>
-                    <h3 class="lp-step-title">we listen 24/7</h3>
-                    <p class="lp-step-desc">sentinelpay subscribes to your chain and runs every transaction through 5 on-chain risk heuristics in real-time. zero manual work required.</p>
+                <div class="lp-how-visual">
+                    <div class="lp-terminal">
+                        <div class="lp-terminal-bar">
+                            <span class="lp-dot lp-dot-red"></span>
+                            <span class="lp-dot lp-dot-yellow"></span>
+                            <span class="lp-dot lp-dot-green"></span>
+                            <span class="lp-terminal-title">dashboard · rpc config</span>
+                        </div>
+                        <pre class="lp-terminal-code"><code>{
+  <span class="lp-c-key">"name"</span>: <span class="lp-c-val">"mainnet-node"</span>,
+  <span class="lp-c-key">"rpc_url"</span>: <span class="lp-c-val">"https://eth.node.io/..."</span>,
+  <span class="lp-c-key">"alert_email"</span>: <span class="lp-c-val">"ops@yourco.com"</span>,
+  <span class="lp-c-key">"risk_threshold"</span>: <span class="lp-c-num">60</span>
+  <span class="lp-c-comment">// → monitoring active</span>
+}</code></pre>
+                    </div>
                 </div>
-                <div class="lp-step-arrow">→</div>
-                <div class="lp-step">
-                    <div class="lp-step-num">03</div>
-                    <h3 class="lp-step-title">get the alert</h3>
-                    <p class="lp-step-desc">the moment a wallet scores above your configured threshold, we send an email to your team with the score, flags, and transaction details.</p>
+            </div>
+
+            <div class="lp-how-row lp-how-row-reverse lp-reveal">
+                <div class="lp-how-text">
+                    <div class="lp-how-step-num">02</div>
+                    <h3 class="lp-how-title">we listen 24/7</h3>
+                    <p class="lp-how-desc">sentinelpay subscribes to your chain and runs every transaction through 5 on-chain risk heuristics in real-time. zero manual work required.</p>
+                </div>
+                <div class="lp-how-visual">
+                    <div class="lp-monitor-log">
+                        <div class="lp-terminal-bar">
+                            <span class="lp-dot lp-dot-red"></span>
+                            <span class="lp-dot lp-dot-yellow"></span>
+                            <span class="lp-dot lp-dot-green"></span>
+                            <span class="lp-terminal-title">sentinel · live scan</span>
+                        </div>
+                        <div class="lp-log-lines">
+                            <div class="lp-log-line"><span class="lp-log-ts">10:41:02</span><span class="lp-log-ok"> ✓ </span>0x4f3a...d8c1 score=<span class="lp-log-green">12</span></div>
+                            <div class="lp-log-line"><span class="lp-log-ts">10:41:04</span><span class="lp-log-ok"> ✓ </span>0xa1b2...9e3f score=<span class="lp-log-green">08</span></div>
+                            <div class="lp-log-line"><span class="lp-log-ts">10:41:07</span><span class="lp-log-warn"> ⚠ </span>0x9c7d...3b2a score=<span class="lp-log-yellow">45</span></div>
+                            <div class="lp-log-line"><span class="lp-log-ts">10:41:09</span><span class="lp-log-ok"> ✓ </span>0x2e8f...c5a7 score=<span class="lp-log-green">03</span></div>
+                            <div class="lp-log-line lp-log-line-danger"><span class="lp-log-ts">10:41:11</span><span class="lp-log-danger"> ✕ </span>0x7f1e...9d04 score=<span class="lp-log-red">78</span></div>
+                            <div class="lp-log-line lp-log-line-blink"><span class="lp-log-ts">10:41:11</span><span class="lp-log-danger"> → </span><span class="lp-log-alert">alert dispatched</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lp-how-row lp-reveal">
+                <div class="lp-how-text">
+                    <div class="lp-how-step-num">03</div>
+                    <h3 class="lp-how-title">get the alert</h3>
+                    <p class="lp-how-desc">the moment a wallet scores above your configured threshold, we send an email to your team with the score, flags, and transaction details.</p>
+                </div>
+                <div class="lp-how-visual">
+                    <div class="lp-alert-card">
+                        <div class="lp-alert-header">
+                            <div class="lp-alert-badge">high risk</div>
+                            <div class="lp-alert-score">78<span class="lp-alert-score-max">/100</span></div>
+                        </div>
+                        <div class="lp-alert-wallet">0x7f1e...9d04</div>
+                        <div class="lp-alert-flags">
+                            <span class="lp-alert-flag">mixer_interaction</span>
+                            <span class="lp-alert-flag">high_velocity</span>
+                        </div>
+                        <div class="lp-alert-meta">
+                            <span>tx: 0xabc123...</span>
+                            <span>2026-05-23 · 10:41:11</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -310,43 +367,53 @@
 
     <section class="lp-section lp-signals">
         <div class="lp-section-inner">
-            <p class="lp-eyebrow">heuristics</p>
-            <h2 class="lp-h2">what triggers an alert</h2>
-            <div class="lp-signals-grid">
+            <p class="lp-eyebrow lp-reveal">heuristics</p>
+            <h2 class="lp-h2 lp-reveal">what triggers an alert</h2>
+            <div class="lp-signals-grid lp-reveal">
                 <div class="lp-signal-card lp-signal-critical">
+                    <div class="lp-signal-scanline"></div>
                     <div class="lp-signal-header">
                         <code class="lp-signal-flag">mixer_interaction</code>
                         <span class="lp-signal-score lp-score-red">+50</span>
                     </div>
                     <p class="lp-signal-desc">direct inbound transfers above 0.001 eth from a known mixing service such as tornado cash.</p>
+                    <div class="lp-signal-meter"><div class="lp-signal-meter-fill lp-meter-red" style="--meter-w:90%"></div></div>
                 </div>
                 <div class="lp-signal-card lp-signal-critical">
+                    <div class="lp-signal-scanline"></div>
                     <div class="lp-signal-header">
                         <code class="lp-signal-flag">sanctioned_entity</code>
                         <span class="lp-signal-score lp-score-red">→ 100</span>
                     </div>
                     <p class="lp-signal-desc">wallet address matched against a known high-risk entity set. triggers maximum risk score immediately.</p>
+                    <div class="lp-signal-meter"><div class="lp-signal-meter-fill lp-meter-red" style="--meter-w:100%"></div></div>
                 </div>
                 <div class="lp-signal-card lp-signal-medium">
+                    <div class="lp-signal-scanline"></div>
                     <div class="lp-signal-header">
                         <code class="lp-signal-flag">new_wallet</code>
                         <span class="lp-signal-score lp-score-yellow">+20</span>
                     </div>
                     <p class="lp-signal-desc">wallet is less than 30 days old with limited on-chain history to establish trust.</p>
+                    <div class="lp-signal-meter"><div class="lp-signal-meter-fill lp-meter-yellow" style="--meter-w:40%"></div></div>
                 </div>
                 <div class="lp-signal-card lp-signal-medium">
+                    <div class="lp-signal-scanline"></div>
                     <div class="lp-signal-header">
                         <code class="lp-signal-flag">high_velocity</code>
                         <span class="lp-signal-score lp-score-yellow">+20</span>
                     </div>
                     <p class="lp-signal-desc">more than 50 transactions in the last 24 hours — indicative of automated or layering behavior.</p>
+                    <div class="lp-signal-meter"><div class="lp-signal-meter-fill lp-meter-yellow" style="--meter-w:40%"></div></div>
                 </div>
                 <div class="lp-signal-card lp-signal-low">
+                    <div class="lp-signal-scanline"></div>
                     <div class="lp-signal-header">
                         <code class="lp-signal-flag">io_imbalance</code>
                         <span class="lp-signal-score lp-score-blue">+10</span>
                     </div>
                     <p class="lp-signal-desc">output-to-input value ratio exceeds 10:1 across a minimum of 10 transactions.</p>
+                    <div class="lp-signal-meter"><div class="lp-signal-meter-fill lp-meter-blue" style="--meter-w:20%"></div></div>
                 </div>
             </div>
         </div>
@@ -354,21 +421,31 @@
 
     <section class="lp-section lp-code-section">
         <div class="lp-section-inner">
-            <p class="lp-eyebrow">alert format</p>
-            <h2 class="lp-h2">everything you need, in one email.</h2>
-            <div class="lp-code-grid">
-                <div class="lp-code-block">
-                    <div class="lp-code-label">rpc connection · dashboard config</div>
-                    <pre class="lp-pre"><code>{
+            <p class="lp-eyebrow lp-reveal">alert format</p>
+            <h2 class="lp-h2 lp-reveal">everything you need, in one email.</h2>
+            <div class="lp-code-grid lp-reveal">
+                <div class="lp-terminal">
+                    <div class="lp-terminal-bar">
+                        <span class="lp-dot lp-dot-red"></span>
+                        <span class="lp-dot lp-dot-yellow"></span>
+                        <span class="lp-dot lp-dot-green"></span>
+                        <span class="lp-terminal-title">rpc connection · dashboard config</span>
+                    </div>
+                    <pre class="lp-terminal-code"><code>{
   <span class="lp-c-key">"name"</span>: <span class="lp-c-val">"mainnet-node"</span>,
   <span class="lp-c-key">"rpc_url"</span>: <span class="lp-c-val">"https://eth.yourprovider.com/..."</span>,
   <span class="lp-c-key">"alert_email"</span>: <span class="lp-c-val">"ops@yourplatform.com"</span>,
   <span class="lp-c-key">"risk_threshold"</span>: <span class="lp-c-num">60</span>
 }</code></pre>
                 </div>
-                <div class="lp-code-block">
-                    <div class="lp-code-label">alert payload · sent to your email</div>
-                    <pre class="lp-pre"><code>{
+                <div class="lp-terminal">
+                    <div class="lp-terminal-bar">
+                        <span class="lp-dot lp-dot-red"></span>
+                        <span class="lp-dot lp-dot-yellow"></span>
+                        <span class="lp-dot lp-dot-green"></span>
+                        <span class="lp-terminal-title">alert payload · sent to your email</span>
+                    </div>
+                    <pre class="lp-terminal-code"><code>{
   <span class="lp-c-key">"event"</span>: <span class="lp-c-val">"risk_detected"</span>,
   <span class="lp-c-key">"score"</span>: <span class="lp-c-num">72</span>,
   <span class="lp-c-key">"category"</span>: <span class="lp-c-val">"high"</span>,
@@ -379,15 +456,15 @@
 }</code></pre>
                 </div>
             </div>
-            <p class="lp-code-note">also included: on-demand wallet scans via <code>/v1/score</code> for manual checks at any time.</p>
+            <p class="lp-code-note lp-reveal">also included: on-demand wallet scans via <code>/v1/score</code> for manual checks at any time.</p>
         </div>
     </section>
 
     <section class="lp-section lp-pricing" id="pricing">
         <div class="lp-section-inner">
-            <p class="lp-eyebrow">pricing</p>
-            <h2 class="lp-h2">simple, transparent pricing</h2>
-            <div class="lp-pricing-grid">
+            <p class="lp-eyebrow lp-reveal">pricing</p>
+            <h2 class="lp-h2 lp-reveal">simple, transparent pricing</h2>
+            <div class="lp-pricing-grid lp-reveal">
                 <div class="lp-plan-card glass-panel">
                     <div class="lp-plan-name">starter</div>
                     <div class="lp-plan-price">
@@ -499,47 +576,61 @@
 
     <section class="lp-section lp-usecases">
         <div class="lp-section-inner">
-            <p class="lp-eyebrow">use cases</p>
-            <h2 class="lp-h2">built for high-stakes payment flows</h2>
-            <div class="lp-usecase-grid">
+            <p class="lp-eyebrow lp-reveal">use cases</p>
+            <h2 class="lp-h2 lp-reveal">built for high-stakes payment flows</h2>
+            <div class="lp-usecase-grid lp-reveal">
                 <div class="lp-usecase-card glass-panel">
-                    <div class="lp-usecase-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                    <div class="lp-usecase-bg-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.75"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
                     </div>
-                    <h3 class="lp-usecase-title">crypto casinos & igaming</h3>
-                    <p class="lp-usecase-desc">get alerted before laundered funds clear. protect your license without slowing down your deposit flow.</p>
+                    <div class="lp-usecase-content">
+                        <div class="lp-usecase-tag">high volume</div>
+                        <h3 class="lp-usecase-title">crypto casinos & igaming</h3>
+                        <p class="lp-usecase-desc">get alerted before laundered funds clear. protect your license without slowing down your deposit flow. real-time scoring on every incoming wallet.</p>
+                    </div>
                 </div>
                 <div class="lp-usecase-card glass-panel">
-                    <div class="lp-usecase-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                    <div class="lp-usecase-bg-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.75"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
                     </div>
-                    <h3 class="lp-usecase-title">payment gateways</h3>
-                    <p class="lp-usecase-desc">monitor every incoming transaction across your payment rails. act on risky wallets before funds settle.</p>
+                    <div class="lp-usecase-content">
+                        <div class="lp-usecase-tag">payment rails</div>
+                        <h3 class="lp-usecase-title">payment gateways</h3>
+                        <p class="lp-usecase-desc">monitor every incoming transaction across your payment rails. act on risky wallets before funds settle.</p>
+                    </div>
                 </div>
                 <div class="lp-usecase-card glass-panel">
-                    <div class="lp-usecase-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                    <div class="lp-usecase-bg-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.75"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
                     </div>
-                    <h3 class="lp-usecase-title">otc & exchange desks</h3>
-                    <p class="lp-usecase-desc">catch high-risk counterparties the moment they initiate a trade. real-time intelligence before block settlements.</p>
+                    <div class="lp-usecase-content">
+                        <div class="lp-usecase-tag">block settlements</div>
+                        <h3 class="lp-usecase-title">otc & exchange desks</h3>
+                        <p class="lp-usecase-desc">catch high-risk counterparties the moment they initiate a trade. real-time intelligence before block settlements.</p>
+                    </div>
                 </div>
                 <div class="lp-usecase-card glass-panel">
-                    <div class="lp-usecase-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    <div class="lp-usecase-bg-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.75"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                     </div>
-                    <h3 class="lp-usecase-title">aml compliance teams</h3>
-                    <p class="lp-usecase-desc">automate your first line of defense. route risk alerts directly into your case management workflow.</p>
+                    <div class="lp-usecase-content">
+                        <div class="lp-usecase-tag">compliance</div>
+                        <h3 class="lp-usecase-title">aml compliance teams</h3>
+                        <p class="lp-usecase-desc">automate your first line of defense. route risk alerts directly into your case management workflow.</p>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="lp-cta-section">
+    <section class="lp-cta-section lp-reveal">
+        <div class="lp-cta-grid-bg"></div>
         <div class="lp-section-inner lp-cta-inner">
-            <h2 class="lp-h2 lp-cta-h2">your chain is live. are you watching it?</h2>
+            <div class="lp-cta-label">get started today</div>
+            <h2 class="lp-h2 lp-cta-h2 lp-cta-h2-gradient">your chain is live.<br>are you watching it?</h2>
             <p class="lp-cta-sub">connect your rpc and start receiving risk alerts today.</p>
             <div class="lp-hero-ctas">
-                <a href="/auth#register" class="lp-cta-primary">get started</a>
+                <a href="/auth#register" class="lp-cta-primary lp-cta-pulse">get started free</a>
                 <a href="mailto:support@sentinelpay.org" class="lp-cta-ghost">contact sales</a>
             </div>
         </div>
@@ -768,5 +859,30 @@
     </script>
     <script src="toast.js"></script>
     <script src="app.js"></script>
+    <script>
+        (function() {
+            var reveals = document.querySelectorAll('.lp-reveal');
+            var revealObs = new IntersectionObserver(function(entries) {
+                entries.forEach(function(e) {
+                    if (e.isIntersecting) {
+                        e.target.classList.add('lp-visible');
+                        revealObs.unobserve(e.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            reveals.forEach(function(el) { revealObs.observe(el); });
+
+            var meters = document.querySelectorAll('.lp-signal-card');
+            var meterObs = new IntersectionObserver(function(entries) {
+                entries.forEach(function(e) {
+                    if (e.isIntersecting) {
+                        e.target.classList.add('lp-meter-triggered');
+                        meterObs.unobserve(e.target);
+                    }
+                });
+            }, { threshold: 0.3 });
+            meters.forEach(function(el) { meterObs.observe(el); });
+        })();
+    </script>
 </body>
 </html>
