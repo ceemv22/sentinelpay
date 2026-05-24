@@ -2543,3 +2543,53 @@ html.auth-session-present #lp-cta-dashboard { display: inline-flex !important; }
 @media (max-width: 900px) {
     .lp-snap-ind { display: none; }
 }
+
+/* ---- desktop: one section per viewport ---- */
+
+@media (min-width: 900px) {
+    html {
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        overflow-y: scroll;
+    }
+
+    html::-webkit-scrollbar {
+        display: none;
+    }
+
+    .lp-hero {
+        min-height: unset;
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    .lp-section {
+        height: 100vh;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        padding: 4rem 0;
+    }
+
+    .lp-section-inner {
+        max-height: calc(100vh - 8rem);
+        overflow: hidden;
+        width: 100%;
+    }
+
+    .lp-cta-section {
+        height: 100vh;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .lp-footer {
+        height: 100vh;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+}
