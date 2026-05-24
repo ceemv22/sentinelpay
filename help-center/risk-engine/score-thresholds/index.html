@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -7,7 +7,7 @@
     <meta name="description" content="How to interpret the numerical score and set your own acceptance levels.">
     <meta name="theme-color" content="#050505">
     <link rel="icon" type="image/svg+xml" href="/logo.svg">
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Inter:wght@300;400;500;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/style.css">
     <link rel="stylesheet" href="/category.css">
     <link rel="stylesheet" href="/article.css">
@@ -107,23 +107,19 @@
         </footer>
     </main>
     <script>
-        const searchInput = document.getElementById('search-input');
-        const searchContainer = document.getElementById('search-container');
-        searchInput.addEventListener('focus', () => searchContainer.classList.add('focused'));
-        searchInput.addEventListener('blur', () => searchContainer.classList.remove('focused'));
-
         (function() {
-            var pupils = document.querySelectorAll('.eye-pupil');
-            if (pupils.length > 0) {
+            var si = document.getElementById('search-input');
+            var sc = document.getElementById('search-container');
+            if (si) {
+                si.addEventListener('focus', function() { sc.classList.add('focused'); });
+                si.addEventListener('blur', function() { sc.classList.remove('focused'); });
+            }
+            var pupil = document.getElementById('eye-pupil-page');
+            if (pupil) {
                 document.addEventListener('mousemove', function(e) {
-                    var cx = window.innerWidth / 2;
-                    var cy = window.innerHeight / 2;
-                    var ox = (e.clientX - cx) / cx;
-                    var oy = (e.clientY - cy) / cy;
-                    var m = 3;
-                    pupils.forEach(function(pupil) {
-                        pupil.style.transform = 'translate(' + (ox * m) + 'px, ' + (oy * m) + 'px)';
-                    });
+                    var cx = window.innerWidth / 2, cy = window.innerHeight / 2;
+                    var ox = (e.clientX - cx) / cx, oy = (e.clientY - cy) / cy;
+                    pupil.style.transform = 'translate(' + (ox * 3) + 'px, ' + (oy * 3) + 'px)';
                 });
             }
         })();
