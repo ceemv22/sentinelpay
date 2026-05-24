@@ -595,6 +595,28 @@ body {
     transform: translateY(-1px) !important;
 }
 
+.lp-back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    padding: 0.45rem 1rem;
+    border-radius: 50px;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    background: transparent;
+    text-transform: lowercase;
+    transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.lp-back-btn:hover {
+    color: var(--text-main);
+    border-color: rgba(255, 255, 255, 0.18);
+    background: rgba(255, 255, 255, 0.04);
+}
+
 /* ---- hamburger + mobile menu ---- */
 
 .lp-hamburger {
