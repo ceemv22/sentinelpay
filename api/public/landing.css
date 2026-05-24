@@ -2204,6 +2204,10 @@ html.auth-session-present #lp-mm-dashboard { display: block !important; }
     .lp-cta-h2-gradient { font-size: clamp(1.5rem, 6vw, 2rem); }
 }
 
+html.auth-session-present #lp-cta-login,
+html.auth-session-present #lp-cta-register { display: none !important; }
+html.auth-session-present #lp-cta-dashboard { display: inline-flex !important; }
+
 .lp-pricing-grid { align-items: stretch; }
 .lp-plan-featured { transform: scale(1.04) translateY(-5px); z-index: 2; }
 @media (max-width: 960px) {
