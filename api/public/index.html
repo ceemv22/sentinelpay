@@ -32,6 +32,7 @@
     }
     </script>
 
+    <script>(function(){try{var s=localStorage.getItem('sb-aivqwkgjdpklxxuvkxpy-auth-token');if(s){var d=JSON.parse(s);if(d&&d.expires_at&&Math.floor(Date.now()/1000)<d.expires_at){document.documentElement.classList.add('auth-session-present');}}}catch(e){}})();</script>
     <link rel="icon" type="image/svg+xml" href="logo.svg">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css?v=4.0">
@@ -124,6 +125,7 @@
             <div id="auth-nav-container" style="display: flex; gap: 0.5rem; align-items: center;">
                 <a href="/auth#login" id="nav-login-btn" class="auth-nav-btn lp-btn-ghost lp-desktop-auth">login</a>
                 <a href="/auth#register" id="nav-register-btn" class="auth-nav-btn lp-btn-solid lp-desktop-auth">get started</a>
+                <a href="/dashboard/organizations" id="nav-dashboard-btn" class="auth-nav-btn lp-desktop-auth" style="display: none;">dashboard</a>
                 <button class="lp-hamburger" id="lp-hamburger" aria-label="menu">
                     <span class="lp-hb-line"></span>
                     <span class="lp-hb-line"></span>

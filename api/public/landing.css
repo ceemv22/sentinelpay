@@ -1764,3 +1764,14 @@ html.lp-scroll-lock body {
     .lp-plan-cta-solid:hover { transform: none; }
     .lp-plan-cta-solid:active { transform: scale(0.97); }
 }
+
+html.auth-session-present #nav-login-btn,
+html.auth-session-present #nav-register-btn { display: none !important; }
+
+html.auth-session-present #lp-mm-login,
+html.auth-session-present #lp-mm-register { display: none !important; }
+html.auth-session-present #lp-mm-dashboard { display: block !important; }
+
+@media (min-width: 1281px) {
+    html.auth-session-present #nav-dashboard-btn { display: inline-flex !important; }
+}
