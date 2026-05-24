@@ -378,7 +378,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-family: 'Space Grotesk', sans-serif;
+            font-family: 'JetBrains Mono', monospace;
             font-size: 1.1rem;
             font-weight: 700;
             color: #fff;
@@ -557,7 +557,7 @@
         }
 
         .header-title h1 {
-            font-family: 'Space Grotesk', sans-serif;
+            font-family: 'JetBrains Mono', monospace;
             font-size: 2.5rem;
             font-weight: 700;
             letter-spacing: -1px;
@@ -691,7 +691,7 @@
         }
 
         .section-header h3 {
-            font-family: 'Space Grotesk', sans-serif;
+            font-family: 'JetBrains Mono', monospace;
             font-size: 1.25rem;
             font-weight: 700;
         }
@@ -953,7 +953,7 @@
             display: none !important;
         }
         body.state-org-home .glow-orb {
-            display: none !important;
+            opacity: 0.6;
         }
         body:not(.state-org-home) .global-only {
             display: none !important;
@@ -969,6 +969,8 @@
             width: 36px;
             height: 36px;
             font-size: 1rem;
+            background: linear-gradient(135deg, rgba(0, 240, 255, 0.15), rgba(160, 32, 240, 0.12));
+            border-color: rgba(0, 240, 255, 0.2);
         }
 
 
@@ -985,11 +987,11 @@
 
         .org-home-header {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 1.4rem;
+            font-size: 1.75rem;
             font-weight: 700;
             color: #fff;
             margin-bottom: 0.5rem;
-            letter-spacing: -1px;
+            letter-spacing: -1.5px;
             text-transform: lowercase;
         }
 
@@ -1036,7 +1038,8 @@
 
         .org-search-input:focus {
             background: rgba(255, 255, 255, 0.04);
-            border-color: rgba(255, 255, 255, 0.15);
+            border-color: rgba(0, 240, 255, 0.35);
+            box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.06);
             outline: none;
         }
 
@@ -1075,7 +1078,8 @@
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 8px;
+            border-left: 2px solid rgba(0, 240, 255, 0.25);
+            border-radius: 10px;
             padding: 1.25rem;
             display: flex;
             align-items: center;
@@ -1085,22 +1089,23 @@
         }
 
         .org-card-item:hover {
-            background: rgba(20, 20, 20, 0.8);
-            border-color: rgba(255, 255, 255, 0.12);
+            background: rgba(0, 240, 255, 0.03);
+            border-color: rgba(255, 255, 255, 0.1);
+            border-left-color: rgba(0, 240, 255, 0.55);
             transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(0, 240, 255, 0.06);
         }
 
         .org-card-avatar {
             width: 44px;
             height: 44px;
             border-radius: 6px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: linear-gradient(135deg, rgba(0, 240, 255, 0.12), rgba(160, 32, 240, 0.08));
+            border: 1px solid rgba(0, 240, 255, 0.15);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-family: 'Space Grotesk', sans-serif;
+            font-family: 'JetBrains Mono', monospace;
             font-size: 1.2rem;
             font-weight: 700;
             color: #fff;
