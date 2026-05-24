@@ -2,154 +2,189 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <script>(function(){try{var s=localStorage.getItem('sb-aivqwkgjdpklxxuvkxpy-auth-token');if(s){var d=JSON.parse(s);if(d&&d.expires_at&&Math.floor(Date.now()/1000)<d.expires_at){document.documentElement.classList.add('auth-session-present');}}}catch(e){}})();</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>sentinelpay | terms of service</title>
     <meta name="theme-color" content="#040404">
-    <link rel="icon" type="image/svg+xml" href="logo.svg">
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=JetBrains+Mono:wght@400;700;800&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=12.1">
+    <link rel="icon" type="image/svg+xml" href="/logo.svg">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css?v=12.1">
+    <link rel="stylesheet" href="/landing.css?v=3.0">
     <style>
         .tos-container {
-            width: 100%;
-            max-width: 900px;
+            max-width: 860px;
             margin: 0 auto;
-            padding: 4rem 2rem;
-            animation: authFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            padding: 8rem 2rem 5rem;
         }
         .tos-card {
-            background: rgba(10, 12, 15, 0.6);
-            backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 20px;
-            padding: 4rem;
-            box-shadow: 0 40px 80px -15px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            background: var(--bg-panel);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-glass);
+            border-radius: 16px;
+            padding: 3.5rem;
         }
         .tos-header {
-            margin-bottom: 4rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 3rem;
             padding-bottom: 2rem;
+            border-bottom: 1px solid var(--border-glass);
         }
         .tos-title {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 2.5rem;
-            font-weight: 800;
-            letter-spacing: -1.5px;
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: -0.04em;
             color: #fff;
+            text-transform: lowercase;
             margin-bottom: 0.5rem;
         }
         .tos-meta {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: var(--neon-blue);
+            text-transform: lowercase;
             opacity: 0.7;
         }
         .tos-body {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.95rem;
+            font-size: 0.88rem;
             line-height: 1.8;
-            color: rgba(255, 255, 255, 0.7);
+            color: var(--text-muted);
         }
-        .tos-section {
-            margin-bottom: 3rem;
-        }
+        .tos-section { margin-bottom: 2.75rem; }
         .tos-section h2 {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 1.25rem;
+            font-size: 0.75rem;
             font-weight: 700;
-            color: #fff;
-            margin-bottom: 1.25rem;
-            letter-spacing: -0.5px;
+            color: var(--neon-blue);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
         }
-        .tos-section p {
-            margin-bottom: 1.25rem;
-        }
-        .tos-section ul {
-            list-style: none;
-            padding-left: 0;
-            margin-bottom: 1.25rem;
-        }
+        .tos-section p { margin-bottom: 1rem; }
+        .tos-section ul { list-style: none; padding: 0; margin-bottom: 1rem; }
         .tos-section li {
             position: relative;
-            padding-left: 1.5rem;
-            margin-bottom: 0.75rem;
+            padding-left: 1.25rem;
+            margin-bottom: 0.6rem;
         }
         .tos-section li::before {
-            content: "•";
+            content: "›";
             position: absolute;
             left: 0;
             color: var(--neon-blue);
-            font-weight: 800;
         }
-        .tos-footer {
-            margin-top: 4rem;
-            padding-top: 2rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        .tos-doc-footer {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-glass);
             text-align: center;
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.75rem;
-            color: rgba(255, 255, 255, 0.3);
+            font-size: 0.72rem;
+            color: rgba(255, 255, 255, 0.2);
+            text-transform: lowercase;
         }
-        @media (max-width: 768px) {
-            .tos-card {
-                padding: 2rem;
-            }
-            .tos-title {
-                font-size: 2rem;
-            }
+        .dl-btn {
+            background: rgba(0, 240, 255, 0.05);
+            border: 1px solid rgba(0, 240, 255, 0.18);
+            color: var(--neon-blue);
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: background 0.2s;
+        }
+        .dl-btn:hover { background: rgba(0, 240, 255, 0.1); }
+        @media (max-width: 600px) {
+            .tos-card { padding: 2rem 1.25rem; }
+            .tos-title { font-size: 1.5rem; }
         }
     </style>
 </head>
-<body style="min-height: 100vh; overflow-x: hidden; background: #050505;">
+<body>
     <div class="cyber-grid"></div>
-    <div class="glow-orb"></div>
+    <div class="glow-orb lp-glow-orb"></div>
 
-    <!-- Navigation -->
-    <div class="auth-topbar" style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem;">
-        <!-- Interactive Eye Logo in Top Left (Mobile ONLY) -->
-        <div class="auth-top-logo mobile-only" style="margin-right: auto;">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" style="width: 38px; height: 38px;">
-              <defs>
-                <linearGradient id="neonGradientNavEye" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stop-color="#00ffff" />
-                  <stop offset="100%" stop-color="#a020f0" />
-                </linearGradient>
-                <filter id="neonGlowNavEye" x="-50%" y="-50%" width="200%" height="200%">
-                  <feGaussianBlur stdDeviation="3.5" result="coloredBlur"/>
-                  <feMerge>
-                    <feMergeNode in="coloredBlur"/>
-                    <feMergeNode in="SourceGraphic"/>
-                  </feMerge>
-                </filter>
-              </defs>
-              <g filter="url(#neonGlowNavEye)" fill="none" stroke="url(#neonGradientNavEye)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z" />
-                <path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z" />
-                <g class="eye-pupil" style="transition: transform 0.1s ease-out;">
-                  <circle cx="60" cy="60" r="6" />
-                  <circle cx="60" cy="60" r="2" fill="url(#neonGradientNavEye)" stroke="none"/>
-                </g>
-                <path d="M60 15 V 30" stroke-width="2" opacity="0.6"/>
-                <path d="M60 90 V 105" stroke-width="2" opacity="0.6"/>
-              </g>
-            </svg>
+    <nav class="lp-nav">
+        <div class="lp-nav-inner">
+            <a href="/" class="lp-logo-link">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" class="lp-logo-svg">
+                  <defs>
+                    <linearGradient id="ngTos" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stop-color="#00ffff"/>
+                      <stop offset="100%" stop-color="#a020f0"/>
+                    </linearGradient>
+                    <filter id="nfTos" x="-50%" y="-50%" width="200%" height="200%">
+                      <feGaussianBlur stdDeviation="3.5" result="coloredBlur"/>
+                      <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                    </filter>
+                  </defs>
+                  <g filter="url(#nfTos)" fill="none" stroke="url(#ngTos)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z"/>
+                    <path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z"/>
+                    <g id="eye-pupil-tos" style="transition: transform 0.1s ease-out;">
+                      <circle cx="60" cy="60" r="6"/>
+                      <circle cx="60" cy="60" r="2" fill="url(#ngTos)" stroke="none"/>
+                    </g>
+                    <path d="M60 15 V 30" stroke-width="2" opacity="0.6"/>
+                    <path d="M60 90 V 105" stroke-width="2" opacity="0.6"/>
+                  </g>
+                </svg>
+            </a>
+            <div class="lp-nav-links">
+                <a href="/#pricing" class="lp-nav-link">pricing</a>
+                <a href="https://help.sentinelpay.org" class="lp-nav-link">docs</a>
+                <a href="mailto:support@sentinelpay.org" class="lp-nav-link">contact</a>
+            </div>
+            <div id="auth-nav-container" style="display:flex;gap:0.5rem;align-items:center;">
+                <a href="/auth#login" id="nav-login-btn" class="auth-nav-btn lp-btn-ghost lp-desktop-auth">login</a>
+                <a href="/auth#register" id="nav-register-btn" class="auth-nav-btn lp-btn-solid lp-desktop-auth">get started</a>
+                <a href="/dashboard/organizations" id="nav-dashboard-btn" class="auth-nav-btn lp-desktop-auth" style="display:none;">dashboard</a>
+                <button class="lp-hamburger" id="lp-hamburger" aria-label="menu">
+                    <span class="lp-hb-line"></span>
+                    <span class="lp-hb-line"></span>
+                    <span class="lp-hb-line"></span>
+                </button>
+            </div>
         </div>
+    </nav>
 
-        <a href="/" class="auth-nav-btn" style="background: transparent; border-color: rgba(255,255,255,0.1); color: var(--text-muted); margin-left: auto;">back to scanner</a>
+    <div class="lp-mobile-menu" id="lp-mobile-menu">
+        <div class="lp-mobile-menu-inner">
+            <a href="/#pricing" class="lp-mobile-link">pricing</a>
+            <a href="https://help.sentinelpay.org" class="lp-mobile-link">docs</a>
+            <a href="mailto:support@sentinelpay.org" class="lp-mobile-link">contact</a>
+            <div class="lp-mobile-divider"></div>
+            <div class="lp-mobile-ctas">
+                <a href="/auth#login" id="lp-mm-login" class="lp-mm-btn-ghost">login</a>
+                <a href="/auth#register" id="lp-mm-register" class="lp-mm-btn-solid">get started</a>
+                <a href="/dashboard/organizations" id="lp-mm-dashboard" class="lp-mm-btn-solid" style="display:none;">dashboard</a>
+            </div>
+        </div>
     </div>
 
     <div class="tos-container">
         <div class="tos-card">
-            <div class="tos-header" style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap;">
-                <div style="flex: 1; min-width: 200px;">
+            <div class="tos-header">
+                <div>
                     <h1 class="tos-title">terms of service</h1>
                     <p class="tos-meta">last updated: may 03, 2026</p>
                 </div>
-                <button id="download-tos" class="auth-nav-btn" style="background: rgba(0, 240, 255, 0.05); border-color: rgba(0, 240, 255, 0.2); color: var(--neon-blue); width: 42px; height: 42px; padding: 0; display: flex; align-items: center; justify-content: center; border-radius: 12px; flex-shrink: 0;" title="Download as .txt">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                        <polyline points="7 10 12 15 17 10"></polyline>
-                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                <button id="download-tos" class="dl-btn" title="download as .txt">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="7 10 12 15 17 10"/>
+                        <line x1="12" y1="15" x2="12" y2="3"/>
                     </svg>
                 </button>
             </div>
@@ -159,12 +194,10 @@
                     <h2>01. agreement to terms</h2>
                     <p>by accessing or using the sentinelpay security platform and api services, you agree to be bound by these terms of service. if you do not agree to these terms, you must immediately cease all use of the platform.</p>
                 </div>
-
                 <div class="tos-section">
                     <h2>02. description of service</h2>
                     <p>sentinelpay provides real-time security analytics, wallet risk scoring, and transaction monitoring for digital asset platforms. the service is designed as a security aid; however, final transaction authorization remains the sole responsibility of the user.</p>
                 </div>
-
                 <div class="tos-section">
                     <h2>03. user obligations</h2>
                     <p>you agree to use the platform only for lawful purposes. the following activities are strictly prohibited:</p>
@@ -175,67 +208,138 @@
                         <li>sharing api credentials or bypassing access control mechanisms.</li>
                     </ul>
                 </div>
-
                 <div class="tos-section">
                     <h2>04. credit system and billing</h2>
                     <p>access to high-frequency api endpoints requires sentinelpay credits. credits are non-refundable and represent pre-payed computing resources. we reserve the right to adjust credit pricing with a 30-day notice period for enterprise clients.</p>
                 </div>
-
                 <div class="tos-section">
                     <h2>05. intellectual property</h2>
                     <p>all software, algorithms, brand assets, and content on the sentinelpay platform are the exclusive property of sentinelpay. users are granted a limited, non-transferable license to utilize api outputs for internal security operations.</p>
                 </div>
-
                 <div class="tos-section">
                     <h2>06. limitation of liability</h2>
                     <p>sentinelpay is provided "as is" without warranties of any kind. to the maximum extent permitted by law, sentinelpay shall not be liable for any direct, indirect, or consequential damages resulting from lost assets, smart contract failures, or security breaches on the user's platform.</p>
                 </div>
-
                 <div class="tos-section">
                     <h2>07. privacy policy</h2>
                     <p>sentinelpay adheres to a strict data minimization policy. we collect only the necessary technical logs required for service delivery and billing. we do not sell user data to third parties. for more information, contact our security team.</p>
                 </div>
-
                 <div class="tos-section">
                     <h2>08. termination</h2>
                     <p>we reserve the right to suspend or terminate access to the platform for any user found to be in violation of these terms, or for any activity that compromises the security and stability of our global infrastructure.</p>
                 </div>
-
                 <div class="tos-section">
                     <h2>09. governing law</h2>
                     <p>these terms are governed by and construed in accordance with the laws of the republic of croatia. any disputes shall be subject to the exclusive jurisdiction of the competent courts in croatia.</p>
                 </div>
             </div>
 
-            <div class="tos-footer">
-                sentinelpay &copy; 2026 all rights reserved.
-            </div>
+            <div class="tos-doc-footer">sentinelpay &copy; 2026 · all rights reserved.</div>
         </div>
     </div>
 
-    <script src="eye-track.js"></script>
+    <footer class="lp-footer">
+        <div class="lp-section-inner">
+            <div class="lp-footer-top">
+                <div class="lp-footer-brand">
+                    <div class="lp-footer-brand-row">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" class="lp-footer-icon">
+                          <defs>
+                            <linearGradient id="ngTosF" x1="0%" y1="0%" x2="100%" y2="100%">
+                              <stop offset="0%" stop-color="#00ffff"/>
+                              <stop offset="100%" stop-color="#a020f0"/>
+                            </linearGradient>
+                            <filter id="nfTosF" x="-50%" y="-50%" width="200%" height="200%">
+                              <feGaussianBlur stdDeviation="3.5" result="coloredBlur"/>
+                              <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                            </filter>
+                          </defs>
+                          <g filter="url(#nfTosF)" fill="none" stroke="url(#ngTosF)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z"/>
+                            <path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z"/>
+                            <circle cx="60" cy="60" r="6"/>
+                            <circle cx="60" cy="60" r="2" fill="url(#ngTosF)" stroke="none"/>
+                            <path d="M60 15 V 30" stroke-width="2" opacity="0.6"/>
+                            <path d="M60 90 V 105" stroke-width="2" opacity="0.6"/>
+                          </g>
+                        </svg>
+                        <span class="lp-logo-text lp-footer-logo">sentinelpay</span>
+                    </div>
+                    <p class="lp-footer-tagline">real-time blockchain monitoring for crypto payment operators.</p>
+                </div>
+                <div class="lp-footer-links">
+                    <div class="lp-footer-col">
+                        <span class="lp-footer-col-title">product</span>
+                        <a href="/#pricing" class="lp-footer-link">pricing</a>
+                        <a href="https://help.sentinelpay.org" class="lp-footer-link">documentation</a>
+                        <a href="/auth#register" class="lp-footer-link">get started</a>
+                    </div>
+                    <div class="lp-footer-col">
+                        <span class="lp-footer-col-title">company</span>
+                        <a href="mailto:support@sentinelpay.org" class="lp-footer-link">contact</a>
+                        <a href="/privacy" class="lp-footer-link">privacy policy</a>
+                        <a href="/tos" class="lp-footer-link">terms of service</a>
+                    </div>
+                </div>
+            </div>
+            <div class="lp-footer-bottom">
+                <span class="lp-footer-copy">© 2026 sentinelpay. all rights reserved.</span>
+                <a href="mailto:support@sentinelpay.org" class="lp-footer-email">support@sentinelpay.org</a>
+            </div>
+        </div>
+    </footer>
+
     <script>
-        document.getElementById('download-tos').onclick = () => {
-            const body = document.getElementById('tos-content-body');
-            let text = "SENTINELPAY - TERMS OF SERVICE\n";
-            text += "Last Updated: May 03, 2026\n\n";
-            
-            body.querySelectorAll('.tos-section').forEach(section => {
-                const title = section.querySelector('h2').innerText;
-                const content = section.innerText.replace(title, '').trim();
-                text += `${title.toUpperCase()}\n${content}\n\n`;
-            });
-            
-            text += "\n© 2026 SentinelPay. All rights reserved.";
-            
-            const blob = new Blob([text], { type: 'text/plain' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'sentinelpay-terms-of-service.txt';
-            a.click();
-            window.URL.revokeObjectURL(url);
-        };
+        (function() {
+            var pupil = document.getElementById('eye-pupil-tos');
+            if (pupil) {
+                document.addEventListener('mousemove', function(e) {
+                    var cx = window.innerWidth / 2, cy = window.innerHeight / 2;
+                    var ox = (e.clientX - cx) / cx, oy = (e.clientY - cy) / cy;
+                    pupil.style.transform = 'translate(' + (ox * 3) + 'px, ' + (oy * 3) + 'px)';
+                });
+            }
+            var hamburger = document.getElementById('lp-hamburger');
+            var mobileMenu = document.getElementById('lp-mobile-menu');
+            if (hamburger && mobileMenu) {
+                hamburger.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    var open = hamburger.classList.contains('lp-hb-open');
+                    hamburger.classList.toggle('lp-hb-open', !open);
+                    mobileMenu.classList.toggle('lp-mm-open', !open);
+                    document.documentElement.classList.toggle('lp-scroll-lock', !open);
+                });
+                mobileMenu.querySelectorAll('a').forEach(function(a) {
+                    a.addEventListener('click', function() {
+                        hamburger.classList.remove('lp-hb-open');
+                        mobileMenu.classList.remove('lp-mm-open');
+                        document.documentElement.classList.remove('lp-scroll-lock');
+                    });
+                });
+                document.addEventListener('click', function(e) {
+                    if (mobileMenu.classList.contains('lp-mm-open') && !mobileMenu.contains(e.target) && !hamburger.contains(e.target)) {
+                        hamburger.classList.remove('lp-hb-open');
+                        mobileMenu.classList.remove('lp-mm-open');
+                        document.documentElement.classList.remove('lp-scroll-lock');
+                    }
+                });
+            }
+            document.getElementById('download-tos').onclick = function() {
+                var body = document.getElementById('tos-content-body');
+                var text = 'SENTINELPAY - TERMS OF SERVICE\nLast Updated: May 03, 2026\n\n';
+                body.querySelectorAll('.tos-section').forEach(function(s) {
+                    var title = s.querySelector('h2').innerText;
+                    var content = s.innerText.replace(title, '').trim();
+                    text += title.toUpperCase() + '\n' + content + '\n\n';
+                });
+                text += '\n© 2026 SentinelPay. All rights reserved.';
+                var blob = new Blob([text], { type: 'text/plain' });
+                var url = URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url; a.download = 'sentinelpay-tos.txt'; a.click();
+                URL.revokeObjectURL(url);
+            };
+        })();
     </script>
 </body>
 </html>

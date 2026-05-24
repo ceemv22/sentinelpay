@@ -44,7 +44,7 @@ html {
 body {
     background-color: var(--bg-dark);
     color: var(--text-main);
-    font-family: 'JetBrains Mono', 'Inter', -apple-system, sans-serif;
+    font-family: 'JetBrains Mono', monospace;
     min-height: 100vh;
     position: relative;
     overflow-x: hidden;
@@ -138,14 +138,13 @@ body {
     max-width: 900px;
     margin: 0 auto;
     padding: 0 2rem 6rem;
-    min-height: 100vh;
     display: flex;
     flex-direction: column;
 }
 
 /* --- HERO SECTION --- */
 .hero-section {
-    padding: 9rem 0 5rem;
+    padding: 8rem 0 5rem;
     text-align: center;
 }
 
@@ -467,4 +466,418 @@ body {
     .category-card {
         padding: 1.5rem;
     }
+}
+
+/* ---- lp-nav ---- */
+
+.lp-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    height: 64px;
+    background: rgba(5, 5, 5, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border-glass);
+}
+
+.lp-nav-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    height: 100%;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+}
+
+.lp-logo-link {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    justify-self: start;
+}
+
+.lp-logo-svg {
+    width: 30px;
+    height: 30px;
+}
+
+.lp-logo-text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.05rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #fff 0%, #888 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -0.5px;
+    text-transform: lowercase;
+}
+
+.lp-nav-links {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    justify-content: center;
+}
+
+#lp-auth-nav {
+    justify-self: end;
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.lp-nav-link {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    padding: 0.4rem 0.85rem;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    text-transform: lowercase;
+}
+
+.lp-nav-link:hover {
+    color: var(--text-main);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.lp-btn-ghost {
+    background: transparent !important;
+    border: 1px solid rgba(255, 255, 255, 0.06) !important;
+    color: var(--text-muted) !important;
+    font-size: 0.82rem !important;
+    padding: 0.45rem 1rem !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50px;
+    font-family: 'JetBrains Mono', monospace;
+    text-decoration: none;
+    text-transform: lowercase;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.lp-btn-ghost:hover {
+    color: var(--text-main) !important;
+    border-color: rgba(255, 255, 255, 0.18) !important;
+    background: rgba(255, 255, 255, 0.04) !important;
+}
+
+.lp-btn-solid {
+    background: #fff !important;
+    border: 1px solid #fff !important;
+    color: #000 !important;
+    font-weight: 700 !important;
+    font-size: 0.82rem !important;
+    padding: 0.45rem 1rem !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50px;
+    font-family: 'JetBrains Mono', monospace;
+    text-decoration: none;
+    text-transform: lowercase;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.lp-btn-solid:hover {
+    background: rgba(255, 255, 255, 0.88) !important;
+    box-shadow: 0 0 24px rgba(255, 255, 255, 0.12) !important;
+    transform: translateY(-1px) !important;
+}
+
+/* ---- hamburger + mobile menu ---- */
+
+.lp-hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    flex-shrink: 0;
+    background: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+    border: none !important;
+    padding: 6px !important;
+    transform: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+    -webkit-appearance: none;
+}
+
+.lp-hamburger:hover,
+.lp-hamburger:focus,
+.lp-hamburger:active {
+    background: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+    transform: none !important;
+}
+
+.lp-hb-line {
+    width: 20px;
+    height: 1.5px;
+    background: var(--text-muted);
+    border-radius: 2px;
+    transition: transform 0.25s ease, opacity 0.25s ease;
+    transform-origin: center;
+}
+
+.lp-hamburger.lp-hb-open .lp-hb-line { background: var(--text-main); }
+.lp-hamburger.lp-hb-open .lp-hb-line:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+.lp-hamburger.lp-hb-open .lp-hb-line:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.lp-hamburger.lp-hb-open .lp-hb-line:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+html.lp-scroll-lock,
+html.lp-scroll-lock body {
+    overflow: hidden;
+    touch-action: none;
+}
+
+.lp-mobile-menu {
+    position: fixed;
+    top: 64px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 998;
+    background: rgba(5, 5, 8, 0.99);
+    backdrop-filter: blur(28px);
+    -webkit-backdrop-filter: blur(28px);
+    border-top: 1px solid var(--border-glass);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-6px);
+    transition: opacity 0.18s ease, transform 0.18s ease;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+}
+
+.lp-mobile-menu.lp-mm-open {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+.lp-mobile-menu-inner {
+    padding: 0.5rem 0.75rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+}
+
+.lp-mobile-link {
+    display: block;
+    padding: 0.75rem 0.75rem;
+    border-radius: 8px;
+    color: var(--text-main);
+    text-decoration: none;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.88rem;
+    text-transform: lowercase;
+    transition: background 0.15s ease;
+}
+
+.lp-mobile-link:active { background: rgba(255, 255, 255, 0.05); }
+
+.lp-mobile-divider {
+    height: 1px;
+    background: var(--border-glass);
+    margin: 0.4rem 0.75rem;
+}
+
+.lp-mobile-ctas {
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.5rem 0.25rem 0;
+    margin-top: auto;
+}
+
+.lp-mm-btn-ghost,
+.lp-mm-btn-solid {
+    flex: 1;
+    text-align: center;
+    padding: 0.7rem 1rem;
+    border-radius: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    text-decoration: none;
+    text-transform: lowercase;
+    transition: background 0.15s ease, border-color 0.15s ease;
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+}
+
+.lp-mm-btn-ghost:focus,
+.lp-mm-btn-solid:focus { outline: none; }
+
+.lp-mm-btn-ghost {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: var(--text-muted);
+}
+
+.lp-mm-btn-solid {
+    background: #fff;
+    color: #000;
+    border: 1px solid transparent;
+    font-weight: 500;
+}
+
+/* ---- section inner ---- */
+
+.lp-section-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+/* ---- footer ---- */
+
+.lp-footer {
+    position: relative;
+    z-index: 10;
+    padding: 4rem 0 2rem;
+    border-top: 1px solid var(--border-glass);
+    background: rgba(3, 3, 3, 0.7);
+}
+
+.lp-footer-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 4rem;
+    margin-bottom: 3rem;
+}
+
+.lp-footer-brand {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    max-width: 240px;
+}
+
+.lp-footer-brand-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.lp-footer-icon {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+}
+
+.lp-footer-logo {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #fff 0%, #888 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -0.5px;
+    text-transform: lowercase;
+}
+
+.lp-footer-tagline {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.84rem;
+    color: var(--text-muted);
+    line-height: 1.55;
+    font-weight: 300;
+    text-transform: lowercase;
+    margin: 0;
+}
+
+.lp-footer-links {
+    display: flex;
+    gap: 4rem;
+}
+
+.lp-footer-col {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+}
+
+.lp-footer-col-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--text-main);
+    text-transform: lowercase;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+    margin-bottom: 0.2rem;
+}
+
+.lp-footer-link {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.84rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    text-transform: lowercase;
+    transition: color 0.2s ease;
+}
+
+.lp-footer-link:hover { color: var(--text-main); }
+
+.lp-footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-glass);
+}
+
+.lp-footer-copy {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: lowercase;
+}
+
+.lp-footer-email {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    text-transform: lowercase;
+    transition: color 0.2s ease;
+}
+
+.lp-footer-email:hover { color: var(--text-main); }
+
+/* ---- nav responsive ---- */
+
+@media (max-width: 768px) {
+    .lp-nav-links { display: none; }
+    .lp-nav-inner { grid-template-columns: 1fr auto; }
+    .lp-desktop-auth { display: none !important; }
+    .lp-hamburger { display: flex; }
+
+    .kb-wrapper { padding-top: 0; }
+    .hero-section { padding-top: 5.5rem; }
+
+    .lp-section-inner { padding: 0 1.25rem; }
+    .lp-footer { padding: 3rem 0 2rem; }
+    .lp-footer-top { flex-direction: column; gap: 2.5rem; }
+    .lp-footer-brand { max-width: none; }
+    .lp-footer-links { gap: 2rem; flex-wrap: wrap; }
+    .lp-footer-bottom { flex-direction: column; gap: 0.75rem; text-align: center; }
+
+    .lp-btn-solid:hover { transform: none !important; }
 }
