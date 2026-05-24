@@ -716,6 +716,21 @@
 
     <script>
         (function() {
+            if (history.scrollRestoration) history.scrollRestoration = 'manual';
+
+            var _sv = parseInt(sessionStorage.getItem('lp_scroll') || '0', 10);
+            sessionStorage.removeItem('lp_scroll');
+            if (_sv > 60) {
+                window.scrollTo(0, _sv);
+                setTimeout(function() {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }, 80);
+            }
+
+            window.addEventListener('beforeunload', function() {
+                sessionStorage.setItem('lp_scroll', String(window.scrollY));
+            });
+
             var pupil = document.getElementById('eye-pupil');
             if (pupil) {
                 document.addEventListener('mousemove', function(e) {
