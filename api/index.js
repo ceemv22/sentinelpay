@@ -946,6 +946,121 @@ app.post('/v1/organizations/:slug/team/join', requireSupabaseAuth, async (req, r
     }
 });
 
+app.get('/v1/user/pending-invitations', requireSupabaseAuth, async (req, res) => {
+    try {
+        if (!req.user.email) return res.json([]);
+        const invitations = await prisma.invitation.findMany({
+            where: { email: req.user.email, accepted: false, expiresAt: { gt: new Date() } },
+            include: { org: { select: { name: true, slug: true } } },
+            orderBy: { createdAt: 'desc' }
+        });
+        res.json(invitations.map(inv => ({
+            id: inv.id, orgName: inv.org.name, orgSlug: inv.org.slug,
+            role: inv.role, invitedBy: inv.invitedBy, createdAt: inv.createdAt
+        })));
+    } catch (err) {
+        console.error('[pending-invitations] error:', err);
+        res.status(500).json({ error: 'failed to fetch notifications' });
+    }
+});
+
+app.post('/v1/user/pending-invitations/:inviteId/accept', requireSupabaseAuth, async (req, res) => {
+    const { inviteId } = req.params;
+    if (!inviteId || !/^[a-zA-Z0-9_-]+$/.test(inviteId)) {
+        return res.status(400).json({ error: 'invalid invitation id' });
+    }
+    try {
+        const invite = await prisma.invitation.findUnique({
+            where: { id: inviteId }, include: { org: true }
+        });
+        if (!invite || invite.accepted) return res.status(404).json({ error: 'invitation not found or already used' });
+        if (invite.expiresAt < new Date()) return res.status(403).json({ error: 'invitation has expired' });
+        if (invite.email.toLowerCase() !== req.user.email.toLowerCase()) {
+            return res.status(403).json({ error: 'invitation does not belong to your account' });
+        }
+        const alreadyMember = await prisma.organization.findFirst({
+            where: { id: invite.orgId, members: { some: { id: req.user.id } } }
+        });
+        if (alreadyMember) {
+            await prisma.invitation.update({ where: { id: inviteId }, data: { accepted: true } });
+            return res.json({ message: 'already a member', slug: invite.org.slug });
+        }
+        await prisma.$transaction([
+            prisma.organization.update({
+                where: { id: invite.orgId },
+                data: { members: { connect: [{ id: req.user.id }] } }
+            }),
+            prisma.invitation.update({ where: { id: invite.id }, data: { accepted: true } })
+        ]);
+        res.json({ message: 'joined successfully', slug: invite.org.slug });
+    } catch (err) {
+        console.error('[invitation-accept] error:', err);
+        res.status(500).json({ error: 'failed to accept invitation' });
+    }
+});
+
+app.get('/v1/organizations/:slug', requireSupabaseAuth, async (req, res) => {
+    const { slug } = req.params;
+    if (!/^[a-f0-9]{20}$/.test(slug)) return res.status(400).json({ error: 'invalid slug' });
+    try {
+        const org = await prisma.organization.findUnique({
+            where: { slug },
+            include: {
+                members: { select: { id: true } },
+                _count: { select: { scanHistory: true } }
+            }
+        });
+        if (!org) return res.status(404).json({ error: 'organization not found' });
+        const isMember = org.ownerId === req.user.id || org.members.some(m => m.id === req.user.id);
+        if (!isMember) return res.status(403).json({ error: 'access denied' });
+        res.json({
+            id: org.id, name: org.name, slug: org.slug, plan: org.plan, region: org.region,
+            isOwner: org.ownerId === req.user.id,
+            memberCount: org.members.length,
+            scanCount: org._count.scanHistory,
+            createdAt: org.createdAt
+        });
+    } catch (err) {
+        console.error('[org-detail] error:', err);
+        res.status(500).json({ error: 'failed to fetch organization' });
+    }
+});
+
+app.get('/v1/organizations/:slug/members', requireSupabaseAuth, async (req, res) => {
+    const { slug } = req.params;
+    if (!/^[a-f0-9]{20}$/.test(slug)) return res.status(400).json({ error: 'invalid slug' });
+    try {
+        const org = await prisma.organization.findUnique({
+            where: { slug },
+            include: {
+                members: { select: { id: true, email: true, username: true, createdAt: true } },
+                invitations: {
+                    where: { accepted: false, expiresAt: { gt: new Date() } },
+                    select: { id: true, email: true, role: true, invitedBy: true, createdAt: true }
+                }
+            }
+        });
+        if (!org) return res.status(404).json({ error: 'organization not found' });
+        const isMember = org.ownerId === req.user.id || org.members.some(m => m.id === req.user.id);
+        if (!isMember) return res.status(403).json({ error: 'access denied' });
+        res.json({
+            members: org.members.map(m => ({
+                id: m.id, email: m.email, username: m.username,
+                role: m.id === org.ownerId ? 'owner' : 'developer',
+                status: 'active', isYou: m.id === req.user.id, joinedAt: m.createdAt
+            })),
+            pendingInvites: org.invitations.map(inv => ({
+                id: inv.id, email: inv.email, role: inv.role, status: 'invited',
+                invitedBy: inv.invitedBy, createdAt: inv.createdAt
+            })),
+            isOwner: org.ownerId === req.user.id
+        });
+    } catch (err) {
+        console.error('[org-members] error:', err);
+        res.status(500).json({ error: 'failed to fetch members' });
+    }
+});
+
 async function start() {
     if (isProduction && !redisUrl) {
         throw new Error('REDIS_URL must be configured in production.');
