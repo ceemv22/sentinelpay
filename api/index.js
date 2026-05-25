@@ -300,10 +300,8 @@ function requireRateLimitBackend(req, res, next) {
 
 // PLG Unauth Limiter logic: DUAL LAYER (IP-Daily + Fingerprint-Lifetime)
 async function consumeUnauthCredit(req, res, next) {
-    let rawFp = req.headers['x-fingerprint'];
-    // Sanitize fingerprint perfectly
+    const rawFp = req.headers['x-fingerprint'];
     const fingerprint = (typeof rawFp === 'string') && rawFp.trim().length > 0 ? rawFp.substring(0, 64) : null;
-    const ip = req.ip || req.connection.remoteAddress;
 
     if (redisClient) {
         try {
@@ -373,7 +371,7 @@ const limiter = rateLimit({
 
 // Helper for audit logging
 async function logAudit(req, wallet, result, apiKeyId = null) {
-    const ip = req.ip; // trust proxy is enabled, so req.ip is the verified client IP
+    const ip = req.realIp || req.ip;
     try {
         await prisma.auditLog.create({
             data: {
@@ -401,7 +399,7 @@ async function logAudit(req, wallet, result, apiKeyId = null) {
 // CAPTCHA Middleware (Cloudflare Turnstile)
 async function verifyTurnstile(req, res, next) {
     const token = req.body['cf-turnstile-response'];
-    const ip = req.ip || req.connection.remoteAddress;
+    const ip = req.realIp || req.ip;
     const secret = process.env.TURNSTILE_SECRET_KEY;
 
     if (!secret) {
@@ -441,6 +439,11 @@ async function verifyTurnstile(req, res, next) {
         return res.status(500).json({ error: 'failed to verify captcha', code: 500 });
     }
 }
+
+app.use('/v1/', (req, res, next) => {
+    res.setHeader('Cache-Control', 'no-store');
+    next();
+});
 
 // B2B Protected Endpoint
 app.post('/v1/score', requireRateLimitBackend, requireApiKey, limiter, async (req, res) => {
@@ -642,7 +645,7 @@ app.post('/v1/user/api-key/roll', requireSupabaseAuth, async (req, res) => {
 });
 
 app.get('/health', (req, res) => {
-    res.json({ status: 'ok', version: '2.0.0', timestamp: new Date().toISOString() });
+    res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
 app.use((err, req, res, next) => {
@@ -703,14 +706,17 @@ app.get('/v1/organizations', requireSupabaseAuth, async (req, res) => {
 
 app.post('/v1/organizations', requireSupabaseAuth, async (req, res) => {
     const { name, plan, region } = req.body;
-    if (!name || name.trim().length < 2) {
-        return res.status(400).json({ error: 'organization name too short', code: 400 });
+    if (!name || typeof name !== 'string') {
+        return res.status(400).json({ error: 'organization name required', code: 400 });
+    }
+    const trimmedName = name.trim();
+    if (trimmedName.length < 2 || trimmedName.length > 100) {
+        return res.status(400).json({ error: 'organization name must be 2–100 characters', code: 400 });
     }
 
     try {
-        // S-Tier Check: Enforce unique names
         const existing = await prisma.organization.findFirst({
-            where: { name: { equals: name.trim(), mode: 'insensitive' } }
+            where: { name: { equals: trimmedName, mode: 'insensitive' } }
         });
 
         if (existing) {
@@ -726,19 +732,11 @@ app.post('/v1/organizations', requireSupabaseAuth, async (req, res) => {
             return res.status(403).json({ error: 'organization limit reached (max 10 for mvp)', code: 'limit_reached' });
         }
 
-        console.log(`[organization-service] creating org "${name}" (Plan: ${plan}) for user: ${req.user.id}`);
-        
-        // Generate unpredictable 20-char slug
-        const generateSlug = () => {
-            const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
-            let res = '';
-            for (let i = 0; i < 20; i++) res += chars.charAt(Math.floor(Math.random() * chars.length));
-            return res;
-        };
+        const generateSlug = () => crypto.randomBytes(10).toString('hex');
 
         const newOrg = await prisma.organization.create({
             data: {
-                name: name.trim(),
+                name: trimmedName,
                 slug: generateSlug(),
                 plan: plan || 'starter',
                 region: 'americas',
@@ -749,7 +747,7 @@ app.post('/v1/organizations', requireSupabaseAuth, async (req, res) => {
             }
         });
 
-        console.log(`[organization-service] organization created successfully: ${newOrg.id} (Slug: ${newOrg.slug})`);
+        console.log(`[organization-service] organization created: ${newOrg.id}`);
         res.status(201).json(newOrg);
     } catch (err) {
         console.error('[organization-service] creation error:', err);
@@ -758,19 +756,32 @@ app.post('/v1/organizations', requireSupabaseAuth, async (req, res) => {
 });
 
 // --- Team Invitation System (S-Tier Email Flow) ---
+const INVITE_EMAIL_REGEX = /^[^\s@]{1,64}@[^\s@]{1,255}\.[^\s@]{2,}$/;
+
 app.post('/v1/organizations/:slug/team/invite', requireSupabaseAuth, async (req, res) => {
     const { slug } = req.params;
-    const { emailList, role } = req.body; // emailList is an array of emails
+    const { emailList, role } = req.body;
     const { Resend } = require('resend');
     const resend = new Resend(process.env.RESEND_API_KEY);
-    const crypto = require('crypto');
 
     if (!emailList || !Array.isArray(emailList) || emailList.length === 0) {
         return res.status(400).json({ error: 'no recipients specified' });
     }
+    if (emailList.length > 10) {
+        return res.status(400).json({ error: 'max 10 recipients per invite batch' });
+    }
 
     try {
-        // 1. Verify organization ownership
+        // Rate limit: 20 invites per user per hour
+        if (redisClient) {
+            const inviteKey = `invite_limit:${req.user.id}`;
+            const inviteCount = await redisClient.incr(inviteKey);
+            if (inviteCount === 1) await redisClient.expire(inviteKey, 3600);
+            if (inviteCount > 20) {
+                return res.status(429).json({ error: 'invitation rate limit exceeded', code: 429 });
+            }
+        }
+
         const org = await prisma.organization.findUnique({
             where: { slug },
             include: { owner: true }
@@ -786,8 +797,7 @@ app.post('/v1/organizations/:slug/team/invite', requireSupabaseAuth, async (req,
 
         for (const identifier of emailList) {
             let targetEmail = identifier;
-            
-            // If it's a username (no '@'), look up the email
+
             if (!identifier.includes('@')) {
                 const user = await prisma.user.findFirst({
                     where: { username: { equals: identifier, mode: 'insensitive' } }
@@ -798,24 +808,28 @@ app.post('/v1/organizations/:slug/team/invite', requireSupabaseAuth, async (req,
                 targetEmail = user.email;
             }
 
-            const token = crypto.randomBytes(32).toString('hex');
-            const expiresAt = new Date();
-            expiresAt.setDate(expiresAt.getDate() + 7); // 7 days expiry
+            if (!INVITE_EMAIL_REGEX.test(targetEmail)) {
+                throw new Error(`invalid email address: ${targetEmail}`);
+            }
 
-            // Create in DB
+            // Generate raw token for URL, store only its SHA-256 hash in DB
+            const rawToken = crypto.randomBytes(32).toString('hex');
+            const tokenHash = crypto.createHash('sha256').update(rawToken).digest('hex');
+            const expiresAt = new Date();
+            expiresAt.setDate(expiresAt.getDate() + 3);
+
             const inv = await prisma.invitation.create({
                 data: {
                     email: targetEmail,
                     role: role || 'developer',
                     orgId: org.id,
-                    token,
+                    token: tokenHash,
                     invitedBy: inviterName,
                     expiresAt
                 }
             });
 
-            // Send Email
-            const joinUrl = `https://sentinelpay.org/join?token=${token}&slug=${org.slug}&name=${encodeURIComponent(inviterName)}&email=${encodeURIComponent(targetEmail)}`;
+            const joinUrl = `https://sentinelpay.org/join?token=${rawToken}&slug=${org.slug}&name=${encodeURIComponent(inviterName)}&email=${encodeURIComponent(targetEmail)}`;
             
             await resend.emails.send({
                 from: 'sentinelpay <noreply@sentinelpay.org>',
@@ -877,14 +891,17 @@ app.post('/v1/organizations/:slug/team/invite', requireSupabaseAuth, async (req,
 
 app.post('/v1/organizations/:slug/team/join', requireSupabaseAuth, async (req, res) => {
     const { slug } = req.params;
-    const { token } = req.body;
+    const { token: rawToken } = req.body;
 
-    if (!token) return res.status(400).json({ error: 'missing invitation token' });
+    if (!rawToken || typeof rawToken !== 'string' || !/^[a-f0-9]{64}$/i.test(rawToken)) {
+        return res.status(400).json({ error: 'missing or invalid invitation token' });
+    }
 
     try {
-        // 1. Find invitation and org
+        const tokenHash = crypto.createHash('sha256').update(rawToken).digest('hex');
+
         const invite = await prisma.invitation.findUnique({
-            where: { token },
+            where: { token: tokenHash },
             include: { org: true }
         });
 
@@ -896,14 +913,17 @@ app.post('/v1/organizations/:slug/team/join', requireSupabaseAuth, async (req, r
             return res.status(403).json({ error: 'invitation has expired' });
         }
 
-        // 2. S-Tier Security: Verify email matches
-        // Note: We are flexible if the user signed up with a different email but has the token, 
-        // however, strict B2B requires matching. Let's enforce matching.
         if (invite.email.toLowerCase() !== req.user.email.toLowerCase()) {
             return res.status(403).json({ error: 'this invitation was sent to a different email address' });
         }
 
-        // 3. Atomic Join
+        const alreadyMember = await prisma.organization.findFirst({
+            where: { id: invite.orgId, members: { some: { id: req.user.id } } }
+        });
+        if (alreadyMember) {
+            return res.status(409).json({ error: 'already a member of this organization' });
+        }
+
         await prisma.$transaction([
             prisma.organization.update({
                 where: { id: invite.orgId },

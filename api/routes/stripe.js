@@ -8,11 +8,15 @@ const checkoutJson = express.json({ limit: '10kb' });
 const isProduction = process.env.NODE_ENV === 'production';
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
 
-if (isProduction && !stripeSecretKey) {
-    throw new Error('STRIPE_SECRET_KEY must be configured in production.');
+if (!stripeSecretKey) {
+    if (isProduction) {
+        throw new Error('STRIPE_SECRET_KEY must be configured in production.');
+    } else {
+        console.warn('[stripe] WARNING: STRIPE_SECRET_KEY not set. Stripe features will fail in dev.');
+    }
 }
 
-const stripe = require('stripe')(stripeSecretKey || 'sk_test_dummy_key_replace_me');
+const stripe = stripeSecretKey ? require('stripe')(stripeSecretKey) : null;
 
 function getAppBaseUrl(req) {
     const configuredOrigin = process.env.PUBLIC_APP_URL?.trim();
@@ -23,29 +27,25 @@ function getAppBaseUrl(req) {
         .filter(origin => origin !== '*');
     const headerOrigin = typeof req.headers.origin === 'string' ? req.headers.origin.trim() : '';
 
-    if (configuredOrigin) {
-        return configuredOrigin;
-    }
-    if (headerOrigin && allowedOrigins.includes(headerOrigin)) {
-        return headerOrigin;
-    }
-    if (allowedOrigins.length > 0) {
-        return allowedOrigins[0];
-    }
-    if (process.env.NODE_ENV !== 'production') {
-        return 'http://localhost:3000';
-    }
+    if (configuredOrigin) return configuredOrigin;
+    if (headerOrigin && allowedOrigins.includes(headerOrigin)) return headerOrigin;
+    if (allowedOrigins.length > 0) return allowedOrigins[0];
+    if (!isProduction) return 'http://localhost:3000';
     throw new Error('PUBLIC_APP_URL or ALLOWED_ORIGINS must be configured for Stripe redirects');
 }
 
 router.post('/checkout', checkoutJson, requireSupabaseAuth, async (req, res) => {
-    const { plan } = req.body; // 'starter' or 'pro'
+    if (!stripe) return res.status(503).json({ error: 'payment service unavailable', code: 503 });
+
+    const { plan } = req.body;
+    if (!plan || typeof plan !== 'string') {
+        return res.status(400).json({ error: 'invalid plan', code: 400 });
+    }
+
     const priceId = plan === 'pro' ? process.env.STRIPE_PRICE_PRO : process.env.STRIPE_PRICE_STARTER;
 
     try {
-        if (!priceId) {
-            throw new Error('Stripe price not configured');
-        }
+        if (!priceId) throw new Error('Stripe price not configured');
         const appBaseUrl = getAppBaseUrl(req);
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ['card'],
@@ -69,10 +69,11 @@ router.post('/checkout', checkoutJson, requireSupabaseAuth, async (req, res) => 
     }
 });
 
-// Webhook to provision API Keys
 const { encrypt } = require('../services/crypto');
 
-router.post('/webhook', express.raw({type: 'application/json', limit: '100kb'}), async (req, res) => {
+router.post('/webhook', express.raw({ type: 'application/json', limit: '100kb' }), async (req, res) => {
+    if (!stripe) return res.status(503).send('payment service unavailable');
+
     const signature = req.headers['stripe-signature'];
     let event;
 
@@ -93,14 +94,26 @@ router.post('/webhook', express.raw({type: 'application/json', limit: '100kb'}),
                 const session = event.data.object;
 
                 if (session.payment_status !== 'paid') {
-                    console.log(`[billing] Skipping unpaid session: ${session.id}`);
+                    console.log(`[billing] skipping unpaid session: ${session.id}`);
                     return;
                 }
 
                 const userId = session.metadata?.userId;
                 if (!userId) {
-                    console.error(`[billing] CRITICAL: Stripe session ${session.id} missing userId metadata. Provisioning aborted.`);
-                    return res.status(400).send('Missing userId in metadata');
+                    console.error(`[billing] CRITICAL: session ${session.id} missing userId metadata`);
+                    return;
+                }
+
+                // Verify the user actually exists and the email matches to prevent metadata tampering
+                const user = await tx.user.findUnique({ where: { id: userId } });
+                if (!user) {
+                    console.error(`[billing] CRITICAL: user ${userId} not found for session ${session.id}`);
+                    return;
+                }
+                if (session.customer_email && user.email &&
+                    session.customer_email.toLowerCase() !== user.email.toLowerCase()) {
+                    console.error(`[billing] CRITICAL: email mismatch for session ${session.id} — metadata userId ${userId} (${user.email}) vs session email ${session.customer_email}`);
+                    return;
                 }
 
                 const PLAN_CREDIT_MAPPING = {
@@ -118,10 +131,10 @@ router.post('/webhook', express.raw({type: 'application/json', limit: '100kb'}),
                             where: { id: userId },
                             data: { credits: { increment: amount } }
                         });
-                        console.log(`[billing] Provisioned ${amount} credits for user ${userId}`);
+                        console.log(`[billing] provisioned ${amount} credits for user ${userId}`);
                     }
                 } else {
-                    const rawKey = 'sp_' + crypto.randomBytes(32).toString('hex');
+                    const rawKey = `sp_live_${crypto.randomBytes(24).toString('hex')}`;
                     const keyHash = crypto.createHash('sha256').update(rawKey).digest('hex');
 
                     await tx.apiKey.create({
@@ -134,7 +147,7 @@ router.post('/webhook', express.raw({type: 'application/json', limit: '100kb'}),
                         }
                     });
 
-                    console.log(`[billing] Successfully provisioned API access for user ${userId}`);
+                    console.log(`[billing] provisioned api access for user ${userId}`);
                 }
             }
 
@@ -144,15 +157,15 @@ router.post('/webhook', express.raw({type: 'application/json', limit: '100kb'}),
                     where: { stripeCustomerId: subscription.customer },
                     data: { active: false }
                 });
-                console.log(`[billing] Revoked access for customer ${subscription.customer}`);
+                console.log(`[billing] revoked access for customer ${subscription.customer}`);
             }
         });
     } catch (err) {
         if (err.code === 'P2002') {
-            console.log(`[billing] Skipping already processed event: ${event.id}`);
+            console.log(`[billing] skipping already processed event: ${event.id}`);
             return res.json({ received: true, duplicate: true });
         }
-        console.error('[billing] Webhook handling failed', err);
+        console.error('[billing] webhook handling failed', err);
         return res.status(500).json({ error: 'webhook handling failed' });
     }
 

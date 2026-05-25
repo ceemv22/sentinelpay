@@ -105,9 +105,11 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('[sentinel-auth] initializing v18.0...');
     const s = getSupabase();
 
-    // Extract returnTo for post-auth redirect (used by invitation flow)
     const urlParams = new URLSearchParams(window.location.search);
-    const returnTo = urlParams.get('returnTo');
+    const returnToRaw = urlParams.get('returnTo');
+    const returnTo = (returnToRaw && returnToRaw.startsWith('/') && !returnToRaw.startsWith('//') && !returnToRaw.startsWith('/\\'))
+        ? returnToRaw
+        : null;
 
     // FORM: LOGIN
     const loginForm = document.getElementById('login-form');
@@ -198,7 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const isExisting = !error && data?.user && data.user.identities?.length === 0;
                 if (error || isExisting) {
-                    const msg = isExisting ? 'error: email already registered' : 'error: ' + error.message.toLowerCase();
+                    const msg = isExisting ? 'error: unable to register. try logging in.' : 'error: registration failed.';
                     document.getElementById('register-error-msg').textContent = msg;
                     document.getElementById('register-error-msg').style.display = 'block';
                     btn.disabled = false;
@@ -348,12 +350,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const oauthButtonIds = ['btn-google', 'btn-google-reg', 'btn-x', 'btn-x-reg'];
 
-    const resolveOAuthRedirect = () => {
-        if (returnTo && returnTo.startsWith('/') && !returnTo.startsWith('//')) {
-            return window.location.origin + returnTo;
-        }
-        return window.location.origin + '/dashboard/organizations';
-    };
+    const resolveOAuthRedirect = () =>
+        returnTo
+            ? window.location.origin + returnTo
+            : window.location.origin + '/dashboard/organizations';
 
     const resetOAuthButtons = () => {
         oauthButtonIds.forEach((id) => {
