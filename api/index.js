@@ -662,7 +662,7 @@ app.get('/v1/organizations/check', requireSupabaseAuth, async (req, res) => {
 
     try {
         const existing = await prisma.organization.findFirst({
-            where: { name: { equals: name.trim(), mode: 'insensitive' } }
+            where: { name: { equals: name.trim(), mode: 'insensitive' }, ownerId: req.user.id }
         });
         res.json({ available: !existing });
     } catch (err) {
@@ -716,11 +716,11 @@ app.post('/v1/organizations', requireSupabaseAuth, async (req, res) => {
 
     try {
         const existing = await prisma.organization.findFirst({
-            where: { name: { equals: trimmedName, mode: 'insensitive' } }
+            where: { name: { equals: trimmedName, mode: 'insensitive' }, ownerId: req.user.id }
         });
 
         if (existing) {
-            return res.status(400).json({ error: 'organization name already taken', code: 'name_taken' });
+            return res.status(400).json({ error: 'you already have an organization with this name', code: 'name_taken' });
         }
 
         // S-Tier Protection: 10 Orgs Limit for MVP
