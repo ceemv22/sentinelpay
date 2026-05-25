@@ -2606,4 +2606,17 @@ html.auth-session-present #lp-cta-dashboard { display: inline-flex !important; }
         padding-top: 64px;
         box-sizing: border-box;
     }
+
+    .lp-how .lp-eyebrow { margin-bottom: 0.35rem; }
+    .lp-how .lp-h2 { font-size: 1.65rem; margin-bottom: 0.9rem; }
+    .lp-how .lp-how-row { gap: 2rem; margin-bottom: 1.1rem; }
+    .lp-how .lp-how-row:last-child { margin-bottom: 0; }
+    .lp-how .lp-how-text { gap: 0.45rem; }
+    .lp-how .lp-how-title { font-size: 1.05rem; }
+    .lp-how .lp-how-desc { font-size: 0.77rem; line-height: 1.45; }
+    .lp-how .lp-terminal-code { padding: 0.7rem 1.25rem; font-size: 0.75rem; }
+    .lp-how .lp-log-lines { padding: 0.45rem 1.25rem 0.65rem; }
+    .lp-how .lp-log-line { line-height: 1.55; font-size: 0.72rem; }
+    .lp-how .lp-alert-card { padding: 0.9rem; gap: 0.5rem; }
+    .lp-how .lp-alert-header { margin-bottom: 0; }
 }
