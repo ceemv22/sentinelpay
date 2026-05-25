@@ -60,6 +60,22 @@ window.solveCaptcha = async (scope, targetDivId, triggerBtn) => {
 };
 
 // 3. UI HELPERS
+const startResendTimer = (btn, sec) => {
+    btn.disabled = true;
+    let remaining = sec;
+    btn.textContent = `resend in ${remaining}s`;
+    const iv = setInterval(() => {
+        remaining--;
+        if (remaining <= 0) {
+            clearInterval(iv);
+            btn.disabled = false;
+            btn.textContent = 'resend email';
+        } else {
+            btn.textContent = `resend in ${remaining}s`;
+        }
+    }, 1000);
+};
+
 window.switchManual = (target) => {
     const pLogin = document.getElementById('panel-login');
     const pRegister = document.getElementById('panel-register');
@@ -193,6 +209,18 @@ document.addEventListener('DOMContentLoaded', () => {
                     sessionStorage.setItem('sentinel_pending_email', email);
                     document.getElementById('auth-panel').style.display = 'none';
                     document.getElementById('auth-success-state').style.display = 'flex';
+                    const resendBtn = document.getElementById('resend-btn');
+                    if (resendBtn) {
+                        startResendTimer(resendBtn, 60);
+                        resendBtn.onclick = async () => {
+                            const resendEmail = sessionStorage.getItem('sentinel_pending_email');
+                            if (!resendEmail || resendBtn.disabled) return;
+                            resendBtn.disabled = true;
+                            resendBtn.textContent = 'sending...';
+                            await s.auth.resend({ type: 'signup', email: resendEmail });
+                            startResendTimer(resendBtn, 60);
+                        };
+                    }
                 }
             } catch (err) { console.error(err); isBusy = false; btn.disabled = false; }
         };
@@ -239,6 +267,18 @@ document.addEventListener('DOMContentLoaded', () => {
                     document.getElementById('forgot-pw-state-form').style.display = 'none';
                     document.getElementById('forgot-pw-state-success').style.display = 'flex';
                     sessionStorage.setItem('sentinel_forgot_email', email);
+                    const forgotResendBtn = document.getElementById('forgot-resend-btn');
+                    if (forgotResendBtn) {
+                        startResendTimer(forgotResendBtn, 60);
+                        forgotResendBtn.onclick = async () => {
+                            const forgotEmail = sessionStorage.getItem('sentinel_forgot_email');
+                            if (!forgotEmail || forgotResendBtn.disabled) return;
+                            forgotResendBtn.disabled = true;
+                            forgotResendBtn.textContent = 'sending...';
+                            await s.auth.resetPasswordForEmail(forgotEmail, { redirectTo: window.location.origin + '/reset' });
+                            startResendTimer(forgotResendBtn, 60);
+                        };
+                    }
                 }
             } catch (err) { console.error(err); isBusy = false; btn.disabled = false; }
         };
