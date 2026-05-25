@@ -238,6 +238,7 @@ function renderDashboard(session) {
         // 4. BACKGROUND FETCH
         fetchHeaderApiKey(token);
         fetchProfile(token);
+        fetchPendingInvitations(token);
 
         // 5. MODAL & SIDEBAR INITIALIZATION
         setupCreateOrgModal(token);
@@ -344,11 +345,15 @@ function setupCreateOrgModal(token) {
 
     openBtn.onclick = (e) => { e.preventDefault(); openModal(); };
     closeBtn.onclick = (e) => { e.preventDefault(); closeModal(); };
-    
-    // Close on overlay click
+
+    const dropdownCreateBtn = document.getElementById('dropdown-create-org');
+    if (dropdownCreateBtn && !dropdownCreateBtn.dataset.bound) {
+        dropdownCreateBtn.dataset.bound = 'true';
+        dropdownCreateBtn.onclick = (e) => { e.preventDefault(); openModal(); };
+    }
+
     modal.onclick = (e) => { if (e.target === modal) closeModal(); };
 
-    // Custom Select Logic
     const initSelect = (idPrefix) => {
         const trigger = document.getElementById(`${idPrefix}-select-trigger`);
         const dropdown = document.getElementById(`${idPrefix}-select-dropdown`);
@@ -664,6 +669,7 @@ function saveInvitedMember(orgSlug, member) {
 let currentTeamPage = 1;
 const teamItemsPerPage = 6;
 let teamMembersFullList = [];
+let currentOrgSlug = null;
 
 function loadInvitedMembers(orgSlug) {
     const key = `sentinel-invites-${orgSlug}`;
@@ -986,12 +992,13 @@ function updateOrgGrid(orgs) {
 }
 
 function switchToHomeView() {
+    currentOrgSlug = null;
+    document.body.classList.remove('state-in-org');
     document.body.classList.add('state-org-home');
     document.getElementById('org-home-view').classList.remove('hidden');
     document.getElementById('org-dashboard-view').classList.add('hidden');
     document.getElementById('dashboard-view').classList.add('hidden');
-    
-    // Toggle Sidebar Nav
+
     const globalNav = document.getElementById('sidebar-global-nav');
     const orgNav = document.getElementById('sidebar-org-nav');
     if (globalNav) globalNav.classList.remove('hidden');
@@ -999,7 +1006,9 @@ function switchToHomeView() {
 }
 
 function switchToOrgView(slug, view = 'projects') {
-    document.body.classList.add('state-org-home');
+    currentOrgSlug = slug;
+    document.body.classList.remove('state-org-home');
+    document.body.classList.add('state-in-org');
     document.getElementById('org-home-view').classList.add('hidden');
     document.getElementById('dashboard-view').classList.add('hidden');
     
@@ -1024,19 +1033,234 @@ function switchToOrgView(slug, view = 'projects') {
         if (teamView) teamView.classList.remove('hidden');
         const teamItem = document.getElementById('sidebar-item-team');
         if (teamItem) teamItem.classList.add('active');
-        
-        // Load persistent invites
-        loadInvitedMembers(slug);
+        loadTeamFromApi(slug);
     } else {
-        // Default to projects/dashboard
         const dashView = document.getElementById('org-dashboard-view');
         if (dashView) dashView.classList.remove('hidden');
         const projItem = document.getElementById('sidebar-item-projects');
         if (projItem) projItem.classList.add('active');
+        renderOrgDashboard(slug, window.supabaseAuthToken);
     }
-    
-    // In the future, we fetch org data by slug here
-    console.log(`[sentinel-router] navigated to organization: ${slug} (view: ${view})`);
+}
+
+async function renderOrgDashboard(slug, token) {
+    const view = document.getElementById('org-dashboard-view');
+    if (!view || !token) return;
+
+    view.innerHTML = `<div style="color: var(--text-muted); font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; padding: 2rem;">loading...</div>`;
+
+    try {
+        const res = await fetch(`/v1/organizations/${slug}`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!res.ok) throw new Error('failed to load organization');
+        const org = await res.json();
+
+        const orgNameEl = document.getElementById('current-org-name');
+        if (orgNameEl) orgNameEl.textContent = org.name;
+        const orgAvatarEl = document.getElementById('org-avatar-circle');
+        if (orgAvatarEl) orgAvatarEl.textContent = org.name.charAt(0).toUpperCase();
+        const orgPlanEl = document.querySelector('.org-switcher-trigger .org-plan');
+        if (orgPlanEl) orgPlanEl.textContent = `${org.plan || 'starter'} plan`;
+
+        const cached = localStorage.getItem('sentinel-cached-orgs');
+        if (cached) {
+            try { updateDropdownOrgList(JSON.parse(cached), slug); } catch (e) {}
+        }
+
+        const planLabel = org.plan ? org.plan.charAt(0).toUpperCase() + org.plan.slice(1) : 'Starter';
+        const regionLabel = org.region || 'americas';
+        const createdLabel = new Date(org.createdAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+
+        const ownerBadge = org.isOwner
+            ? `<span style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--text-muted);font-size:0.65rem;padding:3px 8px;border-radius:4px;font-family:'JetBrains Mono',monospace;text-transform:lowercase;">owner</span>`
+            : '';
+        const inviteBtn = org.isOwner
+            ? `<button class="btn-new-org" id="org-invite-quick-btn" style="white-space:nowrap;flex-shrink:0;"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><line x1="19" y1="8" x2="19" y2="14"></line><line x1="22" y1="11" x2="16" y2="11"></line></svg>invite members</button>`
+            : '';
+
+        view.innerHTML = `
+<div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+    <div>
+        <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem;">
+            <h1 id="org-page-name" style="font-family:'JetBrains Mono',monospace;font-size:1.5rem;font-weight:800;letter-spacing:-1px;color:#fff;margin:0;"></h1>
+            <span id="org-page-plan" style="background:rgba(0,240,255,0.1);border:1px solid rgba(0,240,255,0.2);color:var(--neon-blue);font-size:0.65rem;padding:3px 8px;border-radius:4px;font-family:'JetBrains Mono',monospace;text-transform:lowercase;"></span>
+            ${ownerBadge}
+        </div>
+        <div style="color:var(--text-muted);font-family:'JetBrains Mono',monospace;font-size:0.75rem;" id="org-page-meta"></div>
+    </div>
+    ${inviteBtn}
+</div>
+
+<div class="summary-cards" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr));">
+    <div class="metric-card">
+        <div class="metric-header"><span class="metric-label">total scans</span><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></div>
+        <div class="metric-value-container"><span class="metric-value" id="org-stat-scans">0</span></div>
+        <span class="metric-trend neutral">all time</span>
+    </div>
+    <div class="metric-card">
+        <div class="metric-header"><span class="metric-label">team members</span><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></div>
+        <div class="metric-value-container"><span class="metric-value" id="org-stat-members">0</span></div>
+        <span class="metric-trend neutral">active</span>
+    </div>
+    <div class="metric-card">
+        <div class="metric-header"><span class="metric-label">plan</span><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--neon-blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg></div>
+        <div class="metric-value-container"><span class="metric-value text-white" style="font-size:1.6rem;" id="org-stat-plan"></span></div>
+        <span class="metric-trend neutral" id="org-stat-region"></span>
+    </div>
+    <div class="metric-card">
+        <div class="metric-header"><span class="metric-label">system health</span><div class="pulse-dot-container"><div class="pulse-dot"></div></div></div>
+        <div class="metric-value-container"><span class="metric-value text-white" style="font-size:2rem;">nominal</span></div>
+        <span class="metric-trend neutral">all systems operational</span>
+    </div>
+</div>
+
+<div class="glass-panel" style="padding:1.5rem;border-radius:12px;background:rgba(15,15,15,0.4);border:1px solid var(--border-glass);">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:700;color:#fff;text-transform:lowercase;letter-spacing:0.5px;">recent scans</div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--text-muted);">last 30 days</span>
+    </div>
+    <div id="org-recent-scans" style="color:var(--text-muted);font-family:'JetBrains Mono',monospace;font-size:0.75rem;padding:1.5rem 0;text-align:center;opacity:0.6;">no scans yet. start scanning wallets via the api.</div>
+</div>`;
+
+        view.querySelector('#org-page-name').textContent = org.name;
+        view.querySelector('#org-page-plan').textContent = org.plan || 'starter';
+        view.querySelector('#org-page-meta').textContent = `${regionLabel} · created ${createdLabel}`;
+        view.querySelector('#org-stat-scans').textContent = org.scanCount || 0;
+        view.querySelector('#org-stat-members').textContent = org.memberCount || 0;
+        view.querySelector('#org-stat-plan').textContent = org.plan || 'starter';
+        view.querySelector('#org-stat-region').textContent = regionLabel;
+
+        const quickInviteBtn = view.querySelector('#org-invite-quick-btn');
+        if (quickInviteBtn) {
+            quickInviteBtn.onclick = () => {
+                const inviteBtn = document.getElementById('btn-invite-member');
+                if (inviteBtn) inviteBtn.click();
+            };
+        }
+    } catch (err) {
+        const errDiv = document.createElement('div');
+        errDiv.style.cssText = 'color:var(--color-red);font-family:\'JetBrains Mono\',monospace;font-size:0.8rem;padding:2rem;';
+        errDiv.textContent = err.message;
+        view.innerHTML = '';
+        view.appendChild(errDiv);
+    }
+}
+
+async function loadTeamFromApi(slug) {
+    try {
+        const res = await fetch(`/v1/organizations/${slug}/members`, {
+            headers: { 'Authorization': `Bearer ${window.supabaseAuthToken}` }
+        });
+        if (!res.ok) { loadInvitedMembers(slug); return; }
+        const data = await res.json();
+        teamMembersFullList = [
+            ...data.members.map(m => ({
+                email: m.username || m.email,
+                role: m.role, status: m.status, isYou: m.isYou
+            })),
+            ...data.pendingInvites.map(inv => ({
+                email: inv.email,
+                role: inv.role, status: 'invited', isYou: false
+            }))
+        ];
+        currentTeamPage = 1;
+        initTeamPagination();
+        renderTeamPage();
+    } catch (err) {
+        loadInvitedMembers(slug);
+    }
+}
+
+async function fetchPendingInvitations(token) {
+    try {
+        const res = await fetch('/v1/user/pending-invitations', {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!res.ok) return;
+        const invites = await res.json();
+        renderNotifications(invites, token);
+    } catch (err) {}
+}
+
+function renderNotifications(invites, token) {
+    const section = document.getElementById('notification-section');
+    const container = document.getElementById('notification-items');
+    const badge = document.getElementById('notification-badge');
+    if (!section || !container) return;
+
+    if (!invites || invites.length === 0) {
+        section.style.display = 'none';
+        return;
+    }
+
+    section.style.display = 'block';
+    if (badge) badge.textContent = invites.length;
+
+    container.innerHTML = '';
+    invites.forEach(inv => {
+        const item = document.createElement('div');
+        item.style.cssText = 'padding: 10px 16px; display: flex; flex-direction: column; gap: 6px; border-bottom: 1px solid rgba(255,255,255,0.04);';
+
+        const orgNameSpan = document.createElement('strong');
+        orgNameSpan.textContent = inv.orgName;
+
+        const titleDiv = document.createElement('div');
+        titleDiv.style.cssText = 'font-size:0.72rem;color:#fff;font-family:\'JetBrains Mono\',monospace;';
+        titleDiv.append('invited to ', orgNameSpan);
+
+        const metaSpan = document.createElement('span');
+        metaSpan.style.cssText = 'font-size:0.65rem;color:var(--text-muted);font-family:\'JetBrains Mono\',monospace;';
+        metaSpan.textContent = `by ${inv.invitedBy} · ${inv.role}`;
+
+        const acceptBtn = document.createElement('button');
+        acceptBtn.textContent = 'accept';
+        acceptBtn.style.cssText = 'padding:3px 10px;font-size:0.65rem;border-radius:4px;background:rgba(0,240,255,0.1);border:1px solid rgba(0,240,255,0.3);color:var(--neon-blue);cursor:pointer;font-family:\'JetBrains Mono\',monospace;';
+
+        const dismissBtn = document.createElement('button');
+        dismissBtn.textContent = 'dismiss';
+        dismissBtn.style.cssText = 'padding:3px 10px;font-size:0.65rem;border-radius:4px;background:transparent;border:1px solid rgba(255,255,255,0.08);color:var(--text-muted);cursor:pointer;font-family:\'JetBrains Mono\',monospace;';
+
+        const btnRow = document.createElement('div');
+        btnRow.style.cssText = 'display:flex;gap:6px;margin-top:2px;';
+        btnRow.append(acceptBtn, dismissBtn);
+
+        item.append(titleDiv, metaSpan, btnRow);
+
+        acceptBtn.onclick = async (e) => {
+            e.stopPropagation();
+            acceptBtn.disabled = true;
+            acceptBtn.textContent = '...';
+            try {
+                const r = await fetch(`/v1/user/pending-invitations/${inv.id}/accept`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const result = await r.json();
+                if (!r.ok) throw new Error(result.error || 'failed');
+                if (window.SentinelToast) window.SentinelToast.show(`joined ${inv.orgName} successfully.`, 'success');
+                item.remove();
+                fetchProfile(token);
+                const remaining = container.children.length;
+                if (!remaining && section) section.style.display = 'none';
+                if (badge) badge.textContent = remaining || '';
+            } catch (err) {
+                if (window.SentinelToast) window.SentinelToast.show(err.message, 'error');
+                acceptBtn.disabled = false;
+                acceptBtn.textContent = 'accept';
+            }
+        };
+
+        dismissBtn.onclick = (e) => {
+            e.stopPropagation();
+            item.remove();
+            const remaining = container.children.length;
+            if (!remaining && section) section.style.display = 'none';
+            if (badge) badge.textContent = remaining || '';
+        };
+
+        container.appendChild(item);
+    });
 }
 
 window.onpopstate = (e) => {
@@ -1067,7 +1291,7 @@ async function fetchProfile(token) {
         const response = await fetch('/v1/user/profile', { headers: { 'Authorization': `Bearer ${token}` } });
         if (!response.ok) return;
         const profile = await response.json();
-        // 1. Update Team View (Dynamic Email/Username)
+
         const teamEmailEl = document.getElementById('current-user-email');
         const displayId = profile.username || profile.email;
         if (teamEmailEl && displayId) {
@@ -1075,13 +1299,67 @@ async function fetchProfile(token) {
             const teamAvatarEl = document.getElementById('team-owner-avatar');
             if (teamAvatarEl) teamAvatarEl.textContent = displayId.charAt(0).toUpperCase();
         }
-        
+
         const orgsRes = await fetch('/v1/organizations', { headers: { 'Authorization': `Bearer ${token}` } });
         const orgs = await orgsRes.json();
-        
+
         localStorage.setItem('sentinel-cached-orgs', JSON.stringify(orgs));
         updateOrgGrid(orgs);
+        updateDropdownOrgList(orgs, currentOrgSlug);
     } catch (err) {}
+}
+
+function updateDropdownOrgList(orgs, activeSlug) {
+    const orgList = document.querySelector('.org-list.org-only');
+    if (!orgList) return;
+    orgList.innerHTML = '';
+
+    orgs.forEach(org => {
+        const isActive = org.slug === activeSlug;
+        const item = document.createElement('a');
+        item.href = '#';
+        item.className = `dropdown-item org-item${isActive ? ' active' : ''}`;
+
+        const avatar = document.createElement('div');
+        avatar.className = 'org-avatar small';
+        avatar.textContent = org.name.charAt(0).toUpperCase();
+
+        const nameSpan = document.createElement('span');
+        nameSpan.className = 'org-name-text';
+        nameSpan.textContent = org.name;
+
+        item.append(avatar, nameSpan);
+
+        if (isActive) {
+            const checkSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            checkSvg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+            checkSvg.setAttribute('width', '14');
+            checkSvg.setAttribute('height', '14');
+            checkSvg.setAttribute('viewBox', '0 0 24 24');
+            checkSvg.setAttribute('fill', 'none');
+            checkSvg.setAttribute('stroke', 'var(--neon-blue)');
+            checkSvg.setAttribute('stroke-width', '2');
+            checkSvg.setAttribute('stroke-linecap', 'round');
+            checkSvg.setAttribute('stroke-linejoin', 'round');
+            checkSvg.style.marginLeft = 'auto';
+            const poly = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+            poly.setAttribute('points', '20 6 9 17 4 12');
+            checkSvg.appendChild(poly);
+            item.appendChild(checkSvg);
+        }
+
+        item.onclick = (e) => {
+            e.preventDefault();
+            history.pushState({ slug: org.slug }, '', `/dashboard/org/${org.slug}`);
+            switchToOrgView(org.slug, 'projects');
+            const trigger = document.getElementById('user-menu-trigger');
+            const menu = document.getElementById('user-dropdown');
+            trigger?.classList.remove('active');
+            menu?.classList.remove('active');
+        };
+
+        orgList.appendChild(item);
+    });
 }
 
 function setupSidebar() {
