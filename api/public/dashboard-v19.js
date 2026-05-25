@@ -256,12 +256,13 @@ function renderDashboard(session) {
 // --- Mobile Navigation Setup ---
 function setupMobileNav() {
     const toggle = document.getElementById('mobile-nav-toggle');
+    const hamburger = document.getElementById('mobile-hamburger-btn');
     const overlay = document.getElementById('mobile-sidebar-overlay');
     const sidebar = document.querySelector('.sidebar');
 
-    if (!toggle || !overlay) return;
-    if (toggle.dataset.mobileBound) return;
-    toggle.dataset.mobileBound = 'true';
+    if (!overlay) return;
+    if (overlay.dataset.mobileBound) return;
+    overlay.dataset.mobileBound = 'true';
 
     const openMobileNav = () => {
         document.body.classList.add('mobile-sidebar-open');
@@ -271,12 +272,21 @@ function setupMobileNav() {
         document.body.classList.remove('mobile-sidebar-open');
     };
 
-    // Hamburger click
-    toggle.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        document.body.classList.toggle('mobile-sidebar-open');
-    });
+    if (toggle) {
+        toggle.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            document.body.classList.toggle('mobile-sidebar-open');
+        });
+    }
+
+    if (hamburger) {
+        hamburger.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            document.body.classList.toggle('mobile-sidebar-open');
+        });
+    }
 
     // Backdrop click closes drawer
     overlay.addEventListener('click', closeMobileNav);
@@ -965,19 +975,16 @@ function updateOrgGrid(orgs) {
             const planText = org.plan ? `${org.plan.charAt(0).toUpperCase() + org.plan.slice(1)} Plan` : 'Standard Plan';
             
             card.innerHTML = `
-                <div class="org-card-avatar">
-                    <svg viewBox="0 0 120 120" width="20" height="20" style="opacity: 0.9;">
-                        <path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z" fill="white" />
-                    </svg>
-                </div>
+                <div class="org-card-avatar"></div>
                 <div class="org-card-info">
                     <span class="org-card-name"></span>
-                    <span class="org-card-meta">${planText}</span>
+                    <span class="org-card-meta"></span>
                 </div>
-                <svg style="margin-left: auto; opacity: 0.3;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                <svg style="margin-left: auto; opacity: 0.3; flex-shrink: 0;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
             `;
-            // Safe assignment
+            card.querySelector('.org-card-avatar').textContent = initial;
             card.querySelector('.org-card-name').textContent = org.name;
+            card.querySelector('.org-card-meta').textContent = planText;
             
             // Handle Navigation
             card.onclick = () => {
