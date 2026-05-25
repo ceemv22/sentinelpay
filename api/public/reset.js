@@ -48,30 +48,24 @@ document.addEventListener('DOMContentLoaded', async () => {
         return false;
     };
 
+    const redirectToAuth = (msg) => {
+        sessionStorage.setItem('sentinel_pending_toast', msg);
+        window.location.replace('/auth');
+    };
+
     if (isRecoveryRedirect) {
-        console.log('[reset] recovery link detected, waiting for exchange...');
-        // Give it up to 5 seconds to exchange the code
         let attempts = 0;
         const interval = setInterval(async () => {
             attempts++;
             const ok = await validateSession();
             if (ok || attempts > 10) {
                 clearInterval(interval);
-                if (!ok) {
-                    console.warn('[reset] recovery exchange failed or timed out.');
-                    if (introText) introText.style.display = 'none';
-                    if (invalidState) invalidState.style.display = 'flex';
-                }
+                if (!ok) redirectToAuth('recovery link expired or already used.');
             }
         }, 500);
     } else {
-        // No code in URL, check if we already have a session (e.g. from a previous successful exchange)
         const ok = await validateSession();
-        if (!ok) {
-            console.warn('[reset] no recovery session found.');
-            if (introText) introText.style.display = 'none';
-            if (invalidState) invalidState.style.display = 'flex';
-        }
+        if (!ok) redirectToAuth('reset link is invalid. request a new one.');
     }
 
     // 2. FORM SUBMISSION
