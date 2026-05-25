@@ -244,6 +244,12 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
+    const pendingToast = sessionStorage.getItem('sentinel_pending_toast');
+    if (pendingToast) {
+        sessionStorage.removeItem('sentinel_pending_toast');
+        setTimeout(() => { if (window.SentinelToast) window.SentinelToast.show(pendingToast, 'warning'); }, 300);
+    }
+
     // Tab Auto-Switch (based on URL path, hash, or session)
     const hash = window.location.hash.toLowerCase();
     const authPath = window.location.pathname.toLowerCase();
