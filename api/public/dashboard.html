@@ -25,8 +25,7 @@
 
         /* Mobile-only elements hidden by default on desktop */
         .mobile-logo-trigger,
-        .mobile-sidebar-overlay,
-        .mobile-api-key-in-drawer {
+        .mobile-sidebar-overlay {
             display: none;
         }
 
@@ -1340,10 +1339,11 @@
                 pointer-events: auto;
             }
 
-            /* === API KEY BADGE inside drawer === */
-            .mobile-api-key-in-drawer {
-                display: flex !important;
-                margin: 1rem 1.5rem 0;
+            /* === SIDEBAR FOOTER on mobile === */
+            .sidebar-footer {
+                border-top: 1px solid rgba(255, 255, 255, 0.06);
+                padding-top: 0.5rem;
+                margin-top: auto;
             }
 
             /* === CONTENT AREA === */
@@ -1682,26 +1682,42 @@
             /* hamburger button — visible on mobile */
             .mobile-hamburger-btn {
                 display: flex !important;
+                flex-direction: column;
                 align-items: center;
                 justify-content: center;
+                gap: 5px;
                 width: 36px;
                 height: 36px;
-                background: rgba(255,255,255,0.04);
-                border: 1px solid rgba(255,255,255,0.08);
-                border-radius: 8px;
-                color: var(--text-muted);
+                background: none !important;
+                border: none !important;
+                box-shadow: none !important;
+                outline: none !important;
+                padding: 6px !important;
                 cursor: pointer;
                 flex-shrink: 0;
-                transition: background 0.2s ease, border-color 0.2s ease;
+                -webkit-tap-highlight-color: transparent;
+                -webkit-appearance: none;
             }
+            .mobile-hamburger-btn:hover,
+            .mobile-hamburger-btn:focus,
             .mobile-hamburger-btn:active {
-                background: rgba(0,240,255,0.08) !important;
-                border-color: rgba(0,240,255,0.2) !important;
+                background: none !important;
+                box-shadow: none !important;
+                outline: none !important;
+            }
+            .hb-line {
+                width: 20px;
+                height: 1.5px;
+                background: var(--text-muted);
+                border-radius: 2px;
+                transition: transform 0.25s ease, opacity 0.25s ease;
+                transform-origin: center;
+                display: block;
             }
 
             /* sidebar popup hidden on mobile */
             .sidebar-popup { display: none !important; }
-            .sidebar-toggle { display: none !important; }
+            #sidebar-toggle { display: none !important; }
         }
 
         /* very small screens */
@@ -1821,12 +1837,6 @@
                 <span class="item-label">collapse</span>
             </div>
         </div>
-        <!-- Mobile: API Key Badge shown at bottom of drawer -->
-        <div class="mobile-api-key-in-drawer" id="mobile-sidebar-api-key">
-            <div class="api-key-badge" style="width: 100%; justify-content: center;" id="mobile-api-key-badge" title="View API Key">
-                <span class="key-prefix">sp_live_</span><span class="key-dots">••••</span><span class="key-suffix" id="mobile-api-key-suffix">----</span>
-            </div>
-        </div>
     </div>
 
     <!-- Mobile sidebar backdrop overlay -->
@@ -1939,7 +1949,9 @@
                 </a>
             </div>
             <button class="mobile-hamburger-btn" id="mobile-hamburger-btn" aria-label="Open navigation">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                <span class="hb-line"></span>
+                <span class="hb-line"></span>
+                <span class="hb-line"></span>
             </button>
         </div>
     </header>
@@ -1948,10 +1960,6 @@
         <!-- ORG HOME VIEW -->
         <div id="org-home-view" class="org-home-container hidden">
             <div class="org-home-intro">
-                <div class="org-home-badge">
-                    <div class="org-badge-dot"></div>
-                    portal
-                </div>
                 <h1 class="org-home-header">your organizations</h1>
                 <p class="org-home-sub">select an organization to access your projects, team, and billing settings.</p>
             </div>
