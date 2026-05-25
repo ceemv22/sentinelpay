@@ -13,6 +13,7 @@ const { RedisStore } = require('rate-limit-redis');
 const { createClient } = require('redis');
 const helmet = require('helmet');
 const hpp = require('hpp');
+const crypto = require('crypto');
 require('dotenv').config();
 
 const { runScoringEngine } = require('./services/scorer');
@@ -73,6 +74,24 @@ app.use((req, res, next) => {
     });
     next();
 });
+
+if (process.env.STAGING_BASIC_AUTH) {
+    const sepIdx = process.env.STAGING_BASIC_AUTH.indexOf(':');
+    const stagingUser = process.env.STAGING_BASIC_AUTH.slice(0, sepIdx);
+    const stagingPass = process.env.STAGING_BASIC_AUTH.slice(sepIdx + 1);
+    const expected = Buffer.from(`${stagingUser}:${stagingPass}`);
+    app.use((req, res, next) => {
+        const auth = req.headers['authorization'];
+        if (auth && auth.startsWith('Basic ')) {
+            const provided = Buffer.from(auth.slice(6), 'base64');
+            if (provided.length === expected.length && crypto.timingSafeEqual(provided, expected)) {
+                return next();
+            }
+        }
+        res.set('WWW-Authenticate', 'Basic realm="sentinel-staging"');
+        return res.status(401).end('unauthorized');
+    });
+}
 
 app.use(hpp()); // Prevent HTTP Parameter Pollution
 app.use(helmet({
