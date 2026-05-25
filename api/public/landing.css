@@ -1258,6 +1258,17 @@ body.lp-body {
 
 .lp-cta-h2 { margin-bottom: 0; }
 
+.lp-footer-cta {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+    text-align: center;
+    padding-bottom: 3rem;
+    margin-bottom: 2.5rem;
+    border-bottom: 1px solid var(--border-glass);
+}
+
 .lp-cta-sub {
     font-family: 'JetBrains Mono', monospace;
     font-size: 1rem;
