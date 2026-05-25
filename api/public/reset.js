@@ -32,25 +32,38 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     };
 
-    // 1. PATIENT HYDRATION (Wait for PKCE Exchange)
+    const redirectToAuth = (msg) => {
+        sessionStorage.setItem('sentinel_pending_toast', msg);
+        window.location.replace('/auth');
+    };
+
+    // 1. REJECT ERROR URLS IMMEDIATELY (expired/invalid/reused links)
+    const urlSearch = new URLSearchParams(window.location.search);
+    const urlHash = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+    const urlError = urlSearch.get('error') || urlHash.get('error');
+    const urlErrorCode = urlSearch.get('error_code') || urlHash.get('error_code');
+
+    if (urlError) {
+        const msg = urlErrorCode === 'otp_expired'
+            ? 'recovery link expired or already used.'
+            : 'reset link is invalid. request a new one.';
+        redirectToAuth(msg);
+        return;
+    }
+
+    // 2. PATIENT HYDRATION (Wait for PKCE Exchange)
     const isRecoveryRedirect = window.location.search.includes('code=');
     let sessionValidated = false;
 
     const validateSession = async () => {
         const { data: { session } } = await supabase.auth.getSession();
-        if (session) {
-            console.log('[reset] recovery session validated.');
+        if (session?.user) {
             sessionValidated = true;
             form.style.display = 'flex';
             cleanURL();
             return true;
         }
         return false;
-    };
-
-    const redirectToAuth = (msg) => {
-        sessionStorage.setItem('sentinel_pending_toast', msg);
-        window.location.replace('/auth');
     };
 
     if (isRecoveryRedirect) {
