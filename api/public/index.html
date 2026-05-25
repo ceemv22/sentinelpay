@@ -1033,25 +1033,35 @@
                     : (2 - Math.pow(2, -20 * t + 10)) / 2;
             }
 
+            function setVis(fromIdx, toIdx) {
+                SECTIONS.forEach(function (s, i) {
+                    var show = (i === fromIdx || i === toIdx);
+                    s.style.opacity = show ? '' : '0';
+                    s.style.pointerEvents = show ? '' : 'none';
+                });
+            }
+
             function goTo(idx) {
                 if (animating) return;
                 idx = Math.max(0, Math.min(idx, SECTIONS.length - 1));
+                var from = cur;
                 cur = idx;
                 animating = true;
                 lastJump = Date.now();
                 syncInd();
+                setVis(from, cur);
 
-                var from = window.pageYOffset;
+                var fromPos = window.pageYOffset;
                 var to = SECTIONS[cur].getBoundingClientRect().top + window.pageYOffset;
-                var dist = to - from;
-                if (Math.abs(dist) < 2) { animating = false; return; }
+                var dist = to - fromPos;
+                if (Math.abs(dist) < 2) { animating = false; setVis(cur, cur); return; }
 
                 var t0 = performance.now();
                 function tick(ts) {
                     var p = Math.min((ts - t0) / DUR, 1);
-                    window.scrollTo(0, from + dist * ease(p));
+                    window.scrollTo(0, fromPos + dist * ease(p));
                     if (p < 1) requestAnimationFrame(tick);
-                    else animating = false;
+                    else { animating = false; setVis(cur, cur); }
                 }
                 requestAnimationFrame(tick);
             }
@@ -1083,8 +1093,16 @@
                 });
             }
 
+            setVis(0, 0);
+
             window.addEventListener('wheel', function (e) {
                 if (e.ctrlKey) return;
+                var inner = SECTIONS[cur].querySelector('.lp-section-inner');
+                if (inner) {
+                    var atTop = inner.scrollTop <= 0;
+                    var atBot = inner.scrollTop + inner.clientHeight >= inner.scrollHeight - 1;
+                    if ((e.deltaY < 0 && !atTop) || (e.deltaY > 0 && !atBot)) return;
+                }
                 e.preventDefault();
                 if (animating || Date.now() - lastJump < 350) return;
                 cur = curIdx();
@@ -1133,6 +1151,15 @@
                     }
                     requestAnimationFrame(tick);
                 });
+            });
+
+            var resizeTimer;
+            window.addEventListener('resize', function () {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(function () {
+                    window.scrollTo(0, SECTIONS[cur].offsetTop);
+                    setVis(cur, cur);
+                }, 150);
             });
         })();
     </script>

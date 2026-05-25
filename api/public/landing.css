@@ -2567,14 +2567,24 @@ html.auth-session-present #lp-cta-dashboard { display: inline-flex !important; }
         height: 100vh;
         overflow: hidden;
         display: flex;
-        align-items: center;
-        padding: 4rem 0;
+        flex-direction: column;
+        justify-content: center;
+        padding: 64px 0 0;
+        box-sizing: border-box;
     }
 
     .lp-section-inner {
-        max-height: calc(100vh - 8rem);
-        overflow: hidden;
         width: 100%;
+        max-height: calc(100vh - 64px - 1rem);
+        overflow-y: auto;
+        overflow-x: hidden;
+        scrollbar-width: none;
+        padding: 1.5rem 2rem;
+        box-sizing: border-box;
+    }
+
+    .lp-section-inner::-webkit-scrollbar {
+        display: none;
     }
 
     .lp-cta-section {
@@ -2583,6 +2593,8 @@ html.auth-session-present #lp-cta-dashboard { display: inline-flex !important; }
         display: flex;
         align-items: center;
         justify-content: center;
+        padding-top: 64px;
+        box-sizing: border-box;
     }
 
     .lp-footer {
@@ -2591,5 +2603,7 @@ html.auth-session-present #lp-cta-dashboard { display: inline-flex !important; }
         display: flex;
         flex-direction: column;
         justify-content: center;
+        padding-top: 64px;
+        box-sizing: border-box;
     }
 }
