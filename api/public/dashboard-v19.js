@@ -278,7 +278,7 @@ function setupMobileNav() {
         toggle.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
-            document.body.classList.toggle('mobile-sidebar-open');
+            window.location.href = 'https://sentinelpay.org';
         });
     }
 
