@@ -860,18 +860,64 @@ function addTeamMemberToTable(email, role, status = 'active', isYou = false) {
     }
 }
 
+function flipToNotifPanel() {
+    const dropdown = document.getElementById('user-dropdown');
+    const mainPanel = document.getElementById('dropdown-main-panel');
+    const notifPanel = document.getElementById('dropdown-notif-panel');
+    const items = document.getElementById('notification-items');
+    const panelBody = document.getElementById('notif-panel-body');
+    if (!dropdown || !mainPanel || !notifPanel || !panelBody) return;
+    dropdown.style.height = dropdown.offsetHeight + 'px';
+    if (items) panelBody.appendChild(items);
+    mainPanel.style.display = 'none';
+    notifPanel.classList.add('active');
+}
+
+function flipToMainPanel() {
+    const dropdown = document.getElementById('user-dropdown');
+    const mainPanel = document.getElementById('dropdown-main-panel');
+    const notifPanel = document.getElementById('dropdown-notif-panel');
+    const items = document.getElementById('notification-items');
+    const itemsWrapper = document.getElementById('notification-items-wrapper');
+    if (!dropdown || !mainPanel || !notifPanel) return;
+    notifPanel.classList.remove('active');
+    mainPanel.style.display = '';
+    dropdown.style.height = '';
+    if (items && itemsWrapper) itemsWrapper.appendChild(items);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const notifRow = document.getElementById('notification-row');
+    const backBtn = document.getElementById('notif-panel-back');
+    if (notifRow) {
+        notifRow.addEventListener('click', (e) => {
+            if (window.innerWidth > 900) return;
+            e.preventDefault();
+            e.stopPropagation();
+            flipToNotifPanel();
+        });
+    }
+    if (backBtn) {
+        backBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            flipToMainPanel();
+        });
+    }
+});
+
 // Global click handler to close dropdowns
 document.addEventListener('click', (e) => {
     document.querySelectorAll('.row-actions-dropdown.active').forEach(d => {
         d.classList.remove('active');
     });
-    
-    // Close user dropdown when clicking outside trigger and menu
+
     const trigger = document.getElementById('user-menu-trigger');
     const dropdown = document.getElementById('user-dropdown');
     if (trigger && dropdown && !trigger.contains(e.target) && !dropdown.contains(e.target)) {
         trigger.classList.remove('active');
         dropdown.classList.remove('active');
+        flipToMainPanel();
     }
 });
 
@@ -1199,9 +1245,11 @@ function renderNotifications(invites, token) {
     const badge = document.getElementById('notification-badge');
     if (!section || !container) return;
 
+    const notifRow = document.getElementById('notification-row');
     if (!invites || invites.length === 0) {
         if (wrapper) wrapper.style.display = 'none';
         if (badge) { badge.style.display = 'none'; badge.textContent = ''; }
+        if (notifRow) notifRow.classList.remove('has-notifications');
         return;
     }
 
@@ -1211,6 +1259,7 @@ function renderNotifications(invites, token) {
         badge.style.display = '';
     }
     if (wrapper) wrapper.style.display = 'block';
+    if (notifRow) notifRow.classList.add('has-notifications');
 
     container.innerHTML = '';
     invites.forEach(inv => {
@@ -1260,6 +1309,7 @@ function renderNotifications(invites, token) {
                 const w = document.getElementById('notification-items-wrapper');
                 if (!remaining && w) w.style.display = 'none';
                 if (badge) { badge.textContent = remaining >= 100 ? '99+' : (remaining || ''); badge.style.display = remaining ? '' : 'none'; }
+                if (!remaining) { const nr = document.getElementById('notification-row'); if (nr) nr.classList.remove('has-notifications'); }
             } catch (err) {
                 if (window.SentinelToast) window.SentinelToast.show(err.message, 'error');
                 acceptBtn.disabled = false;
@@ -1274,6 +1324,7 @@ function renderNotifications(invites, token) {
             const w = document.getElementById('notification-items-wrapper');
             if (!remaining && w) w.style.display = 'none';
             if (badge) { badge.textContent = remaining >= 100 ? '99+' : (remaining || ''); badge.style.display = remaining ? '' : 'none'; }
+            if (!remaining) { const nr = document.getElementById('notification-row'); if (nr) nr.classList.remove('has-notifications'); }
         };
 
         container.appendChild(item);

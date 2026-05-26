@@ -981,6 +981,7 @@
         }
 
         .org-home-badge { display: none; }
+        #dropdown-notif-panel { display: none; }
         body.state-in-org #header-api-key { display: none !important; }
         body.state-in-org .dropdown-item.org-only { display: flex; }
         body.state-in-org .dropdown-header.org-only { display: flex; }
@@ -1717,7 +1718,74 @@
                 flex-shrink: 0 !important;
             }
             #notification-row {
-                color: var(--text-muted) !important;
+                color: #fff !important;
+                opacity: 0.4 !important;
+            }
+            #notification-row.has-notifications {
+                opacity: 1 !important;
+            }
+            #notification-items-wrapper {
+                display: none !important;
+            }
+            #dropdown-notif-panel {
+                display: none;
+                flex-direction: column;
+                height: 100%;
+                overflow: hidden;
+            }
+            #dropdown-notif-panel.active {
+                display: flex;
+            }
+            #notif-panel-header {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                padding: 8px 10px 10px;
+                margin: 0 0 4px 0;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+                background: rgba(255, 255, 255, 0.03);
+                border-radius: 8px 8px 0 0;
+                flex-shrink: 0;
+                font-family: 'JetBrains Mono', monospace;
+                font-size: 0.75rem;
+                color: var(--text-muted);
+                letter-spacing: -0.2px;
+            }
+            #notif-panel-back {
+                all: unset;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 22px;
+                height: 22px;
+                border-radius: 4px;
+                color: var(--text-muted);
+                flex-shrink: 0;
+                -webkit-tap-highlight-color: transparent;
+            }
+            #notif-panel-back svg {
+                width: 14px;
+                height: 14px;
+            }
+            #notif-panel-back:active {
+                background: rgba(255, 255, 255, 0.07) !important;
+                color: #fff !important;
+            }
+            #notif-panel-body {
+                overflow-y: auto;
+                flex: 1;
+                min-height: 0;
+            }
+            #notif-panel-body::-webkit-scrollbar {
+                width: 3px;
+            }
+            #notif-panel-body::-webkit-scrollbar-track {
+                background: transparent;
+            }
+            #notif-panel-body::-webkit-scrollbar-thumb {
+                background: rgba(0, 240, 255, 0.25);
+                border-radius: 2px;
             }
 
             /* hamburger button — visible on mobile */
@@ -1966,48 +2034,59 @@
             </div>
             
             <div class="dropdown-menu org-dropdown" id="user-dropdown">
-                <div class="dropdown-header org-only">
-                    <span style="color: var(--text-muted);">Active Organization</span>
-                </div>
-                <div class="org-list org-only">
-                    <a href="#" class="dropdown-item org-item active">
-                        <div class="org-avatar small">S</div>
-                        <span class="org-name-text">Personal Org</span>
-                        <svg class="check-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--neon-blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left: auto; width: 14px; height: 14px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                    </a>
-                </div>
-                <div class="dropdown-divider org-only"></div>
-                <a href="#" class="dropdown-item org-only" id="dropdown-create-org">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                    create organization
-                </a>
-                <a href="#" class="dropdown-item org-only">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-                    organization settings
-                </a>
-                <div class="dropdown-divider org-only"></div>
-                <div id="notification-section">
-                    <a href="#" class="dropdown-item" id="notification-row">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-                        notifications
-                        <span id="notification-badge" style="display: none; margin-left: auto; background: var(--neon-blue); color: #000; font-size: 0.6rem; font-weight: 700; padding: 1px 7px; border-radius: 10px; font-family: 'JetBrains Mono', monospace;"></span>
-                    </a>
-                    <div id="notification-items-wrapper" style="display: none;">
-                        <div id="notification-items"></div>
-                        <div class="dropdown-divider"></div>
+                <div id="dropdown-main-panel">
+                    <div class="dropdown-header org-only">
+                        <span style="color: var(--text-muted);">Active Organization</span>
                     </div>
+                    <div class="org-list org-only">
+                        <a href="#" class="dropdown-item org-item active">
+                            <div class="org-avatar small">S</div>
+                            <span class="org-name-text">Personal Org</span>
+                            <svg class="check-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--neon-blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left: auto; width: 14px; height: 14px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        </a>
+                    </div>
+                    <div class="dropdown-divider org-only"></div>
+                    <a href="#" class="dropdown-item org-only" id="dropdown-create-org">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        create organization
+                    </a>
+                    <a href="#" class="dropdown-item org-only">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                        organization settings
+                    </a>
+                    <div class="dropdown-divider org-only"></div>
+                    <div class="dropdown-header" id="dropdown-user-header" style="margin-top: 8px;">
+                        <span id="dropdown-email" style="text-transform: none; color: var(--text-muted); font-size: 0.7rem; letter-spacing: 0;">user@email.com</span>
+                    </div>
+                    <a href="#" class="dropdown-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        account settings
+                    </a>
+                    <div id="notification-section">
+                        <a href="#" class="dropdown-item" id="notification-row">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                            notifications
+                            <span id="notification-badge" style="display: none; margin-left: auto; background: var(--neon-blue); color: #000; font-size: 0.6rem; font-weight: 700; padding: 1px 7px; border-radius: 10px; font-family: 'JetBrains Mono', monospace;"></span>
+                        </a>
+                        <div id="notification-items-wrapper" style="display: none;">
+                            <div id="notification-items"></div>
+                            <div class="dropdown-divider"></div>
+                        </div>
+                    </div>
+                    <a href="#" class="dropdown-item text-red" id="btn-logout">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                        sign out
+                    </a>
                 </div>
-                <div class="dropdown-header" id="dropdown-user-header" style="margin-top: 8px;">
-                    <span id="dropdown-email" style="text-transform: none; color: var(--text-muted); font-size: 0.7rem; letter-spacing: 0;">user@email.com</span>
+                <div id="dropdown-notif-panel">
+                    <div id="notif-panel-header">
+                        <button id="notif-panel-back" type="button">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                        </button>
+                        <span>notifications</span>
+                    </div>
+                    <div id="notif-panel-body"></div>
                 </div>
-                <a href="#" class="dropdown-item">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                    account settings
-                </a>
-                <a href="#" class="dropdown-item text-red" id="btn-logout">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-                    sign out
-                </a>
             </div>
             <button class="mobile-hamburger-btn" id="mobile-hamburger-btn" aria-label="Open navigation">
                 <span class="hb-line"></span>
