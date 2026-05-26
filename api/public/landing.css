@@ -2551,13 +2551,13 @@ html.auth-session-present #lp-cta-dashboard { display: inline-flex !important; }
     color: var(--neon-blue);
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1280px) {
     .lp-snap-ind { display: none; }
 }
 
 /* ---- desktop: one section per viewport ---- */
 
-@media (min-width: 900px) {
+@media (min-width: 1281px) {
     html.snap-mode {
         scrollbar-width: none;
         -ms-overflow-style: none;
