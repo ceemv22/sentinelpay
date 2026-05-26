@@ -1,7 +1,3 @@
-// SentinelPay Auth Core (v18.0 - ULTIMATE FIX)
-// Features: Dynamic Captcha Lifecycle, Atomic Locks, Zero-Conflict Handlers
-
-// 1. SUPABASE SUBSYSTEM
 const supabaseUrl = 'https://aivqwkgjdpklxxuvkxpy.supabase.co';
 const supabaseKey = 'sb_publishable_bRfAssaGT6D8oFDQtPARbw_5fyYGWM6';
 let supabaseClient = null;
@@ -17,49 +13,38 @@ const getSupabase = () => {
     return null;
 };
 
-// 2. DYNAMIC CAPTCHA HANDLER (v18)
-// This system destroys and recreates the captcha element to ensure zero token reuse or stale states.
 window.solveCaptcha = async (scope, targetDivId, triggerBtn) => {
-    console.log(`[auth] solving captcha for ${scope}...`);
-    
     return new Promise((resolve) => {
         const targetDiv = document.getElementById(targetDivId);
         if (!targetDiv) return resolve(null);
 
-        // 1. Clear previous widget
         targetDiv.innerHTML = '';
         const newDiv = document.createElement('div');
         newDiv.id = targetDivId + '-inner';
         targetDiv.appendChild(newDiv);
 
         if (!window.turnstile) {
-            console.error('[auth] turnstile missing');
             return resolve(null);
         }
 
-        // 2. Render fresh widget
         window.turnstile.render(newDiv, {
             sitekey: '0x4AAAAAADGpMozD1QOtWPkP',
             theme: 'dark',
             callback: (token) => {
-                console.log(`[auth] captcha solved for ${scope}`);
                 if (triggerBtn) {
                     triggerBtn.disabled = false;
                     triggerBtn.setAttribute('data-captcha-token', token);
-                    // AUTO-SUBMIT after solve
                     triggerBtn.click();
                 }
                 resolve(token);
             },
             'error-callback': () => {
-                console.error(`[auth] turnstile error for ${scope}`);
                 resolve(null);
             }
         });
     });
 };
 
-// 3. UI HELPERS
 const startResendTimer = (btn, sec) => {
     btn.disabled = true;
     let remaining = sec;
@@ -100,9 +85,7 @@ window.switchManual = (target) => {
     sessionStorage.setItem('sentinel_auth_tab', target);
 };
 
-// 4. MAIN INITIALIZATION
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('[sentinel-auth] initializing v18.0...');
     const s = getSupabase();
 
     const urlParams = new URLSearchParams(window.location.search);
@@ -111,7 +94,6 @@ document.addEventListener('DOMContentLoaded', () => {
         ? returnToRaw
         : null;
 
-    // FORM: LOGIN
     const loginForm = document.getElementById('login-form');
     if (loginForm) {
         let isBusy = false;
@@ -156,7 +138,6 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
-    // FORM: REGISTER
     const regForm = document.getElementById('register-form');
     if (regForm) {
         let isBusy = false;
@@ -181,7 +162,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const email = document.getElementById('reg-email').value;
                 const password = document.getElementById('reg-password').value;
 
-                // S-Tier Security: Strict Password Policy Check
                 if (password.length < 8 || !/[A-Z]/.test(password) || !/[0-9]/.test(password)) {
                     document.getElementById('register-error-msg').textContent = 'error: security requirements not met';
                     document.getElementById('register-error-msg').style.display = 'block';
@@ -228,7 +208,6 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
-    // FORM: FORGOT PASSWORD
     const forgotForm = document.getElementById('forgot-pw-form');
     if (forgotForm) {
         let isBusy = false;
@@ -292,7 +271,6 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => { if (window.SentinelToast) window.SentinelToast.show(pendingToast, 'warning'); }, 300);
     }
 
-    // Tab Auto-Switch (based on URL path, hash, or session)
     const hash = window.location.hash.toLowerCase();
     const authPath = window.location.pathname.toLowerCase();
     const lastTab = sessionStorage.getItem('sentinel_auth_tab');
@@ -307,7 +285,6 @@ document.addEventListener('DOMContentLoaded', () => {
         window.switchManual(lastTab);
     }
 
-    // BINDINGS
     const trigger = document.getElementById('forgot-pw-trigger');
     const modal = document.getElementById('forgot-pw-modal');
     const closeBtn = document.getElementById('close-forgot-pw-btn');
@@ -330,7 +307,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('tab-login').onclick = () => window.switchManual('login');
     document.getElementById('tab-register').onclick = () => window.switchManual('register');
 
-    // Password Toggle
     document.querySelectorAll('.pw-eye-toggle').forEach(btn => {
         btn.onclick = () => {
             const input = document.getElementById(btn.getAttribute('data-target'));
@@ -448,7 +424,6 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     });
 
-    // Password Rules
     const regPw = document.getElementById('reg-password');
     if (regPw) {
         regPw.oninput = (e) => {

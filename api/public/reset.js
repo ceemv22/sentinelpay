@@ -1,4 +1,3 @@
-// SentinelPay Password Reset (v11.7 - PATIENT HYDRATION)
 const supabaseUrl = 'https://aivqwkgjdpklxxuvkxpy.supabase.co';
 const supabaseKey = 'sb_publishable_bRfAssaGT6D8oFDQtPARbw_5fyYGWM6';
 let s = null;
@@ -15,7 +14,6 @@ const getSupabase = () => {
 };
 
 document.addEventListener('DOMContentLoaded', async () => {
-    console.log('[reset] security handshake protocol initiated...');
     const supabase = getSupabase();
     if (!supabase) return;
 
@@ -37,7 +35,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         window.location.replace('/auth');
     };
 
-    // 1. REJECT ERROR URLS IMMEDIATELY (expired/invalid/reused links)
     const urlSearch = new URLSearchParams(window.location.search);
     const urlHash = new URLSearchParams(window.location.hash.replace(/^#/, ''));
     const urlError = urlSearch.get('error') || urlHash.get('error');
@@ -51,7 +48,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
-    // 2. PATIENT HYDRATION (Wait for PKCE Exchange)
     const isRecoveryRedirect = window.location.search.includes('code=');
     let sessionValidated = false;
 
@@ -81,7 +77,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (!ok) redirectToAuth('reset link is invalid. request a new one.');
     }
 
-    // 2. FORM SUBMISSION
     if (form) {
         let isSubmitting = false;
         form.onsubmit = async (e) => {
@@ -131,7 +126,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         };
     }
 
-    // 3. UI TOGGLES
     document.querySelectorAll('.pw-eye-toggle').forEach(btn => {
         btn.onclick = () => {
             const input = document.getElementById(btn.getAttribute('data-target'));
@@ -156,7 +150,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     bind('reset-login-btn', '/auth');
     bind('back-to-login-invalid', '/auth');
 
-    // Tooltip
     const toggle = document.getElementById('pw-rules-toggle');
     const tooltip = document.getElementById('pw-rules-tooltip');
     if (toggle && tooltip) {

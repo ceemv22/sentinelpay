@@ -1,10 +1,3 @@
-/**
- * SentinelPay API v2
- * Security Status: S-TIER CERTIFIED (Production Ready)
- * Last Audit Date: 2026-04-21
- * Audit Coverage: ReDoS, SQLi, XSS, IDOR, CSRF, Replay, DoS
- */
-
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
@@ -46,10 +39,7 @@ function resolveTrustProxySetting(value) {
 const trustProxySetting = resolveTrustProxySetting(trustProxyEnv);
 app.set('trust proxy', trustProxySetting === undefined ? 1 : trustProxySetting);
 
-// S-S-S-S Tier IP Resolver: Secure & Spoof-Proof
 app.use((req, res, next) => {
-    // Cloudflare verified IP is the gold standard. 
-    // If cf-connecting-ip is missing, we check x-forwarded-for but ONLY if we are certain we are behind a proxy.
     const cfIp = req.headers['cf-connecting-ip'];
     const forwardedFor = req.headers['x-forwarded-for'];
     
@@ -57,13 +47,10 @@ app.use((req, res, next) => {
     next();
 });
 
-// [MONITOR] S-Tier Global Traffic Watcher (Server-Side Only)
 app.use((req, res, next) => {
     const start = Date.now();
     const timestamp = new Date().toISOString().replace('T', ' ').split('.')[0];
     const ip = req.realIp || req.ip;
-    
-    // Skip logging for static assets to keep logs clean and high-value
     const isStatic = req.path.match(/\.(css|js|png|jpg|jpeg|svg|gif|ico|woff|woff2|webp)$/);
     
     res.on('finish', () => {
@@ -93,7 +80,7 @@ if (process.env.STAGING_BASIC_AUTH) {
     });
 }
 
-app.use(hpp()); // Prevent HTTP Parameter Pollution
+app.use(hpp());
 app.use(helmet({
     contentSecurityPolicy: {
         directives: {
@@ -159,13 +146,12 @@ app.use(helmet({
     crossOriginResourcePolicy: { policy: "cross-origin" },
     crossOriginOpenerPolicy: false,
     hsts: {
-        maxAge: 63072000, // Keeping S-Tier HSTS
+        maxAge: 63072000,
         includeSubDomains: true,
         preload: true
     }
 }));
 
-// S-S-S-S Tier Permissions Policy: Locked Down
 app.use((req, res, next) => {
     res.setHeader('Permissions-Policy', 'xr-spatial-tracking=(), camera=(), microphone=(), geolocation=(), interest-cohort=()');
     next();
@@ -192,12 +178,10 @@ app.use(cors({
     methods: ['POST', 'GET'],
 }));
 
-// Stripe integration MUST be above express.json() because webhooks require raw Body Buffers for cryptographic signature verification.
 app.use('/v1/stripe', require('./routes/stripe'));
 
 app.use(express.json({ limit: '10kb' }));
 
-// Ensure correct MIME types and No-Cache for HTML/JS during rapid debug phase
 app.use((req, res, next) => {
     const p = req.path;
     if (p.endsWith('.html') || p.endsWith('.js') || p.endsWith('.css') || p === '/auth' || p === '/' || p.startsWith('/dashboard')) {
@@ -211,7 +195,6 @@ app.use((req, res, next) => {
     next();
 });
 
-// Dashboard SPA Routes - serve dashboard.html for all /dashboard/* paths
 app.get('/dashboard', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
 });
@@ -236,7 +219,6 @@ app.get('/join', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'join.html'));
 });
 
-// Auth SPA Routes - serve auth.html for /auth/login and /auth/register (supports returnTo)
 app.get('/auth/login', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'auth.html'));
 });
@@ -247,7 +229,6 @@ app.get('/auth/register', (req, res) => {
 
 app.use(express.static(path.join(__dirname, 'public'), { extensions: ['html'] }));
 
-// Redis Setup & Rate Limiter Store
 let redisClient;
 let redisReady = false;
 
@@ -270,16 +251,12 @@ if (redisUrl) {
         console.error('[redis error]', err.message);
     });
 } else {
-    // Fallback to memory store if Redis is not configured (e.g. local testing)
     console.warn('[rate-limit] WARNING: REDIS_URL not found. Falling back to MemoryStore.');
 }
 
 function createStore(prefix) {
     if (!redisClient) return undefined;
 
-    // Deferred connection gate: commands will wait until Redis emits 'ready'
-    // This prevents ClientClosedError when the store is created at module-level
-    // but redisClient.connect() is called later inside start()
     const connectionReady = redisClient.isOpen
         ? Promise.resolve()
         : new Promise((resolve) => {
@@ -302,36 +279,29 @@ function requireRateLimitBackend(req, res, next) {
     next();
 }
 
-// PLG Unauth Limiter logic: DUAL LAYER (IP-Daily + Fingerprint-Lifetime)
 async function consumeUnauthCredit(req, res, next) {
     const rawFp = req.headers['x-fingerprint'];
     const fingerprint = (typeof rawFp === 'string') && rawFp.trim().length > 0 ? rawFp.substring(0, 64) : null;
 
     if (redisClient) {
         try {
-            // LAYER 1: IP Rate Limiting (Prevent bot nets from refreshing fingerprints infinitely)
-            // 20 scans per IP per day maximum for unauthenticated users
             const ipKey = `ip_limit:${req.realIp}`;
             const ipUsage = await redisClient.incr(ipKey);
-            if (ipUsage === 1) await redisClient.expire(ipKey, 86400); // 24 hours TTL
+            if (ipUsage === 1) await redisClient.expire(ipKey, 86400);
             
             if (ipUsage > 20) {
                 return res.status(429).json({ error: 'network proxy usage too high. login required.', code: 429, requiresAuth: true });
             }
 
-            // LAYER 2: Fingerprint Lifetime Limiter (3 free scans per device)
             if (fingerprint) {
                 const fpKey = `unauth:fp:${fingerprint}`;
                 const fpUsage = await redisClient.incr(fpKey);
-                // Protection: Expire fingerprints after 30 days to prevent Redis memory bloat
-                if (fpUsage === 1) await redisClient.expire(fpKey, 2592000); 
-                
+                if (fpUsage === 1) await redisClient.expire(fpKey, 2592000);
                 if (fpUsage > 3) {
-                    await redisClient.decr(fpKey); // Keep accurate
+                    await redisClient.decr(fpKey);
                     return res.status(403).json({ error: 'free limit reached. please register.', code: 403, requiresAuth: true });
                 }
             } else {
-                // If they block headers/fingerprints, we bind them aggressively to IP (3 lifetime per IP)
                 const strictIpKey = `strict:ip:${req.realIp}`;
                 const strictIpUsage = await redisClient.incr(strictIpKey);
                 if (strictIpUsage === 1) await redisClient.expire(strictIpKey, 2592000);
@@ -357,15 +327,12 @@ async function consumeUnauthCredit(req, res, next) {
     }
 }
 
-// B2B API Limiter
-
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000,
     max: 30,
     standardHeaders: true,
     legacyHeaders: false,
     keyGenerator: (req) => {
-        // Now using verified ID from requireApiKey middleware
         return req.apiKey ? `key:${req.apiKey.id}` : `ip:${req.realIp}`;
     },
     validate: false, 
@@ -373,7 +340,6 @@ const limiter = rateLimit({
     message: { error: 'request limit exceeded. try again in 15 minutes.', code: 429 }
 });
 
-// Helper for audit logging
 async function logAudit(req, wallet, result, apiKeyId = null) {
     const ip = req.realIp || req.ip;
     try {
@@ -400,7 +366,6 @@ async function logAudit(req, wallet, result, apiKeyId = null) {
     }
 }
 
-// CAPTCHA Middleware (Cloudflare Turnstile)
 async function verifyTurnstile(req, res, next) {
     const token = req.body['cf-turnstile-response'];
     const ip = req.realIp || req.ip;
@@ -411,7 +376,6 @@ async function verifyTurnstile(req, res, next) {
             console.error('[turnstile] Missing TURNSTILE_SECRET_KEY in production!');
             return res.status(500).json({ error: 'captcha configuration error', code: 500 });
         }
-        // Bypass in dev if no secret configured
         return next();
     }
 
@@ -449,7 +413,6 @@ app.use('/v1/', (req, res, next) => {
     next();
 });
 
-// B2B Protected Endpoint
 app.post('/v1/score', requireRateLimitBackend, requireApiKey, limiter, async (req, res) => {
     const { wallet } = req.body;
     if (!wallet || wallet.length > 128 || !/^0x[a-fA-F0-9]{40}$/.test(wallet)) {
@@ -474,7 +437,6 @@ app.post('/v1/score', requireRateLimitBackend, requireApiKey, limiter, async (re
     }
 });
 
-// PLG Public Endpoint (Unauth)
 app.post('/v1/public/score', requireRateLimitBackend, consumeUnauthCredit, verifyTurnstile, async (req, res) => {
     const { wallet } = req.body;
     if (!wallet || wallet.length > 128 || !/^0x[a-fA-F0-9]{40}$/.test(wallet)) {
@@ -499,7 +461,6 @@ app.post('/v1/public/score', requireRateLimitBackend, consumeUnauthCredit, verif
     }
 });
 
-// PLG Auth Endpoint (Logged In Users with Credits)
 app.post('/v1/user/score', requireSupabaseAuth, async (req, res) => {
     const { wallet } = req.body;
     if (!wallet || wallet.length > 128 || !/^0x[a-fA-F0-9]{40}$/.test(wallet)) {
@@ -510,7 +471,7 @@ app.post('/v1/user/score', requireSupabaseAuth, async (req, res) => {
         const updatedUser = await prisma.user.updateMany({
             where: {
                 id: req.user.id,
-                credits: { gt: 0 } // Only decrement if they ACTUALLY have > 0 credits
+                credits: { gt: 0 }
             },
             data: { credits: { decrement: 1 } }
         });
@@ -548,7 +509,7 @@ app.post('/v1/user/score', requireSupabaseAuth, async (req, res) => {
             category: result.category,
             flags: result.flags,
             history_incomplete: result.history_incomplete || false,
-            creditsRemaining: req.user.credits - 1, 
+            creditsRemaining: req.user.credits - 1,
             timestamp: new Date().toISOString()
         });
     } catch (err) {
@@ -557,7 +518,6 @@ app.post('/v1/user/score', requireSupabaseAuth, async (req, res) => {
     }
 });
 
-// Secure Profile & History Retrieval (IDOR Protected)
 app.get('/v1/user/profile', requireSupabaseAuth, async (req, res) => {
     try {
         const user = await prisma.user.findUnique({
@@ -588,7 +548,6 @@ app.get('/v1/user/profile', requireSupabaseAuth, async (req, res) => {
     }
 });
 
-// S-Tier API Key Reveal (IDOR Protected)
 app.get('/v1/user/api-key/reveal', requireSupabaseAuth, async (req, res) => {
     try {
         const apiKey = await prisma.apiKey.findFirst({
@@ -601,7 +560,7 @@ app.get('/v1/user/api-key/reveal', requireSupabaseAuth, async (req, res) => {
         }
 
         res.json({
-            apiKey: apiKey.keyHash, 
+            apiKey: apiKey.keyHash,
             plan: apiKey.plan,
             createdAt: apiKey.createdAt
         });
@@ -611,7 +570,6 @@ app.get('/v1/user/api-key/reveal', requireSupabaseAuth, async (req, res) => {
     }
 });
 
-// S-Tier API Key Roll (Re-generate)
 app.post('/v1/user/api-key/roll', requireSupabaseAuth, async (req, res) => {
     try {
         const newKeyRaw = `sp_live_${require('crypto').randomBytes(24).toString('hex')}`;
@@ -619,13 +577,11 @@ app.post('/v1/user/api-key/roll', requireSupabaseAuth, async (req, res) => {
         const { encrypt } = require('./services/crypto');
         
         const result = await prisma.$transaction(async (tx) => {
-            // 1. Deactivate all old keys
             await tx.apiKey.updateMany({
                 where: { userId: req.user.id, active: true },
                 data: { active: false }
             });
 
-            // 2. Create new key
             return await tx.apiKey.create({
                 data: {
                     userId: req.user.id,
@@ -638,7 +594,7 @@ app.post('/v1/user/api-key/roll', requireSupabaseAuth, async (req, res) => {
         });
 
         res.json({
-            apiKey: newKeyRaw, // Return RAW key to user once
+            apiKey: newKeyRaw,
             plan: result.plan,
             createdAt: result.createdAt
         });
@@ -659,7 +615,6 @@ app.use((err, req, res, next) => {
     next(err);
 });
 
-// --- Organization Endpoints (S-Tier Backend) ---
 app.get('/v1/organizations/check', requireSupabaseAuth, async (req, res) => {
     const { name } = req.query;
     if (!name || name.trim().length < 2) return res.json({ available: true });
@@ -694,7 +649,6 @@ app.get('/v1/organizations', requireSupabaseAuth, async (req, res) => {
             }
         });
 
-        // Add role info
         const orgsWithRole = orgs.map(org => ({
             ...org,
             role: org.ownerId === req.user.id ? 'Owner' : 'Member'
@@ -727,7 +681,6 @@ app.post('/v1/organizations', requireSupabaseAuth, async (req, res) => {
             return res.status(400).json({ error: 'you already have an organization with this name', code: 'name_taken' });
         }
 
-        // S-Tier Protection: 10 Orgs Limit for MVP
         const orgCount = await prisma.organization.count({
             where: { ownerId: req.user.id }
         });
@@ -759,7 +712,6 @@ app.post('/v1/organizations', requireSupabaseAuth, async (req, res) => {
     }
 });
 
-// --- Team Invitation System (S-Tier Email Flow) ---
 const INVITE_EMAIL_REGEX = /^[^\s@]{1,64}@[^\s@]{1,255}\.[^\s@]{2,}$/;
 
 app.post('/v1/organizations/:slug/team/invite', requireSupabaseAuth, async (req, res) => {
@@ -776,7 +728,6 @@ app.post('/v1/organizations/:slug/team/invite', requireSupabaseAuth, async (req,
     }
 
     try {
-        // Rate limit: 20 invites per user per hour
         if (redisClient) {
             const inviteKey = `invite_limit:${req.user.id}`;
             const inviteCount = await redisClient.incr(inviteKey);
@@ -816,7 +767,6 @@ app.post('/v1/organizations/:slug/team/invite', requireSupabaseAuth, async (req,
                 throw new Error(`invalid email address: ${targetEmail}`);
             }
 
-            // Generate raw token for URL, store only its SHA-256 hash in DB
             const rawToken = crypto.randomBytes(32).toString('hex');
             const tokenHash = crypto.createHash('sha256').update(rawToken).digest('hex');
             const expiresAt = new Date();
@@ -1085,7 +1035,6 @@ async function start() {
         }
     }
     
-    // Catch-all 404 Middleware (Version-agnostic strategy)
     app.use((req, res) => {
         res.status(404).sendFile(path.join(__dirname, 'public', '404.html'));
     });

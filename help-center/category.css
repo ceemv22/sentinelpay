@@ -1,9 +1,4 @@
-/* ========================================
-   SENTINELPAY HELP CENTER — CATEGORY PAGE CSS
-   Extends style.css for article list views
-   ======================================== */
 
-/* --- SEARCH BAR ABOVE BREADCRUMB --- */
 .cat-search-wrapper {
     padding-top: 5.5rem;
     margin-bottom: 3.5rem;
@@ -15,7 +10,6 @@
     animation: none;
 }
 
-/* --- BREADCRUMB --- */
 .breadcrumb {
     display: flex;
     align-items: center;
@@ -57,7 +51,6 @@
     opacity: 0.7;
 }
 
-/* --- CATEGORY HEADER --- */
 .cat-header {
     display: flex;
     align-items: flex-start;
@@ -80,7 +73,7 @@
     justify-content: center;
     color: var(--neon-blue);
     filter: drop-shadow(0 0 10px rgba(0, 240, 255, 0.1));
-    margin-top: 4px; /* optical alignment with title */
+    margin-top: 4px;
 }
 
 .cat-icon-wrapper svg {
@@ -113,7 +106,6 @@
     margin-bottom: 1rem;
 }
 
-/* Author + article count (CSGOEmpire style) */
 .cat-meta {
     display: flex;
     align-items: center;
@@ -148,7 +140,6 @@
     font-weight: 700;
 }
 
-/* --- ARTICLE LIST --- */
 .article-list {
     display: flex;
     flex-direction: column;
@@ -171,7 +162,6 @@
     position: relative;
 }
 
-/* Round only first and last rows */
 .article-row:first-child {
     border-radius: 10px 10px 0 0;
 }
@@ -186,7 +176,6 @@
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-/* Left neon accent line on hover */
 .article-row::before {
     content: '';
     position: absolute;
@@ -208,7 +197,6 @@
     opacity: 1;
 }
 
-/* Also affect border of adjacent row */
 .article-row:hover + .article-row {
     border-top-color: rgba(0, 240, 255, 0.08);
 }
@@ -261,7 +249,6 @@
     transform: translateX(2px);
 }
 
-/* --- MOBILE --- */
 @media (max-width: 768px) {
     .cat-search-wrapper { padding-top: 4.5rem; }
     .cat-header { flex-direction: column; gap: 1rem; }

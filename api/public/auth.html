@@ -71,10 +71,8 @@
         </div>
     </nav>
 
-    <!-- Centered content area -->
     <div class="auth-page-wrap" style="padding-top: 64px;">
 
-        <!-- Auth Card -->
         <div class="auth-card" id="auth-panel" style="position: relative; z-index: 500;">
             <div class="auth-tabs">
                 <button class="auth-tab active" id="tab-login" style="cursor: pointer; position: relative; z-index: 1000; pointer-events: auto;">login</button>
@@ -82,7 +80,6 @@
             </div>
 
             <div class="auth-panels-container">
-                <!-- LOGIN PANEL -->
                 <div id="panel-login" class="auth-panel-content active">
                     <div class="auth-social">
                         <button class="social-btn" id="btn-google">
@@ -128,7 +125,6 @@
                     </form>
                 </div>
 
-                <!-- REGISTER PANEL -->
                 <div id="panel-register" class="auth-panel-content">
                     <div class="auth-social">
                         <button class="social-btn" id="btn-google-reg">
@@ -187,9 +183,7 @@
             </div>
         </div>
 
-        <!-- Success State: Email Sent (S-Tier Lockdown Edition v2) -->
         <div id="auth-success-state" class="auth-card" style="display: none;">
-            <!-- Sentinel Custom Checkmark -->
             <div class="success-icon-wrap" style="flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;">
                 <div style="margin-bottom: 2rem; filter: drop-shadow(0 0 20px rgba(0, 240, 255, 0.25));">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" style="width: 100px; height: 100px;">
@@ -210,7 +204,6 @@
                 <p style="color: rgba(255,255,255,0.4); font-size: 0.9rem; font-family: 'JetBrains Mono', monospace; line-height: 1.8; max-width: 280px; margin: 0 auto;">we've dispatched a secure verification link to verify your identity.</p>
             </div>
 
-            <!-- Hardened Sticky Footer (No-Shift Layout) -->
             <div id="resend-anchor" style="min-height: 100px; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; padding-bottom: 0.5rem;">
                 <button id="resend-btn" style="background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.1); padding: 12px 24px; border-radius: 12px; font-size: 0.72rem; cursor: pointer; font-family: 'JetBrains Mono', monospace; transition: all 0.3s ease; display: inline-block; min-width: 200px;">
                     resend email
@@ -218,7 +211,6 @@
             </div>
         </div>
 
-        <!-- Success State: Verification Complete -->
         <div id="auth-verified-state" class="auth-card" style="display: none;">
             <div class="success-icon-wrap" style="margin-bottom: 2rem;">
                 <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--neon-blue)" stroke-width="1.5" style="margin: 0 auto;">
@@ -233,12 +225,10 @@
 
     </div>
 
-    <!-- Forgot Password Modal -->
     <div id="forgot-pw-modal" class="modal-overlay">
         <div class="auth-card modal-content" style="position: relative; z-index: 1000; display: flex; flex-direction: column;">
             <button id="close-forgot-pw-btn" class="modal-close-btn">✕</button>
             
-            <!-- Default Form State -->
             <div id="forgot-pw-state-form" style="display: flex; flex-direction: column; width: 100%;">
                 <div class="auth-tabs" style="margin-bottom: 2rem;">
                     <button class="auth-tab active" style="width: 100%; cursor: default; pointer-events: none;">reset password</button>
@@ -258,7 +248,6 @@
                 </form>
             </div>
 
-            <!-- Success State: Recovery Email Sent -->
             <div id="forgot-pw-state-success" style="display: none; flex-direction: column; align-items: center; justify-content: space-between; text-align: center; width: 100%; min-height: 380px; padding-top: 1rem;">
                 <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%;">
                     <div class="success-icon-wrap" style="margin-bottom: 2rem; filter: drop-shadow(0 0 20px rgba(0, 240, 255, 0.25)); display: flex; justify-content: center;">
@@ -279,7 +268,6 @@
                     <p style="color: rgba(255,255,255,0.4); font-size: 0.9rem; font-family: 'JetBrains Mono', monospace; line-height: 1.8; max-width: 280px; margin: 0 auto;">we've dispatched a secure recovery link to your email.</p>
                 </div>
                 
-                <!-- Resend Anchor -->
                 <div id="forgot-resend-anchor" style="width: 100%; display: flex; flex-direction: column; align-items: center; padding-bottom: 0.5rem; min-height: 100px; justify-content: flex-end;">
                     <button id="forgot-resend-btn" style="background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.1); padding: 12px 24px; border-radius: 12px; font-size: 0.72rem; cursor: pointer; font-family: 'JetBrains Mono', monospace; transition: all 0.3s ease; display: inline-block; min-width: 180px;">
                         resend email
@@ -289,7 +277,6 @@
         </div>
     </div>
 
-    <!-- External Logic -->
     <script src="/toast.js"></script>
     <script src="/auth.js?v=12.0"></script>
     <script src="/eye-track.js?v=11.0"></script>
