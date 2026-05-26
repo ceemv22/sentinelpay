@@ -202,6 +202,9 @@ function renderDashboard(session) {
             menuTrigger.dataset.initialized = "true";
             menuTrigger.onclick = (e) => {
                 e.preventDefault(); e.stopPropagation();
+                if (document.body.classList.contains('mobile-sidebar-open')) {
+                    document.body.classList.remove('mobile-sidebar-open');
+                }
                 menuTrigger.classList.toggle('active');
                 dropdownMenu.classList.toggle('active');
             };
