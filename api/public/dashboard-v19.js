@@ -208,15 +208,17 @@ function renderDashboard(session) {
         }
 
         // 2.5 ROUTING LOGIC
-        const path = window.location.pathname;
-        const orgMatch = path.match(/\/dashboard\/org\/([a-z0-9]{20})(\/[a-z0-9-]+)?/);
-        
+        const currentPath = window.location.pathname;
+        const orgMatch = currentPath.match(/^\/dashboard\/org\/([a-z0-9]{20})(\/[a-z0-9-]+)?$/);
+        const isValidHome = currentPath === '/dashboard' || currentPath === '/dashboard/organizations' || currentPath === '/dashboard/';
+
         if (orgMatch) {
-            const slug = orgMatch[1];
-            const subView = orgMatch[2] ? orgMatch[2].substring(1) : 'projects';
-            switchToOrgView(slug, subView);
-        } else {
+            switchToOrgView(orgMatch[1], orgMatch[2] ? orgMatch[2].substring(1) : 'projects');
+        } else if (isValidHome) {
             switchToHomeView();
+        } else {
+            window.location.replace('/dashboard/organizations');
+            return;
         }
 
         // 3. CACHE LOOKUP
@@ -1271,14 +1273,14 @@ function renderNotifications(invites, token) {
 }
 
 window.onpopstate = (e) => {
-    const path = window.location.pathname;
-    const orgMatch = path.match(/\/dashboard\/org\/([a-z0-9]{20})(\/[a-z0-9-]+)?/);
+    const currentPath = window.location.pathname;
+    const orgMatch = currentPath.match(/^\/dashboard\/org\/([a-z0-9]{20})(\/[a-z0-9-]+)?$/);
     if (orgMatch) {
-        const slug = orgMatch[1];
-        const subView = orgMatch[2] ? orgMatch[2].substring(1) : 'projects';
-        switchToOrgView(slug, subView);
-    } else {
+        switchToOrgView(orgMatch[1], orgMatch[2] ? orgMatch[2].substring(1) : 'projects');
+    } else if (currentPath === '/dashboard' || currentPath === '/dashboard/organizations' || currentPath === '/dashboard/') {
         switchToHomeView();
+    } else {
+        window.location.replace('/dashboard/organizations');
     }
 };
 
