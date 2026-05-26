@@ -990,7 +990,7 @@
     </script>
     <script>
         (function () {
-            if (window.innerWidth < 900) return;
+            if (window.innerWidth < 1281) return;
 
             var BASE_DPR = window.devicePixelRatio;
 
@@ -1013,7 +1013,7 @@
             }
 
             function shouldSnap() {
-                return window.innerWidth >= 900 && window.devicePixelRatio <= BASE_DPR * 1.01;
+                return window.innerWidth >= 1281 && window.devicePixelRatio <= BASE_DPR * 1.01;
             }
 
             function setVis(fromIdx, toIdx) {
