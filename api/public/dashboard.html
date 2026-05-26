@@ -1679,6 +1679,48 @@
                 transform: translateX(-10px);
             }
 
+            #user-dropdown .org-only {
+                display: none !important;
+            }
+            #user-dropdown {
+                left: auto !important;
+                right: 0.75rem !important;
+                min-width: 215px !important;
+                max-width: 255px !important;
+                padding: 8px !important;
+                top: 64px !important;
+            }
+            #dropdown-user-header {
+                background: rgba(255, 255, 255, 0.03) !important;
+                border-radius: 8px !important;
+                padding: 8px 10px !important;
+                margin: 0 0 4px 0 !important;
+                border-bottom: none !important;
+            }
+            #dropdown-email {
+                font-size: 0.7rem !important;
+                max-width: 195px !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+                white-space: nowrap !important;
+                display: block !important;
+            }
+            #user-dropdown .dropdown-item {
+                font-size: 0.82rem !important;
+                padding: 9px 10px !important;
+                min-height: 38px !important;
+                gap: 10px !important;
+            }
+            #user-dropdown .dropdown-item svg {
+                width: 14px !important;
+                height: 14px !important;
+                flex-shrink: 0 !important;
+            }
+            #notification-section .dropdown-header {
+                padding: 6px 10px 8px !important;
+                font-size: 0.7rem !important;
+            }
+
             /* hamburger button — visible on mobile */
             .mobile-hamburger-btn {
                 display: flex !important;
@@ -1953,7 +1995,7 @@
                     <div id="notification-items"></div>
                     <div class="dropdown-divider"></div>
                 </div>
-                <div class="dropdown-header" style="margin-top: 8px;">
+                <div class="dropdown-header" id="dropdown-user-header" style="margin-top: 8px;">
                     <span id="dropdown-email" style="text-transform: none; color: var(--text-muted); font-size: 0.7rem; letter-spacing: 0;">user@email.com</span>
                 </div>
                 <a href="#" class="dropdown-item">
