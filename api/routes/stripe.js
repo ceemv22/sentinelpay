@@ -104,7 +104,6 @@ router.post('/webhook', express.raw({ type: 'application/json', limit: '100kb' }
                     return;
                 }
 
-                // Verify the user actually exists and the email matches to prevent metadata tampering
                 const user = await tx.user.findUnique({ where: { id: userId } });
                 if (!user) {
                     console.error(`[billing] CRITICAL: user ${userId} not found for session ${session.id}`);

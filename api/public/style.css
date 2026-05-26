@@ -10,7 +10,6 @@
     --neon-blue: #00f0ff;
 }
 
-/* --- S-TIER GLOBAL SCROLLBAR --- */
 ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
@@ -28,16 +27,13 @@
     background: rgba(0, 240, 255, 0.5);
     box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
 }
-/* Firefox support */
 * {
     scrollbar-width: thin;
     scrollbar-color: rgba(0, 240, 255, 0.2) #050505;
 }
 
 
-/* --- SUCCESS LOGIC MOVED TO BOTTOM FOR ISOLATION --- */
 
-/* --- THE FINAL DESKTOP EYE-FIX (Moved to Top for Priority) --- */
 .password-field-wrap {
     position: relative !important;
     display: flex !important;
@@ -78,13 +74,12 @@
     width: 16px !important;
     height: 16px !important;
 }
-/* ------------------------------------------------------------- */
 
 
 html {
     height: 100%;
     overflow-x: hidden;
-    overflow-y: auto; /* Only show scrollbar if content exceeds container */
+    overflow-y: auto;
 }
 
 * {
@@ -98,7 +93,7 @@ body {
     color: var(--text-main);
     font-family: 'JetBrains Mono', monospace;
     min-height: 100vh;
-    min-height: 100dvh; /* Dynamic viewport height for mobile */
+    min-height: 100dvh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -419,7 +414,6 @@ button:hover:not(:disabled) {
 
 .hidden { display: none !important; }
 
-/* Responsive adjustments for mobile devices */
 @media (max-width: 600px) {
     body {
         display: block;
@@ -450,7 +444,7 @@ button:hover:not(:disabled) {
     }
     
     .result-card {
-        flex-direction: column-reverse; /* Put score on top, traffic lights beneath */
+        flex-direction: column-reverse;
         align-items: center;
         gap: 2rem;
         padding-top: 2rem;
@@ -462,7 +456,7 @@ button:hover:not(:disabled) {
     }
     
     .traffic-lights {
-        flex-direction: row; /* Horizontal lights instead of vertical */
+        flex-direction: row;
         width: 100%;
         justify-content: center;
         gap: 1.5rem;
@@ -479,7 +473,7 @@ button:hover:not(:disabled) {
         right: 0;
         width: 100%;
         height: 60px;
-        background: rgba(8, 8, 8, 0.85); /* Deep dark glass */
+        background: rgba(8, 8, 8, 0.85);
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
         border-bottom: 1px solid rgba(255, 255, 255, 0.05);
@@ -509,7 +503,6 @@ button:hover:not(:disabled) {
     }
 }
 
-/* Auth Page specific styling */
 .desktop-only { display: flex !important; }
 .mobile-only { display: none !important; }
 
@@ -582,7 +575,7 @@ button:hover:not(:disabled) {
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 16px;
     box-shadow: 0 40px 80px -15px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-    min-height: 540px; /* Locked and optimized for 420px width */
+    min-height: 540px;
     display: flex;
     flex-direction: column;
 }
@@ -606,7 +599,7 @@ button:hover:not(:disabled) {
     padding: 4px;
     margin-bottom: 2rem;
     border: 1px solid rgba(255, 255, 255, 0.05);
-    height: 48px; /* Fixed height for symmetry */
+    height: 48px;
 }
 
 .auth-tab {
@@ -629,7 +622,7 @@ button:hover:not(:disabled) {
 .auth-tab.active {
     background: rgba(255, 255, 255, 0.08);
     color: #fff;
-    transform: none !important; /* Ensure no scale shift */
+    transform: none !important;
     box-shadow: none !important;
 }
 
@@ -811,12 +804,11 @@ button:hover:not(:disabled) {
     visibility: hidden;
     position: absolute !important;
     right: 0 !important;
-    top: 28px !important; /* Perfectly aligned below the '?' */
+    top: 28px !important;
     width: 220px !important;
     z-index: 1000 !important;
     padding: 1.25rem !important;
     
-    /* SentinelPay Glass System */
     background: rgba(8, 10, 12, 0.95) !important;
     backdrop-filter: blur(20px) !important;
     -webkit-backdrop-filter: blur(20px) !important;
@@ -824,20 +816,17 @@ button:hover:not(:disabled) {
     border-radius: 12px !important;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(0, 240, 255, 0.05) !important;
     
-    /* Typography */
     color: #a0a0a0 !important;
     font-family: 'JetBrains Mono', monospace !important;
     font-size: 0.72rem !important;
     line-height: 2 !important;
     text-align: left !important;
     
-    /* Animation */
     transform: translateY(10px) scale(0.95) !important;
     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
     pointer-events: none !important;
 }
 
-/* Show tooltip ONLY when hovering the icon specifically */
 .pw-toggle:hover + .pw-tooltip {
     opacity: 1;
     visibility: visible;
@@ -848,7 +837,7 @@ button:hover:not(:disabled) {
     color: var(--color-red);
     margin-right: 0.5rem;
     display: inline-block;
-    width: 14px; /* Fixed width to prevent text jumping */
+    width: 14px;
     text-align: center;
 }
 
@@ -901,17 +890,15 @@ button:hover:not(:disabled) {
     color: #000;
 }
 
-/* Auth Page Specifics */
 .auth-page-wrap {
     position: relative;
     z-index: 10;
     width: 100%;
-    /* No max-width here to allow the child auth-card to breathe */
     padding: 2rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center; /* Explicitly center children horizontally */
+    align-items: center;
     min-height: 100vh;
 }
 
@@ -939,7 +926,6 @@ button:hover:not(:disabled) {
     pointer-events: all;
 }
 
-/* --- Modal Overlay System --- */
 .modal-overlay {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
@@ -964,7 +950,7 @@ button:hover:not(:disabled) {
 .modal-content {
     transform: translateY(20px) scale(0.95);
     transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    min-height: auto !important; /* Removes the 540px empty space inherited from login card */
+    min-height: auto !important;
 }
 
 .modal-overlay.active .modal-content {
@@ -999,7 +985,6 @@ button:hover:not(:disabled) {
     box-shadow: none !important;
 }
 
-/* Mobile Overrides for Auth Page */
 @media screen and (max-width: 600px) {
     .auth-page-wrap {
         padding: 0; 
@@ -1089,7 +1074,6 @@ button:hover:not(:disabled) {
         border-color: var(--neon-blue);
     }
 
-    /* Mobile modal close button hidden as requested */
     .modal-close-btn {
         display: none !important;
     }
@@ -1098,7 +1082,6 @@ button:hover:not(:disabled) {
 
 
 
-/* --- S-TIER SUCCESS STATE (v15.5 - RECONSTRUCTED) --- */
 #auth-success-state,
 #auth-verified-state {
     display: none;
@@ -1168,11 +1151,7 @@ button:hover:not(:disabled) {
     font-size: 0.85rem !important;
 }
 
-/* ==========================================================================
-   CLOUDFLARE TURNSTILE WIDGET LAYOUT
-   ========================================================================== */
 
-/* Reserve consistent vertical space so the widget doesn't cause layout shift */
 .cf-turnstile {
     min-height: 65px;
     width: 100%;
@@ -1182,13 +1161,11 @@ button:hover:not(:disabled) {
     margin-top: 2rem;
 }
 
-/* Collapse gracefully if widget hasn't loaded yet */
 .cf-turnstile:empty {
     min-height: 0;
     margin-top: 0;
 }
 
-/* Inside auth forms - interaction-only mode: zero footprint when invisible */
 .auth-form .cf-turnstile,
 .auth-card .cf-turnstile {
     min-height: 0;
@@ -1200,7 +1177,6 @@ button:hover:not(:disabled) {
     justify-content: center;
 }
 
-/* When Cloudflare injects an iframe (challenge required), expand gracefully */
 .auth-form .cf-turnstile:has(iframe),
 .auth-card .cf-turnstile:has(iframe) {
     height: auto;
@@ -1220,9 +1196,6 @@ button:hover:not(:disabled) {
     to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ==========================================================================
-   RESET PAGE STATES (Desktop UI Polish)
-   ========================================================================== */
 
 .reset-state-window {
     min-height: 250px;
@@ -1242,9 +1215,6 @@ button:hover:not(:disabled) {
     }
 }
 
-/* ==========================================================================
-   TOAST NOTIFICATIONS (Phase 5 - S-Tier UX)
-   ========================================================================== */
 
 .sentinel-toast-container {
     position: fixed;
@@ -1254,7 +1224,7 @@ button:hover:not(:disabled) {
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    pointer-events: none; /* Let clicks pass through empty areas */
+    pointer-events: none;
 }
 
 .sentinel-toast {
@@ -1274,7 +1244,7 @@ button:hover:not(:disabled) {
     display: flex;
     align-items: center;
     gap: 1rem;
-    pointer-events: auto; /* Re-enable clicks for the toast itself */
+    pointer-events: auto;
     max-width: 380px;
 }
 
@@ -1322,13 +1292,7 @@ button:hover:not(:disabled) {
     }
 }
 
-/* ==========================================================================
-   AUTH CARD — DESKTOP BASELINE
-   Mobile has min-height: auto !important in its own media query.
-   Turnstile is interaction-only (invisible), so no extra height needed.
-   ========================================================================== */
 
-/* --- NOSCRIPT S-TIER OVERLAY --- */
 .noscript-overlay {
     position: fixed;
     top: 0;
@@ -1385,7 +1349,6 @@ button:hover:not(:disabled) {
     text-transform: lowercase;
 }
 
-/* --- DASHBOARD LOADING & EMPTY STATES --- */
 .empty-state, .sync-shimmer {
     grid-column: 1 / -1;
     text-align: center;
@@ -1469,14 +1432,12 @@ button:hover:not(:disabled) {
     filter: drop-shadow(0 0 5px var(--neon-blue));
 }
 
-/* Sidebar Blur when modal is open */
 body.modal-open .sidebar-container {
     filter: blur(8px);
     pointer-events: none;
     transition: filter 0.3s ease;
 }
 
-/* Custom Select Styling to match Avatar Dropdown */
 .sentinel-select-wrapper {
     position: relative;
     width: 100%;
@@ -1571,7 +1532,6 @@ body.modal-open .sidebar-container {
     display: none !important;
 }
 
-/* Custom Tooltips */
 .tooltip-wrapper {
     position: relative;
     display: inline-block;

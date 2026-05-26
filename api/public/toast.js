@@ -1,6 +1,3 @@
-// SentinelPay Global Toast Notification System (v1.0)
-// Features: Zero-dependency, Glass-morphism styling, Auto-cleanup
-
 window.SentinelToast = {
     container: null,
     
@@ -34,20 +31,15 @@ window.SentinelToast = {
         toast.appendChild(msgSpan);
         
         this.container.appendChild(toast);
-        
-        // Trigger reflow to start animation
         void toast.offsetWidth;
         toast.classList.add('show');
-        
-        // Auto-remove after 4 seconds
         setTimeout(() => {
             toast.classList.remove('show');
-            // Wait for transition to finish before removing from DOM
             setTimeout(() => {
                 if (toast.parentNode) {
                     toast.parentNode.removeChild(toast);
                 }
-            }, 400); // matches CSS transition duration
+            }, 400);
         }, 4000);
     }
 };
