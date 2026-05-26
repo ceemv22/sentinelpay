@@ -981,7 +981,64 @@
         }
 
         .org-home-badge { display: none; }
-        #dropdown-notif-panel { display: none; }
+        #notification-items-wrapper { display: none; }
+        #dropdown-notif-panel {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+            overflow: hidden;
+        }
+        #dropdown-notif-panel.active { display: flex; }
+        #notif-panel-header {
+            display: flex;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 8px;
+            padding: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            height: 34px;
+            margin: 0 0 6px 0;
+            flex-shrink: 0;
+        }
+        #notif-panel-tab {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #fff;
+            height: 100%;
+        }
+        #notif-panel-back {
+            all: unset;
+            position: absolute;
+            left: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            border-radius: 3px;
+            color: rgba(255, 255, 255, 0.45);
+            -webkit-tap-highlight-color: transparent;
+        }
+        #notif-panel-back svg { width: 12px; height: 12px; }
+        #notif-panel-back:active {
+            background: rgba(255, 255, 255, 0.1) !important;
+            color: #fff !important;
+        }
+        #notif-panel-body { overflow-y: auto; flex: 1; min-height: 0; }
+        #notif-panel-body::-webkit-scrollbar { width: 3px; }
+        #notif-panel-body::-webkit-scrollbar-track { background: transparent; }
+        #notif-panel-body::-webkit-scrollbar-thumb {
+            background: rgba(0, 240, 255, 0.25);
+            border-radius: 2px;
+        }
         body.state-in-org #header-api-key { display: none !important; }
         body.state-in-org .dropdown-item.org-only { display: flex; }
         body.state-in-org .dropdown-header.org-only { display: flex; }
@@ -1795,79 +1852,6 @@
             }
             #notification-row.has-notifications {
                 opacity: 1 !important;
-            }
-            #notification-items-wrapper {
-                display: none !important;
-            }
-            #dropdown-notif-panel {
-                display: none;
-                flex-direction: column;
-                height: 100%;
-                overflow: hidden;
-            }
-            #dropdown-notif-panel.active {
-                display: flex;
-            }
-            #notif-panel-header {
-                display: flex;
-                background: rgba(0, 0, 0, 0.5);
-                border-radius: 8px;
-                padding: 4px;
-                border: 1px solid rgba(255, 255, 255, 0.05);
-                height: 34px;
-                margin: 0 0 6px 0;
-                flex-shrink: 0;
-            }
-            #notif-panel-tab {
-                flex: 1;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                position: relative;
-                background: rgba(255, 255, 255, 0.08);
-                border-radius: 6px;
-                font-family: 'JetBrains Mono', monospace;
-                font-size: 0.7rem;
-                font-weight: 600;
-                color: #fff;
-                height: 100%;
-            }
-            #notif-panel-back {
-                all: unset;
-                position: absolute;
-                left: 6px;
-                cursor: pointer;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                width: 20px;
-                height: 20px;
-                border-radius: 3px;
-                color: rgba(255, 255, 255, 0.45);
-                -webkit-tap-highlight-color: transparent;
-            }
-            #notif-panel-back svg {
-                width: 12px;
-                height: 12px;
-            }
-            #notif-panel-back:active {
-                background: rgba(255, 255, 255, 0.1) !important;
-                color: #fff !important;
-            }
-            #notif-panel-body {
-                overflow-y: auto;
-                flex: 1;
-                min-height: 0;
-            }
-            #notif-panel-body::-webkit-scrollbar {
-                width: 3px;
-            }
-            #notif-panel-body::-webkit-scrollbar-track {
-                background: transparent;
-            }
-            #notif-panel-body::-webkit-scrollbar-thumb {
-                background: rgba(0, 240, 255, 0.25);
-                border-radius: 2px;
             }
 
             /* hamburger button — visible on mobile */

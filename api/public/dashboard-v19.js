@@ -903,7 +903,6 @@ document.addEventListener('DOMContentLoaded', () => {
         notifRow.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
-            if (window.innerWidth > 1280) return;
             flipToNotifPanel();
         });
     }
