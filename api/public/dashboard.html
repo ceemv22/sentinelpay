@@ -932,8 +932,8 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding-top: 7rem;
-            padding-bottom: 5rem;
+            padding-top: clamp(5rem, 9vh, 9rem);
+            padding-bottom: clamp(3rem, 5vh, 6rem);
         }
 
         @media (min-width: 1281px) {
@@ -1469,14 +1469,14 @@
             /* === CONTENT AREA === */
             .content-area {
                 margin-left: 0 !important;
-                padding: 5.25rem 1rem 2.5rem !important;
+                padding: calc(60px + 4vh) 1rem calc(2vh + 0.5rem) !important;
                 height: auto;
                 min-height: 100vh;
                 overflow-y: visible;
             }
             body.state-org-home .content-area {
-                padding-top: 3.25rem !important;
-                padding-bottom: 3rem !important;
+                padding-top: calc(60px + 2.5vh) !important;
+                padding-bottom: calc(3vh + 1rem) !important;
                 align-items: stretch !important;
             }
 
@@ -1948,7 +1948,7 @@
                 gap: 0.55rem !important;
             }
             .content-area {
-                padding: 5rem 0.875rem 2rem !important;
+                padding: calc(60px + 3vh) 0.875rem calc(1.5vh + 0.5rem) !important;
             }
             .org-home-header {
                 font-size: 1.2rem !important;
