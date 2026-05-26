@@ -1469,14 +1469,14 @@
             /* === CONTENT AREA === */
             .content-area {
                 margin-left: 0 !important;
-                padding: calc(60px + 4vh) 1rem calc(2vh + 0.5rem) !important;
+                padding: calc(60px + 3vw) max(1rem, 2vw) calc(2vw + 0.5rem) !important;
                 height: auto;
                 min-height: 100vh;
                 overflow-y: visible;
             }
             body.state-org-home .content-area {
-                padding-top: calc(60px + 2.5vh) !important;
-                padding-bottom: calc(3vh + 1rem) !important;
+                padding-top: calc(60px + 1.5vw) !important;
+                padding-bottom: calc(2vw + 1rem) !important;
                 align-items: stretch !important;
             }
 
@@ -1488,6 +1488,7 @@
             }
             .org-home-container {
                 gap: 0.5rem !important;
+                max-width: 100% !important;
             }
 
             .org-home-badge {
@@ -1948,7 +1949,7 @@
                 gap: 0.55rem !important;
             }
             .content-area {
-                padding: calc(60px + 3vh) 0.875rem calc(1.5vh + 0.5rem) !important;
+                padding: calc(60px + 2vw) 0.875rem calc(1.5vw + 0.5rem) !important;
             }
             .org-home-header {
                 font-size: 1.2rem !important;
