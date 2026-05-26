@@ -1738,38 +1738,48 @@
             }
             #notif-panel-header {
                 display: flex;
-                align-items: center;
-                gap: 8px;
-                padding: 8px 10px 10px;
-                margin: 0 0 4px 0;
-                border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-                background: rgba(255, 255, 255, 0.03);
-                border-radius: 8px 8px 0 0;
+                background: rgba(0, 0, 0, 0.5);
+                border-radius: 8px;
+                padding: 4px;
+                border: 1px solid rgba(255, 255, 255, 0.05);
+                height: 34px;
+                margin: 0 0 6px 0;
                 flex-shrink: 0;
+            }
+            #notif-panel-tab {
+                flex: 1;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                position: relative;
+                background: rgba(255, 255, 255, 0.08);
+                border-radius: 6px;
                 font-family: 'JetBrains Mono', monospace;
-                font-size: 0.75rem;
-                color: var(--text-muted);
-                letter-spacing: -0.2px;
+                font-size: 0.7rem;
+                font-weight: 600;
+                color: #fff;
+                height: 100%;
             }
             #notif-panel-back {
                 all: unset;
+                position: absolute;
+                left: 6px;
                 cursor: pointer;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                width: 22px;
-                height: 22px;
-                border-radius: 4px;
-                color: var(--text-muted);
-                flex-shrink: 0;
+                width: 20px;
+                height: 20px;
+                border-radius: 3px;
+                color: rgba(255, 255, 255, 0.45);
                 -webkit-tap-highlight-color: transparent;
             }
             #notif-panel-back svg {
-                width: 14px;
-                height: 14px;
+                width: 12px;
+                height: 12px;
             }
             #notif-panel-back:active {
-                background: rgba(255, 255, 255, 0.07) !important;
+                background: rgba(255, 255, 255, 0.1) !important;
                 color: #fff !important;
             }
             #notif-panel-body {
@@ -2080,10 +2090,12 @@
                 </div>
                 <div id="dropdown-notif-panel">
                     <div id="notif-panel-header">
-                        <button id="notif-panel-back" type="button">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-                        </button>
-                        <span>notifications</span>
+                        <div id="notif-panel-tab">
+                            <button id="notif-panel-back" type="button">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                            </button>
+                            <span>notifications</span>
+                        </div>
                     </div>
                     <div id="notif-panel-body"></div>
                 </div>
