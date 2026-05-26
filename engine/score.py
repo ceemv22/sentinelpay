@@ -54,15 +54,13 @@ def fetch_etherscan(params, timeout=REQUEST_TIMEOUT):
         raise UpstreamDataError(f"etherscan error: {e}") from e
 
 def fetch_all_relevant_txs(wallet, api_key):
-    # OWASP S-Tier Hardening: We increase the scan depth to the max 10000 transactions.
-    # This prevents Transaction Flooding (Evasion) attacks where attackers wash their history.
     base_params = {
         "chainid": 1,
         "module": "account",
         "address": wallet,
         "sort": "desc",
         "page": 1,
-        "offset": 10000, 
+        "offset": 10000,
         "apikey": api_key,
         "endblock": 999999999
     }
@@ -74,7 +72,6 @@ def fetch_all_relevant_txs(wallet, api_key):
     return normal, internal, tokens
 
 def get_wallet_birth_timestamp(wallet, api_key):
-    # Specifically fetch the OLDEST transaction to determine wallet age accurately
     params = {
         "chainid": 1,
         "module": "account",
@@ -101,16 +98,12 @@ def check_mixer_interaction(wallet, normal_txs, internal_txs, token_txs):
         for tx in tx_list:
             to_addr = tx.get("to", "").lower()
             from_addr = tx.get("from", "").lower()
-            
-            # S-Tier: Outbound to mixer is always flagged
             if to_addr in mixer_set:
                 return True
-                
-            # S-Tier: Inbound from mixer is flagged only if value > 0.001 ETH (prevents dusting attacks)
             if from_addr in mixer_set:
                 try:
                     value = int(tx.get("value", "0"))
-                    if value > 1000000000000000: # 0.001 ETH in wei
+                    if value > 1000000000000000:
                         return True
                 except ValueError:
                     pass
@@ -125,19 +118,17 @@ def check_wallet_age(birth_ts):
 def check_high_velocity(normal_txs):
     if not normal_txs: return False
     now = time.time()
-    # Since we fetched with sort=desc, recent txs are at the beginning
     recent = [tx for tx in normal_txs if now - int(tx.get("timeStamp", 0)) < 86400]
     return len(recent) > 50
 
 def check_inbound_outbound_imbalance(wallet, normal_txs):
-    if not normal_txs or len(normal_txs) < 10: 
-        return False # Too little data to judge fairly
+    if not normal_txs or len(normal_txs) < 10:
+        return False
     wallet_lower = wallet.lower()
     inbound = sum(1 for tx in normal_txs if tx.get("to", "").lower() == wallet_lower)
     outbound = sum(1 for tx in normal_txs if tx.get("from", "").lower() == wallet_lower)
-    
-    if inbound == 0 or outbound == 0: 
-        return True # Still risky if they have 10+ txs but all are one-way
+    if inbound == 0 or outbound == 0:
+        return True
     
     ratio = max(inbound, outbound) / min(inbound, outbound)
     return ratio > 10
@@ -148,13 +139,8 @@ def calculate_score_and_flags(wallet, api_key):
     history_incomplete = False
 
     normal_txs, internal_txs, token_txs = fetch_all_relevant_txs(wallet, api_key)
-    
-    # Check if we hit the 10k limit on any list (Etherscan's hard cap)
-    # If we did, the history is incomplete and could be an evasion attempt.
     if len(normal_txs) >= 10000 or len(internal_txs) >= 10000 or len(token_txs) >= 10000:
         history_incomplete = True
-    
-    # Check if the address ITSELF is sanctioned or a known mixer/scammer
     mixer_set = set(load_mixer_addresses())
     if wallet.lower() in mixer_set:
         flags.append("sanctioned_entity")

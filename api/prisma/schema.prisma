@@ -10,11 +10,11 @@ datasource db {
 model User {
   id               String         @id @default(uuid())
   email            String?        @unique
-  username         String?        // For Twitter handle or display names
+  username         String?
   supabaseId       String         @unique
   authProvider     String         @default("email")
   isEmailVerified  Boolean        @default(false)
-  credits          Int            @default(5) 
+  credits          Int            @default(5)
   apiKeys          ApiKey[]
   scanHistory      ScanHistory[]
   organizations    Organization[] @relation("OrgMembers")
@@ -47,7 +47,7 @@ model Invitation {
   org       Organization @relation(fields: [orgId], references: [id])
   token     String   @unique
   accepted  Boolean  @default(false)
-  invitedBy String   // Name or Email of the inviter
+  invitedBy String
   expiresAt DateTime
   createdAt DateTime @default(now())
 }
@@ -88,13 +88,13 @@ model AuditLog {
   category  String
   flags     String[]
   endpoint  String   @default("/v1/score")
-  apiKeyId  String?  // for historical/B2B logs
-  orgId     String?  // for organization tracking
+  apiKeyId  String?
+  orgId     String?
   timestamp DateTime @default(now())
 }
 
 model ProcessedEvent {
-  id        String   @id // This matches the Stripe event.id
+  id        String   @id
   type      String
   createdAt DateTime @default(now())
 }

@@ -43,7 +43,6 @@ async function requireSupabaseAuth(req, res, next) {
         }
 
         if (dbUser) {
-            // Prevent account hijacking: reject if a different Supabase ID is trying to claim this email
             if (dbUser.supabaseId && dbUser.supabaseId !== user.id) {
                 console.error(`[sentinel-auth] identity conflict: email ${userEmail} bound to different supabase id`);
                 return res.status(403).json({ error: 'Account conflict detected', code: 403 });

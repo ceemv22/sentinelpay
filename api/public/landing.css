@@ -21,7 +21,6 @@ body.lp-body {
     transform: translate(-50%, -50%);
 }
 
-/* ---- nav ---- */
 
 .lp-nav {
     position: fixed;
@@ -256,7 +255,6 @@ body.lp-body {
     transform: translateY(-1px) !important;
 }
 
-/* ---- hero ---- */
 
 .lp-hero {
     min-height: 100vh;
@@ -419,7 +417,6 @@ body.lp-body {
     background: rgba(255, 255, 255, 0.03);
 }
 
-/* ---- diagram ---- */
 
 .lp-diagram {
     display: flex;
@@ -736,7 +733,6 @@ body.lp-body {
     100% { left: calc(100% - 28px);   opacity: 0; }
 }
 
-/* ---- stats ---- */
 
 .lp-stats {
     position: relative;
@@ -786,7 +782,6 @@ body.lp-body {
     max-width: 140px;
 }
 
-/* ---- sections ---- */
 
 .lp-section {
     position: relative;
@@ -821,7 +816,6 @@ body.lp-body {
     margin-bottom: 3rem;
 }
 
-/* ---- how it works ---- */
 
 .lp-steps {
     display: grid;
@@ -879,7 +873,6 @@ body.lp-body {
     margin: 0;
 }
 
-/* ---- risk signals ---- */
 
 .lp-signals-grid {
     display: grid;
@@ -950,7 +943,6 @@ body.lp-body {
     margin: 0;
 }
 
-/* ---- code section ---- */
 
 .lp-code-section {
     border-top: 1px solid var(--border-glass);
@@ -1018,7 +1010,6 @@ body.lp-body {
     border-radius: 4px;
 }
 
-/* ---- pricing ---- */
 
 .lp-pricing-grid {
     display: grid;
@@ -1189,7 +1180,6 @@ body.lp-body {
     transform: translateY(-1px);
 }
 
-/* ---- use cases ---- */
 
 .lp-usecase-grid {
     display: grid;
@@ -1239,7 +1229,6 @@ body.lp-body {
     margin: 0;
 }
 
-/* ---- final cta ---- */
 
 .lp-cta-section {
     position: relative;
@@ -1277,7 +1266,6 @@ body.lp-body {
     text-transform: lowercase;
 }
 
-/* ---- hamburger + mobile menu ---- */
 
 .lp-hamburger {
     display: none;
@@ -1522,7 +1510,6 @@ html.lp-scroll-lock body {
     font-weight: 500;
 }
 
-/* ---- footer ---- */
 
 .lp-footer {
     position: relative;
@@ -1628,7 +1615,6 @@ html.lp-scroll-lock body {
 
 .lp-footer-email:hover { color: var(--text-main); }
 
-/* ---- responsive ---- */
 
 @media (max-width: 1280px) {
     .lp-nav-links { display: none; }
@@ -1816,7 +1802,6 @@ html.auth-session-present #lp-mm-dashboard { display: block !important; }
     html.auth-session-present #nav-dashboard-btn { display: inline-flex !important; }
 }
 
-/* ---- reveal animation ---- */
 
 .lp-reveal {
     opacity: 0;
@@ -1828,7 +1813,6 @@ html.auth-session-present #lp-mm-dashboard { display: block !important; }
     transform: translateY(0);
 }
 
-/* ---- stat accent ---- */
 
 .lp-stat-accent {
     background: linear-gradient(135deg, #fff 0%, var(--neon-blue) 100%);
@@ -1837,7 +1821,6 @@ html.auth-session-present #lp-mm-dashboard { display: block !important; }
     background-clip: text;
 }
 
-/* ---- terminal window ---- */
 
 .lp-terminal,
 .lp-monitor-log {
@@ -1889,7 +1872,6 @@ html.auth-session-present #lp-mm-dashboard { display: block !important; }
 
 .lp-c-comment { color: rgba(255, 255, 255, 0.28); }
 
-/* ---- how it works rows ---- */
 
 .lp-how-row {
     display: grid;
@@ -1938,7 +1920,6 @@ html.auth-session-present #lp-mm-dashboard { display: block !important; }
     margin: 0;
 }
 
-/* ---- monitor log ---- */
 
 .lp-log-lines {
     display: flex;
@@ -1973,7 +1954,6 @@ html.auth-session-present #lp-mm-dashboard { display: block !important; }
     50%       { opacity: 0.15; }
 }
 
-/* ---- alert card mockup ---- */
 
 .lp-alert-card {
     background: rgba(0, 0, 0, 0.7);
@@ -2055,7 +2035,6 @@ html.auth-session-present #lp-mm-dashboard { display: block !important; }
     flex-wrap: wrap;
 }
 
-/* ---- signal meter + scanline ---- */
 
 .lp-signal-card { position: relative; overflow: hidden; }
 
@@ -2097,7 +2076,6 @@ html.auth-session-present #lp-mm-dashboard { display: block !important; }
 .lp-meter-yellow { background: linear-gradient(90deg, var(--color-yellow), rgba(255, 184, 0, 0.4)); }
 .lp-meter-blue   { background: linear-gradient(90deg, var(--neon-blue), rgba(0, 240, 255, 0.4)); }
 
-/* ---- pricing glow pulse ---- */
 
 .lp-plan-featured {
     animation: lp-glow-pulse 3s ease-in-out infinite;
@@ -2107,7 +2085,6 @@ html.auth-session-present #lp-mm-dashboard { display: block !important; }
     50%       { box-shadow: 0 0 65px rgba(0, 240, 255, 0.18), 0 0 110px rgba(0, 240, 255, 0.05), 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
 }
 
-/* ---- use cases bento ---- */
 
 .lp-usecase-grid {
     display: grid;
@@ -2167,7 +2144,6 @@ html.auth-session-present #lp-mm-dashboard { display: block !important; }
     align-self: flex-start;
 }
 
-/* ---- cta enhancements ---- */
 
 .lp-cta-grid-bg {
     position: absolute;
@@ -2209,7 +2185,6 @@ html.auth-session-present #lp-mm-dashboard { display: block !important; }
 }
 .lp-cta-pulse { animation: lp-pulse-glow 2.5s ease-in-out infinite; }
 
-/* ---- responsive: how-it-works rows ---- */
 
 @media (max-width: 960px) {
     .lp-how-row {
@@ -2254,7 +2229,6 @@ html.auth-session-present #lp-cta-dashboard { display: inline-flex !important; }
     .lp-plan-featured { transform: none; }
 }
 
-/* ---- multi-chain section ---- */
 
 .lp-chains-section {
     border-top: 1px solid var(--border-glass);
@@ -2463,7 +2437,6 @@ html.auth-session-present #lp-cta-dashboard { display: inline-flex !important; }
     .lp-chain-pill { font-size: 0.7rem; padding: 0.35rem 0.75rem; }
 }
 
-/* ---- scroll snap indicator ---- */
 
 .lp-snap-ind {
     position: fixed;
@@ -2555,7 +2528,6 @@ html.auth-session-present #lp-cta-dashboard { display: inline-flex !important; }
     .lp-snap-ind { display: none; }
 }
 
-/* ---- desktop: one section per viewport ---- */
 
 @media (min-width: 1281px) {
     html.snap-mode {
