@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Intercept Double-Verification Errors before scrubbing
     const interceptAuthErrors = () => {
         const hash = window.location.hash;
         if (hash && hash.includes('error_description=Email+link+is+invalid+or+has+expired')) {
@@ -10,7 +9,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     interceptAuthErrors();
 
-    // 0. ULTIMATE SCRUBBER (Kills # and ?code fragments)
     const scrubURL = () => {
         const url = new URL(window.location.href);
         if (url.hash || url.searchParams.has('code')) {
@@ -42,7 +40,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const scoreValue = document.getElementById('score-value');
     const flagsContainer = document.getElementById('flags-container');
 
-    // Supabase Auth and Fingerprint Init
     const supabaseUrl = 'https://aivqwkgjdpklxxuvkxpy.supabase.co';
     const supabaseKey = 'sb_publishable_bRfAssaGT6D8oFDQtPARbw_5fyYGWM6';
     const supabaseClient = window.supabase ? window.supabase.createClient(supabaseUrl, supabaseKey) : null;
@@ -54,7 +51,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const fingerprint = localStorage.getItem('sentinel_fp');
 
     if (supabaseClient) {
-        // Handle PKCE Exchange if code is present
         const urlParams = new URLSearchParams(window.location.search);
         const code = urlParams.get('code');
         
@@ -139,7 +135,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!cachedSession) {
             const turnstileToken = window.explicitScannerToken || document.querySelector('[name="cf-turnstile-response"]')?.value;
             
-            // If no token, render the CAPTCHA and halt execution
             if (!turnstileToken) {
                 if (!window.turnstileScannerWidgetId && window.turnstile) {
                     btn.disabled = true;
@@ -151,11 +146,11 @@ document.addEventListener('DOMContentLoaded', () => {
                             window.explicitScannerToken = token;
                             btn.disabled = false;
                             btn.textContent = 'scan wallet';
-                            btn.click(); // Auto-trigger the scan once solved
+                            btn.click();
                         }
                     });
                 }
-                return; // Wait for user to solve CAPTCHA
+                return;
             }
             bodyData['cf-turnstile-response'] = turnstileToken;
         }
@@ -181,7 +176,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify(bodyData)
             });
 
-            // Remove turnstile after attempt to prevent infinite looping
             if (!cachedSession && window.turnstile && window.turnstileScannerWidgetId !== undefined) {
                 window.turnstile.remove(window.turnstileScannerWidgetId);
                 window.turnstileScannerWidgetId = undefined;
@@ -209,13 +203,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 setLight(data.category);
                 if (data.flags && data.flags.length > 0) {
                     data.flags.forEach((flag, idx) => {
-                        setTimeout(() => typeFlag(flag, false), idx * 400); 
+                        setTimeout(() => typeFlag(flag, false), idx * 400);
                     });
                 } else {
                     typeFlag('no_risk_detected', true);
                 }
-                
-                // Show share button after a small delay
                 setTimeout(() => shareBtn.classList.remove('hidden'), 1000);
             }, 800);
 
@@ -233,26 +225,20 @@ document.addEventListener('DOMContentLoaded', () => {
         window.open(`https://twitter.com/intent/tweet?text=${text}`, '_blank');
     });
 
-    // Eye-Cursor Tracking Logic
     const pupil = document.getElementById('eye-pupil');
     if (pupil) {
         document.addEventListener('mousemove', (e) => {
             const windowCenterX = window.innerWidth / 2;
             const windowCenterY = window.innerHeight / 2;
-            
-            // Calculate offset from -1 to 1
             const offsetX = (e.clientX - windowCenterX) / windowCenterX;
             const offsetY = (e.clientY - windowCenterY) / windowCenterY;
-            
-            // Max movement in SVG coordinate space
-            const maxMove = 3; 
+            const maxMove = 3;
             const moveX = offsetX * maxMove;
             const moveY = offsetY * maxMove;
             
             pupil.style.transform = `translate(${moveX}px, ${moveY}px)`;
         });
     }
-    // Navigation persistence logic
     const loginNav = document.getElementById('nav-login-btn');
     const registerNav = document.getElementById('nav-register-btn');
     if (loginNav) loginNav.addEventListener('click', () => sessionStorage.setItem('sentinel_auth_tab', 'login'));

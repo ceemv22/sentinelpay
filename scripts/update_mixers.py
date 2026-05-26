@@ -4,7 +4,6 @@ import re
 import sys
 from pathlib import Path
 
-# Data Sources (Using Raw Regex to pull addresses from JS, CSV, and JSON)
 SOURCES = [
     {
         "name": "OFAC Sanctions (ultrasoundmoney CSV)",
@@ -25,9 +24,8 @@ MIXERS_FILE = DATA_DIR / "mixers.json"
 
 def fetch_addresses():
     all_addresses = set()
-    address_regex = re.compile(r"0x[a-fA-F0-9]{40}") # Case insensitive search
-    
-    # Keep current addresses as a base
+    address_regex = re.compile(r"0x[a-fA-F0-9]{40}")
+
     if MIXERS_FILE.exists():
         try:
             with open(MIXERS_FILE, "r") as f:
@@ -41,21 +39,17 @@ def fetch_addresses():
         try:
             response = requests.get(source['url'], timeout=15)
             response.raise_for_status()
-            
-            # Find all 0x addresses in any text format
             found = address_regex.findall(response.text)
             print(f"    [+] Found {len(found)} candidates.")
             all_addresses.update(found)
-                    
         except Exception as e:
             print(f"    [-] Error fetching {source['name']}: {e}")
 
-    # Validation & Normalization
     WHITELIST = {
-        "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48", # USDC
-        "0xdac17f958d2ee523a2206206994597c13d831ec7", # USDT
-        "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2", # WETH
-        "0x6b175474e89094c44da98b954eedeac495271d0f", # DAI
+        "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+        "0xdac17f958d2ee523a2206206994597c13d831ec7",
+        "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+        "0x6b175474e89094c44da98b954eedeac495271d0f",
     }
 
     valid_addresses = set()
@@ -63,31 +57,29 @@ def fetch_addresses():
         if not isinstance(addr, str):
             continue
         cleaned = addr.strip().lower()
-        if len(cleaned) == 42 and cleaned not in WHITELIST: # Ensure full length and not whitelisted
+        if len(cleaned) == 42 and cleaned not in WHITELIST:
             valid_addresses.add(cleaned)
-    
+
     return sorted(list(valid_addresses))
 
 def main():
     print("=== SentinelPay Mixer Database Updater ===")
-    
-    # Ensure data directory exists
+
     DATA_DIR.mkdir(parents=True, exist_ok=True)
-    
+
     addresses = fetch_addresses()
-    
+
     if not addresses:
         print("[-] No valid addresses found. Aborting update.")
         sys.exit(1)
 
     print(f"[+] Found {len(addresses)} unique high-risk addresses.")
-    
-    # Save to JSON
+
     output = {
-        "updated_at": "2026-04-20T01:12:00Z", # Placeholder for manual run timestamp if needed
+        "updated_at": "2026-04-20T01:12:00Z",
         "mixers": addresses
     }
-    
+
     try:
         with open(MIXERS_FILE, "w", encoding="utf-8") as f:
             json.dump(output, f, indent=4)
