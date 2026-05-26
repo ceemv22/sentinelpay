@@ -1926,9 +1926,21 @@
             }
 
             /* === SIDEBAR FOOTER HELP ITEM — text left, icon right === */
-            .sidebar-footer .sidebar-item {
-                flex-direction: row-reverse !important;
+            #sidebar-help {
+                display: flex !important;
+                flex-direction: row !important;
+                align-items: center !important;
                 justify-content: space-between !important;
+            }
+            #sidebar-help .item-label {
+                order: 0 !important;
+                margin-left: 0 !important;
+                flex: 1 !important;
+                opacity: 1 !important;
+            }
+            #sidebar-help .item-icon {
+                order: 1 !important;
+                flex-shrink: 0 !important;
             }
         }
 
