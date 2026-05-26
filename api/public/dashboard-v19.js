@@ -1,4 +1,3 @@
-// 0. S-Tier Global Error Monitor
 window.onerror = (msg, url, line) => {
     const errorMsg = `[sentinel-critical] JS Error: ${msg} at ${url}:${line}`;
     console.error(errorMsg);
@@ -10,9 +9,8 @@ window.onunhandledrejection = (event) => {
     if (window.showStatus) showStatus(errorMsg, 'error');
 };
 
-// 0. S-Tier UI Status Overlay (Only for Errors now)
 window.showStatus = (msg, type = 'info') => {
-    if (type !== 'error') return; // Silent mode for everything except critical failures
+    if (type !== 'error') return;
     
     let overlay = document.getElementById('sentinel-status-overlay');
     if (!overlay) {
@@ -24,7 +22,6 @@ window.showStatus = (msg, type = 'info') => {
     overlay.textContent = msg;
 };
 
-// 1. GLOBAL STATE
 const supabaseUrl = 'https://aivqwkgjdpklxxuvkxpy.supabase.co';
 const supabaseKey = 'sb_publishable_bRfAssaGT6D8oFDQtPARbw_5fyYGWM6';
 let sentinelAuth = null;
@@ -35,7 +32,6 @@ const API_URL = window.location.origin;
 const initialSearch = window.location.search;
 const initialHash = window.location.hash;
 
-// 2. CORE LOGIC
 const scrubHash = () => {
     try {
         const url = new URL(window.location.href);
@@ -86,7 +82,7 @@ const startHydration = async () => {
         if (session && !isInitialized) {
             isInitialized = true;
             renderDashboard(session);
-            setTimeout(scrubHash, 500); 
+            setTimeout(scrubHash, 500);
         }
         if (event === 'SIGNED_OUT' && (Date.now() - authStartTime > 30000)) {
             window.location.href = '/auth';
@@ -131,7 +127,6 @@ const startHydration = async () => {
 
 startHydration();
 
-// UI HELPERS
 const logoutBtn = document.getElementById('btn-logout');
 if (logoutBtn) {
     logoutBtn.onclick = async (e) => {
@@ -143,7 +138,6 @@ if (logoutBtn) {
 }
 
 function renderDashboard(session) {
-    // S-Tier Redirect: If we have a pending invitation from join.html, go back there
     const pendingToken = sessionStorage.getItem('sentinel_join_token');
     const pendingSlug = sessionStorage.getItem('sentinel_join_slug');
     const pendingName = sessionStorage.getItem('sentinel_join_name');
@@ -165,10 +159,8 @@ function renderDashboard(session) {
         const user = session.user;
         window.supabaseAuthToken = token;
         
-        // 1. INSTANT UI STATE
         document.body.classList.add('state-org-home');
 
-        // 2. Immediate Identifiers
         let rawUsername = user.email || 'user';
         let displayIdentifier = user.email || 'user';
         let avatarInitial = '?';
@@ -182,11 +174,9 @@ function renderDashboard(session) {
             }
         }
         if (avatarInitial === '?' && displayIdentifier) avatarInitial = displayIdentifier.charAt(0);
-        
         const avatarEl = document.getElementById('org-avatar-circle');
         if (avatarEl) avatarEl.textContent = avatarInitial.toUpperCase();
         
-        // Sync Team View Avatar and Email Instantly
         const teamAvatarEl = document.getElementById('team-owner-avatar');
         if (teamAvatarEl) teamAvatarEl.textContent = avatarInitial.toUpperCase();
         
@@ -210,7 +200,6 @@ function renderDashboard(session) {
             };
         }
 
-        // 2.5 ROUTING LOGIC
         const currentPath = window.location.pathname;
         const orgMatch = currentPath.match(/^\/dashboard\/org\/([a-z0-9]{20})(\/[a-z0-9-]+)?$/);
         const isValidHome = currentPath === '/dashboard' || currentPath === '/dashboard/organizations' || currentPath === '/dashboard/';
@@ -224,7 +213,6 @@ function renderDashboard(session) {
             return;
         }
 
-        // 3. CACHE LOOKUP
         const cachedOrgs = localStorage.getItem('sentinel-cached-orgs');
         const orgCardsGrid = document.querySelector('.org-cards-grid');
         if (orgCardsGrid) {
@@ -240,12 +228,10 @@ function renderDashboard(session) {
             }
         }
 
-        // 4. BACKGROUND FETCH
         fetchHeaderApiKey(token);
         fetchProfile(token);
         fetchPendingInvitations(token);
 
-        // 5. MODAL & SIDEBAR INITIALIZATION
         setupCreateOrgModal(token);
         setupInviteMemberModal(token);
         setupSidebar();
@@ -258,7 +244,6 @@ function renderDashboard(session) {
     }
 }
 
-// --- Mobile Navigation Setup ---
 function setupMobileNav() {
     const toggle = document.getElementById('mobile-nav-toggle');
     const hamburger = document.getElementById('mobile-hamburger-btn');
@@ -300,10 +285,8 @@ function setupMobileNav() {
         });
     }
 
-    // Backdrop click closes drawer
     overlay.addEventListener('click', closeMobileNav);
 
-    // Any sidebar nav item click closes drawer (after a short delay for UX)
     if (sidebar) {
         sidebar.querySelectorAll('.sidebar-item').forEach(item => {
             item.addEventListener('click', () => {
@@ -312,7 +295,6 @@ function setupMobileNav() {
         });
     }
 
-    // Sync mobile API key suffix from desktop element
     const observer = new MutationObserver(() => {
         const desktopSuffix = document.getElementById('api-key-suffix');
         const mobileSuffix = document.getElementById('mobile-api-key-suffix');
@@ -325,7 +307,6 @@ function setupMobileNav() {
         observer.observe(desktopSuffix, { childList: true, characterData: true, subtree: true });
     }
 
-    // Close on Escape key
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') closeMobileNav();
     });
@@ -349,13 +330,11 @@ function setupCreateOrgModal(token) {
         form.reset();
         errorEl.style.display = 'none';
         
-        // Reset dynamic UI elements
         const recEl = document.getElementById('org-name-rec');
         const successIcon = document.getElementById('org-name-success');
         if (recEl) recEl.style.display = 'none';
         if (successIcon) successIcon.style.display = 'none';
-        
-        // Reset custom selects
+
         document.querySelectorAll('.sentinel-select-trigger').forEach(t => t.classList.remove('active'));
         document.querySelectorAll('.sentinel-select-dropdown').forEach(d => d.classList.remove('active'));
     };
@@ -385,7 +364,6 @@ function setupCreateOrgModal(token) {
 
         trigger.onclick = (e) => {
             e.stopPropagation();
-            // Close other selects
             document.querySelectorAll('.sentinel-select-trigger').forEach(t => { if(t!==trigger) t.classList.remove('active') });
             document.querySelectorAll('.sentinel-select-dropdown').forEach(d => { if(d!==dropdown) d.classList.remove('active') });
             
@@ -407,7 +385,6 @@ function setupCreateOrgModal(token) {
 
     initSelect('plan');
 
-    // Live Name Check & Recommendation
     const nameInput = document.getElementById('org-name');
     const recEl = document.getElementById('org-name-rec');
     const successIcon = document.getElementById('org-name-success');
@@ -440,7 +417,7 @@ function setupCreateOrgModal(token) {
                     if (recLink) {
                         recLink.onclick = () => {
                             nameInput.value = rec;
-                            nameInput.dispatchEvent(new Event('input')); // Trigger re-check
+                            nameInput.dispatchEvent(new Event('input'));
                         };
                     }
                     if (successIcon) successIcon.style.display = 'none';
@@ -449,10 +426,9 @@ function setupCreateOrgModal(token) {
                     if (successIcon) successIcon.style.display = 'block';
                 }
             } catch (e) {}
-        }, 400); // 400ms debounce
+        }, 400);
     };
 
-    // Global click to close selects
     document.addEventListener('click', () => {
         document.querySelectorAll('.sentinel-select-trigger').forEach(t => t.classList.remove('active'));
         document.querySelectorAll('.sentinel-select-dropdown').forEach(d => d.classList.remove('active'));
@@ -487,11 +463,8 @@ function setupCreateOrgModal(token) {
                 throw new Error(data.error || 'failed to create organization');
             }
 
-            // Success
             if (window.SentinelToast) window.SentinelToast.show("organization created successfully.", "success");
             closeModal();
-            
-            // Refresh grid
             fetchProfile(token);
             
         } catch (err) {
@@ -541,7 +514,6 @@ function setupInviteMemberModal(token) {
         document.body.classList.add('modal-open');
         form.reset();
         
-        // Render Turnstile
         if (window.turnstile) {
             const container = document.getElementById('turnstile-invite');
             if (container) {
@@ -573,10 +545,8 @@ function setupInviteMemberModal(token) {
     openBtn.onclick = (e) => { e.preventDefault(); openModal(); };
     closeBtn.onclick = (e) => { e.preventDefault(); closeModal(); };
     
-    // Close on overlay click
     modal.onclick = (e) => { if (e.target === modal) closeModal(); };
 
-    // Custom Select Logic
     const trigger = document.getElementById('invite-role-select-trigger');
     const dropdown = document.getElementById('invite-role-select-dropdown');
     const hiddenInput = document.getElementById('invite-role');
@@ -681,7 +651,6 @@ function setupInviteMemberModal(token) {
 function saveInvitedMember(orgSlug, member) {
     const key = `sentinel-invites-${orgSlug}`;
     const existing = JSON.parse(localStorage.getItem(key) || '[]');
-    // Avoid duplicates
     if (!existing.some(m => m.email === member.email)) {
         existing.push(member);
         localStorage.setItem(key, JSON.stringify(existing));
@@ -697,8 +666,6 @@ function loadInvitedMembers(orgSlug) {
     const key = `sentinel-invites-${orgSlug}`;
     const invited = JSON.parse(localStorage.getItem(key) || '[]');
     
-    // Aggregate members: Owner (mock for now as first row) + Invited
-    // In a real app, we'd fetch all from DB
     const ownerEmail = document.getElementById('current-user-email')?.textContent || 'owner@sentinelpay.org';
     
     teamMembersFullList = [
@@ -730,7 +697,6 @@ function renderTeamPage() {
 
     if (!pageInfo) return;
 
-    // Update pagination UI
     const total = teamMembersFullList.length;
     const showingStart = total === 0 ? 0 : start + 1;
     const showingEnd = Math.min(end, total);
@@ -745,7 +711,7 @@ function renderTeamPage() {
 
     if (btnNext) {
         btnNext.disabled = end >= total;
-        btnNext.style.opacity = btnNext.disabled ? 'not-allowed' : '1'; // Fix: corrected logic
+        btnNext.style.opacity = btnNext.disabled ? 'not-allowed' : '1';
         btnNext.style.opacity = btnNext.disabled ? '0.3' : '1';
         btnNext.style.cursor = btnNext.disabled ? 'not-allowed' : 'pointer';
     }
@@ -847,14 +813,12 @@ function addTeamMemberToTable(email, role, status = 'active', isYou = false) {
     `;
 
     tableBody.appendChild(row);
-    
-    // Setup dropdown toggle for this row
+
     const moreBtn = row.querySelector('.btn-more-actions');
     const dropdown = row.querySelector('.row-actions-dropdown');
     if (moreBtn && dropdown) {
         moreBtn.onclick = (e) => {
             e.stopPropagation();
-            // Close other open dropdowns first
             document.querySelectorAll('.row-actions-dropdown.active').forEach(d => {
                 if (d !== dropdown) d.classList.remove('active');
             });
@@ -862,7 +826,6 @@ function addTeamMemberToTable(email, role, status = 'active', isYou = false) {
         };
     }
 
-    // Update count
     const countEl = document.querySelector('.team-member-count');
     if (countEl) {
         const total = tableBody.querySelectorAll('tr').length;
@@ -915,7 +878,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Global click handler to close dropdowns
 document.addEventListener('click', (e) => {
     document.querySelectorAll('.row-actions-dropdown.active').forEach(d => {
         d.classList.remove('active');
@@ -945,15 +907,13 @@ async function resendInvite(email) {
     if (window.SentinelToast) window.SentinelToast.show(`resending invitation to ${email}...`, "info");
     
     try {
-        // Current org slug from URL
         const path = window.location.pathname;
         const orgMatch = path.match(/\/dashboard\/org\/([a-z0-9]{20})/);
         const orgSlug = orgMatch ? orgMatch[1] : null;
 
         if (!orgSlug) throw new Error("organization context missing");
 
-        // Get auth token (from global context)
-        const token = window.supabaseAuthToken; 
+        const token = window.supabaseAuthToken;
 
         const response = await fetch(`${API_URL}/v1/organizations/${orgSlug}/team/invite`, {
             method: 'POST',
@@ -963,7 +923,7 @@ async function resendInvite(email) {
             },
             body: JSON.stringify({
                 emailList: [email],
-                role: 'developer' // Default for resend for now
+                role: 'developer'
             })
         });
 
@@ -973,7 +933,6 @@ async function resendInvite(email) {
             throw new Error(result.error || 'failed to resend invitation');
         }
 
-        // Set cooldown
         localStorage.setItem(cooldownKey, Date.now().toString());
         
         if (window.SentinelToast) window.SentinelToast.show(`invitation resent to ${email}`, "success");
@@ -983,7 +942,6 @@ async function resendInvite(email) {
 }
 
 function cancelInvite(email, btnEl) {
-    // Current org slug from URL
     const path = window.location.pathname;
     const orgMatch = path.match(/\/dashboard\/org\/([a-z0-9]{20})/);
     const orgSlug = orgMatch ? orgMatch[1] : null;
@@ -995,14 +953,12 @@ function cancelInvite(email, btnEl) {
         localStorage.setItem(key, JSON.stringify(updated));
     }
 
-    // Remove from UI
     const row = btnEl.closest('tr');
     if (row) {
         row.style.opacity = '0';
         row.style.transform = 'translateX(20px)';
         setTimeout(() => {
             row.remove();
-            // Update count
             const countEl = document.querySelector('.team-member-count');
             const tableBody = document.getElementById('team-table-body');
             if (countEl && tableBody) {
@@ -1027,7 +983,6 @@ function updateOrgGrid(orgs) {
             const card = document.createElement('div');
             card.className = 'org-card-item';
             
-            // Re-creating the professional org card structure
             const initial = org.name.charAt(0).toUpperCase();
             const planText = org.plan ? `${org.plan.charAt(0).toUpperCase() + org.plan.slice(1)} Plan` : 'Standard Plan';
             
@@ -1042,8 +997,7 @@ function updateOrgGrid(orgs) {
             card.querySelector('.org-card-avatar').textContent = initial;
             card.querySelector('.org-card-name').textContent = org.name;
             card.querySelector('.org-card-meta').textContent = planText;
-            
-            // Handle Navigation
+
             card.onclick = () => {
                 const slug = org.slug;
                 history.pushState({ slug }, '', `/dashboard/org/${slug}`);
@@ -1076,20 +1030,17 @@ function switchToOrgView(slug, view = 'projects') {
     document.getElementById('org-home-view').classList.add('hidden');
     document.getElementById('dashboard-view').classList.add('hidden');
     
-    // Toggle Sidebar Nav
     const globalNav = document.getElementById('sidebar-global-nav');
     const orgNav = document.getElementById('sidebar-org-nav');
     if (globalNav) globalNav.classList.add('hidden');
     if (orgNav) orgNav.classList.remove('hidden');
 
-    // Hide all sub-views
     const subViews = ['org-dashboard-view', 'org-team-view'];
     subViews.forEach(id => {
         const el = document.getElementById(id);
         if (el) el.classList.add('hidden');
     });
 
-    // Sidebar Active State Sync
     document.querySelectorAll('#sidebar-org-nav .sidebar-item').forEach(i => i.classList.remove('active'));
 
     if (view === 'team') {
@@ -1492,7 +1443,6 @@ function setupSidebar() {
 
     document.addEventListener('click', () => popup.classList.remove('active'));
 
-    // --- Organization Navigation SPA Logic ---
     const bindOrgNav = (id, subPath, viewName) => {
         const el = document.getElementById(id);
         if (!el) return;
@@ -1511,7 +1461,6 @@ function setupSidebar() {
 
     bindOrgNav('sidebar-item-projects', '', 'projects');
     bindOrgNav('sidebar-item-team', 'team', 'team');
-    // Placeholders for other items
     ['integrations', 'usage', 'billing', 'settings'].forEach(sub => {
         bindOrgNav(`sidebar-item-${sub}`, sub, sub);
     });

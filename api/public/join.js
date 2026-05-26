@@ -1,6 +1,3 @@
-// SentinelPay Join Logic (v1.0)
-// S-Tier Invitation Handling
-
 const supabaseUrl = 'https://aivqwkgjdpklxxuvkxpy.supabase.co';
 const supabaseKey = 'sb_publishable_bRfAssaGT6D8oFDQtPARbw_5fyYGWM6';
 const API_URL = window.location.origin;
@@ -18,7 +15,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
-    // Initialize Supabase
     const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
     const { data: { session } } = await supabase.auth.getSession();
 
@@ -40,7 +36,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                                    "unknown account";
 
         if (invitedEmail && currentUserEmail.toLowerCase() !== invitedEmail.toLowerCase()) {
-            // WRONG ACCOUNT STATE
             const wrongAccountState = document.getElementById('wrong-account-state');
             if (wrongAccountState) wrongAccountState.style.display = 'flex';
             
@@ -59,7 +54,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 };
             }
         } else {
-            // USER LOGGED IN: Show Accept Screen
             if (joinCard) joinCard.style.display = 'flex';
             if (authButtonsGroup) authButtonsGroup.style.display = 'none';
             if (joinSubtitle) joinSubtitle.style.display = 'none';
@@ -101,7 +95,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         };
     } else {
-        // USER NOT LOGGED IN: Show Gatekeeper Screen
         if (joinCard) joinCard.style.display = 'flex';
 
         const returnPath = `/join?token=${encodeURIComponent(token)}&slug=${encodeURIComponent(slug)}`;

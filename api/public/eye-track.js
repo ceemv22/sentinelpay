@@ -1,4 +1,3 @@
-// Eye-Cursor Tracking — same logic as homepage app.js
 (function() {
     var pupils = document.querySelectorAll('.eye-pupil');
     if (pupils.length > 0) {
