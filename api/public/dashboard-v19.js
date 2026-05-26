@@ -1195,16 +1195,22 @@ async function fetchPendingInvitations(token) {
 function renderNotifications(invites, token) {
     const section = document.getElementById('notification-section');
     const container = document.getElementById('notification-items');
+    const wrapper = document.getElementById('notification-items-wrapper');
     const badge = document.getElementById('notification-badge');
     if (!section || !container) return;
 
     if (!invites || invites.length === 0) {
-        section.style.display = 'none';
+        if (wrapper) wrapper.style.display = 'none';
+        if (badge) { badge.style.display = 'none'; badge.textContent = ''; }
         return;
     }
 
-    section.style.display = 'block';
-    if (badge) badge.textContent = invites.length;
+    const count = invites.length;
+    if (badge) {
+        badge.textContent = count >= 100 ? '99+' : count;
+        badge.style.display = '';
+    }
+    if (wrapper) wrapper.style.display = 'block';
 
     container.innerHTML = '';
     invites.forEach(inv => {
@@ -1251,8 +1257,9 @@ function renderNotifications(invites, token) {
                 item.remove();
                 fetchProfile(token);
                 const remaining = container.children.length;
-                if (!remaining && section) section.style.display = 'none';
-                if (badge) badge.textContent = remaining || '';
+                const w = document.getElementById('notification-items-wrapper');
+                if (!remaining && w) w.style.display = 'none';
+                if (badge) { badge.textContent = remaining >= 100 ? '99+' : (remaining || ''); badge.style.display = remaining ? '' : 'none'; }
             } catch (err) {
                 if (window.SentinelToast) window.SentinelToast.show(err.message, 'error');
                 acceptBtn.disabled = false;
@@ -1264,8 +1271,9 @@ function renderNotifications(invites, token) {
             e.stopPropagation();
             item.remove();
             const remaining = container.children.length;
-            if (!remaining && section) section.style.display = 'none';
-            if (badge) badge.textContent = remaining || '';
+            const w = document.getElementById('notification-items-wrapper');
+            if (!remaining && w) w.style.display = 'none';
+            if (badge) { badge.textContent = remaining >= 100 ? '99+' : (remaining || ''); badge.style.display = remaining ? '' : 'none'; }
         };
 
         container.appendChild(item);
