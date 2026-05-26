@@ -1234,12 +1234,7 @@ async function fetchPendingInvitations(token) {
         });
         if (!res.ok) return;
         const invites = await res.json();
-        const data = invites.length > 0 ? invites : [
-            { id: 'mock-1', orgName: 'alpha trading desk', invitedBy: 'john@example.com', role: 'member' },
-            { id: 'mock-2', orgName: 'beta payments ltd', invitedBy: 'sara@company.io', role: 'admin' },
-            { id: 'mock-3', orgName: 'gamma otc corp', invitedBy: 'mike@gamma.co', role: 'member' }
-        ];
-        renderNotifications(data, token);
+        renderNotifications(invites, token);
     } catch (err) {}
 }
 
