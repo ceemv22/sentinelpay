@@ -901,7 +901,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const backBtn = document.getElementById('notif-panel-back');
     if (notifRow) {
         notifRow.addEventListener('click', (e) => {
-            if (window.innerWidth > 900) return;
+            if (window.innerWidth > 1280) return;
             e.preventDefault();
             e.stopPropagation();
             flipToNotifPanel();
