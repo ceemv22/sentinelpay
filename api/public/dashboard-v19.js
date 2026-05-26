@@ -286,6 +286,13 @@ function setupMobileNav() {
         hamburger.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
+            const trigger = document.getElementById('user-menu-trigger');
+            const dropdown = document.getElementById('user-dropdown');
+            if (dropdown && dropdown.classList.contains('active')) {
+                trigger && trigger.classList.remove('active');
+                dropdown.classList.remove('active');
+                flipToMainPanel();
+            }
             document.body.classList.toggle('mobile-sidebar-open');
         });
     }
