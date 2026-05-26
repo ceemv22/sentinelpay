@@ -1422,12 +1422,12 @@
 
             /* === ORG HOME INTRO === */
             .org-home-intro {
-                padding-bottom: 0.25rem !important;
+                padding-bottom: 0 !important;
                 gap: 0 !important;
                 border-bottom: none !important;
             }
             .org-home-container {
-                gap: 1rem !important;
+                gap: 0.6rem !important;
             }
 
             .org-home-badge {
@@ -1488,17 +1488,18 @@
                 gap: 0.65rem !important;
             }
             .org-controls-row {
-                flex-direction: column;
-                gap: 0.65rem;
-                align-items: stretch;
-                margin-bottom: 1rem !important;
-            }
-            .org-controls-row > div,
-            .org-controls-row > button {
-                width: 100% !important;
+                flex-direction: row !important;
+                gap: 0.6rem !important;
+                align-items: center !important;
+                margin-bottom: 0 !important;
             }
             .org-search-wrapper {
-                width: 100% !important;
+                flex: 1 !important;
+                width: auto !important;
+            }
+            .org-controls-row > button {
+                width: auto !important;
+                flex-shrink: 0 !important;
             }
 
             /* Search input — matches style.css base input look */
@@ -1528,7 +1529,7 @@
 
             /* Primary CTA — matches .submit-btn style (white fill, lowercase) */
             .btn-new-org {
-                width: 100% !important;
+                width: auto !important;
                 height: 2.9rem !important;
                 background: #fff !important;
                 color: #000 !important;
