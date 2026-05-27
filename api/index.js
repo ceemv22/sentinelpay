@@ -179,6 +179,7 @@ app.use(cors({
 }));
 
 app.use('/v1/stripe', require('./routes/stripe'));
+app.use('/v1/crypto', require('./routes/crypto'));
 
 app.use(express.json({ limit: '10kb' }));
 
@@ -1069,6 +1070,9 @@ async function start() {
     app.listen(PORT, () => {
         console.log(`[sentinel-api] server active on port ${PORT}`);
     });
+
+    const { startCryptoMonitor } = require('./services/cryptoMonitor');
+    startCryptoMonitor();
 }
 
 start().catch((err) => {
