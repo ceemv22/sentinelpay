@@ -478,37 +478,42 @@ function setupCreateOrgModal(token) {
         const isEnterprise = !!p.contact;
 
         step2.innerHTML = `
-            <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.5rem;">
-                <button id="btn-step2-back" style="background:transparent;border:none;color:var(--text-muted);cursor:pointer;display:flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;font-size:0.75rem;padding:0.3rem 0.5rem;border-radius:6px;transition:color 0.2s;-webkit-tap-highlight-color:transparent;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>back
+            <div style="display:flex;align-items:center;margin-bottom:1.5rem;">
+                <button id="btn-step2-back" style="background:transparent;border:none;color:var(--text-muted);cursor:pointer;display:flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:0.73rem;padding:0.4rem 0.6rem 0.4rem 0.2rem;border-radius:6px;transition:color 0.2s;-webkit-tap-highlight-color:transparent;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>back
                 </button>
-                <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);padding:0.3rem 0.75rem;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:#fff;font-weight:500;">review plan</div>
             </div>
-            <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:0.65rem 1rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:0.75rem;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--neon-blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;opacity:0.7;"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-                <span style="font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:var(--text-muted);">org: <span style="color:#fff;">${name}</span></span>
+            <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:0.6rem 0.875rem;margin-bottom:0.875rem;">
+                <div style="display:flex;align-items:center;gap:0.6rem;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                    <span style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--text-muted);">organization</span>
+                </div>
+                <span style="font-family:'JetBrains Mono',monospace;font-size:0.74rem;color:#e0e0e0;font-weight:500;">${name}</span>
             </div>
             <div class="org-plan-card-summary${p.featured ? ' plan-featured' : ''}">
-                <div class="plan-card-top">
-                    <span class="plan-card-label">${p.label}</span>
-                    ${p.featured ? '<span class="plan-card-popular">most popular</span>' : ''}
+                ${p.featured ? '<div class="plan-accent-bar"></div>' : ''}
+                <div class="plan-card-inner">
+                    <div class="plan-card-top">
+                        <span class="plan-card-label${p.featured ? ' plan-label-accent' : ''}">${p.label}</span>
+                        ${p.featured ? '<span class="plan-card-popular">most popular</span>' : ''}
+                    </div>
+                    <div class="plan-price-row">
+                        ${!isEnterprise ? `<span class="plan-price-currency">${p.price.charAt(0)}</span><span class="plan-price-amount">${p.price.slice(1)}</span><span class="plan-price-period">/mo</span>` : `<span class="plan-price-amount" style="font-size:1.5rem;letter-spacing:-1px;color:rgba(255,255,255,0.6);">custom pricing</span>`}
+                    </div>
+                    <div class="plan-card-divider"></div>
+                    <ul class="plan-features-list">
+                        ${p.features.map(f => `<li class="plan-feature-item"><svg class="plan-feat-check" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>${f}</li>`).join('')}
+                    </ul>
                 </div>
-                <div class="plan-price-row">
-                    <span class="plan-price-amount">${p.price}</span>
-                    ${p.period ? `<span class="plan-price-period">${p.period}</span>` : ''}
-                </div>
-                <ul class="plan-features-list">
-                    ${p.features.map(f => `<li class="plan-feature-item"><span class="plan-feat-check">✓</span>${f}</li>`).join('')}
-                </ul>
             </div>
             ${isEnterprise ? `
-            <div style="margin-top:1.25rem;padding:0.875rem 1rem;background:rgba(0,240,255,0.03);border:1px solid rgba(0,240,255,0.1);border-radius:10px;font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--text-muted);line-height:1.7;text-align:center;">
+            <div style="margin-top:1.1rem;padding:0.875rem 1rem;background:rgba(0,240,255,0.03);border:1px solid rgba(0,240,255,0.1);border-radius:10px;font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--text-muted);line-height:1.7;text-align:center;">
                 enterprise plans require custom configuration.<br>reach out and we'll get you set up.
             </div>
-            <a href="mailto:support@sentinelpay.org" class="submit-btn" style="margin-top:1.25rem;display:flex;align-items:center;justify-content:center;text-decoration:none;">contact sales →</a>
+            <a href="mailto:support@sentinelpay.org" class="submit-btn" style="margin-top:1rem;display:flex;align-items:center;justify-content:center;text-decoration:none;">contact sales →</a>
             ` : `
             <p id="create-org-pay-error" class="error-msg" style="display:none;margin-top:0.75rem;"></p>
-            <button class="submit-btn" id="btn-proceed-checkout" style="margin-top:1.25rem;display:flex;align-items:center;justify-content:center;gap:8px;">
+            <button class="submit-btn" id="btn-proceed-checkout" style="margin-top:1rem;display:flex;align-items:center;justify-content:center;gap:8px;">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
                 proceed to checkout
             </button>
