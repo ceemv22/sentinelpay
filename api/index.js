@@ -100,12 +100,13 @@ app.use(helmet({
             "style-src": ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
             "font-src": ["'self'", "https://fonts.gstatic.com"],
             "img-src": [
-                "'self'", 
-                "data:", 
-                "https://*.supabase.co", 
-                "https://*.googleusercontent.com", 
-                "https://*.twimg.com", 
-                "https://abs.twimg.com"
+                "'self'",
+                "data:",
+                "https://*.supabase.co",
+                "https://*.googleusercontent.com",
+                "https://*.twimg.com",
+                "https://abs.twimg.com",
+                "https://cdn.jsdelivr.net"
             ],
             "connect-src": [
                 "'self'", 

@@ -525,6 +525,10 @@ function setupCreateOrgModal(token) {
                             <div id="crypto-dd-panel" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:#090909;border:1px solid rgba(255,255,255,0.1);border-radius:8px;z-index:200;max-height:200px;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,0.7);"></div>
                         </div>
                         <p id="crypto-sel-error" style="display:none;font-family:'JetBrains Mono',monospace;font-size:0.67rem;color:#ff3333;margin-top:0.45rem;margin-bottom:0;"></p>
+                        <button id="crypto-proceed-btn" class="submit-btn" style="margin-top:0.875rem;display:flex;align-items:center;justify-content:center;gap:7px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                            generate payment address
+                        </button>
                     </div>
                     <div id="crypto-payment-view" style="display:none;"></div>
                 </div>
@@ -696,6 +700,8 @@ function setupCreateOrgModal(token) {
             SHIB: 'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/svg/color/shib.svg',
         };
 
+        let selectedCoin = CRYPTO_COINS[0];
+
         CRYPTO_COINS.forEach(coin => {
             const item = document.createElement('button');
             item.style.cssText = 'width:100%;background:transparent;border:none;border-bottom:1px solid rgba(255,255,255,0.04);padding:0.5rem 0.8rem;cursor:pointer;display:flex;align-items:center;gap:0.65rem;transition:background 0.13s;-webkit-tap-highlight-color:transparent;';
@@ -728,6 +734,7 @@ function setupCreateOrgModal(token) {
             item.addEventListener('click', (e) => {
                 e.stopPropagation();
                 toggleDd(false);
+                selectedCoin = coin;
                 ddSelected.innerHTML = '';
                 const sWrap = document.createElement('div');
                 sWrap.style.cssText = 'width:20px;height:20px;border-radius:50%;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:' + coin.color + '1a;';
@@ -742,11 +749,39 @@ function setupCreateOrgModal(token) {
                 sTxt.textContent = coin.currency + ' · ' + coin.net;
                 ddSelected.appendChild(sWrap);
                 ddSelected.appendChild(sTxt);
-                handleCryptoSelect(coin);
             });
 
             ddPanel.appendChild(item);
         });
+
+        (function preSelectEth() {
+            const c = CRYPTO_COINS[0];
+            ddSelected.innerHTML = '';
+            const sWrap = document.createElement('div');
+            sWrap.style.cssText = 'width:20px;height:20px;border-radius:50%;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:' + c.color + '1a;';
+            const sImg = document.createElement('img');
+            sImg.src = COIN_IMG[c.currency] || '';
+            sImg.alt = c.currency;
+            sImg.style.cssText = 'width:20px;height:20px;border-radius:50%;object-fit:cover;';
+            sImg.onerror = () => { sImg.style.display = 'none'; };
+            sWrap.appendChild(sImg);
+            const sTxt = document.createElement('span');
+            sTxt.style.cssText = "font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:#e0e0e0;font-weight:500;";
+            sTxt.textContent = c.currency + ' · ' + c.net;
+            ddSelected.appendChild(sWrap);
+            ddSelected.appendChild(sTxt);
+        })();
+
+        const proceedBtn = document.getElementById('crypto-proceed-btn');
+        if (proceedBtn) {
+            proceedBtn.onclick = async () => {
+                proceedBtn.disabled = true;
+                proceedBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> generating address...';
+                await handleCryptoSelect(selectedCoin);
+                proceedBtn.disabled = false;
+                proceedBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> generate payment address';
+            };
+        }
 
         document.getElementById('btn-step3-back').onclick = () => {
             clearInterval(_cryptoIntervals.poll);
