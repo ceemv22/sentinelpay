@@ -324,12 +324,51 @@ function setupCreateOrgModal(token) {
     if (openBtn.dataset.bound) return;
     openBtn.dataset.bound = "true";
 
+    const PLANS = {
+        starter: {
+            label: 'starter',
+            price: '$99',
+            period: '/mo',
+            features: ['1 rpc endpoint', 'up to 250 monitored addresses', 'real-time email alerts', 'on-demand api scan access', 'standard support'],
+            featured: false
+        },
+        pro: {
+            label: 'pro',
+            price: '$399',
+            period: '/mo',
+            features: ['up to 5 rpc endpoints', 'up to 2,500 monitored addresses', 'email + webhook alerts', 'custom risk thresholds per endpoint', 'priority support'],
+            featured: true
+        },
+        enterprise: {
+            label: 'enterprise',
+            price: 'custom',
+            period: '',
+            features: ['unlimited rpc endpoints', 'unlimited monitored addresses', 'dedicated infrastructure', 'custom alert integrations', 'sla + dedicated support'],
+            contact: true
+        }
+    };
+
+    const resetToStep1 = () => {
+        const step1 = document.getElementById('create-org-step-1');
+        const step2 = document.getElementById('create-org-step-2');
+        if (step1) step1.style.display = 'flex';
+        if (step2) { step2.style.display = 'none'; step2.innerHTML = ''; }
+    };
+
     const openModal = () => {
         modal.classList.add('active');
         document.body.classList.add('modal-open');
         form.reset();
         errorEl.style.display = 'none';
-        
+
+        const planDisplay = document.querySelector('#plan-select-trigger .selected-value');
+        if (planDisplay) planDisplay.textContent = 'starter — $99/mo';
+        const planInput = document.getElementById('org-plan');
+        if (planInput) planInput.value = 'starter';
+        document.querySelectorAll('#plan-select-dropdown .sentinel-select-option').forEach(o => {
+            o.classList.toggle('selected', o.dataset.value === 'starter');
+        });
+
         const recEl = document.getElementById('org-name-rec');
         const successIcon = document.getElementById('org-name-success');
         if (recEl) recEl.style.display = 'none';
@@ -337,11 +376,14 @@ function setupCreateOrgModal(token) {
 
         document.querySelectorAll('.sentinel-select-trigger').forEach(t => t.classList.remove('active'));
         document.querySelectorAll('.sentinel-select-dropdown').forEach(d => d.classList.remove('active'));
+
+        resetToStep1();
     };
 
     const closeModal = () => {
         modal.classList.remove('active');
         document.body.classList.remove('modal-open');
+        resetToStep1();
     };
 
     openBtn.onclick = (e) => { e.preventDefault(); openModal(); };
@@ -364,9 +406,8 @@ function setupCreateOrgModal(token) {
 
         trigger.onclick = (e) => {
             e.stopPropagation();
-            document.querySelectorAll('.sentinel-select-trigger').forEach(t => { if(t!==trigger) t.classList.remove('active') });
-            document.querySelectorAll('.sentinel-select-dropdown').forEach(d => { if(d!==dropdown) d.classList.remove('active') });
-            
+            document.querySelectorAll('.sentinel-select-trigger').forEach(t => { if (t !== trigger) t.classList.remove('active'); });
+            document.querySelectorAll('.sentinel-select-dropdown').forEach(d => { if (d !== dropdown) d.classList.remove('active'); });
             trigger.classList.toggle('active');
             dropdown.classList.toggle('active');
         };
@@ -393,26 +434,22 @@ function setupCreateOrgModal(token) {
     nameInput.oninput = () => {
         clearTimeout(checkTimeout);
         const val = nameInput.value.trim();
-        
         if (val.length < 2) {
             recEl.style.display = 'none';
             if (successIcon) successIcon.style.display = 'none';
             return;
         }
-
         checkTimeout = setTimeout(async () => {
             try {
                 const res = await fetch(`/v1/organizations/check?name=${encodeURIComponent(val)}`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 const { available } = await res.json();
-                
                 if (!available) {
                     const random = Math.floor(100000 + Math.random() * 900000);
                     const rec = `${val.toLowerCase().replace(/\s+/g, '-')}-${random}`;
                     recEl.innerHTML = `${val.toLowerCase()} is taken. try <span class="org-rec-link" id="btn-use-rec">${rec}</span> instead.`;
                     recEl.style.display = 'block';
-                    
                     const recLink = document.getElementById('btn-use-rec');
                     if (recLink) {
                         recLink.onclick = () => {
@@ -434,45 +471,132 @@ function setupCreateOrgModal(token) {
         document.querySelectorAll('.sentinel-select-dropdown').forEach(d => d.classList.remove('active'));
     });
 
+    const transitionToStep2 = (name, plan) => {
+        const step1 = document.getElementById('create-org-step-1');
+        const step2 = document.getElementById('create-org-step-2');
+        const p = PLANS[plan] || PLANS.starter;
+        const isEnterprise = !!p.contact;
+
+        step2.innerHTML = `
+            <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.5rem;">
+                <button id="btn-step2-back" style="background:transparent;border:none;color:var(--text-muted);cursor:pointer;display:flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;font-size:0.75rem;padding:0.3rem 0.5rem;border-radius:6px;transition:color 0.2s;-webkit-tap-highlight-color:transparent;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>back
+                </button>
+                <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);padding:0.3rem 0.75rem;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:#fff;font-weight:500;">review plan</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:0.65rem 1rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:0.75rem;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--neon-blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;opacity:0.7;"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                <span style="font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:var(--text-muted);">org: <span style="color:#fff;">${name}</span></span>
+            </div>
+            <div class="org-plan-card-summary${p.featured ? ' plan-featured' : ''}">
+                <div class="plan-card-top">
+                    <span class="plan-card-label">${p.label}</span>
+                    ${p.featured ? '<span class="plan-card-popular">most popular</span>' : ''}
+                </div>
+                <div class="plan-price-row">
+                    <span class="plan-price-amount">${p.price}</span>
+                    ${p.period ? `<span class="plan-price-period">${p.period}</span>` : ''}
+                </div>
+                <ul class="plan-features-list">
+                    ${p.features.map(f => `<li class="plan-feature-item"><span class="plan-feat-check">✓</span>${f}</li>`).join('')}
+                </ul>
+            </div>
+            ${isEnterprise ? `
+            <div style="margin-top:1.25rem;padding:0.875rem 1rem;background:rgba(0,240,255,0.03);border:1px solid rgba(0,240,255,0.1);border-radius:10px;font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--text-muted);line-height:1.7;text-align:center;">
+                enterprise plans require custom configuration.<br>reach out and we'll get you set up.
+            </div>
+            <a href="mailto:support@sentinelpay.org" class="submit-btn" style="margin-top:1.25rem;display:flex;align-items:center;justify-content:center;text-decoration:none;">contact sales →</a>
+            ` : `
+            <p id="create-org-pay-error" class="error-msg" style="display:none;margin-top:0.75rem;"></p>
+            <button class="submit-btn" id="btn-proceed-checkout" style="margin-top:1.25rem;display:flex;align-items:center;justify-content:center;gap:8px;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+                proceed to checkout
+            </button>
+            `}
+        `;
+
+        step1.style.display = 'none';
+        step2.style.display = 'flex';
+        step2.style.flexDirection = 'column';
+        step2.style.width = '100%';
+
+        document.getElementById('btn-step2-back').onclick = () => {
+            step2.style.display = 'none';
+            step2.innerHTML = '';
+            step1.style.display = 'flex';
+        };
+
+        if (!isEnterprise) {
+            const payBtn = document.getElementById('btn-proceed-checkout');
+            const payErrEl = document.getElementById('create-org-pay-error');
+
+            payBtn.onclick = async () => {
+                payBtn.disabled = true;
+                payBtn.textContent = 'redirecting...';
+                payErrEl.style.display = 'none';
+
+                try {
+                    const orgRes = await fetch('/v1/organizations', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                        body: JSON.stringify({ name, plan })
+                    });
+                    const orgData = await orgRes.json();
+                    if (!orgRes.ok) throw new Error(orgData.error || 'failed to create organization');
+
+                    const stripeRes = await fetch('/v1/stripe/checkout', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                        body: JSON.stringify({ plan })
+                    });
+                    const stripeData = await stripeRes.json();
+                    if (!stripeRes.ok) throw new Error(stripeData.error || 'failed to initialize checkout');
+
+                    window.location.href = stripeData.url;
+                } catch (err) {
+                    payErrEl.textContent = `error: ${err.message.toLowerCase()}`;
+                    payErrEl.style.display = 'block';
+                    payBtn.disabled = false;
+                    payBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg> proceed to checkout`;
+                }
+            };
+        }
+    };
+
     form.onsubmit = async (e) => {
         e.preventDefault();
-        
         const name = document.getElementById('org-name').value.trim();
         const plan = document.getElementById('org-plan').value;
 
+        if (name.length < 2) {
+            errorEl.textContent = 'error: name must be at least 2 characters.';
+            errorEl.style.display = 'block';
+            return;
+        }
+
         try {
             submitBtn.disabled = true;
-            submitBtn.textContent = 'initializing...';
+            submitBtn.textContent = 'checking...';
             errorEl.style.display = 'none';
 
-            const response = await fetch('/v1/organizations', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({ name, plan })
+            const res = await fetch(`/v1/organizations/check?name=${encodeURIComponent(name)}`, {
+                headers: { 'Authorization': `Bearer ${token}` }
             });
+            const { available } = await res.json();
 
-            const data = await response.json();
-
-            if (!response.ok) {
-                if (data.code === 'name_taken') {
-                    throw new Error(`name already taken.`);
-                }
-                throw new Error(data.error || 'failed to create organization');
+            if (!available) {
+                errorEl.textContent = 'error: name already taken.';
+                errorEl.style.display = 'block';
+                return;
             }
 
-            if (window.SentinelToast) window.SentinelToast.show("organization created successfully.", "success");
-            closeModal();
-            fetchProfile(token);
-            
+            transitionToStep2(name, plan);
         } catch (err) {
             errorEl.textContent = `error: ${err.message.toLowerCase()}`;
             errorEl.style.display = 'block';
         } finally {
             submitBtn.disabled = false;
-            submitBtn.textContent = 'create organization';
+            submitBtn.textContent = 'continue';
         }
     };
 }
