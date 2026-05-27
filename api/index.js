@@ -1015,6 +1015,32 @@ app.get('/v1/organizations/:slug/members', requireSupabaseAuth, async (req, res)
     }
 });
 
+app.delete('/v1/organizations/:slug', requireSupabaseAuth, async (req, res) => {
+    const { slug } = req.params;
+    if (!/^[a-f0-9]{20}$/.test(slug)) return res.status(400).json({ error: 'invalid slug' });
+    try {
+        const org = await prisma.organization.findUnique({
+            where: { slug },
+            select: { id: true, ownerId: true }
+        });
+        if (!org) return res.status(404).json({ error: 'organization not found' });
+        if (org.ownerId !== req.user.id) return res.status(403).json({ error: 'only the owner can delete an organization' });
+
+        await prisma.$transaction(async (tx) => {
+            await tx.invitation.deleteMany({ where: { orgId: org.id } });
+            await tx.scanHistory.deleteMany({ where: { orgId: org.id } });
+            await tx.apiKey.deleteMany({ where: { orgId: org.id } });
+            await tx.organization.update({ where: { id: org.id }, data: { members: { set: [] } } });
+            await tx.organization.delete({ where: { id: org.id } });
+        });
+
+        res.json({ deleted: true });
+    } catch (err) {
+        console.error('[org-delete] error:', err);
+        res.status(500).json({ error: 'failed to delete organization' });
+    }
+});
+
 async function start() {
     if (isProduction && !redisUrl) {
         throw new Error('REDIS_URL must be configured in production.');

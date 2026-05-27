@@ -351,8 +351,10 @@ function setupCreateOrgModal(token) {
     const resetToStep1 = () => {
         const step1 = document.getElementById('create-org-step-1');
         const step2 = document.getElementById('create-org-step-2');
+        const step3 = document.getElementById('create-org-step-3');
         if (step1) step1.style.display = 'flex';
         if (step2) { step2.style.display = 'none'; step2.innerHTML = ''; }
+        if (step3) { step3.style.display = 'none'; step3.innerHTML = ''; }
     };
 
     const openModal = () => {
@@ -471,6 +473,110 @@ function setupCreateOrgModal(token) {
         document.querySelectorAll('.sentinel-select-dropdown').forEach(d => d.classList.remove('active'));
     });
 
+    const transitionToStep3 = (name, plan) => {
+        const step2 = document.getElementById('create-org-step-2');
+        const step3 = document.getElementById('create-org-step-3');
+        const p = PLANS[plan] || PLANS.starter;
+
+        step3.innerHTML = `
+            <button id="btn-step3-back" style="position:absolute;top:0.5rem;left:0.5rem;background:transparent;border:none;color:var(--text-muted);cursor:pointer;display:flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:0.73rem;padding:0.5rem;border-radius:6px;transition:color 0.2s;z-index:1001;line-height:1;-webkit-tap-highlight-color:transparent;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>back
+            </button>
+            <div style="padding-top:2.25rem;width:100%;">
+                <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:0.6rem 0.875rem;margin-bottom:1.25rem;">
+                    <div style="display:flex;align-items:center;gap:0.6rem;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                        <span style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--text-muted);">organization</span>
+                    </div>
+                    <span style="font-family:'JetBrains Mono',monospace;font-size:0.74rem;color:#e0e0e0;font-weight:500;">${name}</span>
+                </div>
+                <div class="auth-tabs" style="margin-bottom:1.25rem;display:flex;justify-content:flex-start;">
+                    <button class="auth-tab active" id="tab-btn-card" style="width:auto;padding:0.4rem 1rem;font-size:0.7rem;border-radius:6px;">pay with card</button>
+                    <button class="auth-tab" id="tab-btn-crypto" style="width:auto;padding:0.4rem 1rem;font-size:0.7rem;border-radius:6px;">pay with crypto</button>
+                </div>
+                <div id="tab-content-card">
+                    <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:0.6rem 0.875rem;margin-bottom:0.25rem;">
+                        <span style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--text-muted);">${p.label} plan</span>
+                        <span style="font-family:'JetBrains Mono',monospace;font-size:0.74rem;color:#e0e0e0;font-weight:500;">${p.price}${p.period}</span>
+                    </div>
+                    <p id="create-org-pay-error" class="error-msg" style="display:none;margin-top:0.75rem;"></p>
+                    <button class="submit-btn" id="btn-pay-card" style="margin-top:1rem;display:flex;align-items:center;justify-content:center;gap:8px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+                        pay with card
+                    </button>
+                </div>
+                <div id="tab-content-crypto" style="display:none;">
+                    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.75rem 1rem;gap:0.875rem;text-align:center;border:1px solid rgba(255,255,255,0.06);border-radius:10px;background:rgba(255,255,255,0.015);">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.82rem;font-weight:700;color:rgba(255,255,255,0.25);">coming soon</div>
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.68rem;color:var(--text-muted);line-height:1.6;">bitcoin · ethereum · usdc</div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        step2.style.display = 'none';
+        step3.style.display = 'flex';
+        step3.style.flexDirection = 'column';
+        step3.style.width = '100%';
+
+        document.getElementById('btn-step3-back').onclick = () => {
+            step3.style.display = 'none';
+            step3.innerHTML = '';
+            step2.style.display = 'flex';
+            step2.style.flexDirection = 'column';
+            step2.style.width = '100%';
+        };
+
+        document.getElementById('tab-btn-card').onclick = () => {
+            document.getElementById('tab-btn-card').classList.add('active');
+            document.getElementById('tab-btn-crypto').classList.remove('active');
+            document.getElementById('tab-content-card').style.display = '';
+            document.getElementById('tab-content-crypto').style.display = 'none';
+        };
+
+        document.getElementById('tab-btn-crypto').onclick = () => {
+            document.getElementById('tab-btn-crypto').classList.add('active');
+            document.getElementById('tab-btn-card').classList.remove('active');
+            document.getElementById('tab-content-crypto').style.display = '';
+            document.getElementById('tab-content-card').style.display = 'none';
+        };
+
+        const payBtn = document.getElementById('btn-pay-card');
+        const payErrEl = document.getElementById('create-org-pay-error');
+
+        payBtn.onclick = async () => {
+            payBtn.disabled = true;
+            payBtn.textContent = 'redirecting...';
+            payErrEl.style.display = 'none';
+
+            try {
+                const orgRes = await fetch('/v1/organizations', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ name, plan })
+                });
+                const orgData = await orgRes.json();
+                if (!orgRes.ok) throw new Error(orgData.error || 'failed to create organization');
+
+                const stripeRes = await fetch('/v1/stripe/checkout', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ plan })
+                });
+                const stripeData = await stripeRes.json();
+                if (!stripeRes.ok) throw new Error(stripeData.error || 'failed to initialize checkout');
+
+                window.location.href = stripeData.url;
+            } catch (err) {
+                payErrEl.textContent = `error: ${err.message.toLowerCase()}`;
+                payErrEl.style.display = 'block';
+                payBtn.disabled = false;
+                payBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg> pay with card`;
+            }
+        };
+    };
+
     const transitionToStep2 = (name, plan) => {
         const step1 = document.getElementById('create-org-step-1');
         const step2 = document.getElementById('create-org-step-2');
@@ -535,36 +641,7 @@ function setupCreateOrgModal(token) {
             const payBtn = document.getElementById('btn-proceed-checkout');
             const payErrEl = document.getElementById('create-org-pay-error');
 
-            payBtn.onclick = async () => {
-                payBtn.disabled = true;
-                payBtn.textContent = 'redirecting...';
-                payErrEl.style.display = 'none';
-
-                try {
-                    const orgRes = await fetch('/v1/organizations', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-                        body: JSON.stringify({ name, plan })
-                    });
-                    const orgData = await orgRes.json();
-                    if (!orgRes.ok) throw new Error(orgData.error || 'failed to create organization');
-
-                    const stripeRes = await fetch('/v1/stripe/checkout', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-                        body: JSON.stringify({ plan })
-                    });
-                    const stripeData = await stripeRes.json();
-                    if (!stripeRes.ok) throw new Error(stripeData.error || 'failed to initialize checkout');
-
-                    window.location.href = stripeData.url;
-                } catch (err) {
-                    payErrEl.textContent = `error: ${err.message.toLowerCase()}`;
-                    payErrEl.style.display = 'block';
-                    payBtn.disabled = false;
-                    payBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg> proceed to checkout`;
-                }
-            };
+            payBtn.onclick = () => transitionToStep3(name, plan);
         }
     };
 
@@ -1164,7 +1241,7 @@ function switchToOrgView(slug, view = 'projects') {
     if (globalNav) globalNav.classList.add('hidden');
     if (orgNav) orgNav.classList.remove('hidden');
 
-    const subViews = ['org-dashboard-view', 'org-team-view'];
+    const subViews = ['org-dashboard-view', 'org-team-view', 'org-settings-view'];
     subViews.forEach(id => {
         const el = document.getElementById(id);
         if (el) el.classList.add('hidden');
@@ -1178,6 +1255,12 @@ function switchToOrgView(slug, view = 'projects') {
         const teamItem = document.getElementById('sidebar-item-team');
         if (teamItem) teamItem.classList.add('active');
         loadTeamFromApi(slug);
+    } else if (view === 'settings') {
+        const settingsView = document.getElementById('org-settings-view');
+        if (settingsView) settingsView.classList.remove('hidden');
+        const settingsItem = document.getElementById('sidebar-item-settings');
+        if (settingsItem) settingsItem.classList.add('active');
+        renderOrgSettings(slug, window.supabaseAuthToken);
     } else {
         const dashView = document.getElementById('org-dashboard-view');
         if (dashView) dashView.classList.remove('hidden');
@@ -1288,6 +1371,115 @@ async function renderOrgDashboard(slug, token) {
         errDiv.textContent = err.message;
         view.innerHTML = '';
         view.appendChild(errDiv);
+    }
+}
+
+async function renderOrgSettings(slug, token) {
+    const view = document.getElementById('org-settings-view');
+    if (!view || !token) return;
+
+    view.innerHTML = `<div style="color:var(--text-muted);font-family:'JetBrains Mono',monospace;font-size:0.8rem;padding:2rem;">loading...</div>`;
+
+    try {
+        const res = await fetch(`/v1/organizations/${slug}`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!res.ok) throw new Error('failed to load organization');
+        const org = await res.json();
+
+        if (!org.isOwner) {
+            view.innerHTML = `<div style="color:var(--text-muted);font-family:'JetBrains Mono',monospace;font-size:0.8rem;padding:2rem;">only the owner can access settings.</div>`;
+            return;
+        }
+
+        const createdLabel = new Date(org.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+        view.innerHTML = `
+<h1 style="font-family:'JetBrains Mono',monospace;font-size:1.5rem;font-weight:800;letter-spacing:-1px;color:#fff;margin:0 0 2rem;">settings</h1>
+
+<div style="padding:1.5rem;border-radius:12px;background:rgba(15,15,15,0.4);border:1px solid var(--border-glass);margin-bottom:1.5rem;">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:1.25rem;">general</div>
+    <div style="display:flex;flex-direction:column;">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:0.75rem 0;border-bottom:1px solid rgba(255,255,255,0.04);">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--text-muted);">organization name</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:#e0e0e0;">${org.name}</span>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:0.75rem 0;border-bottom:1px solid rgba(255,255,255,0.04);">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--text-muted);">plan</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:var(--neon-blue);">${org.plan || 'starter'}</span>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:0.75rem 0;border-bottom:1px solid rgba(255,255,255,0.04);">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--text-muted);">region</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:#e0e0e0;">${org.region || 'americas'}</span>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:0.75rem 0;">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--text-muted);">created</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:#e0e0e0;">${createdLabel}</span>
+        </div>
+    </div>
+</div>
+
+<div style="padding:1.5rem;border-radius:12px;background:rgba(12,4,4,0.7);border:1px solid rgba(255,51,51,0.12);">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;font-weight:700;color:rgba(255,51,51,0.5);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:1.25rem;">danger zone</div>
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:2rem;flex-wrap:wrap;">
+        <div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:0.82rem;color:#e0e0e0;font-weight:600;margin-bottom:0.4rem;">delete organization</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--text-muted);line-height:1.6;max-width:380px;">permanently removes this organization, all members, api keys, and scan history. this cannot be undone.</div>
+        </div>
+        <button id="btn-delete-org-init" style="flex-shrink:0;background:transparent;border:1px solid rgba(255,51,51,0.3);color:rgba(255,80,80,0.85);font-family:'JetBrains Mono',monospace;font-size:0.74rem;padding:0.5rem 1rem;border-radius:8px;cursor:pointer;white-space:nowrap;">delete organization</button>
+    </div>
+    <div id="delete-confirm-zone" style="display:none;margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid rgba(255,51,51,0.1);">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--text-muted);margin-bottom:0.75rem;">type <span style="color:#e0e0e0;">${org.name}</span> to confirm deletion:</div>
+        <div style="display:flex;gap:0.75rem;align-items:center;flex-wrap:wrap;">
+            <input id="delete-confirm-input" type="text" placeholder="${org.name}" style="flex:1;min-width:160px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,51,51,0.2);border-radius:8px;padding:0.55rem 0.875rem;font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#e0e0e0;outline:none;box-sizing:border-box;">
+            <button id="btn-delete-org-confirm" style="background:rgba(255,51,51,0.12);border:1px solid rgba(255,51,51,0.3);color:rgba(255,80,80,0.9);font-family:'JetBrains Mono',monospace;font-size:0.74rem;padding:0.55rem 1rem;border-radius:8px;cursor:pointer;white-space:nowrap;">confirm delete</button>
+        </div>
+        <p id="delete-org-error" class="error-msg" style="display:none;margin-top:0.75rem;"></p>
+    </div>
+</div>`;
+
+        document.getElementById('btn-delete-org-init').onclick = () => {
+            document.getElementById('delete-confirm-zone').style.display = 'block';
+            document.getElementById('btn-delete-org-init').style.display = 'none';
+        };
+
+        document.getElementById('btn-delete-org-confirm').onclick = async () => {
+            const confirmName = document.getElementById('delete-confirm-input').value.trim();
+            const errEl = document.getElementById('delete-org-error');
+            errEl.style.display = 'none';
+
+            if (confirmName !== org.name) {
+                errEl.textContent = 'error: name does not match.';
+                errEl.style.display = 'block';
+                return;
+            }
+
+            const btn = document.getElementById('btn-delete-org-confirm');
+            btn.disabled = true;
+            btn.textContent = 'deleting...';
+
+            try {
+                const delRes = await fetch(`/v1/organizations/${slug}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (!delRes.ok) {
+                    const d = await delRes.json();
+                    throw new Error(d.error || 'failed to delete');
+                }
+                localStorage.removeItem('sentinel-cached-orgs');
+                switchToHomeView();
+                fetchProfile(token);
+            } catch (err) {
+                errEl.textContent = `error: ${err.message.toLowerCase()}`;
+                errEl.style.display = 'block';
+                btn.disabled = false;
+                btn.textContent = 'confirm delete';
+            }
+        };
+
+    } catch (err) {
+        view.innerHTML = `<div style="color:var(--text-muted);font-family:'JetBrains Mono',monospace;font-size:0.8rem;padding:2rem;">error: ${err.message}</div>`;
     }
 }
 
