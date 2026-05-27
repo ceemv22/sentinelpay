@@ -348,7 +348,14 @@ function setupCreateOrgModal(token) {
         }
     };
 
+    let _cryptoIntervals = { poll: null, countdown: null };
+    let _cryptoOrgId = null;
+
     const resetToStep1 = () => {
+        clearInterval(_cryptoIntervals.poll);
+        clearInterval(_cryptoIntervals.countdown);
+        _cryptoIntervals = { poll: null, countdown: null };
+        _cryptoOrgId = null;
         const step1 = document.getElementById('create-org-step-1');
         const step2 = document.getElementById('create-org-step-2');
         const step3 = document.getElementById('create-org-step-3');
@@ -506,11 +513,12 @@ function setupCreateOrgModal(token) {
                     </button>
                 </div>
                 <div id="tab-content-crypto" style="display:none;">
-                    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.75rem 1rem;gap:0.875rem;text-align:center;border:1px solid rgba(255,255,255,0.06);border-radius:10px;background:rgba(255,255,255,0.015);">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.82rem;font-weight:700;color:rgba(255,255,255,0.25);">coming soon</div>
-                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.68rem;color:var(--text-muted);line-height:1.6;">bitcoin · ethereum · usdc</div>
+                    <div id="crypto-selector-view">
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.67rem;color:var(--text-muted);margin-bottom:0.575rem;letter-spacing:0.03em;">select currency &amp; network</div>
+                        <div id="crypto-coin-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.35rem;max-height:215px;overflow-y:auto;"></div>
+                        <p id="crypto-sel-error" style="display:none;font-family:'JetBrains Mono',monospace;font-size:0.67rem;color:#ff3333;margin-top:0.45rem;margin-bottom:0;"></p>
                     </div>
+                    <div id="crypto-payment-view" style="display:none;"></div>
                 </div>
             </div>
         `;
@@ -520,7 +528,167 @@ function setupCreateOrgModal(token) {
         step3.style.flexDirection = 'column';
         step3.style.width = '100%';
 
+        const CRYPTO_COINS = [
+            { currency: 'ETH',  network: 'ethereum', label: 'eth',  net: 'ethereum', color: '#627EEA' },
+            { currency: 'BNB',  network: 'bsc',       label: 'bnb',  net: 'bsc',      color: '#F3BA2F' },
+            { currency: 'POL',  network: 'polygon',   label: 'pol',  net: 'polygon',  color: '#8247E5' },
+            { currency: 'BTC',  network: 'bitcoin',   label: 'btc',  net: 'bitcoin',  color: '#F7931A' },
+            { currency: 'USDT', network: 'ethereum',  label: 'usdt', net: 'erc-20',   color: '#26A17B' },
+            { currency: 'USDT', network: 'bsc',       label: 'usdt', net: 'bep-20',   color: '#26A17B' },
+            { currency: 'USDT', network: 'polygon',   label: 'usdt', net: 'pol',      color: '#26A17B' },
+            { currency: 'USDC', network: 'ethereum',  label: 'usdc', net: 'erc-20',   color: '#2775CA' },
+            { currency: 'USDC', network: 'bsc',       label: 'usdc', net: 'bep-20',   color: '#2775CA' },
+            { currency: 'USDC', network: 'polygon',   label: 'usdc', net: 'pol',      color: '#2775CA' },
+            { currency: 'DAI',  network: 'ethereum',  label: 'dai',  net: 'erc-20',   color: '#F5AC37' },
+            { currency: 'DAI',  network: 'polygon',   label: 'dai',  net: 'pol',      color: '#F5AC37' },
+            { currency: 'SHIB', network: 'ethereum',  label: 'shib', net: 'erc-20',   color: '#FF8C00' },
+        ];
+
+        const cryptoGrid = document.getElementById('crypto-coin-grid');
+        const cryptoSelError = document.getElementById('crypto-sel-error');
+
+        const showCryptoPayment = (session, coin) => {
+            const selectorView = document.getElementById('crypto-selector-view');
+            const paymentView = document.getElementById('crypto-payment-view');
+            if (selectorView) selectorView.style.display = 'none';
+
+            const expiresAt = new Date(session.expiresAt);
+            const getTimeLeft = () => {
+                const diff = expiresAt - Date.now();
+                if (diff <= 0) return '00:00';
+                const m = Math.floor(diff / 60000);
+                const s = Math.floor((diff % 60000) / 1000);
+                return String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+            };
+
+            paymentView.innerHTML = `
+                <div style="display:flex;flex-direction:column;gap:0.575rem;">
+                    <div style="display:flex;align-items:center;justify-content:space-between;padding:0 0 0.5rem 0;border-bottom:1px solid rgba(255,255,255,0.06);">
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.67rem;color:var(--text-muted);">${coin.label.toUpperCase()} &bull; ${coin.net}</div>
+                        <div id="crypto-countdown" style="font-family:'JetBrains Mono',monospace;font-size:0.67rem;color:#f5ac37;">&#x23F1; ${getTimeLeft()}</div>
+                    </div>
+                    <div style="text-align:center;">
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.63rem;color:var(--text-muted);margin-bottom:0.2rem;">send exactly</div>
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:1.3rem;font-weight:700;color:#00f0ff;letter-spacing:-0.025em;">${session.amountCrypto} <span style="font-size:0.68rem;color:rgba(0,240,255,0.5);">${coin.currency}</span></div>
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--text-muted);margin-top:0.15rem;">&asymp; $${session.amountUsd.toLocaleString('en-US')}</div>
+                    </div>
+                    <div style="display:flex;justify-content:center;">
+                        <img src="${session.qrDataUrl}" alt="qr" style="width:118px;height:118px;border-radius:8px;border:1px solid rgba(0,240,255,0.15);">
+                    </div>
+                    <div style="background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:0.5rem 0.65rem;display:flex;align-items:center;gap:0.5rem;">
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.575rem;color:#e0e0e0;word-break:break-all;flex:1;line-height:1.5;">${session.address}</div>
+                        <button id="btn-copy-address" style="background:transparent;border:none;cursor:pointer;color:var(--text-muted);padding:0.15rem;display:flex;align-items:center;transition:color 0.2s;flex-shrink:0;-webkit-tap-highlight-color:transparent;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                        </button>
+                    </div>
+                    <div id="crypto-pay-status" style="font-family:'JetBrains Mono',monospace;font-size:0.63rem;color:var(--text-muted);text-align:center;display:flex;align-items:center;justify-content:center;gap:0.375rem;">
+                        <div style="width:5px;height:5px;border-radius:50%;background:#f5ac37;animation:pulse 1.5s infinite;flex-shrink:0;"></div>
+                        waiting for payment...
+                    </div>
+                </div>
+            `;
+            if (paymentView) paymentView.style.display = '';
+
+            const copyBtn = document.getElementById('btn-copy-address');
+            if (copyBtn) {
+                copyBtn.onclick = () => {
+                    navigator.clipboard.writeText(session.address).then(() => {
+                        copyBtn.style.color = '#00f0ff';
+                        setTimeout(() => { if (copyBtn) copyBtn.style.color = ''; }, 1500);
+                    });
+                };
+            }
+
+            _cryptoIntervals.countdown = setInterval(() => {
+                const el = document.getElementById('crypto-countdown');
+                if (!el) { clearInterval(_cryptoIntervals.countdown); return; }
+                const t = getTimeLeft();
+                el.textContent = '⏱ ' + t;
+                if (t === '00:00') {
+                    clearInterval(_cryptoIntervals.countdown);
+                    _cryptoIntervals.countdown = null;
+                    const statusEl = document.getElementById('crypto-pay-status');
+                    if (statusEl) statusEl.innerHTML = '<span style="color:#ff3333;">session expired. please start over.</span>';
+                }
+            }, 1000);
+
+            _cryptoIntervals.poll = setInterval(async () => {
+                try {
+                    const r = await fetch('/v1/crypto/session/' + session.id, {
+                        headers: { 'Authorization': 'Bearer ' + token }
+                    });
+                    const data = await r.json();
+                    if (data.status === 'confirmed') {
+                        clearInterval(_cryptoIntervals.poll);
+                        clearInterval(_cryptoIntervals.countdown);
+                        _cryptoIntervals.poll = null;
+                        _cryptoIntervals.countdown = null;
+                        const statusEl = document.getElementById('crypto-pay-status');
+                        if (statusEl) statusEl.innerHTML = '<span style="color:#00f0ff;">✓ payment confirmed!</span>';
+                        setTimeout(() => { closeModal(); fetchProfile(token); }, 2000);
+                    }
+                } catch (e) {}
+            }, 10000);
+        };
+
+        const handleCryptoSelect = async (coin) => {
+            if (cryptoSelError) cryptoSelError.style.display = 'none';
+            const selectorView = document.getElementById('crypto-selector-view');
+            if (selectorView) { selectorView.style.opacity = '0.5'; selectorView.style.pointerEvents = 'none'; }
+            try {
+                if (!_cryptoOrgId) {
+                    const orgRes = await fetch('/v1/organizations', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+                        body: JSON.stringify({ name, plan })
+                    });
+                    const orgData = await orgRes.json();
+                    if (!orgRes.ok) throw new Error(orgData.error || 'failed to create organization');
+                    _cryptoOrgId = orgData.id;
+                }
+                const sessRes = await fetch('/v1/crypto/session', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+                    body: JSON.stringify({ plan, currency: coin.currency, network: coin.network, orgId: _cryptoOrgId })
+                });
+                const sessData = await sessRes.json();
+                if (!sessRes.ok) throw new Error(sessData.error || 'failed to create payment session');
+                showCryptoPayment(sessData, coin);
+            } catch (err) {
+                if (selectorView) { selectorView.style.opacity = ''; selectorView.style.pointerEvents = ''; }
+                if (cryptoSelError) { cryptoSelError.textContent = 'error: ' + err.message.toLowerCase(); cryptoSelError.style.display = 'block'; }
+            }
+        };
+
+        CRYPTO_COINS.forEach(coin => {
+            const btn = document.createElement('button');
+            btn.style.cssText = 'background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:0.5rem 0.3rem;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:0.25rem;transition:border-color 0.18s,background 0.18s;-webkit-tap-highlight-color:transparent;';
+            const circle = document.createElement('div');
+            circle.style.cssText = 'width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:' + coin.color + '1a;border:1.5px solid ' + coin.color + '4d;';
+            const sym = document.createElement('span');
+            sym.style.cssText = "font-family:'JetBrains Mono',monospace;font-size:0.5rem;font-weight:700;color:" + coin.color + ';letter-spacing:-0.01em;';
+            sym.textContent = coin.label.toUpperCase();
+            circle.appendChild(sym);
+            const lbl = document.createElement('div');
+            lbl.style.cssText = "font-family:'JetBrains Mono',monospace;font-size:0.58rem;font-weight:600;color:#e0e0e0;";
+            lbl.textContent = coin.label;
+            const net = document.createElement('div');
+            net.style.cssText = "font-family:'JetBrains Mono',monospace;font-size:0.52rem;color:var(--text-muted);";
+            net.textContent = coin.net;
+            btn.appendChild(circle);
+            btn.appendChild(lbl);
+            btn.appendChild(net);
+            btn.addEventListener('mouseover', () => { btn.style.borderColor = coin.color + '66'; btn.style.background = coin.color + '0d'; });
+            btn.addEventListener('mouseout', () => { btn.style.borderColor = 'rgba(255,255,255,0.07)'; btn.style.background = 'rgba(255,255,255,0.03)'; });
+            btn.addEventListener('click', () => handleCryptoSelect(coin));
+            if (cryptoGrid) cryptoGrid.appendChild(btn);
+        });
+
         document.getElementById('btn-step3-back').onclick = () => {
+            clearInterval(_cryptoIntervals.poll);
+            clearInterval(_cryptoIntervals.countdown);
+            _cryptoIntervals = { poll: null, countdown: null };
+            _cryptoOrgId = null;
             step3.style.display = 'none';
             step3.innerHTML = '';
             step2.style.display = 'flex';
@@ -551,13 +719,16 @@ function setupCreateOrgModal(token) {
             payErrEl.style.display = 'none';
 
             try {
-                const orgRes = await fetch('/v1/organizations', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-                    body: JSON.stringify({ name, plan })
-                });
-                const orgData = await orgRes.json();
-                if (!orgRes.ok) throw new Error(orgData.error || 'failed to create organization');
+                if (!_cryptoOrgId) {
+                    const orgRes = await fetch('/v1/organizations', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                        body: JSON.stringify({ name, plan })
+                    });
+                    const orgData = await orgRes.json();
+                    if (!orgRes.ok) throw new Error(orgData.error || 'failed to create organization');
+                    _cryptoOrgId = orgData.id;
+                }
 
                 const stripeRes = await fetch('/v1/stripe/checkout', {
                     method: 'POST',
