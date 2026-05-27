@@ -514,8 +514,16 @@ function setupCreateOrgModal(token) {
                 </div>
                 <div id="tab-content-crypto" style="display:none;">
                     <div id="crypto-selector-view">
-                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.67rem;color:var(--text-muted);margin-bottom:0.575rem;letter-spacing:0.03em;">select currency &amp; network</div>
-                        <div id="crypto-coin-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.35rem;max-height:215px;overflow-y:auto;"></div>
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.67rem;color:var(--text-muted);margin-bottom:0.5rem;letter-spacing:0.03em;">select currency &amp; network</div>
+                        <div id="crypto-dd-wrap" style="position:relative;">
+                            <button id="crypto-dd-trigger" style="width:100%;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:0.6rem 0.8rem;cursor:pointer;display:flex;align-items:center;gap:0.6rem;-webkit-tap-highlight-color:transparent;">
+                                <div id="crypto-dd-selected" style="display:flex;align-items:center;gap:0.6rem;flex:1;min-width:0;">
+                                    <span style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--text-muted);">choose a currency...</span>
+                                </div>
+                                <svg id="crypto-dd-chevron" style="flex-shrink:0;transition:transform 0.18s;" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                            </button>
+                            <div id="crypto-dd-panel" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:#090909;border:1px solid rgba(255,255,255,0.1);border-radius:8px;z-index:200;max-height:200px;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,0.7);"></div>
+                        </div>
                         <p id="crypto-sel-error" style="display:none;font-family:'JetBrains Mono',monospace;font-size:0.67rem;color:#ff3333;margin-top:0.45rem;margin-bottom:0;"></p>
                     </div>
                     <div id="crypto-payment-view" style="display:none;"></div>
@@ -544,8 +552,22 @@ function setupCreateOrgModal(token) {
             { currency: 'SHIB', network: 'ethereum',  label: 'shib', net: 'erc-20',   color: '#FF8C00' },
         ];
 
-        const cryptoGrid = document.getElementById('crypto-coin-grid');
         const cryptoSelError = document.getElementById('crypto-sel-error');
+        const ddTrigger = document.getElementById('crypto-dd-trigger');
+        const ddPanel = document.getElementById('crypto-dd-panel');
+        const ddSelected = document.getElementById('crypto-dd-selected');
+        const ddChevron = document.getElementById('crypto-dd-chevron');
+        let ddOpen = false;
+
+        const toggleDd = (force) => {
+            ddOpen = typeof force === 'boolean' ? force : !ddOpen;
+            ddPanel.style.display = ddOpen ? '' : 'none';
+            ddChevron.style.transform = ddOpen ? 'rotate(180deg)' : '';
+            ddTrigger.style.borderColor = ddOpen ? 'rgba(0,240,255,0.25)' : 'rgba(255,255,255,0.1)';
+        };
+
+        ddTrigger.addEventListener('click', (e) => { e.stopPropagation(); toggleDd(); });
+        document.addEventListener('click', () => { if (ddOpen) toggleDd(false); });
 
         const showCryptoPayment = (session, coin) => {
             const selectorView = document.getElementById('crypto-selector-view');
@@ -564,7 +586,10 @@ function setupCreateOrgModal(token) {
             paymentView.innerHTML = `
                 <div style="display:flex;flex-direction:column;gap:0.575rem;">
                     <div style="display:flex;align-items:center;justify-content:space-between;padding:0 0 0.5rem 0;border-bottom:1px solid rgba(255,255,255,0.06);">
-                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.67rem;color:var(--text-muted);">${coin.label.toUpperCase()} &bull; ${coin.net}</div>
+                        <div style="display:flex;align-items:center;gap:0.45rem;">
+                            <img src="${COIN_IMG[coin.currency] || ''}" alt="${coin.currency}" style="width:18px;height:18px;border-radius:50%;object-fit:cover;" onerror="this.style.display='none'">
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:0.67rem;color:var(--text-muted);">${coin.currency} &bull; ${coin.net}</span>
+                        </div>
                         <div id="crypto-countdown" style="font-family:'JetBrains Mono',monospace;font-size:0.67rem;color:#f5ac37;">&#x23F1; ${getTimeLeft()}</div>
                     </div>
                     <div style="text-align:center;">
@@ -660,28 +685,67 @@ function setupCreateOrgModal(token) {
             }
         };
 
+        const COIN_IMG = {
+            ETH:  'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/svg/color/eth.svg',
+            BTC:  'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/svg/color/btc.svg',
+            BNB:  'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/svg/color/bnb.svg',
+            POL:  'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/svg/color/matic.svg',
+            USDT: 'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/svg/color/usdt.svg',
+            USDC: 'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/svg/color/usdc.svg',
+            DAI:  'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/svg/color/dai.svg',
+            SHIB: 'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/svg/color/shib.svg',
+        };
+
         CRYPTO_COINS.forEach(coin => {
-            const btn = document.createElement('button');
-            btn.style.cssText = 'background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:0.5rem 0.3rem;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:0.25rem;transition:border-color 0.18s,background 0.18s;-webkit-tap-highlight-color:transparent;';
-            const circle = document.createElement('div');
-            circle.style.cssText = 'width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:' + coin.color + '1a;border:1.5px solid ' + coin.color + '4d;';
-            const sym = document.createElement('span');
-            sym.style.cssText = "font-family:'JetBrains Mono',monospace;font-size:0.5rem;font-weight:700;color:" + coin.color + ';letter-spacing:-0.01em;';
-            sym.textContent = coin.label.toUpperCase();
-            circle.appendChild(sym);
-            const lbl = document.createElement('div');
-            lbl.style.cssText = "font-family:'JetBrains Mono',monospace;font-size:0.58rem;font-weight:600;color:#e0e0e0;";
-            lbl.textContent = coin.label;
-            const net = document.createElement('div');
-            net.style.cssText = "font-family:'JetBrains Mono',monospace;font-size:0.52rem;color:var(--text-muted);";
-            net.textContent = coin.net;
-            btn.appendChild(circle);
-            btn.appendChild(lbl);
-            btn.appendChild(net);
-            btn.addEventListener('mouseover', () => { btn.style.borderColor = coin.color + '66'; btn.style.background = coin.color + '0d'; });
-            btn.addEventListener('mouseout', () => { btn.style.borderColor = 'rgba(255,255,255,0.07)'; btn.style.background = 'rgba(255,255,255,0.03)'; });
-            btn.addEventListener('click', () => handleCryptoSelect(coin));
-            if (cryptoGrid) cryptoGrid.appendChild(btn);
+            const item = document.createElement('button');
+            item.style.cssText = 'width:100%;background:transparent;border:none;border-bottom:1px solid rgba(255,255,255,0.04);padding:0.5rem 0.8rem;cursor:pointer;display:flex;align-items:center;gap:0.65rem;transition:background 0.13s;-webkit-tap-highlight-color:transparent;';
+
+            const imgWrap = document.createElement('div');
+            imgWrap.style.cssText = 'width:28px;height:28px;border-radius:50%;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:' + coin.color + '1a;';
+            const img = document.createElement('img');
+            img.src = COIN_IMG[coin.currency] || '';
+            img.alt = coin.currency;
+            img.style.cssText = 'width:28px;height:28px;border-radius:50%;object-fit:cover;';
+            img.onerror = () => { img.style.display = 'none'; };
+            imgWrap.appendChild(img);
+
+            const info = document.createElement('div');
+            info.style.cssText = 'flex:1;min-width:0;display:flex;flex-direction:column;gap:0.1rem;text-align:left;';
+            const nameEl = document.createElement('div');
+            nameEl.style.cssText = "font-family:'JetBrains Mono',monospace;font-size:0.7rem;font-weight:600;color:#e0e0e0;";
+            nameEl.textContent = coin.currency;
+            const netEl = document.createElement('div');
+            netEl.style.cssText = "font-family:'JetBrains Mono',monospace;font-size:0.57rem;color:var(--text-muted);";
+            netEl.textContent = coin.net;
+            info.appendChild(nameEl);
+            info.appendChild(netEl);
+
+            item.appendChild(imgWrap);
+            item.appendChild(info);
+
+            item.addEventListener('mouseover', () => { item.style.background = 'rgba(255,255,255,0.04)'; });
+            item.addEventListener('mouseout', () => { item.style.background = 'transparent'; });
+            item.addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggleDd(false);
+                ddSelected.innerHTML = '';
+                const sWrap = document.createElement('div');
+                sWrap.style.cssText = 'width:20px;height:20px;border-radius:50%;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:' + coin.color + '1a;';
+                const sImg = document.createElement('img');
+                sImg.src = COIN_IMG[coin.currency] || '';
+                sImg.alt = coin.currency;
+                sImg.style.cssText = 'width:20px;height:20px;border-radius:50%;object-fit:cover;';
+                sImg.onerror = () => { sImg.style.display = 'none'; };
+                sWrap.appendChild(sImg);
+                const sTxt = document.createElement('span');
+                sTxt.style.cssText = "font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:#e0e0e0;font-weight:500;";
+                sTxt.textContent = coin.currency + ' · ' + coin.net;
+                ddSelected.appendChild(sWrap);
+                ddSelected.appendChild(sTxt);
+                handleCryptoSelect(coin);
+            });
+
+            ddPanel.appendChild(item);
         });
 
         document.getElementById('btn-step3-back').onclick = () => {
