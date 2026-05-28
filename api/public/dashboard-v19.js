@@ -698,7 +698,7 @@ function setupCreateOrgModal(token) {
                     body: JSON.stringify({ plan, currency: coin.currency, network: coin.network, orgId: _cryptoOrgId })
                 });
                 const sessData = await sessRes.json();
-                if (!sessRes.ok) throw new Error(sessData.error || 'failed to create payment session');
+                if (!sessRes.ok) throw new Error((sessData.detail ? sessData.error + ': ' + sessData.detail : sessData.error) || 'failed to create payment session');
                 if (gen !== _currentSessionGen) return;
                 showCryptoPayment(sessData, coin);
             } catch (err) {
