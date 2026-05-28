@@ -87,7 +87,7 @@ router.post('/session', json, requireSupabaseAuth, async (req, res) => {
         });
     } catch (err) {
         console.error('[crypto-session]', err);
-        res.status(500).json({ error: 'failed to create payment session', detail: err.message });
+        res.status(500).json({ error: 'failed to create payment session' });
     }
 });
 
