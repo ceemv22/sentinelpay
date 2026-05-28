@@ -4,7 +4,7 @@ const COINGECKO_IDS = {
     ETH:  'ethereum',
     BTC:  'bitcoin',
     BNB:  'binancecoin',
-    POL:  'matic-network',
+    POL:  'polygon-ecosystem-token',
     USDT: 'tether',
     USDC: 'usd-coin',
     DAI:  'dai',
