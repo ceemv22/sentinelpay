@@ -604,23 +604,20 @@ function setupCreateOrgModal(token) {
 
             statusArea.innerHTML = `
                 <div style="border-top:1px solid rgba(255,255,255,0.06);padding-top:0.75rem;display:flex;flex-direction:column;gap:0.575rem;">
-                    <div style="display:flex;align-items:center;justify-content:space-between;">
-                        <div style="display:flex;align-items:center;gap:0.45rem;">
-                            <img src="${COIN_IMG[coin.currency] || ''}" alt="${coin.currency}" style="width:18px;height:18px;border-radius:50%;object-fit:cover;" onerror="this.style.display='none'">
-                            <span style="font-family:'JetBrains Mono',monospace;font-size:0.67rem;color:var(--text-muted);">${coin.currency} &bull; ${coin.net}</span>
-                        </div>
-                        <div id="crypto-countdown" style="font-family:'JetBrains Mono',monospace;font-size:0.67rem;color:#f5ac37;">&#x23F1; ${getTimeLeft()}</div>
+                    <div style="display:flex;align-items:center;justify-content:space-between;gap:0.5rem;">
+                        <span style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;">${session.id}</span>
+                        <div id="crypto-countdown" style="font-family:'JetBrains Mono',monospace;font-size:0.67rem;color:#f5ac37;flex-shrink:0;">&#x23F1; ${getTimeLeft()}</div>
                     </div>
                     <div style="text-align:center;">
                         <div style="font-family:'JetBrains Mono',monospace;font-size:0.63rem;color:var(--text-muted);margin-bottom:0.2rem;">send exactly</div>
-                        <div style="font-family:'JetBrains Mono',monospace;font-size:1.3rem;font-weight:700;color:#00f0ff;letter-spacing:-0.025em;">${session.amountCrypto} <span style="font-size:0.68rem;color:rgba(0,240,255,0.5);">${coin.currency}</span></div>
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:1.3rem;font-weight:700;color:#ffffff;letter-spacing:-0.025em;">${session.amountCrypto} <span style="font-size:0.68rem;color:rgba(255,255,255,0.45);">${coin.currency}</span></div>
                         <div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--text-muted);margin-top:0.15rem;">&asymp; $${session.amountUsd.toLocaleString('en-US')}</div>
                     </div>
                     <div style="display:flex;justify-content:center;">
-                        <img src="${session.qrDataUrl}" alt="qr" style="width:118px;height:118px;border-radius:8px;border:1px solid rgba(0,240,255,0.15);">
+                        <img src="${session.qrDataUrl}" alt="qr" style="width:118px;height:118px;border-radius:8px;border:1px solid rgba(255,255,255,0.12);">
                     </div>
-                    <div style="background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:0.5rem 0.65rem;display:flex;align-items:center;gap:0.5rem;">
-                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.575rem;color:#e0e0e0;word-break:break-all;flex:1;line-height:1.5;">${session.address}</div>
+                    <div style="background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:0.65rem 0.75rem;display:flex;align-items:center;gap:0.5rem;">
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.68rem;color:#ffffff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;">${session.address}</div>
                         <button id="btn-copy-address" style="background:transparent;border:none;cursor:pointer;color:var(--text-muted);padding:0.15rem;display:flex;align-items:center;transition:color 0.2s;flex-shrink:0;-webkit-tap-highlight-color:transparent;">
                             <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
                         </button>
