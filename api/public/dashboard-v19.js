@@ -351,6 +351,7 @@ function setupCreateOrgModal(token) {
     let _cryptoIntervals = { poll: null, countdown: null };
     let _cryptoOrgId = null;
     let _currentSessionGen = 0;
+    let _sessionCache = {};
 
     const resetToStep1 = () => {
         clearInterval(_cryptoIntervals.poll);
@@ -358,6 +359,7 @@ function setupCreateOrgModal(token) {
         _cryptoIntervals = { poll: null, countdown: null };
         _cryptoOrgId = null;
         _currentSessionGen = 0;
+        _sessionCache = {};
         const step1 = document.getElementById('create-org-step-1');
         const step2 = document.getElementById('create-org-step-2');
         const step3 = document.getElementById('create-org-step-3');
@@ -674,6 +676,12 @@ function setupCreateOrgModal(token) {
 
         const handleCryptoSelect = async (coin) => {
             const gen = ++_currentSessionGen;
+            const cacheKey = coin.currency + ':' + coin.network;
+            const cached = _sessionCache[cacheKey];
+            if (cached && new Date(cached.expiresAt) > Date.now()) {
+                showCryptoPayment(cached, coin);
+                return;
+            }
             const statusArea = document.getElementById('crypto-status-area');
             if (statusArea) {
                 statusArea.innerHTML = `<div style="text-align:center;padding:1.25rem 0;font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--text-muted);">generating deposit address...</div>`;
@@ -697,6 +705,7 @@ function setupCreateOrgModal(token) {
                 const sessData = await sessRes.json();
                 if (!sessRes.ok) throw new Error(sessData.error || 'failed to create payment session');
                 if (gen !== _currentSessionGen) return;
+                _sessionCache[cacheKey] = sessData;
                 showCryptoPayment(sessData, coin);
             } catch (err) {
                 if (gen !== _currentSessionGen) return;
