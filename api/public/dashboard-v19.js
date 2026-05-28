@@ -351,7 +351,7 @@ function setupCreateOrgModal(token) {
     let _cryptoIntervals = { poll: null, countdown: null };
     let _cryptoOrgId = null;
     let _currentSessionGen = 0;
-    let _sessionCache = {};
+    let _batchSessions = null;
 
     const resetToStep1 = () => {
         clearInterval(_cryptoIntervals.poll);
@@ -359,7 +359,7 @@ function setupCreateOrgModal(token) {
         _cryptoIntervals = { poll: null, countdown: null };
         _cryptoOrgId = null;
         _currentSessionGen = 0;
-        _sessionCache = {};
+        _batchSessions = null;
         const step1 = document.getElementById('create-org-step-1');
         const step2 = document.getElementById('create-org-step-2');
         const step3 = document.getElementById('create-org-step-3');
@@ -494,13 +494,6 @@ function setupCreateOrgModal(token) {
                 <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>back
             </button>
             <div style="padding-top:2.25rem;width:100%;">
-                <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:0.6rem 0.875rem;margin-bottom:1.25rem;">
-                    <div style="display:flex;align-items:center;gap:0.6rem;">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-                        <span style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--text-muted);">organization</span>
-                    </div>
-                    <span style="font-family:'JetBrains Mono',monospace;font-size:0.74rem;color:#e0e0e0;font-weight:500;">${name}</span>
-                </div>
                 <div class="auth-tabs" style="margin-bottom:1.25rem;display:flex;justify-content:flex-start;">
                     <button class="auth-tab active" id="tab-btn-card" style="width:auto;padding:0.4rem 1rem;font-size:0.7rem;border-radius:6px;">pay with card</button>
                     <button class="auth-tab" id="tab-btn-crypto" style="width:auto;padding:0.4rem 1rem;font-size:0.7rem;border-radius:6px;">pay with crypto</button>
@@ -607,7 +600,7 @@ function setupCreateOrgModal(token) {
             statusArea.innerHTML = `
                 <div style="border-top:1px solid rgba(255,255,255,0.06);padding-top:0.75rem;display:flex;flex-direction:column;gap:0.575rem;">
                     <div style="display:flex;align-items:center;justify-content:space-between;gap:0.5rem;">
-                        <span style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;">${session.id}</span>
+                        <span style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;">${session.batchId}</span>
                         <div id="crypto-countdown" style="font-family:'JetBrains Mono',monospace;font-size:0.67rem;color:#f5ac37;flex-shrink:0;">&#x23F1; ${getTimeLeft()}</div>
                     </div>
                     <div style="text-align:center;">
@@ -675,16 +668,23 @@ function setupCreateOrgModal(token) {
         };
 
         const handleCryptoSelect = async (coin) => {
-            const gen = ++_currentSessionGen;
             const cacheKey = coin.currency + ':' + coin.network;
-            const cached = _sessionCache[cacheKey];
-            if (cached && new Date(cached.expiresAt) > Date.now()) {
-                showCryptoPayment(cached, coin);
-                return;
+
+            if (_batchSessions && new Date(_batchSessions.expiresAt) > Date.now()) {
+                const sess = _batchSessions.sessions[cacheKey];
+                if (sess) {
+                    clearInterval(_cryptoIntervals.poll);
+                    clearInterval(_cryptoIntervals.countdown);
+                    _cryptoIntervals = { poll: null, countdown: null };
+                    showCryptoPayment(sess, coin);
+                    return;
+                }
             }
+
+            const gen = ++_currentSessionGen;
             const statusArea = document.getElementById('crypto-status-area');
             if (statusArea) {
-                statusArea.innerHTML = `<div style="text-align:center;padding:1.25rem 0;font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--text-muted);">generating deposit address...</div>`;
+                statusArea.innerHTML = `<div style="text-align:center;padding:1.25rem 0;font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--text-muted);">generating deposit addresses...</div>`;
             }
             try {
                 if (!_cryptoOrgId) {
@@ -697,16 +697,18 @@ function setupCreateOrgModal(token) {
                     if (!orgRes.ok) throw new Error(orgData.error || 'failed to create organization');
                     _cryptoOrgId = orgData.id;
                 }
-                const sessRes = await fetch('/v1/crypto/session', {
+                const batchRes = await fetch('/v1/crypto/batch-session', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-                    body: JSON.stringify({ plan, currency: coin.currency, network: coin.network, orgId: _cryptoOrgId })
+                    body: JSON.stringify({ plan, orgId: _cryptoOrgId })
                 });
-                const sessData = await sessRes.json();
-                if (!sessRes.ok) throw new Error((sessData.detail ? sessData.error + ': ' + sessData.detail : sessData.error) || 'failed to create payment session');
+                const batchData = await batchRes.json();
+                if (!batchRes.ok) throw new Error((batchData.detail ? batchData.error + ': ' + batchData.detail : batchData.error) || 'failed to create payment session');
                 if (gen !== _currentSessionGen) return;
-                _sessionCache[cacheKey] = sessData;
-                showCryptoPayment(sessData, coin);
+                _batchSessions = batchData;
+                const sess = _batchSessions.sessions[cacheKey];
+                if (!sess) throw new Error('currency not available');
+                showCryptoPayment(sess, coin);
             } catch (err) {
                 if (gen !== _currentSessionGen) return;
                 const area = document.getElementById('crypto-status-area');
