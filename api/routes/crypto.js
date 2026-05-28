@@ -71,7 +71,7 @@ router.post('/session', json, requireSupabaseAuth, async (req, res) => {
             }
         });
 
-        const qrData = await QRCode.toDataURL(address, { margin: 1, width: 200, color: { dark: '#00f0ff', light: '#050505' } });
+        const qrData = await QRCode.toDataURL(address, { margin: 1, width: 200, color: { dark: '#ffffff', light: '#050505' } });
 
         res.json({
             id: session.id,
