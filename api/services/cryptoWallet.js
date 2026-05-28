@@ -13,8 +13,7 @@ function getMnemonic() {
 }
 
 function deriveEvmAddress(index) {
-    const hdNode = ethers.HDNodeWallet.fromPhrase(getMnemonic());
-    return hdNode.derivePath(`m/44'/60'/0'/0/${index}`).address;
+    return ethers.HDNodeWallet.fromPhrase(getMnemonic(), undefined, `m/44'/60'/0'/0/${index}`).address;
 }
 
 function deriveBtcAddress(index) {
