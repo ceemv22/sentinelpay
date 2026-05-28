@@ -1,5 +1,6 @@
 const express = require('express');
 const QRCode = require('qrcode');
+const { randomUUID } = require('crypto');
 const prisma = require('../services/db');
 const requireSupabaseAuth = require('../middleware/supabaseAuth');
 const { deriveAddress } = require('../services/cryptoWallet');
@@ -87,6 +88,66 @@ router.post('/session', json, requireSupabaseAuth, async (req, res) => {
         });
     } catch (err) {
         console.error('[crypto-session]', err);
+        res.status(500).json({ error: 'failed to create payment session', detail: err.message });
+    }
+});
+
+router.post('/batch-session', json, requireSupabaseAuth, async (req, res) => {
+    const { plan, orgId } = req.body;
+    if (!plan) return res.status(400).json({ error: 'plan required' });
+    const amountUsd = PLAN_USD[plan];
+    if (!amountUsd) return res.status(400).json({ error: 'invalid plan' });
+
+    try {
+        const batchId = randomUUID();
+        const expiresAt = new Date(Date.now() + 15 * 60 * 1000);
+
+        const counter = await prisma.$transaction(async (tx) => {
+            return tx.addressCounter.upsert({
+                where: { id: 'singleton' },
+                update: { current: { increment: SUPPORTED.length } },
+                create: { id: 'singleton', current: SUPPORTED.length }
+            });
+        });
+        const baseIndex = counter.current - SUPPORTED.length + 1;
+
+        const rows = [];
+        for (let i = 0; i < SUPPORTED.length; i++) {
+            const cfg = SUPPORTED[i];
+            const { amountCrypto, exchangeRate } = await convertUsdToCrypto(amountUsd, cfg.currency);
+            const address = deriveAddress(cfg.network, baseIndex + i);
+            rows.push({
+                userId: req.user.id,
+                orgId: orgId || null,
+                plan,
+                amountUsd,
+                currency: cfg.currency,
+                network: cfg.network,
+                address,
+                addressIndex: baseIndex + i,
+                amountCrypto,
+                exchangeRate,
+                expiresAt,
+                batchId,
+            });
+        }
+
+        await prisma.paymentSession.createMany({ data: rows });
+
+        const created = await prisma.paymentSession.findMany({
+            where: { batchId },
+            select: { id: true, currency: true, network: true, address: true, amountCrypto: true, amountUsd: true, exchangeRate: true, expiresAt: true, status: true }
+        });
+
+        const sessions = {};
+        for (const s of created) {
+            const qrData = await QRCode.toDataURL(s.address, { margin: 1, width: 200, color: { dark: '#ffffff', light: '#050505' } });
+            sessions[s.currency + ':' + s.network] = { ...s, batchId, qrDataUrl: qrData };
+        }
+
+        res.json({ batchId, expiresAt, sessions });
+    } catch (err) {
+        console.error('[crypto-batch-session]', err);
         res.status(500).json({ error: 'failed to create payment session', detail: err.message });
     }
 });
