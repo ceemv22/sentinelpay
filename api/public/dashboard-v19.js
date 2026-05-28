@@ -350,12 +350,14 @@ function setupCreateOrgModal(token) {
 
     let _cryptoIntervals = { poll: null, countdown: null };
     let _cryptoOrgId = null;
+    let _currentSessionGen = 0;
 
     const resetToStep1 = () => {
         clearInterval(_cryptoIntervals.poll);
         clearInterval(_cryptoIntervals.countdown);
         _cryptoIntervals = { poll: null, countdown: null };
         _cryptoOrgId = null;
+        _currentSessionGen = 0;
         const step1 = document.getElementById('create-org-step-1');
         const step2 = document.getElementById('create-org-step-2');
         const step3 = document.getElementById('create-org-step-3');
@@ -534,12 +536,8 @@ function setupCreateOrgModal(token) {
                             <div id="network-dd-panel" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:#090909;border:1px solid rgba(255,255,255,0.1);border-radius:8px;z-index:200;max-height:160px;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,0.7);"></div>
                         </div>
                         <p id="crypto-sel-error" style="display:none;font-family:'JetBrains Mono',monospace;font-size:0.67rem;color:#ff3333;margin-top:0.45rem;margin-bottom:0;"></p>
-                        <button id="crypto-proceed-btn" class="submit-btn" style="margin-top:0.875rem;display:flex;align-items:center;justify-content:center;gap:7px;">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                            generate payment address
-                        </button>
                     </div>
-                    <div id="crypto-payment-view" style="display:none;"></div>
+                    <div id="crypto-status-area" style="margin-top:0.75rem;"></div>
                 </div>
             </div>
         `;
@@ -592,9 +590,8 @@ function setupCreateOrgModal(token) {
         document.addEventListener('click', () => { if (ddOpen) toggleDd(false); if (netOpen) toggleNetDd(false); });
 
         const showCryptoPayment = (session, coin) => {
-            const selectorView = document.getElementById('crypto-selector-view');
-            const paymentView = document.getElementById('crypto-payment-view');
-            if (selectorView) selectorView.style.display = 'none';
+            const statusArea = document.getElementById('crypto-status-area');
+            if (!statusArea) return;
 
             const expiresAt = new Date(session.expiresAt);
             const getTimeLeft = () => {
@@ -605,9 +602,9 @@ function setupCreateOrgModal(token) {
                 return String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
             };
 
-            paymentView.innerHTML = `
-                <div style="display:flex;flex-direction:column;gap:0.575rem;">
-                    <div style="display:flex;align-items:center;justify-content:space-between;padding:0 0 0.5rem 0;border-bottom:1px solid rgba(255,255,255,0.06);">
+            statusArea.innerHTML = `
+                <div style="border-top:1px solid rgba(255,255,255,0.06);padding-top:0.75rem;display:flex;flex-direction:column;gap:0.575rem;">
+                    <div style="display:flex;align-items:center;justify-content:space-between;">
                         <div style="display:flex;align-items:center;gap:0.45rem;">
                             <img src="${COIN_IMG[coin.currency] || ''}" alt="${coin.currency}" style="width:18px;height:18px;border-radius:50%;object-fit:cover;" onerror="this.style.display='none'">
                             <span style="font-family:'JetBrains Mono',monospace;font-size:0.67rem;color:var(--text-muted);">${coin.currency} &bull; ${coin.net}</span>
@@ -628,13 +625,13 @@ function setupCreateOrgModal(token) {
                             <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
                         </button>
                     </div>
+                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--text-muted);text-align:center;opacity:0.6;">credited after 2 confirmations</div>
                     <div id="crypto-pay-status" style="font-family:'JetBrains Mono',monospace;font-size:0.63rem;color:var(--text-muted);text-align:center;display:flex;align-items:center;justify-content:center;gap:0.375rem;">
                         <div style="width:5px;height:5px;border-radius:50%;background:#f5ac37;animation:pulse 1.5s infinite;flex-shrink:0;"></div>
                         waiting for payment...
                     </div>
                 </div>
             `;
-            if (paymentView) paymentView.style.display = '';
 
             const copyBtn = document.getElementById('btn-copy-address');
             if (copyBtn) {
@@ -655,7 +652,7 @@ function setupCreateOrgModal(token) {
                     clearInterval(_cryptoIntervals.countdown);
                     _cryptoIntervals.countdown = null;
                     const statusEl = document.getElementById('crypto-pay-status');
-                    if (statusEl) statusEl.innerHTML = '<span style="color:#ff3333;">session expired. please start over.</span>';
+                    if (statusEl) statusEl.innerHTML = '<span style="color:#ff3333;">session expired. change currency to refresh.</span>';
                 }
             }, 1000);
 
@@ -679,9 +676,11 @@ function setupCreateOrgModal(token) {
         };
 
         const handleCryptoSelect = async (coin) => {
-            if (cryptoSelError) cryptoSelError.style.display = 'none';
-            const selectorView = document.getElementById('crypto-selector-view');
-            if (selectorView) { selectorView.style.opacity = '0.5'; selectorView.style.pointerEvents = 'none'; }
+            const gen = ++_currentSessionGen;
+            const statusArea = document.getElementById('crypto-status-area');
+            if (statusArea) {
+                statusArea.innerHTML = `<div style="text-align:center;padding:1.25rem 0;font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--text-muted);">generating deposit address...</div>`;
+            }
             try {
                 if (!_cryptoOrgId) {
                     const orgRes = await fetch('/v1/organizations', {
@@ -700,10 +699,14 @@ function setupCreateOrgModal(token) {
                 });
                 const sessData = await sessRes.json();
                 if (!sessRes.ok) throw new Error(sessData.error || 'failed to create payment session');
+                if (gen !== _currentSessionGen) return;
                 showCryptoPayment(sessData, coin);
             } catch (err) {
-                if (selectorView) { selectorView.style.opacity = ''; selectorView.style.pointerEvents = ''; }
-                if (cryptoSelError) { cryptoSelError.textContent = 'error: ' + err.message.toLowerCase(); cryptoSelError.style.display = 'block'; }
+                if (gen !== _currentSessionGen) return;
+                const area = document.getElementById('crypto-status-area');
+                if (area) {
+                    area.innerHTML = `<p style="font-family:'JetBrains Mono',monospace;font-size:0.67rem;color:#ff3333;margin:0.5rem 0 0 0;text-align:center;">error: ${err.message.toLowerCase()}</p>`;
+                }
             }
         };
 
@@ -762,6 +765,10 @@ function setupCreateOrgModal(token) {
                     selectedNetwork = net;
                     toggleNetDd(false);
                     renderNetSelected(net);
+                    clearInterval(_cryptoIntervals.poll);
+                    clearInterval(_cryptoIntervals.countdown);
+                    _cryptoIntervals = { poll: null, countdown: null };
+                    handleCryptoSelect({ currency: selectedCurrency.currency, network: selectedNetwork.id, net: selectedNetwork.label });
                 });
                 netPanel.appendChild(item);
             });
@@ -778,6 +785,13 @@ function setupCreateOrgModal(token) {
                 networkWrap.style.display = '';
             } else {
                 networkWrap.style.display = 'none';
+            }
+            const cryptoTab = document.getElementById('tab-content-crypto');
+            if (cryptoTab && cryptoTab.style.display !== 'none') {
+                clearInterval(_cryptoIntervals.poll);
+                clearInterval(_cryptoIntervals.countdown);
+                _cryptoIntervals = { poll: null, countdown: null };
+                handleCryptoSelect({ currency: cur.currency, network: cur.networks[0].id, net: cur.networks[0].label });
             }
         };
 
@@ -810,19 +824,6 @@ function setupCreateOrgModal(token) {
 
         onCurrencySelect(CRYPTO_CURRENCIES.find(c => c.currency === 'ETH'));
 
-        const proceedBtn = document.getElementById('crypto-proceed-btn');
-        if (proceedBtn) {
-            proceedBtn.onclick = async () => {
-                if (!selectedCurrency || !selectedNetwork) return;
-                const coin = { currency: selectedCurrency.currency, network: selectedNetwork.id, net: selectedNetwork.label };
-                proceedBtn.disabled = true;
-                proceedBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> generating address...';
-                await handleCryptoSelect(coin);
-                proceedBtn.disabled = false;
-                proceedBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> generate payment address';
-            };
-        }
-
         document.getElementById('btn-step3-back').onclick = () => {
             clearInterval(_cryptoIntervals.poll);
             clearInterval(_cryptoIntervals.countdown);
@@ -847,6 +848,13 @@ function setupCreateOrgModal(token) {
             document.getElementById('tab-btn-card').classList.remove('active');
             document.getElementById('tab-content-crypto').style.display = '';
             document.getElementById('tab-content-card').style.display = 'none';
+            const statusArea = document.getElementById('crypto-status-area');
+            if (selectedCurrency && selectedNetwork && statusArea && !statusArea.querySelector('#crypto-pay-status')) {
+                clearInterval(_cryptoIntervals.poll);
+                clearInterval(_cryptoIntervals.countdown);
+                _cryptoIntervals = { poll: null, countdown: null };
+                handleCryptoSelect({ currency: selectedCurrency.currency, network: selectedNetwork.id, net: selectedNetwork.label });
+            }
         };
 
         const payBtn = document.getElementById('btn-pay-card');
