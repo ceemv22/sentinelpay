@@ -115,6 +115,7 @@ model PaymentSession {
   exchangeRate Float
   status       String    @default("pending")
   txHash       String?
+  batchId      String?
   expiresAt    DateTime
   confirmedAt  DateTime?
   createdAt    DateTime  @default(now())
