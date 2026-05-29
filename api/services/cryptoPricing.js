@@ -15,27 +15,52 @@ let cacheTtl = 0;
 
 async function refreshPrices() {
     const ids = Object.values(COINGECKO_IDS).join(',');
-    const res = await axios.get('https://api.coingecko.com/api/v3/simple/price', {
-        params: { ids, vs_currencies: 'usd' },
-        timeout: 8000,
-        headers: { 'Accept': 'application/json' }
-    });
-    const out = {};
-    for (const [sym, id] of Object.entries(COINGECKO_IDS)) {
-        if (res.data[id]?.usd) out[sym] = res.data[id].usd;
+    const headers = { 'Accept': 'application/json' };
+    if (process.env.COINGECKO_API_KEY) {
+        headers['x-cg-demo-api-key'] = process.env.COINGECKO_API_KEY;
     }
-    return out;
+
+    let lastErr;
+    for (let attempt = 0; attempt < 3; attempt++) {
+        try {
+            const res = await axios.get('https://api.coingecko.com/api/v3/simple/price', {
+                params: { ids, vs_currencies: 'usd' },
+                timeout: 8000,
+                headers
+            });
+            const out = {};
+            for (const [sym, id] of Object.entries(COINGECKO_IDS)) {
+                if (res.data[id]?.usd) out[sym] = res.data[id].usd;
+            }
+            return out;
+        } catch (err) {
+            lastErr = err;
+            if (err.response?.status === 429 && attempt < 2) {
+                await new Promise(r => setTimeout(r, 2000 * (attempt + 1)));
+                continue;
+            }
+            break;
+        }
+    }
+    throw lastErr;
 }
 
 async function convertUsdToCrypto(amountUsd, currency) {
     if (Date.now() > cacheTtl || !priceCache[currency]) {
-        priceCache = await refreshPrices();
-        cacheTtl = Date.now() + 5 * 60 * 1000;
+        try {
+            priceCache = await refreshPrices();
+            cacheTtl = Date.now() + 10 * 60 * 1000;
+        } catch (err) {
+            if (priceCache[currency]) {
+                console.warn('[crypto-pricing] using stale cache after fetch failure:', err.message);
+            } else {
+                throw new Error(`price unavailable for ${currency}`);
+            }
+        }
     }
     const rate = priceCache[currency];
     if (!rate) throw new Error(`price unavailable for ${currency}`);
-    const decimals = ['SHIB'].includes(currency) ? 0 : 8;
-    const amountCrypto = (amountUsd / rate).toFixed(decimals);
+    const amountCrypto = (amountUsd / rate).toFixed(8);
     return { amountCrypto, exchangeRate: rate };
 }
 
