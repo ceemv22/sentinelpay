@@ -490,7 +490,7 @@ function setupCreateOrgModal(token) {
         const p = PLANS[plan] || PLANS.starter;
 
         step3.innerHTML = `
-            <button id="btn-step3-back" style="position:absolute;top:0.5rem;left:0.5rem;background:transparent;border:none;color:var(--text-muted);cursor:pointer;display:flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:0.73rem;padding:0.5rem;border-radius:6px;transition:color 0.2s;z-index:1001;line-height:1;-webkit-tap-highlight-color:transparent;">
+            <button id="btn-step3-back" style="position:absolute;top:0.5rem;left:0.5rem;background:transparent;border:none;color:var(--text-muted);cursor:pointer;display:flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:0.73rem;padding:0.5rem;border-radius:6px;transition:color 0.2s;z-index:1001;line-height:1;-webkit-tap-highlight-color:transparent;transform:none !important;box-shadow:none !important;">
                 <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>back
             </button>
             <div style="padding-top:2.25rem;width:100%;">
@@ -908,7 +908,7 @@ function setupCreateOrgModal(token) {
         const isEnterprise = !!p.contact;
 
         step2.innerHTML = `
-            <button id="btn-step2-back" style="position:absolute;top:0.5rem;left:0.5rem;background:transparent;border:none;color:var(--text-muted);cursor:pointer;display:flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:0.73rem;padding:0.5rem;border-radius:6px;transition:color 0.2s;z-index:1001;-webkit-tap-highlight-color:transparent;line-height:1;">
+            <button id="btn-step2-back" style="position:absolute;top:0.5rem;left:0.5rem;background:transparent;border:none;color:var(--text-muted);cursor:pointer;display:flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:0.73rem;padding:0.5rem;border-radius:6px;transition:color 0.2s;z-index:1001;-webkit-tap-highlight-color:transparent;line-height:1;transform:none !important;box-shadow:none !important;">
                 <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>back
             </button>
             <div style="padding-top:2.25rem;width:100%;">
