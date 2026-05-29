@@ -543,14 +543,13 @@ function setupCreateOrgModal(token) {
         step3.style.width = '100%';
 
         const CRYPTO_CURRENCIES = [
-            { currency: 'BNB',  networks: [{ id: 'bsc',      label: 'bsc'      }], color: '#F3BA2F' },
-            { currency: 'BTC',  networks: [{ id: 'bitcoin',  label: 'bitcoin'  }], color: '#F7931A' },
-            { currency: 'DAI',  networks: [{ id: 'ethereum', label: 'erc-20'   }, { id: 'polygon', label: 'polygon'  }], color: '#F5AC37' },
-            { currency: 'ETH',  networks: [{ id: 'ethereum', label: 'ethereum' }], color: '#627EEA' },
-            { currency: 'POL',  networks: [{ id: 'polygon',  label: 'polygon'  }], color: '#8247E5' },
-            { currency: 'SHIB', networks: [{ id: 'ethereum', label: 'erc-20'   }], color: '#FF8C00' },
-            { currency: 'USDC', networks: [{ id: 'ethereum', label: 'erc-20'   }, { id: 'bsc', label: 'bep-20'  }, { id: 'polygon', label: 'polygon'  }], color: '#2775CA' },
-            { currency: 'USDT', networks: [{ id: 'ethereum', label: 'erc-20'   }, { id: 'bsc', label: 'bep-20'  }, { id: 'polygon', label: 'polygon'  }], color: '#26A17B' },
+            { currency: 'BNB',  name: 'bnb',      networks: [{ id: 'bsc',      label: 'bsc'      }], color: '#F3BA2F' },
+            { currency: 'BTC',  name: 'bitcoin',  networks: [{ id: 'bitcoin',  label: 'bitcoin'  }], color: '#F7931A' },
+            { currency: 'DAI',  name: 'dai',      networks: [{ id: 'ethereum', label: 'erc-20'   }, { id: 'polygon', label: 'polygon'  }], color: '#F5AC37' },
+            { currency: 'ETH',  name: 'ethereum', networks: [{ id: 'ethereum', label: 'ethereum' }], color: '#627EEA' },
+            { currency: 'POL',  name: 'polygon',  networks: [{ id: 'polygon',  label: 'polygon'  }], color: '#8247E5' },
+            { currency: 'USDC', name: 'usd coin', networks: [{ id: 'ethereum', label: 'erc-20'   }, { id: 'bsc', label: 'bep-20'  }, { id: 'polygon', label: 'polygon'  }], color: '#2775CA' },
+            { currency: 'USDT', name: 'tether',   networks: [{ id: 'ethereum', label: 'erc-20'   }, { id: 'bsc', label: 'bep-20'  }, { id: 'polygon', label: 'polygon'  }], color: '#26A17B' },
         ];
 
         const cryptoSelError = document.getElementById('crypto-sel-error');
@@ -726,7 +725,6 @@ function setupCreateOrgModal(token) {
             USDT: 'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/svg/color/usdt.svg',
             USDC: 'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/svg/color/usdc.svg',
             DAI:  'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/svg/color/dai.svg',
-            SHIB: 'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/svg/color/shib.svg',
         };
 
         let selectedCurrency = null;
@@ -744,7 +742,7 @@ function setupCreateOrgModal(token) {
             sWrap.appendChild(sImg);
             const sTxt = document.createElement('span');
             sTxt.style.cssText = "font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:#e0e0e0;font-weight:500;";
-            sTxt.textContent = cur.currency;
+            sTxt.textContent = cur.name;
             ddSelected.appendChild(sWrap);
             ddSelected.appendChild(sTxt);
         };
@@ -818,7 +816,7 @@ function setupCreateOrgModal(token) {
 
             const nameEl = document.createElement('div');
             nameEl.style.cssText = "font-family:'JetBrains Mono',monospace;font-size:0.7rem;font-weight:600;color:#e0e0e0;text-align:left;";
-            nameEl.textContent = cur.currency;
+            nameEl.textContent = cur.name;
 
             item.appendChild(imgWrap);
             item.appendChild(nameEl);

@@ -8,7 +8,6 @@ const COINGECKO_IDS = {
     USDT: 'tether',
     USDC: 'usd-coin',
     DAI:  'dai',
-    SHIB: 'shiba-inu',
 };
 
 let priceCache = {};

@@ -22,7 +22,6 @@ const SUPPORTED = [
     { currency: 'USDC', network: 'polygon',   label: 'usdc polygon',  native: false },
     { currency: 'DAI',  network: 'ethereum',  label: 'dai erc-20',    native: false },
     { currency: 'DAI',  network: 'polygon',   label: 'dai polygon',   native: false },
-    { currency: 'SHIB', network: 'ethereum',  label: 'shib erc-20',   native: false },
 ];
 
 const PLAN_USD = { starter: 99, pro: 399, credits_10: 10, credits_100: 100 };
