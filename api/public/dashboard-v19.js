@@ -30,15 +30,36 @@ let authStartTime = Date.now();
 const API_URL = window.location.origin;
 
 let _touchLockHandler = null;
+let _touchLockStartY = 0;
+
 function lockBodyScroll() {
+    const ca = document.querySelector('.content-area');
+    if (ca) {
+        ca._lockedScrollTop = ca.scrollTop;
+        ca.style.setProperty('overflow-y', 'hidden', 'important');
+    }
     if (_touchLockHandler) return;
+    const onStart = (e) => { _touchLockStartY = e.touches[0].clientY; };
     _touchLockHandler = (e) => {
-        if (!e.target.closest('.modal-content')) e.preventDefault();
+        const mc = e.target.closest('.modal-content');
+        if (!mc) { e.preventDefault(); return; }
+        const dy = e.touches[0].clientY - _touchLockStartY;
+        const atTop = mc.scrollTop <= 0 && dy > 0;
+        const atBottom = mc.scrollTop >= mc.scrollHeight - mc.clientHeight && dy < 0;
+        if (mc.scrollHeight <= mc.clientHeight || atTop || atBottom) e.preventDefault();
     };
+    document.addEventListener('touchstart', onStart, { passive: true });
     document.addEventListener('touchmove', _touchLockHandler, { passive: false });
+    _touchLockHandler._onStart = onStart;
 }
 function unlockBodyScroll() {
+    const ca = document.querySelector('.content-area');
+    if (ca) {
+        ca.style.removeProperty('overflow-y');
+        if (ca._lockedScrollTop !== undefined) ca.scrollTop = ca._lockedScrollTop;
+    }
     if (!_touchLockHandler) return;
+    document.removeEventListener('touchstart', _touchLockHandler._onStart);
     document.removeEventListener('touchmove', _touchLockHandler);
     _touchLockHandler = null;
 }
