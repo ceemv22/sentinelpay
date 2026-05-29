@@ -987,14 +987,13 @@ button:hover:not(:disabled) {
 
 @media screen and (max-width: 600px) {
     .modal-overlay.active {
-        align-items: flex-start;
-        overflow-y: auto;
-        padding: 1rem 0 2rem;
+        padding: 1rem;
     }
 
     .modal-overlay.active .modal-content {
-        margin: auto;
-        flex-shrink: 0;
+        max-height: 88dvh;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
     }
 
     .auth-page-wrap {
