@@ -31,7 +31,7 @@ router.get('/supported', requireSupabaseAuth, (req, res) => {
 });
 
 router.post('/session', json, requireSupabaseAuth, async (req, res) => {
-    const { plan, currency, network, orgId } = req.body;
+    const { plan, currency, network, orgName } = req.body;
     if (!plan || !currency || !network) {
         return res.status(400).json({ error: 'plan, currency and network required' });
     }
@@ -40,6 +40,18 @@ router.post('/session', json, requireSupabaseAuth, async (req, res) => {
     }
     const amountUsd = PLAN_USD[plan];
     if (!amountUsd) return res.status(400).json({ error: 'invalid plan' });
+
+    const isSubscription = !plan.startsWith('credits_');
+    let trimmedOrgName = null;
+    if (isSubscription) {
+        if (!orgName || typeof orgName !== 'string') {
+            return res.status(400).json({ error: 'organization name required' });
+        }
+        trimmedOrgName = orgName.trim();
+        if (trimmedOrgName.length < 2 || trimmedOrgName.length > 100) {
+            return res.status(400).json({ error: 'organization name must be 2-100 characters' });
+        }
+    }
 
     try {
         const { amountCrypto, exchangeRate } = await convertUsdToCrypto(amountUsd, currency);
@@ -58,7 +70,8 @@ router.post('/session', json, requireSupabaseAuth, async (req, res) => {
         const session = await prisma.paymentSession.create({
             data: {
                 userId: req.user.id,
-                orgId: orgId || null,
+                orgId: null,
+                orgName: trimmedOrgName,
                 plan,
                 amountUsd,
                 currency,
@@ -92,10 +105,22 @@ router.post('/session', json, requireSupabaseAuth, async (req, res) => {
 });
 
 router.post('/batch-session', json, requireSupabaseAuth, async (req, res) => {
-    const { plan, orgId } = req.body;
+    const { plan, orgName } = req.body;
     if (!plan) return res.status(400).json({ error: 'plan required' });
     const amountUsd = PLAN_USD[plan];
     if (!amountUsd) return res.status(400).json({ error: 'invalid plan' });
+
+    const isSubscription = !plan.startsWith('credits_');
+    let trimmedOrgName = null;
+    if (isSubscription) {
+        if (!orgName || typeof orgName !== 'string') {
+            return res.status(400).json({ error: 'organization name required' });
+        }
+        trimmedOrgName = orgName.trim();
+        if (trimmedOrgName.length < 2 || trimmedOrgName.length > 100) {
+            return res.status(400).json({ error: 'organization name must be 2-100 characters' });
+        }
+    }
 
     try {
         const batchId = randomUUID();
@@ -117,7 +142,8 @@ router.post('/batch-session', json, requireSupabaseAuth, async (req, res) => {
             const address = deriveAddress(cfg.network, baseIndex + i);
             rows.push({
                 userId: req.user.id,
-                orgId: orgId || null,
+                orgId: null,
+                orgName: trimmedOrgName,
                 plan,
                 amountUsd,
                 currency: cfg.currency,

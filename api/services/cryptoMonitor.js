@@ -80,10 +80,11 @@ async function checkBtcSession(session) {
 
 async function provisionPayment(session, txHash) {
     await prisma.$transaction(async (tx) => {
-        await tx.paymentSession.update({
-            where: { id: session.id },
+        const updated = await tx.paymentSession.updateMany({
+            where: { id: session.id, status: 'pending' },
             data: { status: 'confirmed', txHash, confirmedAt: new Date() }
         });
+        if (updated.count === 0) return;
 
         const CREDIT_MAP = { credits_10: 10, credits_100: 100 };
         if (session.plan.startsWith('credits_')) {
@@ -95,6 +96,27 @@ async function provisionPayment(session, txHash) {
                 });
             }
         } else {
+            const orgDisplayName = (session.orgName && session.orgName.trim().length >= 2)
+                ? session.orgName.trim()
+                : `org-${session.id.substring(0, 8)}`;
+            const slug = crypto.randomBytes(10).toString('hex');
+
+            const org = await tx.organization.create({
+                data: {
+                    name: orgDisplayName,
+                    slug,
+                    plan: session.plan,
+                    region: 'americas',
+                    ownerId: session.userId,
+                    members: { connect: [{ id: session.userId }] }
+                }
+            });
+
+            await tx.paymentSession.update({
+                where: { id: session.id },
+                data: { orgId: org.id }
+            });
+
             const rawKey = `sp_live_${crypto.randomBytes(24).toString('hex')}`;
             const keyHash = crypto.createHash('sha256').update(rawKey).digest('hex');
             await tx.apiKey.create({
@@ -102,7 +124,7 @@ async function provisionPayment(session, txHash) {
                     keyHash,
                     rawKey: encrypt(rawKey),
                     userId: session.userId,
-                    orgId: session.orgId || null,
+                    orgId: org.id,
                     plan: session.plan
                 }
             });
