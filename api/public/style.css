@@ -997,6 +997,7 @@ body.modal-open {
 
     .modal-overlay.active .modal-content {
         max-height: 88dvh;
+        overflow-x: hidden;
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
         touch-action: pan-y;
