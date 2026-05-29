@@ -92,7 +92,6 @@ router.post('/embedded-checkout', checkoutJson, requireSupabaseAuth, async (req,
         const appBaseUrl = getAppBaseUrl(req);
         const session = await stripe.checkout.sessions.create({
             ui_mode: 'embedded',
-            payment_method_types: ['card'],
             line_items: [{ price: priceId, quantity: 1 }],
             mode: 'subscription',
             customer_email: req.user.email,
