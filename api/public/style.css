@@ -986,6 +986,17 @@ button:hover:not(:disabled) {
 }
 
 @media screen and (max-width: 600px) {
+    .modal-overlay.active {
+        align-items: flex-start;
+        overflow-y: auto;
+        padding: 1rem 0 2rem;
+    }
+
+    .modal-overlay.active .modal-content {
+        margin: auto;
+        flex-shrink: 0;
+    }
+
     .auth-page-wrap {
         padding: 0; 
         padding-top: 60px; 
