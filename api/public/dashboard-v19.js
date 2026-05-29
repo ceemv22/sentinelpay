@@ -634,11 +634,12 @@ function setupCreateOrgModal(token) {
                     navigator.clipboard.writeText(session.address).then(() => {
                         copied = true;
                         copyBtn.style.color = '#00ff88';
-                        copyBtn.style.cursor = 'pointer';
+                        copyBtn.style.cursor = 'default';
                         copyBtn.innerHTML = CHECK_SVG;
                         setTimeout(() => {
                             if (!copyBtn) return;
-                            copyBtn.style.color = '';
+                            copyBtn.style.color = 'var(--text-muted)';
+                            copyBtn.style.cursor = 'pointer';
                             copyBtn.innerHTML = COPY_SVG;
                             copied = false;
                         }, 3000);
