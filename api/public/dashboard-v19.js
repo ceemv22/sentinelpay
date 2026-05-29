@@ -29,6 +29,20 @@ let isInitialized = false;
 let authStartTime = Date.now();
 const API_URL = window.location.origin;
 
+let _touchLockHandler = null;
+function lockBodyScroll() {
+    if (_touchLockHandler) return;
+    _touchLockHandler = (e) => {
+        if (!e.target.closest('.modal-content')) e.preventDefault();
+    };
+    document.addEventListener('touchmove', _touchLockHandler, { passive: false });
+}
+function unlockBodyScroll() {
+    if (!_touchLockHandler) return;
+    document.removeEventListener('touchmove', _touchLockHandler);
+    _touchLockHandler = null;
+}
+
 const initialSearch = window.location.search;
 const initialHash = window.location.hash;
 
@@ -371,6 +385,7 @@ function setupCreateOrgModal(token) {
     const openModal = () => {
         modal.classList.add('active');
         document.body.classList.add('modal-open');
+        lockBodyScroll();
         form.reset();
         errorEl.style.display = 'none';
 
@@ -396,6 +411,7 @@ function setupCreateOrgModal(token) {
     const closeModal = () => {
         modal.classList.remove('active');
         document.body.classList.remove('modal-open');
+        unlockBodyScroll();
         resetToStep1();
     };
 
@@ -1067,8 +1083,9 @@ function setupInviteMemberModal(token) {
     const openModal = () => {
         modal.classList.add('active');
         document.body.classList.add('modal-open');
+        lockBodyScroll();
         form.reset();
-        
+
         if (window.turnstile) {
             const container = document.getElementById('turnstile-invite');
             if (container) {
@@ -1091,6 +1108,7 @@ function setupInviteMemberModal(token) {
     const closeModal = () => {
         modal.classList.remove('active');
         document.body.classList.remove('modal-open');
+        unlockBodyScroll();
         if (window.turnstile && inviteTurnstileId !== null) {
             window.turnstile.reset(inviteTurnstileId);
         }
