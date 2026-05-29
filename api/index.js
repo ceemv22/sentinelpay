@@ -129,6 +129,7 @@ app.use(helmet({
                 "https://*.supabase.co",
                 "https://accounts.google.com",
                 "https://js.stripe.com",
+                "https://*.stripe.com",
                 "blob:",
                 "about:"
             ],
