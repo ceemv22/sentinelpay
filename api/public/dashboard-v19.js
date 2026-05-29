@@ -387,6 +387,7 @@ function setupCreateOrgModal(token) {
     let _cryptoOrgId = null;
     let _currentSessionGen = 0;
     let _batchSessions = null;
+    let _stripeCheckout = null;
 
     const resetToStep1 = () => {
         clearInterval(_cryptoIntervals.poll);
@@ -395,6 +396,7 @@ function setupCreateOrgModal(token) {
         _cryptoOrgId = null;
         _currentSessionGen = 0;
         _batchSessions = null;
+        if (_stripeCheckout) { _stripeCheckout.destroy(); _stripeCheckout = null; }
         const step1 = document.getElementById('create-org-step-1');
         const step2 = document.getElementById('create-org-step-2');
         const step3 = document.getElementById('create-org-step-3');
@@ -536,15 +538,8 @@ function setupCreateOrgModal(token) {
                     <button class="auth-tab" id="tab-btn-crypto" style="width:auto;padding:0.4rem 1rem;font-size:0.7rem;border-radius:6px;">pay with crypto</button>
                 </div>
                 <div id="tab-content-card">
-                    <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:0.6rem 0.875rem;margin-bottom:0.25rem;">
-                        <span style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--text-muted);">${p.label} plan</span>
-                        <span style="font-family:'JetBrains Mono',monospace;font-size:0.74rem;color:#e0e0e0;font-weight:500;">${p.price}${p.period}</span>
-                    </div>
-                    <p id="create-org-pay-error" class="error-msg" style="display:none;margin-top:0.75rem;"></p>
-                    <button class="submit-btn" id="btn-pay-card" style="margin-top:1rem;display:flex;align-items:center;justify-content:center;gap:8px;">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
-                        pay with card
-                    </button>
+                    <p id="create-org-pay-error" class="error-msg" style="display:none;margin-bottom:0.5rem;"></p>
+                    <div id="stripe-checkout-container" style="min-height:180px;"></div>
                 </div>
                 <div id="tab-content-crypto" style="display:none;">
                     <div id="crypto-selector-view">
@@ -902,6 +897,7 @@ function setupCreateOrgModal(token) {
             clearInterval(_cryptoIntervals.countdown);
             _cryptoIntervals = { poll: null, countdown: null };
             _cryptoOrgId = null;
+            if (_stripeCheckout) { _stripeCheckout.destroy(); _stripeCheckout = null; }
             step3.style.display = 'none';
             step3.innerHTML = '';
             step2.style.display = 'flex';
@@ -930,15 +926,17 @@ function setupCreateOrgModal(token) {
             }
         };
 
-        const payBtn = document.getElementById('btn-pay-card');
-        const payErrEl = document.getElementById('create-org-pay-error');
+        const initStripeEmbedded = async () => {
+            if (_stripeCheckout) return;
+            const container = document.getElementById('stripe-checkout-container');
+            const payErrEl = document.getElementById('create-org-pay-error');
+            if (!container) return;
 
-        payBtn.onclick = async () => {
-            payBtn.disabled = true;
-            payBtn.textContent = 'redirecting...';
-            payErrEl.style.display = 'none';
+            container.innerHTML = `<div style="text-align:center;padding:1.5rem 0;font-family:'JetBrains Mono',monospace;font-size:0.68rem;color:var(--text-muted);">initializing secure checkout...</div>`;
 
             try {
+                if (!window.Stripe) throw new Error('payment system not ready, please refresh');
+
                 if (!_cryptoOrgId) {
                     const orgRes = await fetch('/v1/organizations', {
                         method: 'POST',
@@ -950,22 +948,41 @@ function setupCreateOrgModal(token) {
                     _cryptoOrgId = orgData.id;
                 }
 
-                const stripeRes = await fetch('/v1/stripe/checkout', {
+                const cfgRes = await fetch('/v1/stripe/config', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const cfgData = await cfgRes.json();
+                if (!cfgRes.ok || !cfgData.publishableKey) throw new Error('payment configuration unavailable');
+
+                const sessRes = await fetch('/v1/stripe/embedded-checkout', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-                    body: JSON.stringify({ plan })
+                    body: JSON.stringify({ plan, orgId: _cryptoOrgId })
                 });
-                const stripeData = await stripeRes.json();
-                if (!stripeRes.ok) throw new Error(stripeData.error || 'failed to initialize checkout');
+                const sessData = await sessRes.json();
+                if (!sessRes.ok || !sessData.clientSecret) throw new Error(sessData.error || 'failed to initialize checkout');
 
-                window.location.href = stripeData.url;
+                const stripeInst = window.Stripe(cfgData.publishableKey);
+                _stripeCheckout = await stripeInst.initEmbeddedCheckout({
+                    clientSecret: sessData.clientSecret,
+                    onComplete: () => {
+                        if (_stripeCheckout) { _stripeCheckout.destroy(); _stripeCheckout = null; }
+                        window.location.replace('/dashboard/organizations?stripe=success');
+                    }
+                });
+
+                container.innerHTML = '';
+                _stripeCheckout.mount(container);
             } catch (err) {
-                payErrEl.textContent = `error: ${err.message.toLowerCase()}`;
-                payErrEl.style.display = 'block';
-                payBtn.disabled = false;
-                payBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg> pay with card`;
+                if (payErrEl) {
+                    payErrEl.textContent = `error: ${err.message.toLowerCase()}`;
+                    payErrEl.style.display = 'block';
+                }
+                if (container) container.innerHTML = '';
             }
         };
+
+        initStripeEmbedded();
     };
 
     const transitionToStep2 = (name, plan) => {

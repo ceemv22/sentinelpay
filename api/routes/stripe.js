@@ -71,6 +71,47 @@ router.post('/checkout', checkoutJson, requireSupabaseAuth, async (req, res) => 
 
 const { encrypt } = require('../services/crypto');
 
+router.get('/config', requireSupabaseAuth, (req, res) => {
+    const publishableKey = process.env.STRIPE_PUBLISHABLE_KEY;
+    if (!publishableKey) return res.status(503).json({ error: 'payment service unavailable', code: 503 });
+    res.json({ publishableKey });
+});
+
+router.post('/embedded-checkout', checkoutJson, requireSupabaseAuth, async (req, res) => {
+    if (!stripe) return res.status(503).json({ error: 'payment service unavailable', code: 503 });
+
+    const { plan, orgId } = req.body;
+    if (!plan || typeof plan !== 'string') {
+        return res.status(400).json({ error: 'invalid plan', code: 400 });
+    }
+
+    const priceId = plan === 'pro' ? process.env.STRIPE_PRICE_PRO : process.env.STRIPE_PRICE_STARTER;
+
+    try {
+        if (!priceId) throw new Error('Stripe price not configured');
+        const appBaseUrl = getAppBaseUrl(req);
+        const session = await stripe.checkout.sessions.create({
+            ui_mode: 'embedded',
+            payment_method_types: ['card'],
+            line_items: [{ price: priceId, quantity: 1 }],
+            mode: 'subscription',
+            customer_email: req.user.email,
+            return_url: `${appBaseUrl}/dashboard/organizations?stripe=success`,
+            metadata: {
+                type: 'subscription',
+                plan,
+                userId: req.user.id,
+                ...(orgId ? { orgId } : {})
+            }
+        });
+
+        res.json({ clientSecret: session.client_secret });
+    } catch (error) {
+        console.error('[stripe embedded]', error);
+        res.status(500).json({ error: 'checkout failed', code: 500 });
+    }
+});
+
 router.post('/webhook', express.raw({ type: 'application/json', limit: '100kb' }), async (req, res) => {
     if (!stripe) return res.status(503).send('payment service unavailable');
 
