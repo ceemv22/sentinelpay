@@ -743,7 +743,7 @@ function setupCreateOrgModal(token) {
             const gen = ++_currentSessionGen;
             const statusArea = document.getElementById('crypto-status-area');
             if (statusArea) {
-                statusArea.innerHTML = '';
+                statusArea.innerHTML = '<p style="font-family:\'JetBrains Mono\',monospace;font-size:0.67rem;color:var(--text-muted);margin:0.5rem 0 0 0;text-align:center;">generating deposit address...</p>';
             }
             try {
                 const batchRes = await fetch('/v1/crypto/batch-session', {
@@ -919,7 +919,7 @@ function setupCreateOrgModal(token) {
             const payErrEl = document.getElementById('create-org-pay-error');
             if (!container) return;
 
-            container.innerHTML = '';
+            container.innerHTML = '<p style="font-family:\'JetBrains Mono\',monospace;font-size:0.67rem;color:var(--text-muted);text-align:center;padding:1rem 0;">initializing secure checkout...</p>';
 
             try {
                 if (!window.Stripe) throw new Error('payment system not ready, please refresh');
