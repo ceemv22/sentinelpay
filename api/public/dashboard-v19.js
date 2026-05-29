@@ -965,6 +965,7 @@ function setupCreateOrgModal(token) {
                 const stripeInst = window.Stripe(cfgData.publishableKey);
                 _stripeCheckout = await stripeInst.initEmbeddedCheckout({
                     clientSecret: sessData.clientSecret,
+                    appearance: { theme: 'night' },
                     onComplete: () => {
                         if (_stripeCheckout) { _stripeCheckout.destroy(); _stripeCheckout = null; }
                         window.location.replace('/dashboard/organizations?stripe=success');
