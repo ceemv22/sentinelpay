@@ -652,9 +652,9 @@ function setupCreateOrgModal(token) {
                     <div style="display:flex;justify-content:center;">
                         <img src="${session.qrDataUrl}" alt="qr" style="width:${_qr}px;height:${_qr}px;border-radius:8px;border:1px solid rgba(255,255,255,0.12);">
                     </div>
-                    <div style="background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:0.65rem 0.75rem;display:flex;align-items:center;gap:0.5rem;">
-                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.68rem;color:#ffffff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0;">${session.address}</div>
-                        <button id="btn-copy-address" style="background:transparent;border:none;cursor:pointer;color:var(--text-muted);padding:0.15rem;display:flex;align-items:center;transition:color 0.2s;flex-shrink:0;-webkit-tap-highlight-color:transparent;transform:none !important;box-shadow:none !important;">
+                    <div style="background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:0.65rem 0.75rem;display:grid;grid-template-columns:1fr auto;align-items:center;gap:0.5rem;width:100%;box-sizing:border-box;">
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.68rem;color:#ffffff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${session.address}</div>
+                        <button id="btn-copy-address" style="background:transparent;border:none;cursor:pointer;color:var(--text-muted);padding:0.15rem;display:flex;align-items:center;transition:color 0.2s;-webkit-tap-highlight-color:transparent;transform:none !important;box-shadow:none !important;">
                             <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
                         </button>
                     </div>
