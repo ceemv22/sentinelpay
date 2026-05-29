@@ -617,10 +617,7 @@ function setupCreateOrgModal(token) {
                         </button>
                     </div>
                     <div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--text-muted);text-align:center;opacity:0.6;">credited after 2 confirmations</div>
-                    <div id="crypto-pay-status" style="font-family:'JetBrains Mono',monospace;font-size:0.63rem;color:var(--text-muted);text-align:center;display:flex;align-items:center;justify-content:center;gap:0.375rem;">
-                        <div style="width:5px;height:5px;border-radius:50%;background:#f5ac37;animation:pulse 1.5s infinite;flex-shrink:0;"></div>
-                        waiting for payment...
-                    </div>
+                    <div id="crypto-pay-status" style="font-family:'JetBrains Mono',monospace;font-size:0.63rem;color:var(--text-muted);text-align:center;display:flex;align-items:center;justify-content:center;gap:0.375rem;min-height:0;"></div>
                 </div>
             `;
 
@@ -629,21 +626,36 @@ function setupCreateOrgModal(token) {
                 const COPY_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
                 const CHECK_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
                 let copied = false;
+                const showCopied = () => {
+                    copied = true;
+                    copyBtn.style.color = '#00ff88';
+                    copyBtn.style.cursor = 'default';
+                    copyBtn.innerHTML = CHECK_SVG;
+                    setTimeout(() => {
+                        if (!copyBtn) return;
+                        copyBtn.style.color = 'var(--text-muted)';
+                        copyBtn.style.cursor = 'pointer';
+                        copyBtn.innerHTML = COPY_SVG;
+                        copied = false;
+                    }, 3000);
+                };
+                const fallbackCopy = (text) => {
+                    const ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.cssText = 'position:fixed;left:-9999px;top:-9999px;opacity:0;';
+                    document.body.appendChild(ta);
+                    ta.focus();
+                    ta.select();
+                    try { document.execCommand('copy'); showCopied(); } catch {}
+                    document.body.removeChild(ta);
+                };
                 copyBtn.onclick = () => {
                     if (copied) return;
-                    navigator.clipboard.writeText(session.address).then(() => {
-                        copied = true;
-                        copyBtn.style.color = '#00ff88';
-                        copyBtn.style.cursor = 'default';
-                        copyBtn.innerHTML = CHECK_SVG;
-                        setTimeout(() => {
-                            if (!copyBtn) return;
-                            copyBtn.style.color = 'var(--text-muted)';
-                            copyBtn.style.cursor = 'pointer';
-                            copyBtn.innerHTML = COPY_SVG;
-                            copied = false;
-                        }, 3000);
-                    });
+                    if (navigator.clipboard && window.isSecureContext) {
+                        navigator.clipboard.writeText(session.address).then(showCopied).catch(() => fallbackCopy(session.address));
+                    } else {
+                        fallbackCopy(session.address);
+                    }
                 };
             }
 
