@@ -397,6 +397,8 @@ function setupCreateOrgModal(token) {
         _currentSessionGen = 0;
         _batchSessions = null;
         if (_stripeCheckout) { _stripeCheckout.destroy(); _stripeCheckout = null; }
+        const mc = document.querySelector('#create-org-modal .modal-content');
+        if (mc) { mc.style.maxHeight = ''; mc.style.overflowY = ''; mc.style.overscrollBehavior = ''; }
         const step1 = document.getElementById('create-org-step-1');
         const step2 = document.getElementById('create-org-step-2');
         const step3 = document.getElementById('create-org-step-3');
@@ -898,6 +900,8 @@ function setupCreateOrgModal(token) {
             _cryptoIntervals = { poll: null, countdown: null };
             _cryptoOrgId = null;
             if (_stripeCheckout) { _stripeCheckout.destroy(); _stripeCheckout = null; }
+            const _mc = document.querySelector('#create-org-modal .modal-content');
+            if (_mc) { _mc.style.maxHeight = ''; _mc.style.overflowY = ''; _mc.style.overscrollBehavior = ''; }
             step3.style.display = 'none';
             step3.innerHTML = '';
             step2.style.display = 'flex';
@@ -973,6 +977,8 @@ function setupCreateOrgModal(token) {
 
                 container.innerHTML = '';
                 _stripeCheckout.mount(container);
+                const mc = document.querySelector('#create-org-modal .modal-content');
+                if (mc) { mc.style.maxHeight = '90dvh'; mc.style.overflowY = 'auto'; mc.style.overscrollBehavior = 'contain'; }
             } catch (err) {
                 if (payErrEl) {
                     payErrEl.textContent = `error: ${err.message.toLowerCase()}`;
