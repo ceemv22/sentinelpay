@@ -745,7 +745,7 @@ function setupCreateOrgModal(token) {
             const gen = ++_currentSessionGen;
             const statusArea = document.getElementById('crypto-status-area');
             if (statusArea) {
-                statusArea.innerHTML = `<div style="text-align:center;padding:1.25rem 0;font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--text-muted);">generating deposit addresses...</div>`;
+                statusArea.innerHTML = '';
             }
             try {
                 if (!_cryptoOrgId) {
@@ -932,7 +932,7 @@ function setupCreateOrgModal(token) {
             const payErrEl = document.getElementById('create-org-pay-error');
             if (!container) return;
 
-            container.innerHTML = `<div style="text-align:center;padding:1.5rem 0;font-family:'JetBrains Mono',monospace;font-size:0.68rem;color:var(--text-muted);">initializing secure checkout...</div>`;
+            container.innerHTML = '';
 
             try {
                 if (!window.Stripe) throw new Error('payment system not ready, please refresh');
