@@ -612,7 +612,7 @@ function setupCreateOrgModal(token) {
                     </div>
                     <div style="background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:0.65rem 0.75rem;display:flex;align-items:center;gap:0.5rem;">
                         <div style="font-family:'JetBrains Mono',monospace;font-size:0.68rem;color:#ffffff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;">${session.address}</div>
-                        <button id="btn-copy-address" style="background:transparent;border:none;cursor:pointer;color:var(--text-muted);padding:0.15rem;display:flex;align-items:center;transition:color 0.2s;flex-shrink:0;-webkit-tap-highlight-color:transparent;">
+                        <button id="btn-copy-address" style="background:transparent;border:none;cursor:pointer;color:var(--text-muted);padding:0.15rem;display:flex;align-items:center;transition:color 0.2s;flex-shrink:0;-webkit-tap-highlight-color:transparent;transform:none !important;box-shadow:none !important;">
                             <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
                         </button>
                     </div>
@@ -626,10 +626,22 @@ function setupCreateOrgModal(token) {
 
             const copyBtn = document.getElementById('btn-copy-address');
             if (copyBtn) {
+                const COPY_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
+                const CHECK_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+                let copied = false;
                 copyBtn.onclick = () => {
+                    if (copied) return;
                     navigator.clipboard.writeText(session.address).then(() => {
-                        copyBtn.style.color = '#00f0ff';
-                        setTimeout(() => { if (copyBtn) copyBtn.style.color = ''; }, 1500);
+                        copied = true;
+                        copyBtn.style.color = '#00ff88';
+                        copyBtn.style.cursor = 'pointer';
+                        copyBtn.innerHTML = CHECK_SVG;
+                        setTimeout(() => {
+                            if (!copyBtn) return;
+                            copyBtn.style.color = '';
+                            copyBtn.innerHTML = COPY_SVG;
+                            copied = false;
+                        }, 3000);
                     });
                 };
             }
