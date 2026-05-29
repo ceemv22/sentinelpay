@@ -1,3 +1,17 @@
+let _authTouchLockHandler = null;
+function authLockBodyScroll() {
+    if (_authTouchLockHandler) return;
+    _authTouchLockHandler = (e) => {
+        if (!e.target.closest('.modal-content')) e.preventDefault();
+    };
+    document.addEventListener('touchmove', _authTouchLockHandler, { passive: false });
+}
+function authUnlockBodyScroll() {
+    if (!_authTouchLockHandler) return;
+    document.removeEventListener('touchmove', _authTouchLockHandler);
+    _authTouchLockHandler = null;
+}
+
 const supabaseUrl = 'https://aivqwkgjdpklxxuvkxpy.supabase.co';
 const supabaseKey = 'sb_publishable_bRfAssaGT6D8oFDQtPARbw_5fyYGWM6';
 let supabaseClient = null;
@@ -297,10 +311,12 @@ document.addEventListener('DOMContentLoaded', () => {
             modal.style.display = 'flex';
             setTimeout(() => modal.classList.add('active'), 10);
             document.body.classList.add('modal-open');
+            authLockBodyScroll();
         };
         closeBtn.onclick = () => {
             modal.classList.remove('active');
             document.body.classList.remove('modal-open');
+            authUnlockBodyScroll();
             setTimeout(() => { modal.style.display = 'none'; }, 300);
         };
         modal.onclick = (e) => { if (e.target === modal) closeBtn.onclick(); };
