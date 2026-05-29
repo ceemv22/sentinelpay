@@ -633,8 +633,13 @@ function setupCreateOrgModal(token) {
                 return String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
             };
 
+            const _sm = window.innerWidth <= 600;
+            const _qr = _sm ? '82' : '118';
+            const _gap = _sm ? '0.38rem' : '0.575rem';
+            const _pt = _sm ? '0.5rem' : '0.75rem';
+
             statusArea.innerHTML = `
-                <div style="border-top:1px solid rgba(255,255,255,0.06);padding-top:0.75rem;display:flex;flex-direction:column;gap:0.575rem;">
+                <div style="border-top:1px solid rgba(255,255,255,0.06);padding-top:${_pt};display:flex;flex-direction:column;gap:${_gap};">
                     <div style="display:flex;align-items:center;justify-content:space-between;gap:0.5rem;">
                         <span style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;">${session.batchId}</span>
                         <div id="crypto-countdown" style="font-family:'JetBrains Mono',monospace;font-size:0.67rem;color:#f5ac37;flex-shrink:0;">&#x23F1; ${getTimeLeft()}</div>
@@ -645,10 +650,10 @@ function setupCreateOrgModal(token) {
                         <div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--text-muted);margin-top:0.15rem;">&asymp; $${session.amountUsd.toLocaleString('en-US')}</div>
                     </div>
                     <div style="display:flex;justify-content:center;">
-                        <img src="${session.qrDataUrl}" alt="qr" style="width:118px;height:118px;border-radius:8px;border:1px solid rgba(255,255,255,0.12);">
+                        <img src="${session.qrDataUrl}" alt="qr" style="width:${_qr}px;height:${_qr}px;border-radius:8px;border:1px solid rgba(255,255,255,0.12);">
                     </div>
                     <div style="background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:0.65rem 0.75rem;display:flex;align-items:center;gap:0.5rem;">
-                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.68rem;color:#ffffff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;">${session.address}</div>
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.68rem;color:#ffffff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0;">${session.address}</div>
                         <button id="btn-copy-address" style="background:transparent;border:none;cursor:pointer;color:var(--text-muted);padding:0.15rem;display:flex;align-items:center;transition:color 0.2s;flex-shrink:0;-webkit-tap-highlight-color:transparent;transform:none !important;box-shadow:none !important;">
                             <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
                         </button>
