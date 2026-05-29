@@ -91,7 +91,7 @@ router.post('/embedded-checkout', checkoutJson, requireSupabaseAuth, async (req,
         if (!priceId) throw new Error('Stripe price not configured');
         const appBaseUrl = getAppBaseUrl(req);
         const session = await stripe.checkout.sessions.create({
-            ui_mode: 'embedded',
+            ui_mode: 'embedded_page',
             line_items: [{ price: priceId, quantity: 1 }],
             mode: 'subscription',
             ...(req.user.email ? { customer_email: req.user.email } : {}),
