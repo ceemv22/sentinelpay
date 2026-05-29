@@ -946,7 +946,6 @@ button:hover:not(:disabled) {
     opacity: 1;
     pointer-events: auto;
     touch-action: none;
-    overscroll-behavior: contain;
 }
 
 body.modal-open {
@@ -1001,6 +1000,7 @@ body.modal-open {
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
         touch-action: pan-y;
+        overscroll-behavior: contain;
     }
 
     .auth-page-wrap {
