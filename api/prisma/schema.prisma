@@ -105,6 +105,7 @@ model PaymentSession {
   userId       String
   user         User      @relation(fields: [userId], references: [id])
   orgId        String?
+  orgName      String?
   plan         String
   amountUsd    Float
   currency     String

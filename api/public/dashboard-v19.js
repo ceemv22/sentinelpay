@@ -384,7 +384,6 @@ function setupCreateOrgModal(token) {
     };
 
     let _cryptoIntervals = { poll: null, countdown: null };
-    let _cryptoOrgId = null;
     let _currentSessionGen = 0;
     let _batchSessions = null;
     let _stripeCheckout = null;
@@ -393,7 +392,6 @@ function setupCreateOrgModal(token) {
         clearInterval(_cryptoIntervals.poll);
         clearInterval(_cryptoIntervals.countdown);
         _cryptoIntervals = { poll: null, countdown: null };
-        _cryptoOrgId = null;
         _currentSessionGen = 0;
         _batchSessions = null;
         if (_stripeCheckout) { _stripeCheckout.destroy(); _stripeCheckout = null; }
@@ -722,7 +720,7 @@ function setupCreateOrgModal(token) {
                         _cryptoIntervals.countdown = null;
                         const statusEl = document.getElementById('crypto-pay-status');
                         if (statusEl) statusEl.innerHTML = '<span style="color:#00f0ff;">✓ payment confirmed!</span>';
-                        setTimeout(() => { closeModal(); fetchProfile(token); }, 2000);
+                        setTimeout(() => { closeModal(); window.location.replace('/dashboard/organizations'); }, 2000);
                     }
                 } catch (e) {}
             }, 10000);
@@ -748,20 +746,10 @@ function setupCreateOrgModal(token) {
                 statusArea.innerHTML = '';
             }
             try {
-                if (!_cryptoOrgId) {
-                    const orgRes = await fetch('/v1/organizations', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-                        body: JSON.stringify({ name, plan })
-                    });
-                    const orgData = await orgRes.json();
-                    if (!orgRes.ok) throw new Error(orgData.error || 'failed to create organization');
-                    _cryptoOrgId = orgData.id;
-                }
                 const batchRes = await fetch('/v1/crypto/batch-session', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-                    body: JSON.stringify({ plan, orgId: _cryptoOrgId })
+                    body: JSON.stringify({ plan, orgName: name })
                 });
                 const batchData = await batchRes.json();
                 if (!batchRes.ok) throw new Error((batchData.detail ? batchData.error + ': ' + batchData.detail : batchData.error) || 'failed to create payment session');
@@ -896,7 +884,6 @@ function setupCreateOrgModal(token) {
             clearInterval(_cryptoIntervals.poll);
             clearInterval(_cryptoIntervals.countdown);
             _cryptoIntervals = { poll: null, countdown: null };
-            _cryptoOrgId = null;
             if (_stripeCheckout) { _stripeCheckout.destroy(); _stripeCheckout = null; }
             step3.style.display = 'none';
             step3.innerHTML = '';
@@ -937,17 +924,6 @@ function setupCreateOrgModal(token) {
             try {
                 if (!window.Stripe) throw new Error('payment system not ready, please refresh');
 
-                if (!_cryptoOrgId) {
-                    const orgRes = await fetch('/v1/organizations', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-                        body: JSON.stringify({ name, plan })
-                    });
-                    const orgData = await orgRes.json();
-                    if (!orgRes.ok) throw new Error(orgData.error || 'failed to create organization');
-                    _cryptoOrgId = orgData.id;
-                }
-
                 const cfgRes = await fetch('/v1/stripe/config', {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
@@ -957,7 +933,7 @@ function setupCreateOrgModal(token) {
                 const sessRes = await fetch('/v1/stripe/embedded-checkout', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-                    body: JSON.stringify({ plan, orgId: _cryptoOrgId })
+                    body: JSON.stringify({ plan, orgName: name })
                 });
                 const sessData = await sessRes.json();
                 if (!sessRes.ok || !sessData.clientSecret) throw new Error(sessData.error || 'failed to initialize checkout');
