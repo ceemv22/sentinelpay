@@ -51,7 +51,7 @@ router.post('/checkout', checkoutJson, requireSupabaseAuth, async (req, res) => 
             payment_method_types: ['card'],
             line_items: [{ price: priceId, quantity: 1 }],
             mode: 'subscription',
-            customer_email: req.user.email,
+            ...(req.user.email ? { customer_email: req.user.email } : {}),
             success_url: `${appBaseUrl}/success.html?session_id={CHECKOUT_SESSION_ID}`,
             cancel_url: `${appBaseUrl}/cancel.html`,
             metadata: {
@@ -94,7 +94,7 @@ router.post('/embedded-checkout', checkoutJson, requireSupabaseAuth, async (req,
             ui_mode: 'embedded',
             line_items: [{ price: priceId, quantity: 1 }],
             mode: 'subscription',
-            customer_email: req.user.email,
+            ...(req.user.email ? { customer_email: req.user.email } : {}),
             return_url: `${appBaseUrl}/dashboard/organizations?stripe=success`,
             metadata: {
                 type: 'subscription',
