@@ -70,6 +70,7 @@ router.post('/checkout', checkoutJson, requireSupabaseAuth, async (req, res) => 
 });
 
 const { encrypt } = require('../services/crypto');
+const { randomBytes } = require('crypto');
 
 router.get('/config', requireSupabaseAuth, (req, res) => {
     const publishableKey = process.env.STRIPE_PUBLISHABLE_KEY;
@@ -80,9 +81,16 @@ router.get('/config', requireSupabaseAuth, (req, res) => {
 router.post('/embedded-checkout', checkoutJson, requireSupabaseAuth, async (req, res) => {
     if (!stripe) return res.status(503).json({ error: 'payment service unavailable', code: 503 });
 
-    const { plan, orgId } = req.body;
+    const { plan, orgName } = req.body;
     if (!plan || typeof plan !== 'string') {
         return res.status(400).json({ error: 'invalid plan', code: 400 });
+    }
+    if (!orgName || typeof orgName !== 'string') {
+        return res.status(400).json({ error: 'organization name required', code: 400 });
+    }
+    const trimmedOrgName = orgName.trim();
+    if (trimmedOrgName.length < 2 || trimmedOrgName.length > 100) {
+        return res.status(400).json({ error: 'organization name must be 2-100 characters', code: 400 });
     }
 
     const priceId = plan === 'pro' ? process.env.STRIPE_PRICE_PRO : process.env.STRIPE_PRICE_STARTER;
@@ -100,7 +108,7 @@ router.post('/embedded-checkout', checkoutJson, requireSupabaseAuth, async (req,
                 type: 'subscription',
                 plan,
                 userId: req.user.id,
-                ...(orgId ? { orgId } : {})
+                orgName: trimmedOrgName
             }
         });
 
@@ -173,6 +181,23 @@ router.post('/webhook', express.raw({ type: 'application/json', limit: '100kb' }
                         console.log(`[billing] provisioned ${amount} credits for user ${userId}`);
                     }
                 } else {
+                    const rawOrgName = session.metadata?.orgName;
+                    const orgDisplayName = (rawOrgName && rawOrgName.trim().length >= 2)
+                        ? rawOrgName.trim()
+                        : `org-${session.id.substring(0, 8)}`;
+                    const slug = randomBytes(10).toString('hex');
+
+                    const org = await tx.organization.create({
+                        data: {
+                            name: orgDisplayName,
+                            slug,
+                            plan: plan || 'starter',
+                            region: 'americas',
+                            ownerId: userId,
+                            members: { connect: [{ id: userId }] }
+                        }
+                    });
+
                     const rawKey = `sp_live_${crypto.randomBytes(24).toString('hex')}`;
                     const keyHash = crypto.createHash('sha256').update(rawKey).digest('hex');
 
@@ -181,12 +206,13 @@ router.post('/webhook', express.raw({ type: 'application/json', limit: '100kb' }
                             keyHash,
                             rawKey: encrypt(rawKey),
                             userId,
+                            orgId: org.id,
                             stripeCustomerId: session.customer,
-                            plan: session.metadata?.plan || 'starter'
+                            plan: plan || 'starter'
                         }
                     });
 
-                    console.log(`[billing] provisioned api access for user ${userId}`);
+                    console.log(`[billing] provisioned org "${orgDisplayName}" and api access for user ${userId}`);
                 }
             }
 
