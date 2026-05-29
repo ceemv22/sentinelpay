@@ -86,14 +86,15 @@ app.use(helmet({
         directives: {
             "default-src": ["'self'"],
             "script-src": [
-                "'self'", 
-                "'unsafe-inline'", 
-                "'unsafe-eval'", 
-                "https://*.supabase.co", 
+                "'self'",
+                "'unsafe-inline'",
+                "'unsafe-eval'",
+                "https://*.supabase.co",
                 "https://challenges.cloudflare.com",
                 "https://accounts.google.com",
                 "https://*.twitter.com",
                 "https://*.x.com",
+                "https://js.stripe.com",
                 "blob:",
                 "about:"
             ],
@@ -109,23 +110,26 @@ app.use(helmet({
                 "https://cdn.jsdelivr.net"
             ],
             "connect-src": [
-                "'self'", 
-                "https://api.sentinelpay.org", 
-                "https://*.supabase.co", 
-                "wss://*.supabase.co", 
+                "'self'",
+                "https://api.sentinelpay.org",
+                "https://*.supabase.co",
+                "wss://*.supabase.co",
                 "https://api.etherscan.io",
                 "https://challenges.cloudflare.com",
                 "https://accounts.google.com",
                 "https://*.twitter.com",
                 "https://*.x.com",
-                "https://api.stripe.com"
+                "https://api.stripe.com",
+                "https://*.stripe.com",
+                "https://*.stripe.network"
             ],
             "frame-src": [
-                "'self'", 
-                "https://challenges.cloudflare.com", 
-                "https://*.supabase.co", 
-                "https://accounts.google.com", 
-                "blob:", 
+                "'self'",
+                "https://challenges.cloudflare.com",
+                "https://*.supabase.co",
+                "https://accounts.google.com",
+                "https://js.stripe.com",
+                "blob:",
                 "about:"
             ],
             "base-uri": ["'self'"],
