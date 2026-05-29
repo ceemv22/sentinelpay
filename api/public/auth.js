@@ -296,9 +296,11 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('forgot-pw-state-success').style.display = 'none';
             modal.style.display = 'flex';
             setTimeout(() => modal.classList.add('active'), 10);
+            document.body.classList.add('modal-open');
         };
         closeBtn.onclick = () => {
             modal.classList.remove('active');
+            document.body.classList.remove('modal-open');
             setTimeout(() => { modal.style.display = 'none'; }, 300);
         };
         modal.onclick = (e) => { if (e.target === modal) closeBtn.onclick(); };
