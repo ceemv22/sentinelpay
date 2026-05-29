@@ -960,9 +960,6 @@ body.modal-open {
 
 .modal-overlay.active .modal-content {
     transform: translateY(0) scale(1);
-    max-height: 90dvh;
-    overflow-y: auto;
-    overscroll-behavior: contain;
 }
 
 .modal-close-btn {
