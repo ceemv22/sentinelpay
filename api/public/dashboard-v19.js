@@ -210,13 +210,6 @@ function renderDashboard(session) {
         }
         if (avatarInitial === '?' && displayIdentifier) avatarInitial = displayIdentifier.charAt(0);
 
-        if (window.$crisp && user.email) {
-            window.$crisp.push(["set", "user:email", [user.email]]);
-            if (rawUsername && rawUsername !== user.email) {
-                window.$crisp.push(["set", "user:nickname", [rawUsername]]);
-            }
-        }
-
         const avatarEl = document.getElementById('org-avatar-circle');
         if (avatarEl) avatarEl.textContent = avatarInitial.toUpperCase();
         
