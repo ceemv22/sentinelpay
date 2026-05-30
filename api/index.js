@@ -671,7 +671,8 @@ app.use((err, req, res, next) => {
 
 app.get('/v1/organizations/check', requireSupabaseAuth, async (req, res) => {
     const { name } = req.query;
-    if (!name || name.trim().length < 2) return res.json({ available: true });
+    if (!name || typeof name !== 'string' || name.trim().length < 2) return res.json({ available: true });
+    if (name.length > 100) return res.json({ available: false });
 
     try {
         const existing = await prisma.organization.findFirst({
@@ -770,6 +771,7 @@ const INVITE_EMAIL_REGEX = /^[^\s@]{1,64}@[^\s@]{1,255}\.[^\s@]{2,}$/;
 
 app.post('/v1/organizations/:slug/team/invite', requireSupabaseAuth, async (req, res) => {
     const { slug } = req.params;
+    if (!/^[a-f0-9]{20}$/.test(slug)) return res.status(400).json({ error: 'invalid slug' });
     const { emailList, role } = req.body;
     const { Resend } = require('resend');
     const resend = new Resend(process.env.RESEND_API_KEY);
@@ -804,6 +806,7 @@ app.post('/v1/organizations/:slug/team/invite', requireSupabaseAuth, async (req,
         const invitations = [];
         const inviterName = req.user.username || req.user.email;
 
+        const ALLOWED_ROLES = ['developer', 'admin'];
         for (const identifier of emailList) {
             let targetEmail = identifier;
 
@@ -826,7 +829,6 @@ app.post('/v1/organizations/:slug/team/invite', requireSupabaseAuth, async (req,
             const expiresAt = new Date();
             expiresAt.setDate(expiresAt.getDate() + 3);
 
-            const ALLOWED_ROLES = ['developer', 'admin'];
             const inv = await prisma.invitation.create({
                 data: {
                     email: targetEmail,
@@ -900,6 +902,7 @@ app.post('/v1/organizations/:slug/team/invite', requireSupabaseAuth, async (req,
 
 app.post('/v1/organizations/:slug/team/join', requireSupabaseAuth, async (req, res) => {
     const { slug } = req.params;
+    if (!/^[a-f0-9]{20}$/.test(slug)) return res.status(400).json({ error: 'invalid slug' });
     const { token: rawToken } = req.body;
 
     if (!rawToken || typeof rawToken !== 'string' || !/^[a-f0-9]{64}$/i.test(rawToken)) {
@@ -975,7 +978,7 @@ app.get('/v1/user/pending-invitations', requireSupabaseAuth, async (req, res) =>
 
 app.post('/v1/user/pending-invitations/:inviteId/accept', requireSupabaseAuth, async (req, res) => {
     const { inviteId } = req.params;
-    if (!inviteId || !/^[a-zA-Z0-9_-]+$/.test(inviteId)) {
+    if (!inviteId || inviteId.length > 64 || !/^[a-zA-Z0-9_-]+$/.test(inviteId)) {
         return res.status(400).json({ error: 'invalid invitation id' });
     }
     try {
