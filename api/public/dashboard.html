@@ -1422,6 +1422,7 @@
             }
 
             .sidebar-footer {
+                border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
                 padding: 0.5rem 0.75rem !important;
                 margin-top: auto !important;
             }
@@ -1884,23 +1885,6 @@
                 align-self: center !important;
             }
 
-            #sidebar-help {
-                display: flex !important;
-                flex-direction: row !important;
-                align-items: center !important;
-                justify-content: space-between !important;
-            }
-            #sidebar-help .item-label {
-                order: 0 !important;
-                margin-left: 0 !important;
-                flex: 1 !important;
-                opacity: 1 !important;
-            }
-            #sidebar-help .item-icon {
-                order: 1 !important;
-                flex-shrink: 0 !important;
-            }
-
             #sp-chat-btn {
                 width: 44px !important;
                 height: 44px !important;
@@ -1908,16 +1892,10 @@
                 right: 16px !important;
             }
 
-            #sidebar-footer-divider {
-                display: block !important;
-                height: 1px !important;
-                background: rgba(255, 255, 255, 0.06) !important;
-                margin: 6px 0 !important;
-            }
-
+            #sidebar-help,
             #sidebar-livechat {
                 display: flex !important;
-                margin: 0 12px 8px !important;
+                margin: 4px 0 !important;
                 padding: 0.55rem 1rem !important;
                 border: 1px solid rgba(255, 255, 255, 0.08) !important;
                 border-radius: 8px !important;
@@ -1926,6 +1904,7 @@
                 height: auto !important;
                 background: transparent !important;
             }
+            #sidebar-help .item-label,
             #sidebar-livechat .item-label {
                 opacity: 1 !important;
                 margin-left: 0 !important;
@@ -2163,7 +2142,6 @@
                 </div>
                 <span class="item-label">help</span>
             </div>
-            <div id="sidebar-footer-divider"></div>
             <div class="sidebar-item" id="sidebar-livechat" style="cursor: pointer;">
                 <div class="item-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
@@ -2710,7 +2688,6 @@
             pointer-events: none;
         }
         #sidebar-livechat { display: none; }
-        #sidebar-footer-divider { display: none; }
         body.mobile-sidebar-open #sp-chat-btn { display: none !important; }
         body.modal-open #sp-chat-btn {
             filter: blur(8px) !important;
