@@ -104,6 +104,7 @@ app.use(helmet({
                 "https://*.twitter.com",
                 "https://*.x.com",
                 "https://js.stripe.com",
+                "https://client.crisp.chat",
                 "blob:",
                 "about:"
             ],
@@ -116,7 +117,8 @@ app.use(helmet({
                 "https://*.googleusercontent.com",
                 "https://*.twimg.com",
                 "https://abs.twimg.com",
-                "https://cdn.jsdelivr.net"
+                "https://cdn.jsdelivr.net",
+                "https://*.crisp.chat"
             ],
             "connect-src": [
                 "'self'",
@@ -130,7 +132,9 @@ app.use(helmet({
                 "https://*.x.com",
                 "https://api.stripe.com",
                 "https://*.stripe.com",
-                "https://*.stripe.network"
+                "https://*.stripe.network",
+                "https://*.crisp.chat",
+                "wss://*.crisp.chat"
             ],
             "frame-src": [
                 "'self'",
