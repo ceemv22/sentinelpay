@@ -210,6 +210,15 @@ function renderDashboard(session) {
         }
         if (avatarInitial === '?' && displayIdentifier) avatarInitial = displayIdentifier.charAt(0);
 
+        if (window.Intercom && user.email) {
+            window.Intercom('update', {
+                user_id: user.id,
+                email: user.email,
+                name: rawUsername !== user.email ? rawUsername : user.email,
+                created_at: Math.floor(new Date(user.created_at || Date.now()).getTime() / 1000)
+            });
+        }
+
         const avatarEl = document.getElementById('org-avatar-circle');
         if (avatarEl) avatarEl.textContent = avatarInitial.toUpperCase();
         
