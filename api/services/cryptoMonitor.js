@@ -23,7 +23,8 @@ const TOKEN_CONTRACTS = {
 const NATIVE_BY_NETWORK = { ethereum: 'ETH', bsc: 'BNB', polygon: 'POL', bitcoin: 'BTC' };
 const SLIPPAGE = 0.98;
 const GRACE_WINDOW_MS = 2 * 60 * 60 * 1000;
-const CLEANUP_RETENTION_MS = 30 * 24 * 60 * 60 * 1000;
+const CLEANUP_EMPTY_RETENTION_MS = 30 * 24 * 60 * 60 * 1000;
+const CLEANUP_FUNDED_RETENTION_MS = 90 * 24 * 60 * 60 * 1000;
 
 function alchemyUrl(network) {
     const keys = { ethereum: 'ALCHEMY_ETH_KEY', bsc: 'ALCHEMY_BNB_KEY', polygon: 'ALCHEMY_POL_KEY' };
@@ -149,13 +150,27 @@ async function provisionPayment(session, txHash, amountReceived) {
 }
 
 async function cleanupExpiredSessions() {
-    const cutoff = new Date(Date.now() - CLEANUP_RETENTION_MS);
+    const emptyCutoff = new Date(Date.now() - CLEANUP_EMPTY_RETENTION_MS);
+    const fundedCutoff = new Date(Date.now() - CLEANUP_FUNDED_RETENTION_MS);
     try {
-        const result = await prisma.paymentSession.deleteMany({
-            where: { status: 'expired', expiresAt: { lt: cutoff } }
+        const empty = await prisma.paymentSession.deleteMany({
+            where: {
+                status: 'expired',
+                expiresAt: { lt: emptyCutoff },
+                amountReceived: null,
+                refundStatus: 'none'
+            }
         });
-        if (result.count > 0) {
-            console.log(`[crypto-monitor] deleted ${result.count} expired sessions (>30d old)`);
+        const funded = await prisma.paymentSession.deleteMany({
+            where: {
+                status: 'expired',
+                expiresAt: { lt: fundedCutoff },
+                refundStatus: 'processed'
+            }
+        });
+        const deleted = empty.count + funded.count;
+        if (deleted > 0) {
+            console.log(`[crypto-monitor] cleanup: ${empty.count} empty (>30d), ${funded.count} resolved funded (>90d)`);
         }
     } catch (err) {
         console.error('[crypto-monitor] cleanup error:', err.message);
