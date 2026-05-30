@@ -1909,7 +1909,22 @@
                 right: 16px !important;
             }
 
-            #sidebar-livechat { display: flex !important; }
+            #sidebar-livechat {
+                display: flex !important;
+                margin: 4px 12px 8px !important;
+                padding: 0.7rem 1rem !important;
+                border: 1px solid rgba(255, 255, 255, 0.08) !important;
+                border-radius: 8px !important;
+                justify-content: center !important;
+                gap: 8px !important;
+                height: auto !important;
+                background: transparent !important;
+            }
+            #sidebar-livechat .item-label {
+                opacity: 1 !important;
+                margin-left: 0 !important;
+                font-size: 0.875rem !important;
+            }
         }
 
         @media (max-width: 480px) {
@@ -2688,6 +2703,7 @@
             pointer-events: none;
         }
         #sidebar-livechat { display: none; }
+        body.mobile-sidebar-open #sp-chat-btn { display: none !important; }
         body.modal-open #sp-chat-btn {
             filter: blur(8px) !important;
             pointer-events: none !important;
