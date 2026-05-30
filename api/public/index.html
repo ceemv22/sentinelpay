@@ -36,7 +36,7 @@
     <link rel="icon" type="image/svg+xml" href="logo.svg">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css?v=4.0">
-    <link rel="stylesheet" href="landing.css?v=3.0">
+    <link rel="stylesheet" href="landing.css?v=3.1">
     <script>(function(){var w=window;if(typeof w.Intercom==="function"){w.Intercom('reattach_activator');}else{var i=function(){i.c(arguments);};i.q=[];i.c=function(a){i.q.push(a);};w.Intercom=i;}})();</script>
     <script async src="https://widget.intercom.io/widget/obn3omwl"></script>
     <script src="lib/supabase.js"></script>
@@ -170,9 +170,11 @@
             <div class="lp-mobile-divider"></div>
             <div class="lp-mobile-ctas">
                 <a href="#" id="lp-mm-livechat" class="lp-mm-btn-ghost">live chat</a>
-                <a href="/auth#login" id="lp-mm-login" class="lp-mm-btn-ghost">login</a>
-                <a href="/auth#register" id="lp-mm-register" class="lp-mm-btn-solid">get started</a>
-                <a href="/dashboard/organizations" id="lp-mm-dashboard" class="lp-mm-btn-solid" style="display: none;">dashboard</a>
+                <div class="lp-mm-ctas-row">
+                    <a href="/auth#login" id="lp-mm-login" class="lp-mm-btn-ghost">login</a>
+                    <a href="/auth#register" id="lp-mm-register" class="lp-mm-btn-solid">get started</a>
+                    <a href="/dashboard/organizations" id="lp-mm-dashboard" class="lp-mm-btn-solid" style="display: none;">dashboard</a>
+                </div>
             </div>
         </div>
     </div>
