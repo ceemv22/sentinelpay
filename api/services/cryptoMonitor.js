@@ -23,8 +23,8 @@ const TOKEN_CONTRACTS = {
 const NATIVE_BY_NETWORK = { ethereum: 'ETH', bsc: 'BNB', polygon: 'POL', bitcoin: 'BTC' };
 const SLIPPAGE = 0.98;
 const GRACE_WINDOW_MS = 2 * 60 * 60 * 1000;
-const CLEANUP_EMPTY_RETENTION_MS = 30 * 24 * 60 * 60 * 1000;
-const CLEANUP_FUNDED_RETENTION_MS = 90 * 24 * 60 * 60 * 1000;
+const CLEANUP_EMPTY_RETENTION_MS = 72 * 60 * 60 * 1000;
+const CLEANUP_FUNDED_RETENTION_MS = 30 * 24 * 60 * 60 * 1000;
 
 function alchemyUrl(network) {
     const keys = { ethereum: 'ALCHEMY_ETH_KEY', bsc: 'ALCHEMY_BNB_KEY', polygon: 'ALCHEMY_POL_KEY' };
@@ -170,7 +170,7 @@ async function cleanupExpiredSessions() {
         });
         const deleted = empty.count + funded.count;
         if (deleted > 0) {
-            console.log(`[crypto-monitor] cleanup: ${empty.count} empty (>30d), ${funded.count} resolved funded (>90d)`);
+            console.log(`[crypto-monitor] cleanup: ${empty.count} empty (>72h), ${funded.count} resolved funded (>30d)`);
         }
     } catch (err) {
         console.error('[crypto-monitor] cleanup error:', err.message);
