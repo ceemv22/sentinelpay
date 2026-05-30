@@ -1927,6 +1927,8 @@
             #sidebar-livechat {
                 display: block !important;
                 margin: auto 0.75rem 0.75rem !important;
+                width: calc(100% - 1.5rem) !important;
+                box-sizing: border-box !important;
                 padding: 0.7rem 1rem !important;
                 border: 1px solid rgba(255, 255, 255, 0.08) !important;
                 border-radius: 8px !important;
@@ -2743,8 +2745,10 @@
         var sidebarLc = document.getElementById('sidebar-livechat');
         if (sidebarLc) {
             sidebarLc.addEventListener('click', function() {
-                document.body.classList.remove('mobile-sidebar-open');
                 if (window.Intercom) window.Intercom('show');
+                setTimeout(function() {
+                    document.body.classList.remove('mobile-sidebar-open');
+                }, 100);
             });
         }
     </script>
