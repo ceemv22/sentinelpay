@@ -1236,7 +1236,10 @@
     </button>
     <script>
         function spToggleChat() {
-            if (window.$crisp) window.$crisp.push(["do", "chat:open"]);
+            if (window.$crisp) {
+                window.$crisp.push(["do", "chat:show"]);
+                window.$crisp.push(["do", "chat:open"]);
+            }
         }
         window.$crisp = window.$crisp || [];
         window.$crisp.push(["on", "session:loaded", function() {
