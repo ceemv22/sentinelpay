@@ -99,7 +99,6 @@ body {
     align-items: center;
     position: relative;
     overflow-x: hidden;
-    -webkit-overflow-scrolling: touch;
 }
 
 .cyber-grid {
