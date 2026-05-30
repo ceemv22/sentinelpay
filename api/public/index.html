@@ -1237,15 +1237,26 @@
         <span id="sp-chat-badge"></span>
     </button>
     <script>
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                if (window.Intercom && !window.Intercom.booted) {
+                    window.Intercom('boot', {
+                        app_id: 'obn3omwl',
+                        api_base: 'https://api-iam.intercom.io',
+                        hide_default_launcher: true
+                    });
+                }
+                if (window.Intercom) {
+                    window.Intercom('onUnreadCountChange', function(count) {
+                        var b = document.getElementById('sp-chat-badge');
+                        if (b) b.style.display = count > 0 ? 'block' : 'none';
+                    });
+                }
+            }, 800);
+        });
         document.getElementById('sp-chat-btn').addEventListener('click', function() {
             if (window.Intercom) window.Intercom('show');
         });
-        if (window.Intercom) {
-            window.Intercom('onUnreadCountChange', function(count) {
-                var b = document.getElementById('sp-chat-badge');
-                if (b) b.style.display = count > 0 ? 'block' : 'none';
-            });
-        }
         var lcBtn = document.getElementById('lp-mm-livechat');
         if (lcBtn) {
             lcBtn.addEventListener('click', function(e) {
