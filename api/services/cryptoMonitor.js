@@ -22,7 +22,7 @@ const TOKEN_CONTRACTS = {
 
 const NATIVE_BY_NETWORK = { ethereum: 'ETH', bsc: 'BNB', polygon: 'POL', bitcoin: 'BTC' };
 const SLIPPAGE = 0.98;
-const GRACE_WINDOW_MS = 2 * 60 * 60 * 1000;
+const GRACE_WINDOW_MS = 6 * 60 * 60 * 1000;
 const CLEANUP_EMPTY_RETENTION_MS = 72 * 60 * 60 * 1000;
 const CLEANUP_FUNDED_RETENTION_MS = 30 * 24 * 60 * 60 * 1000;
 
