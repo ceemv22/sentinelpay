@@ -203,9 +203,11 @@ router.get('/session/:id', requireSupabaseAuth, async (req, res) => {
         const session = await prisma.paymentSession.findUnique({
             where: { id: req.params.id },
             select: {
-                id: true, userId: true, status: true, txHash: true,
-                amountCrypto: true, currency: true, network: true,
-                address: true, amountUsd: true, expiresAt: true, confirmedAt: true
+                id: true, userId: true, plan: true, status: true,
+                txHash: true, txBroadcastAt: true, amountCrypto: true,
+                amountReceived: true, currency: true, network: true,
+                address: true, amountUsd: true, exchangeRate: true,
+                refundStatus: true, expiresAt: true, confirmedAt: true, createdAt: true
             }
         });
         if (!session) return res.status(404).json({ error: 'session not found' });
@@ -213,6 +215,77 @@ router.get('/session/:id', requireSupabaseAuth, async (req, res) => {
         res.json(session);
     } catch (err) {
         res.status(500).json({ error: 'failed to fetch session' });
+    }
+});
+
+router.get('/sessions', requireSupabaseAuth, async (req, res) => {
+    try {
+        const sessions = await prisma.paymentSession.findMany({
+            where: { userId: req.user.id },
+            orderBy: { createdAt: 'desc' },
+            take: 50,
+            select: {
+                id: true, plan: true, status: true, currency: true, network: true,
+                amountUsd: true, amountCrypto: true, amountReceived: true,
+                txHash: true, txBroadcastAt: true, refundStatus: true,
+                batchId: true, expiresAt: true, confirmedAt: true, createdAt: true
+            }
+        });
+        res.json(sessions);
+    } catch (err) {
+        console.error('[payment-sessions]', err);
+        res.status(500).json({ error: 'failed to fetch payment sessions' });
+    }
+});
+
+const BTC_ADDR_RE = /^(bc1[ac-hj-np-z02-9]{6,87}|[13][a-km-zA-HJ-NP-Z1-9]{25,34})$/;
+const EVM_ADDR_RE = /^0x[a-fA-F0-9]{40}$/;
+
+router.post('/session/:id/refund', json, requireSupabaseAuth, async (req, res) => {
+    const { refundAddress } = req.body;
+    if (!refundAddress || typeof refundAddress !== 'string' || refundAddress.length > 100) {
+        return res.status(400).json({ error: 'refund address required' });
+    }
+
+    const isEvm = EVM_ADDR_RE.test(refundAddress);
+    const isBtc = BTC_ADDR_RE.test(refundAddress);
+    if (!isEvm && !isBtc) {
+        return res.status(400).json({ error: 'invalid refund address format' });
+    }
+
+    try {
+        const session = await prisma.paymentSession.findUnique({
+            where: { id: req.params.id },
+            select: { id: true, userId: true, status: true, refundStatus: true, network: true, amountReceived: true }
+        });
+        if (!session) return res.status(404).json({ error: 'session not found' });
+        if (session.userId !== req.user.id) return res.status(403).json({ error: 'access denied' });
+        if (!['expired', 'grace'].includes(session.status)) {
+            return res.status(400).json({ error: 'refund only available for expired or grace sessions' });
+        }
+        if (session.refundStatus !== 'none') {
+            return res.status(409).json({ error: 'refund already requested' });
+        }
+        if (!session.amountReceived || session.amountReceived <= 0) {
+            return res.status(400).json({ error: 'no funds detected on this session address' });
+        }
+
+        if (session.network === 'bitcoin' && !isBtc) {
+            return res.status(400).json({ error: 'bitcoin session requires a bitcoin refund address' });
+        }
+        if (session.network !== 'bitcoin' && !isEvm) {
+            return res.status(400).json({ error: 'evm session requires an ethereum-compatible refund address' });
+        }
+
+        await prisma.paymentSession.update({
+            where: { id: session.id },
+            data: { refundAddress, refundStatus: 'requested' }
+        });
+
+        res.json({ message: 'refund request submitted', refundStatus: 'requested' });
+    } catch (err) {
+        console.error('[refund-request]', err);
+        res.status(500).json({ error: 'failed to submit refund request' });
     }
 });
 
