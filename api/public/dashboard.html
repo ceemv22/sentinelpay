@@ -1901,6 +1901,10 @@
                 order: 1 !important;
                 flex-shrink: 0 !important;
             }
+
+            #sp-chat-btn { display: none !important; }
+
+            #sidebar-livechat { display: flex !important; }
         }
 
         @media (max-width: 480px) {
@@ -2132,6 +2136,12 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
                 </div>
                 <span class="item-label">help</span>
+            </div>
+            <div class="sidebar-item" id="sidebar-livechat" style="cursor: pointer;">
+                <div class="item-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                </div>
+                <span class="item-label">live chat</span>
             </div>
             <div class="sidebar-item" id="sidebar-toggle" style="cursor: pointer;">
                 <div class="item-icon">
@@ -2672,6 +2682,11 @@
             border: 1.5px solid rgba(5, 5, 8, 1);
             pointer-events: none;
         }
+        #sidebar-livechat { display: none; }
+        body.modal-open #sp-chat-btn {
+            filter: blur(8px) !important;
+            pointer-events: none !important;
+        }
     </style>
     <button id="sp-chat-btn" aria-label="open support chat">
         <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
@@ -2687,6 +2702,13 @@
             window.Intercom('onUnreadCountChange', function(count) {
                 var b = document.getElementById('sp-chat-badge');
                 if (b) b.style.display = count > 0 ? 'block' : 'none';
+            });
+        }
+        var sidebarLc = document.getElementById('sidebar-livechat');
+        if (sidebarLc) {
+            sidebarLc.addEventListener('click', function() {
+                document.body.classList.remove('mobile-sidebar-open');
+                if (window.Intercom) window.Intercom('show');
             });
         }
     </script>
