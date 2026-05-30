@@ -1919,22 +1919,20 @@
             }
 
             #sidebar-livechat {
-                display: flex !important;
+                display: block !important;
                 margin: auto 0.75rem 0.75rem !important;
                 padding: 0.7rem 1rem !important;
                 border: 1px solid rgba(255, 255, 255, 0.08) !important;
                 border-radius: 8px !important;
-                justify-content: center !important;
-                height: auto !important;
+                text-align: center !important;
                 background: transparent !important;
                 color: var(--text-muted) !important;
                 font-size: 0.82rem !important;
                 font-family: 'JetBrains Mono', monospace !important;
                 text-transform: lowercase !important;
                 -webkit-tap-highlight-color: transparent !important;
+                transition: background 0.15s ease, border-color 0.15s ease !important;
             }
-            #sidebar-livechat .item-icon,
-            #sidebar-livechat .item-label { all: unset !important; }
         }
 
         @media (max-width: 480px) {
@@ -2170,12 +2168,7 @@
                 <span class="item-label">collapse</span>
             </div>
         </div>
-        <div class="sidebar-item" id="sidebar-livechat" style="cursor: pointer;">
-            <div class="item-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-            </div>
-            <span class="item-label">live chat</span>
-        </div>
+        <div id="sidebar-livechat" style="cursor: pointer;">live chat</div>
     </div>
 
     <div class="mobile-sidebar-overlay" id="mobile-sidebar-overlay"></div>
