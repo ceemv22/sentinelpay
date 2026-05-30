@@ -1424,9 +1424,7 @@
             .sidebar-footer {
                 order: -1 !important;
                 margin-top: 0 !important;
-                padding: 0 0 0.4rem !important;
-                border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
-                margin-bottom: 0.4rem !important;
+                padding: 0.5rem 0.75rem 0 !important;
             }
 
             .hb-line {
@@ -1908,6 +1906,13 @@
             #sidebar-help:active { background: rgba(255, 255, 255, 0.05) !important; }
             #sidebar-help .item-label { opacity: 1 !important; }
             #sidebar-help .item-icon { display: none !important; }
+            .sidebar-footer::after {
+                content: '' !important;
+                display: block !important;
+                height: 1px !important;
+                background: rgba(255, 255, 255, 0.08) !important;
+                margin: 0.4rem -0.75rem 0 !important;
+            }
 
             #sidebar-livechat {
                 display: flex !important;
@@ -1927,6 +1932,7 @@
                 margin-left: 0 !important;
                 font-size: 0.82rem !important;
             }
+            #sidebar-livechat .item-icon { display: none !important; }
         }
 
         @media (max-width: 480px) {
