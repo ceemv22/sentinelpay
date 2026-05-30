@@ -1422,8 +1422,10 @@
             }
 
             .sidebar-footer {
-                padding: 0.5rem 0.75rem !important;
-                margin-top: auto !important;
+                order: -1 !important;
+                margin-top: 0 !important;
+                padding: 0.25rem 0.75rem 0.25rem !important;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
             }
 
             .hb-line {
@@ -1903,17 +1905,18 @@
             }
             #sidebar-help:active { background: rgba(255, 255, 255, 0.05) !important; }
             #sidebar-help .item-label { opacity: 1 !important; }
+            #sidebar-help .item-icon { display: none !important; }
 
             #sidebar-footer-divider {
                 display: block !important;
                 height: 1px !important;
                 background: rgba(255, 255, 255, 0.06) !important;
-                margin: 2px 0 !important;
+                margin: 2px 0 8px !important;
             }
 
             #sidebar-livechat {
                 display: flex !important;
-                margin: 4px 0 0 !important;
+                margin: 0 0 4px !important;
                 padding: 0.7rem 1rem !important;
                 border: 1px solid rgba(255, 255, 255, 0.08) !important;
                 border-radius: 8px !important;
