@@ -106,11 +106,13 @@ app.use(helmet({
                 "https://js.stripe.com",
                 "https://widget.intercom.io",
                 "https://js.intercomcdn.com",
+                "https://*.intercomcdn.com",
+                "https://*.intercom.io",
                 "blob:",
                 "about:"
             ],
-            "style-src": ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
-            "font-src": ["'self'", "https://fonts.gstatic.com"],
+            "style-src": ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://fonts.intercomcdn.com"],
+            "font-src": ["'self'", "https://fonts.gstatic.com", "https://fonts.intercomcdn.com"],
             "img-src": [
                 "'self'",
                 "data:",
@@ -136,10 +138,13 @@ app.use(helmet({
                 "https://*.stripe.com",
                 "https://*.stripe.network",
                 "https://api-iam.intercom.io",
+                "https://*.intercom.io",
                 "https://uploads.intercomcdn.com",
                 "https://uploads.intercomusercontent.com",
+                "https://*.intercomcdn.com",
                 "wss://nexus-websocket-a.intercom.io",
-                "wss://nexus-websocket-b.intercom.io"
+                "wss://nexus-websocket-b.intercom.io",
+                "wss://*.intercom.io"
             ],
             "frame-src": [
                 "'self'",
