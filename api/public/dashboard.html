@@ -1891,32 +1891,43 @@
                 right: 16px !important;
             }
 
-            #sidebar-help .item-label {
-                opacity: 1 !important;
+            #sidebar-help {
+                padding: 0.75rem 0 !important;
+                color: var(--text-main) !important;
+                background: transparent !important;
+                border: none !important;
+                height: auto !important;
+                gap: 10px !important;
+                font-size: 0.88rem !important;
+                transition: background 0.15s ease !important;
             }
+            #sidebar-help:active { background: rgba(255, 255, 255, 0.05) !important; }
+            #sidebar-help .item-label { opacity: 1 !important; }
 
             #sidebar-footer-divider {
                 display: block !important;
                 height: 1px !important;
                 background: rgba(255, 255, 255, 0.06) !important;
-                margin: 4px 0 !important;
+                margin: 2px 0 !important;
             }
 
             #sidebar-livechat {
                 display: flex !important;
-                margin: 4px 0 !important;
-                padding: 0.55rem 1rem !important;
+                margin: 4px 0 0 !important;
+                padding: 0.7rem 1rem !important;
                 border: 1px solid rgba(255, 255, 255, 0.08) !important;
                 border-radius: 8px !important;
                 justify-content: center !important;
                 gap: 8px !important;
                 height: auto !important;
                 background: transparent !important;
+                color: var(--text-muted) !important;
+                font-size: 0.82rem !important;
             }
             #sidebar-livechat .item-label {
                 opacity: 1 !important;
                 margin-left: 0 !important;
-                font-size: 0.875rem !important;
+                font-size: 0.82rem !important;
             }
         }
 
