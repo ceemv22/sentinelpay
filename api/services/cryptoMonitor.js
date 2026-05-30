@@ -21,6 +21,9 @@ const TOKEN_CONTRACTS = {
 };
 
 const NATIVE_BY_NETWORK = { ethereum: 'ETH', bsc: 'BNB', polygon: 'POL', bitcoin: 'BTC' };
+const SLIPPAGE = 0.98;
+const GRACE_WINDOW_MS = 2 * 60 * 60 * 1000;
+const CLEANUP_RETENTION_MS = 30 * 24 * 60 * 60 * 1000;
 
 function alchemyUrl(network) {
     const keys = { ethereum: 'ALCHEMY_ETH_KEY', bsc: 'ALCHEMY_BNB_KEY', polygon: 'ALCHEMY_POL_KEY' };
@@ -44,21 +47,22 @@ async function alchemyTransfers(url, toAddress, contractAddresses, category) {
 async function checkEvmSession(session) {
     const url = alchemyUrl(session.network);
     if (!url) return null;
-    const expected = parseFloat(session.amountCrypto) * 0.99;
+
+    const expected = parseFloat(session.amountCrypto) * SLIPPAGE;
     const isNative = NATIVE_BY_NETWORK[session.network] === session.currency;
 
+    let transfers;
     if (isNative) {
-        const transfers = await alchemyTransfers(url, session.address, null, ['external']);
-        for (const t of transfers) {
-            if ((t.value || 0) >= expected) return t.hash;
-        }
+        transfers = await alchemyTransfers(url, session.address, null, ['external']);
     } else {
         const contract = TOKEN_CONTRACTS[session.network]?.[session.currency];
         if (!contract) return null;
-        const transfers = await alchemyTransfers(url, session.address, [contract], ['erc20']);
-        for (const t of transfers) {
-            if ((t.value || 0) >= expected) return t.hash;
-        }
+        transfers = await alchemyTransfers(url, session.address, [contract], ['erc20']);
+    }
+
+    const totalReceived = transfers.reduce((sum, t) => sum + (t.value || 0), 0);
+    if (totalReceived >= expected) {
+        return { hash: transfers[0]?.hash || 'confirmed', amountReceived: totalReceived, broadcastAt: null };
     }
     return null;
 }
@@ -70,19 +74,30 @@ async function checkBtcSession(session) {
         `https://api.blockcypher.com/v1/btc/main/addrs/${session.address}`,
         { params, timeout: 10000 }
     );
-    const totalReceived = (res.data.total_received || 0) / 1e8;
-    if (totalReceived >= parseFloat(session.amountCrypto) * 0.99) {
-        const refs = [...(res.data.txrefs || []), ...(res.data.unconfirmed_txrefs || [])];
-        return refs[0]?.tx_hash || 'confirmed';
+
+    const expected = parseFloat(session.amountCrypto) * SLIPPAGE;
+    const totalConfirmed = (res.data.total_received || 0) / 1e8;
+
+    if (totalConfirmed >= expected) {
+        const refs = res.data.txrefs || [];
+        return { hash: refs[0]?.tx_hash || 'confirmed', amountReceived: totalConfirmed, broadcastAt: null };
     }
+
+    const unconfirmed = res.data.unconfirmed_txrefs || [];
+    if (unconfirmed.length > 0) {
+        const broadcastAt = unconfirmed[0]?.received ? new Date(unconfirmed[0].received) : new Date();
+        const unconfirmedAmount = (res.data.unconfirmed_balance || 0) / 1e8;
+        return { hash: null, amountReceived: unconfirmedAmount, broadcastAt };
+    }
+
     return null;
 }
 
-async function provisionPayment(session, txHash) {
+async function provisionPayment(session, txHash, amountReceived) {
     await prisma.$transaction(async (tx) => {
         const updated = await tx.paymentSession.updateMany({
-            where: { id: session.id, status: 'pending' },
-            data: { status: 'confirmed', txHash, confirmedAt: new Date() }
+            where: { id: session.id, status: { in: ['pending', 'grace'] } },
+            data: { status: 'confirmed', txHash, confirmedAt: new Date(), amountReceived: amountReceived || null }
         });
         if (updated.count === 0) return;
 
@@ -133,29 +148,82 @@ async function provisionPayment(session, txHash) {
     console.log(`[crypto-monitor] session ${session.id} confirmed via ${txHash}`);
 }
 
-async function checkPendingPayments() {
-    let pending;
+async function cleanupExpiredSessions() {
+    const cutoff = new Date(Date.now() - CLEANUP_RETENTION_MS);
     try {
-        pending = await prisma.paymentSession.findMany({ where: { status: 'pending' } });
+        const result = await prisma.paymentSession.deleteMany({
+            where: { status: 'expired', expiresAt: { lt: cutoff } }
+        });
+        if (result.count > 0) {
+            console.log(`[crypto-monitor] deleted ${result.count} expired sessions (>30d old)`);
+        }
+    } catch (err) {
+        console.error('[crypto-monitor] cleanup error:', err.message);
+    }
+}
+
+async function checkPendingPayments() {
+    let sessions;
+    try {
+        sessions = await prisma.paymentSession.findMany({
+            where: { status: { in: ['pending', 'grace'] } }
+        });
     } catch (err) {
         console.error('[crypto-monitor] db error:', err.message);
         return;
     }
 
     const now = new Date();
-    for (const session of pending) {
-        if (new Date(session.expiresAt) < now) {
-            await prisma.paymentSession.update({ where: { id: session.id }, data: { status: 'expired' } });
+    for (const session of sessions) {
+        const expiresAt = new Date(session.expiresAt);
+        const graceDeadline = new Date(expiresAt.getTime() + GRACE_WINDOW_MS);
+
+        if (session.status === 'grace' && now > graceDeadline) {
+            await prisma.paymentSession.update({
+                where: { id: session.id },
+                data: { status: 'expired' }
+            });
+            console.log(`[crypto-monitor] session ${session.id} grace window elapsed`);
             continue;
         }
+
+        if (session.status === 'pending' && expiresAt < now) {
+            await prisma.paymentSession.update({
+                where: { id: session.id },
+                data: { status: 'expired' }
+            });
+            continue;
+        }
+
         try {
-            let txHash = null;
+            let result = null;
             if (session.network === 'bitcoin') {
-                txHash = await checkBtcSession(session);
+                result = await checkBtcSession(session);
             } else {
-                txHash = await checkEvmSession(session);
+                result = await checkEvmSession(session);
             }
-            if (txHash) await provisionPayment(session, txHash);
+
+            if (!result) continue;
+
+            if (result.hash) {
+                await provisionPayment(session, result.hash, result.amountReceived);
+            } else if (result.broadcastAt) {
+                const isOnTime = result.broadcastAt <= expiresAt;
+                const alreadyGrace = session.status === 'grace';
+                if (isOnTime || alreadyGrace) {
+                    await prisma.paymentSession.update({
+                        where: { id: session.id },
+                        data: {
+                            status: 'grace',
+                            txBroadcastAt: session.txBroadcastAt || result.broadcastAt,
+                            amountReceived: result.amountReceived
+                        }
+                    });
+                    if (!alreadyGrace) {
+                        console.log(`[crypto-monitor] session ${session.id} entered grace — BTC tx seen at ${result.broadcastAt.toISOString()}`);
+                    }
+                }
+            }
         } catch (err) {
             console.error(`[crypto-monitor] check error for ${session.id}:`, err.message);
         }
@@ -169,6 +237,8 @@ function startCryptoMonitor() {
     }
     console.log('[crypto-monitor] started (20s interval)');
     setInterval(checkPendingPayments, 20_000);
+    setInterval(cleanupExpiredSessions, 6 * 60 * 60 * 1000);
+    cleanupExpiredSessions();
 }
 
 module.exports = { startCryptoMonitor };

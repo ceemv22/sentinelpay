@@ -101,25 +101,29 @@ model ProcessedEvent {
 }
 
 model PaymentSession {
-  id           String    @id @default(uuid())
-  userId       String
-  user         User      @relation(fields: [userId], references: [id])
-  orgId        String?
-  orgName      String?
-  plan         String
-  amountUsd    Float
-  currency     String
-  network      String
-  address      String
-  addressIndex Int
-  amountCrypto String
-  exchangeRate Float
-  status       String    @default("pending")
-  txHash       String?
-  batchId      String?
-  expiresAt    DateTime
-  confirmedAt  DateTime?
-  createdAt    DateTime  @default(now())
+  id              String    @id @default(uuid())
+  userId          String
+  user            User      @relation(fields: [userId], references: [id])
+  orgId           String?
+  orgName         String?
+  plan            String
+  amountUsd       Float
+  currency        String
+  network         String
+  address         String
+  addressIndex    Int
+  amountCrypto    String
+  exchangeRate    Float
+  status          String    @default("pending")
+  txHash          String?
+  txBroadcastAt   DateTime?
+  amountReceived  Float?
+  refundAddress   String?
+  refundStatus    String    @default("none")
+  batchId         String?
+  expiresAt       DateTime
+  confirmedAt     DateTime?
+  createdAt       DateTime  @default(now())
 }
 
 model AddressCounter {
