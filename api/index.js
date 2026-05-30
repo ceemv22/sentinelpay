@@ -104,6 +104,8 @@ app.use(helmet({
                 "https://*.twitter.com",
                 "https://*.x.com",
                 "https://js.stripe.com",
+                "https://widget.intercom.io",
+                "https://js.intercomcdn.com",
                 "blob:",
                 "about:"
             ],
@@ -116,7 +118,9 @@ app.use(helmet({
                 "https://*.googleusercontent.com",
                 "https://*.twimg.com",
                 "https://abs.twimg.com",
-                "https://cdn.jsdelivr.net"
+                "https://cdn.jsdelivr.net",
+                "https://*.intercomcdn.com",
+                "https://*.intercom.io"
             ],
             "connect-src": [
                 "'self'",
@@ -130,7 +134,12 @@ app.use(helmet({
                 "https://*.x.com",
                 "https://api.stripe.com",
                 "https://*.stripe.com",
-                "https://*.stripe.network"
+                "https://*.stripe.network",
+                "https://api-iam.intercom.io",
+                "https://uploads.intercomcdn.com",
+                "https://uploads.intercomusercontent.com",
+                "wss://nexus-websocket-a.intercom.io",
+                "wss://nexus-websocket-b.intercom.io"
             ],
             "frame-src": [
                 "'self'",
@@ -139,6 +148,8 @@ app.use(helmet({
                 "https://accounts.google.com",
                 "https://js.stripe.com",
                 "https://*.stripe.com",
+                "https://intercom-sheets.com",
+                "https://*.intercom.io",
                 "blob:",
                 "about:"
             ],
