@@ -1,6 +1,7 @@
 const express = require('express');
 const QRCode = require('qrcode');
 const { randomUUID } = require('crypto');
+const rateLimit = require('express-rate-limit');
 const prisma = require('../services/db');
 const requireSupabaseAuth = require('../middleware/supabaseAuth');
 const { deriveAddress } = require('../services/cryptoWallet');
@@ -26,11 +27,31 @@ const SUPPORTED = [
 
 const PLAN_USD = { starter: 99, pro: 399, credits_10: 10, credits_100: 100 };
 
+const cryptoSessionLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000,
+    max: 10,
+    standardHeaders: true,
+    legacyHeaders: false,
+    keyGenerator: (req) => `crypto_session:${req.user?.id || req.ip}`,
+    validate: false,
+    message: { error: 'payment session limit exceeded. try again in 1 hour.', code: 429 }
+});
+
+const cryptoBatchLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000,
+    max: 5,
+    standardHeaders: true,
+    legacyHeaders: false,
+    keyGenerator: (req) => `crypto_batch:${req.user?.id || req.ip}`,
+    validate: false,
+    message: { error: 'batch session limit exceeded. try again in 1 hour.', code: 429 }
+});
+
 router.get('/supported', requireSupabaseAuth, (req, res) => {
     res.json({ configs: SUPPORTED });
 });
 
-router.post('/session', json, requireSupabaseAuth, async (req, res) => {
+router.post('/session', json, requireSupabaseAuth, cryptoSessionLimiter, async (req, res) => {
     const { plan, currency, network, orgName } = req.body;
     if (!plan || !currency || !network) {
         return res.status(400).json({ error: 'plan, currency and network required' });
@@ -100,11 +121,11 @@ router.post('/session', json, requireSupabaseAuth, async (req, res) => {
         });
     } catch (err) {
         console.error('[crypto-session]', err);
-        res.status(500).json({ error: 'failed to create payment session', detail: err.message });
+        res.status(500).json({ error: 'failed to create payment session' });
     }
 });
 
-router.post('/batch-session', json, requireSupabaseAuth, async (req, res) => {
+router.post('/batch-session', json, requireSupabaseAuth, cryptoBatchLimiter, async (req, res) => {
     const { plan, orgName } = req.body;
     if (!plan) return res.status(400).json({ error: 'plan required' });
     const amountUsd = PLAN_USD[plan];
@@ -173,7 +194,7 @@ router.post('/batch-session', json, requireSupabaseAuth, async (req, res) => {
         res.json({ batchId, expiresAt, sessions });
     } catch (err) {
         console.error('[crypto-batch-session]', err);
-        res.status(500).json({ error: 'failed to create payment session', detail: err.message });
+        res.status(500).json({ error: 'failed to create payment session' });
     }
 });
 

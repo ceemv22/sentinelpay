@@ -38,7 +38,8 @@ router.post('/checkout', checkoutJson, requireSupabaseAuth, async (req, res) => 
     if (!stripe) return res.status(503).json({ error: 'payment service unavailable', code: 503 });
 
     const { plan } = req.body;
-    if (!plan || typeof plan !== 'string') {
+    const VALID_CHECKOUT_PLANS = ['starter', 'pro'];
+    if (!plan || !VALID_CHECKOUT_PLANS.includes(plan)) {
         return res.status(400).json({ error: 'invalid plan', code: 400 });
     }
 
@@ -55,9 +56,8 @@ router.post('/checkout', checkoutJson, requireSupabaseAuth, async (req, res) => 
             success_url: `${appBaseUrl}/success.html?session_id={CHECKOUT_SESSION_ID}`,
             cancel_url: `${appBaseUrl}/cancel.html`,
             metadata: {
-                type: plan.includes('credits') ? 'credits' : 'subscription',
+                type: 'subscription',
                 plan,
-                amount: plan.includes('10') ? '10' : (plan.includes('100') ? '100' : '0'),
                 userId: req.user.id
             }
         });
@@ -82,7 +82,8 @@ router.post('/embedded-checkout', checkoutJson, requireSupabaseAuth, async (req,
     if (!stripe) return res.status(503).json({ error: 'payment service unavailable', code: 503 });
 
     const { plan, orgName } = req.body;
-    if (!plan || typeof plan !== 'string') {
+    const VALID_SUBSCRIPTION_PLANS = ['starter', 'pro'];
+    if (!plan || !VALID_SUBSCRIPTION_PLANS.includes(plan)) {
         return res.status(400).json({ error: 'invalid plan', code: 400 });
     }
     if (!orgName || typeof orgName !== 'string') {

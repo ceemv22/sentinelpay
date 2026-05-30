@@ -11,9 +11,18 @@ require('dotenv').config();
 
 const { runScoringEngine } = require('./services/scorer');
 const prisma = require('./services/db');
-const { decrypt } = require('./services/crypto');
+const { encrypt, decrypt } = require('./services/crypto');
 const requireApiKey = require('./middleware/auth');
 const requireSupabaseAuth = require('./middleware/supabaseAuth');
+
+function escapeHtml(str) {
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#x27;');
+}
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -342,9 +351,42 @@ const limiter = rateLimit({
     keyGenerator: (req) => {
         return req.apiKey ? `key:${req.apiKey.id}` : `ip:${req.realIp}`;
     },
-    validate: false, 
+    validate: false,
     store: createStore('b2b:'),
     message: { error: 'request limit exceeded. try again in 15 minutes.', code: 429 }
+});
+
+const userScoreLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 30,
+    standardHeaders: true,
+    legacyHeaders: false,
+    keyGenerator: (req) => `user_score:${req.user?.id || req.realIp}`,
+    validate: false,
+    store: createStore('user_score:'),
+    message: { error: 'score request limit exceeded. try again in 15 minutes.', code: 429 }
+});
+
+const userKeyRollLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000,
+    max: 5,
+    standardHeaders: true,
+    legacyHeaders: false,
+    keyGenerator: (req) => `user_roll:${req.user?.id || req.realIp}`,
+    validate: false,
+    store: createStore('user_roll:'),
+    message: { error: 'api key roll limit exceeded. try again in 1 hour.', code: 429 }
+});
+
+const userOrgLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000,
+    max: 20,
+    standardHeaders: true,
+    legacyHeaders: false,
+    keyGenerator: (req) => `user_org:${req.user?.id || req.realIp}`,
+    validate: false,
+    store: createStore('user_org:'),
+    message: { error: 'organization creation limit exceeded. try again in 1 hour.', code: 429 }
 });
 
 async function logAudit(req, wallet, result, apiKeyId = null) {
@@ -468,7 +510,7 @@ app.post('/v1/public/score', requireRateLimitBackend, consumeUnauthCredit, verif
     }
 });
 
-app.post('/v1/user/score', requireSupabaseAuth, async (req, res) => {
+app.post('/v1/user/score', requireRateLimitBackend, requireSupabaseAuth, userScoreLimiter, async (req, res) => {
     const { wallet } = req.body;
     if (!wallet || wallet.length > 128 || !/^0x[a-fA-F0-9]{40}$/.test(wallet)) {
         return res.status(400).json({ error: 'invalid wallet address format', code: 400 });
@@ -577,12 +619,17 @@ app.get('/v1/user/api-key/reveal', requireSupabaseAuth, async (req, res) => {
     }
 });
 
-app.post('/v1/user/api-key/roll', requireSupabaseAuth, async (req, res) => {
+app.post('/v1/user/api-key/roll', requireRateLimitBackend, requireSupabaseAuth, userKeyRollLimiter, async (req, res) => {
     try {
-        const newKeyRaw = `sp_live_${require('crypto').randomBytes(24).toString('hex')}`;
-        const newKeyHash = require('crypto').createHash('sha256').update(newKeyRaw).digest('hex');
-        const { encrypt } = require('./services/crypto');
-        
+        const existing = await prisma.apiKey.findFirst({
+            where: { userId: req.user.id, active: true },
+            orderBy: { createdAt: 'desc' },
+            select: { plan: true }
+        });
+
+        const newKeyRaw = `sp_live_${crypto.randomBytes(24).toString('hex')}`;
+        const newKeyHash = crypto.createHash('sha256').update(newKeyRaw).digest('hex');
+
         const result = await prisma.$transaction(async (tx) => {
             await tx.apiKey.updateMany({
                 where: { userId: req.user.id, active: true },
@@ -594,7 +641,7 @@ app.post('/v1/user/api-key/roll', requireSupabaseAuth, async (req, res) => {
                     userId: req.user.id,
                     keyHash: newKeyHash,
                     rawKey: encrypt(newKeyRaw),
-                    plan: 'starter',
+                    plan: existing?.plan || 'starter',
                     active: true
                 }
             });
@@ -669,8 +716,8 @@ app.get('/v1/organizations', requireSupabaseAuth, async (req, res) => {
     }
 });
 
-app.post('/v1/organizations', requireSupabaseAuth, async (req, res) => {
-    const { name, plan, region } = req.body;
+app.post('/v1/organizations', requireRateLimitBackend, requireSupabaseAuth, userOrgLimiter, async (req, res) => {
+    const { name } = req.body;
     if (!name || typeof name !== 'string') {
         return res.status(400).json({ error: 'organization name required', code: 400 });
     }
@@ -702,7 +749,7 @@ app.post('/v1/organizations', requireSupabaseAuth, async (req, res) => {
             data: {
                 name: trimmedName,
                 slug: generateSlug(),
-                plan: plan || 'starter',
+                plan: 'starter',
                 region: 'americas',
                 ownerId: req.user.id,
                 members: {
@@ -779,10 +826,11 @@ app.post('/v1/organizations/:slug/team/invite', requireSupabaseAuth, async (req,
             const expiresAt = new Date();
             expiresAt.setDate(expiresAt.getDate() + 3);
 
+            const ALLOWED_ROLES = ['developer', 'admin'];
             const inv = await prisma.invitation.create({
                 data: {
                     email: targetEmail,
-                    role: role || 'developer',
+                    role: ALLOWED_ROLES.includes(role) ? role : 'developer',
                     orgId: org.id,
                     token: tokenHash,
                     invitedBy: inviterName,
@@ -819,7 +867,7 @@ app.post('/v1/organizations/:slug/team/invite', requireSupabaseAuth, async (req,
                                 <td style="padding: 40px 0;">
                                     <h1 style="font-family: 'JetBrains Mono', monospace; font-size: 24px; font-weight: 800; letter-spacing: -1.5px; margin: 0 0 25px 0; color: #ffffff; text-transform: lowercase;">you've been invited</h1>
                                     <p style="font-family: 'JetBrains Mono', monospace; font-size: 14px; line-height: 1.6; color: #777777; margin: 0 0 45px 0;">
-                                        <strong>${inviterName}</strong> invited you to join the <strong>${org.name}</strong> organization on sentinelpay. Complete the signature check to bridge your account to the scanning core.
+                                        <strong>${escapeHtml(inviterName)}</strong> invited you to join the <strong>${escapeHtml(org.name)}</strong> organization on sentinelpay. Complete the signature check to bridge your account to the scanning core.
                                     </p>
                                     <div style="margin-bottom: 45px;">
                                         <a href="${joinUrl}" style="background-color: #ffffff; color: #000000; padding: 20px 40px; text-decoration: none; font-weight: 800; font-size: 13px; font-family: 'JetBrains Mono', monospace; text-transform: lowercase; display: inline-block; box-shadow: 0 8px 24px rgba(0, 240, 255, 0.15);">
