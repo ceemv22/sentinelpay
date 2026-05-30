@@ -1228,19 +1228,19 @@
             pointer-events: none;
         }
     </style>
-    <button id="sp-chat-btn" aria-label="open support chat" onclick="spToggleChat()">
+    <button id="sp-chat-btn" aria-label="open support chat">
         <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
         </svg>
         <span id="sp-chat-badge"></span>
     </button>
     <script>
-        function spToggleChat() {
+        document.getElementById('sp-chat-btn').addEventListener('click', function() {
             if (window.$crisp) {
                 window.$crisp.push(["do", "chat:show"]);
                 window.$crisp.push(["do", "chat:open"]);
             }
-        }
+        });
         window.$crisp = window.$crisp || [];
         window.$crisp.push(["on", "session:loaded", function() {
             window.$crisp.push(["do", "chat:hide"]);

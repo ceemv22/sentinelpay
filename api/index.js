@@ -108,7 +108,7 @@ app.use(helmet({
                 "blob:",
                 "about:"
             ],
-            "style-src": ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+            "style-src": ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://client.crisp.chat"],
             "font-src": ["'self'", "https://fonts.gstatic.com"],
             "img-src": [
                 "'self'",
