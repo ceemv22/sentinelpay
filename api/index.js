@@ -104,11 +104,10 @@ app.use(helmet({
                 "https://*.twitter.com",
                 "https://*.x.com",
                 "https://js.stripe.com",
-                "https://client.crisp.chat",
                 "blob:",
                 "about:"
             ],
-            "style-src": ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://client.crisp.chat"],
+            "style-src": ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
             "font-src": ["'self'", "https://fonts.gstatic.com"],
             "img-src": [
                 "'self'",
@@ -117,8 +116,7 @@ app.use(helmet({
                 "https://*.googleusercontent.com",
                 "https://*.twimg.com",
                 "https://abs.twimg.com",
-                "https://cdn.jsdelivr.net",
-                "https://*.crisp.chat"
+                "https://cdn.jsdelivr.net"
             ],
             "connect-src": [
                 "'self'",
@@ -132,9 +130,7 @@ app.use(helmet({
                 "https://*.x.com",
                 "https://api.stripe.com",
                 "https://*.stripe.com",
-                "https://*.stripe.network",
-                "https://*.crisp.chat",
-                "wss://*.crisp.chat"
+                "https://*.stripe.network"
             ],
             "frame-src": [
                 "'self'",
