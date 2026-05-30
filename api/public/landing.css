@@ -1476,9 +1476,21 @@ html.lp-scroll-lock body {
 
 .lp-mobile-ctas {
     display: flex;
+    flex-direction: column;
     gap: 0.5rem;
     padding: 0.5rem 0.25rem 0;
     margin-top: auto;
+}
+
+.lp-mm-ctas-row {
+    display: flex;
+    gap: 0.5rem;
+}
+
+#lp-mm-livechat {
+    flex: none;
+    width: 100%;
+    padding: 0.85rem 1rem;
 }
 
 .lp-mm-btn-ghost:focus,
