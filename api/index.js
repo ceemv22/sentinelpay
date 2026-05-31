@@ -7,6 +7,7 @@ const { createClient } = require('redis');
 const helmet = require('helmet');
 const hpp = require('hpp');
 const crypto = require('crypto');
+const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 const { runScoringEngine } = require('./services/scorer');
@@ -672,6 +673,14 @@ app.post('/v1/user/api-key/roll', requireRateLimitBackend, requireSupabaseAuth, 
         console.error('[api key roll error]', err);
         res.status(500).json({ error: 'failed to roll api key' });
     }
+});
+
+app.get('/v1/user/intercom-token', requireSupabaseAuth, (req, res) => {
+    if (!process.env.INTERCOM_SECRET) return res.status(503).json({ error: 'not_configured' });
+    const payload = { user_id: req.user.supabaseId, email: req.user.email };
+    if (req.user.username) payload.name = req.user.username;
+    const token = jwt.sign(payload, process.env.INTERCOM_SECRET, { expiresIn: '1h' });
+    res.json({ token });
 });
 
 app.get('/health', (req, res) => {
