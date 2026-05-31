@@ -36,7 +36,7 @@
     <link rel="icon" type="image/svg+xml" href="logo.svg">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css?v=4.0">
-    <link rel="stylesheet" href="landing.css?v=3.1">
+    <link rel="stylesheet" href="landing.css?v=3.2">
     <script>(function(){var w=window;if(typeof w.Intercom==="function"){w.Intercom('reattach_activator');}else{var i=function(){i.c(arguments);};i.q=[];i.c=function(a){i.q.push(a);};w.Intercom=i;}})();</script>
     <script async src="https://widget.intercom.io/widget/obn3omwl"></script>
     <script src="lib/supabase.js"></script>
@@ -1230,7 +1230,15 @@
             pointer-events: none;
         }
         @media (max-width: 1280px) {
-            #sp-chat-btn { display: none !important; }
+            #sp-chat-btn {
+                width: 44px !important;
+                height: 44px !important;
+                bottom: 16px !important;
+                right: 16px !important;
+            }
+            html.lp-scroll-lock #sp-chat-btn {
+                display: none !important;
+            }
         }
     </style>
     <button id="sp-chat-btn" aria-label="open support chat">
