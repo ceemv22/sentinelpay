@@ -1944,7 +1944,17 @@
                 font-family: 'JetBrains Mono', monospace !important;
                 text-transform: lowercase !important;
                 -webkit-tap-highlight-color: transparent !important;
-                transition: background 0.15s ease, border-color 0.15s ease !important;
+                transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease !important;
+            }
+            #sidebar-livechat:hover {
+                background: rgba(255, 255, 255, 0.04) !important;
+                border-color: rgba(255, 255, 255, 0.14) !important;
+                color: var(--text-main) !important;
+            }
+            #sidebar-livechat:active {
+                background: rgba(255, 255, 255, 0.08) !important;
+                border-color: rgba(255, 255, 255, 0.2) !important;
+                color: #fff !important;
             }
         }
 
@@ -2740,10 +2750,8 @@
         var sidebarLc = document.getElementById('sidebar-livechat');
         if (sidebarLc) {
             sidebarLc.addEventListener('click', function() {
+                document.body.classList.remove('mobile-sidebar-open');
                 if (window.Intercom) window.Intercom('show');
-                setTimeout(function() {
-                    document.body.classList.remove('mobile-sidebar-open');
-                }, 100);
             });
         }
     </script>
