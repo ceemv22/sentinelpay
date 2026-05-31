@@ -2826,7 +2826,7 @@
         window.Intercom('onShow', function() { _icOpen = true; });
         window.Intercom('onHide', function() { _icOpen = false; });
         document.addEventListener('click', function(e) {
-            if (!_icOpen || window.innerWidth <= 1280) return;
+            if (!_icOpen) return;
             var btn = document.getElementById('sp-chat-btn');
             var sidebarBtn = document.getElementById('sidebar-livechat');
             if ((btn && btn.contains(e.target)) || (sidebarBtn && sidebarBtn.contains(e.target))) return;
