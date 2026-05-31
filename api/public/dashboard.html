@@ -2764,12 +2764,20 @@
             var b = document.getElementById('sp-chat-badge');
             if (b) b.style.display = count > 0 ? 'block' : 'none';
         });
-        document.getElementById('sp-chat-btn').addEventListener('click', function() {
+        var _icOpen = false;
+        window.Intercom('onShow', function() { _icOpen = true; });
+        window.Intercom('onHide', function() { _icOpen = false; });
+        document.addEventListener('click', function() {
+            if (_icOpen && window.innerWidth > 1280) window.Intercom('hide');
+        });
+        document.getElementById('sp-chat-btn').addEventListener('click', function(e) {
+            e.stopPropagation();
             if (window.Intercom) window.Intercom('show');
         });
         var sidebarLc = document.getElementById('sidebar-livechat');
         if (sidebarLc) {
-            sidebarLc.addEventListener('click', function() {
+            sidebarLc.addEventListener('click', function(e) {
+                e.stopPropagation();
                 document.body.classList.remove('mobile-sidebar-open');
                 setTimeout(function() {
                     if (window.Intercom) window.Intercom('show');
