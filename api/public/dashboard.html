@@ -2748,25 +2748,17 @@
     </button>
     <script>
         document.getElementById('sp-chat-btn').addEventListener('click', function() {
-            if (window.Intercom) { window.Intercom('update'); window.Intercom('show'); }
+            if (window.Intercom) window.Intercom('show');
         });
         var sidebarLc = document.getElementById('sidebar-livechat');
         if (sidebarLc) {
             sidebarLc.addEventListener('click', function() {
                 document.body.classList.remove('mobile-sidebar-open');
                 setTimeout(function() {
-                    if (window.Intercom) { window.Intercom('update'); window.Intercom('show'); }
+                    if (window.Intercom) window.Intercom('show');
                 }, 220);
             });
         }
-        try { Object.keys(localStorage).forEach(function(k) { if (k.indexOf('intercom') !== -1) localStorage.removeItem(k); }); } catch(e) {}
-        window.Intercom('boot', {
-            app_id: 'obn3omwl',
-            api_base: 'https://api-iam.intercom.io',
-            hide_default_launcher: true
-        });
-        window.Intercom('onHide', function() {});
-        window.Intercom('onShow', function() {});
     </script>
 </body>
 </html>
