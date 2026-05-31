@@ -1258,7 +1258,7 @@
             if (b) b.style.display = count > 0 ? 'block' : 'none';
         });
         document.getElementById('sp-chat-btn').addEventListener('click', function() {
-            if (window.Intercom) window.Intercom('show');
+            if (window.Intercom) { window.Intercom('update'); window.Intercom('show'); }
         });
         var lcBtn = document.getElementById('lp-mm-livechat');
         if (lcBtn) {
@@ -1268,7 +1268,7 @@
                 var hb = document.getElementById('lp-hamburger');
                 if (menu) menu.classList.remove('lp-mm-open');
                 if (hb) hb.classList.remove('lp-hb-open');
-                if (window.Intercom) window.Intercom('show');
+                if (window.Intercom) { window.Intercom('update'); window.Intercom('show'); }
             });
         }
     </script>
