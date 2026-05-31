@@ -2760,17 +2760,13 @@
         function _icMarkReady() {
             if (!_icReady) {
                 _icReady = true;
-                if (_icPending) { _icPending = false; _icOpen(); }
+                if (_icUserData) window.Intercom('update', _icUserData);
+                if (_icPending) { _icPending = false; window.Intercom('show'); }
             }
         }
-        function _icOpen() {
+        function _icShow() {
             if (!window.Intercom) return;
-            if (!_icReady) { _icPending = true; return; }
-            var s = {api_base: 'https://api-iam.intercom.io', app_id: 'obn3omwl', hide_default_launcher: true};
-            if (_icUserData) { s.user_id = _icUserData.user_id; s.email = _icUserData.email; s.name = _icUserData.name; if (_icUserData.created_at) s.created_at = _icUserData.created_at; }
-            window.Intercom('shutdown');
-            window.Intercom('boot', s);
-            window.Intercom('show');
+            if (_icReady) { window.Intercom('show'); } else { _icPending = true; }
         }
         window.addEventListener('load', function() { setTimeout(_icMarkReady, 1000); });
         window.Intercom('onUnreadCountChange', function(count) {
@@ -2778,12 +2774,12 @@
             var b = document.getElementById('sp-chat-badge');
             if (b) b.style.display = count > 0 ? 'block' : 'none';
         });
-        document.getElementById('sp-chat-btn').addEventListener('click', _icOpen);
+        document.getElementById('sp-chat-btn').addEventListener('click', _icShow);
         var sidebarLc = document.getElementById('sidebar-livechat');
         if (sidebarLc) {
             sidebarLc.addEventListener('click', function() {
                 document.body.classList.remove('mobile-sidebar-open');
-                setTimeout(_icOpen, 220);
+                setTimeout(_icShow, 220);
             });
         }
     </script>
