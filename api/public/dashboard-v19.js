@@ -221,6 +221,8 @@ function renderDashboard(session) {
                 created_at: Math.floor(new Date(user.created_at || Date.now()).getTime() / 1000),
                 hide_default_launcher: true
             });
+            window.Intercom('onHide', function() {});
+            window.Intercom('onShow', function() {});
             window.Intercom('onUnreadCountChange', function(count) {
                 var b = document.getElementById('sp-chat-badge');
                 if (b) b.style.display = count > 0 ? 'block' : 'none';
