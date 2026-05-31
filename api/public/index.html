@@ -1248,6 +1248,7 @@
         <span id="sp-chat-badge"></span>
     </button>
     <script>
+        try { Object.keys(localStorage).forEach(function(k) { if (k.indexOf('intercom') !== -1) localStorage.removeItem(k); }); } catch(e) {}
         window.Intercom('boot', {
             app_id: 'obn3omwl',
             api_base: 'https://api-iam.intercom.io',
