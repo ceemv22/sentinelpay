@@ -211,14 +211,11 @@ function renderDashboard(session) {
         if (avatarInitial === '?' && displayIdentifier) avatarInitial = displayIdentifier.charAt(0);
 
         if (window.Intercom && user.email) {
-            window.Intercom('boot', {
-                app_id: 'obn3omwl',
-                api_base: 'https://api-iam.intercom.io',
+            window.Intercom('update', {
                 user_id: user.id,
                 email: user.email,
                 name: rawUsername !== user.email ? rawUsername : user.email,
-                created_at: Math.floor(new Date(user.created_at || Date.now()).getTime() / 1000),
-                hide_default_launcher: true
+                created_at: Math.floor(new Date(user.created_at || Date.now()).getTime() / 1000)
             });
             window.Intercom('onUnreadCountChange', function(count) {
                 var b = document.getElementById('sp-chat-badge');
