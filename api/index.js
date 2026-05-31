@@ -677,7 +677,8 @@ app.post('/v1/user/api-key/roll', requireRateLimitBackend, requireSupabaseAuth, 
 
 app.get('/v1/user/intercom-token', requireSupabaseAuth, (req, res) => {
     if (!process.env.INTERCOM_SECRET) return res.status(503).json({ error: 'not_configured' });
-    const payload = { user_id: req.user.supabaseId, email: req.user.email };
+    const payload = { user_id: req.user.supabaseId };
+    if (req.user.email) payload.email = req.user.email;
     if (req.user.username) payload.name = req.user.username;
     const token = jwt.sign(payload, process.env.INTERCOM_SECRET, { expiresIn: '1h' });
     res.json({ token });
