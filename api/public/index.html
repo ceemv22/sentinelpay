@@ -1266,7 +1266,10 @@
                 var hb = document.getElementById('lp-hamburger');
                 if (menu) menu.classList.remove('lp-mm-open');
                 if (hb) hb.classList.remove('lp-hb-open');
-                if (window.Intercom) window.Intercom('show');
+                document.documentElement.classList.remove('lp-scroll-lock');
+                setTimeout(function() {
+                    if (window.Intercom) window.Intercom('show');
+                }, 220);
             });
         }
     </script>
