@@ -2118,8 +2118,82 @@
         }
 
     </style>
+    <style>
+        #sp-loader {
+            position: fixed;
+            inset: 0;
+            z-index: 99999;
+            background: #050505;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 28px;
+            transition: opacity 0.55s ease;
+        }
+        #sp-loader.spl-done {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .spl-eye-svg {
+            width: 180px;
+            height: 90px;
+            overflow: visible;
+        }
+        .spl-eye-group {
+            transform-box: fill-box;
+            transform-origin: 50% 50%;
+            animation: splBlink 4s ease-in-out infinite;
+        }
+        @keyframes splBlink {
+            0%, 35%, 55%, 88%, 100% { transform: scaleY(1); }
+            45% { transform: scaleY(0.06); }
+            94% { transform: scaleY(0.06); }
+        }
+        .spl-iris-group {
+            animation: splScan 5s ease-in-out infinite;
+        }
+        @keyframes splScan {
+            0%, 100% { transform: translateX(0px); }
+            25% { transform: translateX(-15px); }
+            75% { transform: translateX(15px); }
+        }
+        .spl-name {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.1rem;
+            font-weight: 600;
+            letter-spacing: 0.35em;
+            color: #e0e0e0;
+            animation: splNamePulse 2.5s ease-in-out infinite alternate;
+        }
+        @keyframes splNamePulse {
+            from { opacity: 0.6; text-shadow: 0 0 16px rgba(0,240,255,0.2); }
+            to   { opacity: 1;   text-shadow: 0 0 32px rgba(0,240,255,0.55); }
+        }
+    </style>
 </head>
 <body class="state-org-home">
+    <div id="sp-loader">
+        <svg class="spl-eye-svg" viewBox="0 0 160 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <filter id="spl-glow" x="-30%" y="-30%" width="160%" height="160%">
+                    <feGaussianBlur stdDeviation="3.5" result="blur"/>
+                    <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                </filter>
+            </defs>
+            <g class="spl-eye-group" filter="url(#spl-glow)">
+                <path d="M8 40 Q80 4 152 40 Q80 76 8 40Z" fill="rgba(0,240,255,0.05)"/>
+                <path d="M8 40 Q80 4 152 40 Q80 76 8 40Z" stroke="#00f0ff" stroke-width="1.5"/>
+                <g class="spl-iris-group">
+                    <circle cx="80" cy="40" r="18" fill="rgba(0,240,255,0.1)" stroke="#00f0ff" stroke-width="1.5"/>
+                    <circle cx="80" cy="40" r="10" fill="rgba(0,240,255,0.12)" stroke="#00f0ff" stroke-width="0.75" opacity="0.7"/>
+                    <circle cx="80" cy="40" r="5.5" fill="#00f0ff"/>
+                    <circle cx="73" cy="33" r="2.5" fill="white" opacity="0.55"/>
+                </g>
+            </g>
+        </svg>
+        <div class="spl-name">SENTINELPAY</div>
+    </div>
     <div class="sidebar">
         <a href="https://sentinelpay.org" target="_blank" style="text-decoration: none; padding: 0 1.5rem; display: flex; align-items: center; gap: 1rem; height: 40px; flex-shrink: 0; cursor: pointer;">
             <div class="logo-container" style="width: 24px; height: 24px; flex-shrink: 0;">
@@ -2786,6 +2860,12 @@
                 }, 220);
             });
         }
+        window.addEventListener('load', function() {
+            var loader = document.getElementById('sp-loader');
+            if (!loader) return;
+            loader.classList.add('spl-done');
+            setTimeout(function() { loader.remove(); }, 600);
+        });
     </script>
 </body>
 </html>
