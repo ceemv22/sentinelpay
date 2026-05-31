@@ -211,12 +211,18 @@ function renderDashboard(session) {
         if (avatarInitial === '?' && displayIdentifier) avatarInitial = displayIdentifier.charAt(0);
 
         if (window.Intercom && user.email) {
-            window.Intercom('update', {
+            try { Object.keys(localStorage).forEach(function(k) { if (k.indexOf('intercom') !== -1) localStorage.removeItem(k); }); } catch(e) {}
+            window.Intercom('boot', {
+                app_id: 'obn3omwl',
+                api_base: 'https://api-iam.intercom.io',
                 user_id: user.id,
                 email: user.email,
                 name: rawUsername !== user.email ? rawUsername : user.email,
-                created_at: Math.floor(new Date(user.created_at || Date.now()).getTime() / 1000)
+                created_at: Math.floor(new Date(user.created_at || Date.now()).getTime() / 1000),
+                hide_default_launcher: true
             });
+            window.Intercom('onHide', function() {});
+            window.Intercom('onShow', function() {});
             window.Intercom('onUnreadCountChange', function(count) {
                 var b = document.getElementById('sp-chat-badge');
                 if (b) b.style.display = count > 0 ? 'block' : 'none';
