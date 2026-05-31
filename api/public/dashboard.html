@@ -1353,8 +1353,9 @@
                 z-index: 10002 !important;
                 opacity: 0 !important;
                 pointer-events: none !important;
+                visibility: hidden !important;
                 transform: translateY(-8px) !important;
-                transition: opacity 0.18s ease, transform 0.18s ease !important;
+                transition: opacity 0.18s ease, transform 0.18s ease, visibility 0s linear 0.18s !important;
                 overflow-y: auto !important;
                 overscroll-behavior: contain !important;
                 -webkit-overflow-scrolling: touch !important;
@@ -1365,7 +1366,9 @@
             body.mobile-sidebar-open .sidebar {
                 opacity: 1 !important;
                 pointer-events: auto !important;
+                visibility: visible !important;
                 transform: translateY(0) !important;
+                transition: opacity 0.18s ease, transform 0.18s ease, visibility 0s linear 0s !important;
             }
 
             .sidebar > a:first-child {
@@ -2751,7 +2754,9 @@
         if (sidebarLc) {
             sidebarLc.addEventListener('click', function() {
                 document.body.classList.remove('mobile-sidebar-open');
-                if (window.Intercom) { window.Intercom('update'); window.Intercom('show'); }
+                setTimeout(function() {
+                    if (window.Intercom) { window.Intercom('update'); window.Intercom('show'); }
+                }, 220);
             });
         }
         window.Intercom('boot', {
