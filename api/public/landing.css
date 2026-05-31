@@ -1366,8 +1366,9 @@ html.lp-scroll-lock body {
     border-top: 1px solid var(--border-glass);
     opacity: 0;
     pointer-events: none;
+    visibility: hidden;
     transform: translateY(-6px);
-    transition: opacity 0.18s ease, transform 0.18s ease;
+    transition: opacity 0.18s ease, transform 0.18s ease, visibility 0s linear 0.18s;
     overflow-y: auto;
     overscroll-behavior: contain;
     -webkit-overflow-scrolling: touch;
@@ -1376,7 +1377,9 @@ html.lp-scroll-lock body {
 .lp-mobile-menu.lp-mm-open {
     opacity: 1;
     pointer-events: auto;
+    visibility: visible;
     transform: translateY(0);
+    transition: opacity 0.18s ease, transform 0.18s ease, visibility 0s linear 0s;
 }
 
 .lp-mobile-menu-inner {
