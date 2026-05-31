@@ -2751,27 +2751,14 @@
         <span id="sp-chat-badge"></span>
     </button>
     <script>
-        var _icReady = false;
-        var _icPending = false;
         window.Intercom('onUnreadCountChange', function(count) {
             var b = document.getElementById('sp-chat-badge');
             if (b) b.style.display = count > 0 ? 'block' : 'none';
-            if (!_icReady) {
-                _icReady = true;
-                window.Intercom('hide');
-                if (_icPending) {
-                    _icPending = false;
-                    window.Intercom('show');
-                }
-            }
         });
         document.getElementById('sp-chat-btn').addEventListener('click', function() {
             if (!window.Intercom) return;
-            if (_icReady) {
-                window.Intercom('show');
-            } else {
-                _icPending = true;
-            }
+            window.Intercom('hide');
+            window.Intercom('show');
         });
         var sidebarLc = document.getElementById('sidebar-livechat');
         if (sidebarLc) {
@@ -2779,11 +2766,8 @@
                 document.body.classList.remove('mobile-sidebar-open');
                 setTimeout(function() {
                     if (!window.Intercom) return;
-                    if (_icReady) {
-                        window.Intercom('show');
-                    } else {
-                        _icPending = true;
-                    }
+                    window.Intercom('hide');
+                    window.Intercom('show');
                 }, 220);
             });
         }
