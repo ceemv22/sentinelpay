@@ -123,7 +123,8 @@ app.use(helmet({
                 "https://abs.twimg.com",
                 "https://cdn.jsdelivr.net",
                 "https://*.intercomcdn.com",
-                "https://*.intercom.io"
+                "https://*.intercom.io",
+                "https://*.intercomassets.com"
             ],
             "connect-src": [
                 "'self'",
@@ -145,7 +146,8 @@ app.use(helmet({
                 "https://*.intercomcdn.com",
                 "wss://nexus-websocket-a.intercom.io",
                 "wss://nexus-websocket-b.intercom.io",
-                "wss://*.intercom.io"
+                "wss://*.intercom.io",
+                "wss://*.intercom-messenger.com"
             ],
             "frame-src": [
                 "'self'",
