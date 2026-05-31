@@ -218,9 +218,7 @@ function renderDashboard(session) {
                 email: user.email,
                 name: rawUsername !== user.email ? rawUsername : user.email,
                 created_at: Math.floor(new Date(user.created_at || Date.now()).getTime() / 1000),
-                hide_default_launcher: true,
-                background_color: '#0a0a12',
-                action_color: '#00f0ff'
+                hide_default_launcher: true
             });
             window.Intercom('onUnreadCountChange', function(count) {
                 var b = document.getElementById('sp-chat-badge');
