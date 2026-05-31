@@ -2767,17 +2767,19 @@
         var _icOpen = false;
         window.Intercom('onShow', function() { _icOpen = true; });
         window.Intercom('onHide', function() { _icOpen = false; });
-        document.addEventListener('click', function() {
-            if (_icOpen && window.innerWidth > 1280) window.Intercom('hide');
-        });
-        document.getElementById('sp-chat-btn').addEventListener('click', function(e) {
-            e.stopPropagation();
+        document.addEventListener('click', function(e) {
+            if (!_icOpen || window.innerWidth <= 1280) return;
+            var btn = document.getElementById('sp-chat-btn');
+            var sidebarBtn = document.getElementById('sidebar-livechat');
+            if ((btn && btn.contains(e.target)) || (sidebarBtn && sidebarBtn.contains(e.target))) return;
+            window.Intercom('hide');
+        }, true);
+        document.getElementById('sp-chat-btn').addEventListener('click', function() {
             if (window.Intercom) window.Intercom('show');
         });
         var sidebarLc = document.getElementById('sidebar-livechat');
         if (sidebarLc) {
-            sidebarLc.addEventListener('click', function(e) {
-                e.stopPropagation();
+            sidebarLc.addEventListener('click', function() {
                 document.body.classList.remove('mobile-sidebar-open');
                 setTimeout(function() {
                     if (window.Intercom) window.Intercom('show');
