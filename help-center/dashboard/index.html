@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>sentinelpay | request payloads</title>
-    <meta name="description" content="Examples of json request and response schemas.">
+    <title>sentinelpay | dashboard</title>
+    <meta name="description" content="Managing organizations, scan history, and navigating the SentinelPay dashboard.">
     <meta name="theme-color" content="#050505">
     <link rel="icon" type="image/svg+xml" href="/logo.svg">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/style.css">
     <link rel="stylesheet" href="/category.css">
-    <link rel="stylesheet" href="/article.css">
 </head>
 <body>
+
     <div class="cyber-grid"></div>
     <div class="glow-orb"></div>
     <nav class="lp-nav">
@@ -47,7 +47,8 @@
             </div>
         </div>
     </nav>
-    <main class="kb-wrapper article-layout">
+
+    <main class="kb-wrapper">
 
         <div class="cat-search-wrapper">
             <div class="search-container" id="search-container">
@@ -65,123 +66,44 @@
                 all collections
             </a>
             <span class="breadcrumb-sep">/</span>
-            <a href="/api-integration" class="breadcrumb-link">api integration</a>
-            <span class="breadcrumb-sep">/</span>
-            <span class="breadcrumb-current">request payloads</span>
+            <span class="breadcrumb-current">dashboard</span>
         </nav>
-        <article class="article-container">
-            <header class="article-header">
-                <div class="article-author-row">
-                    <img src="https://github.com/ceemv22.png" alt="ceem" class="article-avatar">
-                    <div class="article-author-info">
-                        <span class="article-author-name">written by ceem</span>
-                        <span class="article-date">last updated: june 2026</span>
+
+        <section class="cat-header">
+            <div class="cat-icon-wrapper">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+            </div>
+            <div class="cat-header-text">
+                <h1 class="cat-title">dashboard</h1>
+                <p class="cat-desc">managing organizations, viewing scan history, and navigating the sentinelpay interface.</p>
+                <div class="cat-meta">
+                    <div class="cat-authors">
+                        <img src="https://github.com/ceemv22.png" alt="ceem" class="cat-author-avatar">
                     </div>
-                </div>
-                <h1 class="article-title">request payloads</h1>
-                <p class="article-lead">understand the json structure for requests and responses.</p>
-            </header>
-            <div class="article-body">
-                <h2>request body</h2>
-                <div class="article-callout">
-                    <pre><code>{
-  "wallet": "0xAbCd1234..."
-}</code></pre>
-                </div>
-                <div class="article-table-wrapper">
-                    <table class="article-table">
-                        <thead>
-                            <tr>
-                                <th>field</th>
-                                <th>type</th>
-                                <th>required</th>
-                                <th>description</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><code>wallet</code></td>
-                                <td>string</td>
-                                <td>yes</td>
-                                <td>ethereum wallet address. must start with <code>0x</code> and be exactly 42 characters total.</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <h2>response body</h2>
-                <div class="article-callout">
-                    <pre><code>{
-  "score": 50,
-  "category": "medium",
-  "flags": ["new_wallet", "high_velocity"],
-  "history_incomplete": false,
-  "timestamp": "2026-06-01T10:00:00.000Z"
-}</code></pre>
-                </div>
-                <div class="article-table-wrapper">
-                    <table class="article-table">
-                        <thead>
-                            <tr>
-                                <th>field</th>
-                                <th>type</th>
-                                <th>description</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><code>score</code></td>
-                                <td>integer</td>
-                                <td>risk score from 0 (clean) to 100 (highest risk). sanctioned wallets always return exactly 100.</td>
-                            </tr>
-                            <tr>
-                                <td><code>category</code></td>
-                                <td>string</td>
-                                <td><code>"low"</code> (0–29), <code>"medium"</code> (30–59), or <code>"high"</code> (60–100).</td>
-                            </tr>
-                            <tr>
-                                <td><code>flags</code></td>
-                                <td>string[]</td>
-                                <td>list of triggered risk heuristics. empty array means no signals were detected.</td>
-                            </tr>
-                            <tr>
-                                <td><code>history_incomplete</code></td>
-                                <td>boolean</td>
-                                <td><code>true</code> if any transaction list hit the 10,000 tx fetch limit. the score reflects only what was analyzed, not the wallet's full history.</td>
-                            </tr>
-                            <tr>
-                                <td><code>timestamp</code></td>
-                                <td>string (ISO 8601)</td>
-                                <td>utc timestamp of when the scan completed.</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <h2>flag values</h2>
-                <p>the <code>flags</code> array can contain any combination of the following string values:</p>
-                <ul>
-                    <li><code>sanctioned_entity</code></li>
-                    <li><code>mixer_interaction</code></li>
-                    <li><code>new_wallet</code></li>
-                    <li><code>high_velocity</code></li>
-                    <li><code>io_imbalance</code></li>
-                </ul>
-                <p>see <a href="/risk-engine/specific-risk-flags">specific risk flags</a> for what each value means and how to interpret it.</p>
-            </div>
-            <div class="article-support">
-                <div class="support-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-                </div>
-                <div class="support-text">
-                    <h4>still need help?</h4>
-                    <p>our team is here for you. reach out via email.</p>
-                </div>
-                <div class="support-actions">
-                    <a href="mailto:support@sentinelpay.org" class="support-btn support-btn-primary">email support</a>
+                    <span class="cat-meta-text">by <strong>ceem</strong> · 2 articles</span>
                 </div>
             </div>
-        </article>
+        </section>
+
+        <section class="article-list">
+
+            <a href="/dashboard/managing-organizations" class="article-row">
+                <div class="article-row-body">
+                    <span class="article-title">managing organizations</span>
+                    <span class="article-excerpt">how to create, switch between, and delete organizations, and understanding the limits.</span>
+                </div>
+                <svg class="article-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+
+            <a href="/dashboard/scan-history" class="article-row">
+                <div class="article-row-body">
+                    <span class="article-title">scan history</span>
+                    <span class="article-excerpt">viewing past scan results, understanding each field, and re-scanning a wallet.</span>
+                </div>
+                <svg class="article-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+
+        </section>
 
     </main>
     <footer class="lp-footer">
@@ -256,6 +178,7 @@
             </div>
         </div>
     </footer>
+
     <script>
         (function() {
             var si = document.getElementById('search-input');
@@ -274,6 +197,6 @@
             }
         })();
     </script>
+
 </body>
 </html>
-

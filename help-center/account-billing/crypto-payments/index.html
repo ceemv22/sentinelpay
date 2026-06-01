@@ -3,19 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>sentinelpay | getting started</title>
-    <meta name="description" content="Organization setup, team members, and core concepts for SentinelPay.">
+    <title>sentinelpay | crypto payments</title>
+    <meta name="description" content="How to pay for credits and subscriptions using cryptocurrency on SentinelPay.">
     <meta name="theme-color" content="#050505">
     <link rel="icon" type="image/svg+xml" href="/logo.svg">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/style.css">
     <link rel="stylesheet" href="/category.css">
+    <link rel="stylesheet" href="/article.css">
 </head>
 <body>
-
     <div class="cyber-grid"></div>
     <div class="glow-orb"></div>
-
     <nav class="lp-nav">
         <div class="lp-nav-inner">
             <a href="https://sentinelpay.org" class="lp-logo-link">
@@ -48,8 +47,7 @@
             </div>
         </div>
     </nav>
-
-    <main class="kb-wrapper">
+    <main class="kb-wrapper article-layout">
 
         <div class="cat-search-wrapper">
             <div class="search-container" id="search-container">
@@ -67,68 +65,70 @@
                 all collections
             </a>
             <span class="breadcrumb-sep">/</span>
-            <span class="breadcrumb-current">getting started</span>
+            <a href="/account-billing" class="breadcrumb-link">account & billing</a>
+            <span class="breadcrumb-sep">/</span>
+            <span class="breadcrumb-current">crypto payments</span>
         </nav>
-
-        <section class="cat-header">
-            <div class="cat-icon-wrapper">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path></svg>
-            </div>
-            <div class="cat-header-text">
-                <h1 class="cat-title">getting started</h1>
-                <p class="cat-desc">organization setup, team members, and core concepts explained.</p>
-                <div class="cat-meta">
-                    <div class="cat-authors">
-                        <img src="https://github.com/ceemv22.png" alt="ceem" class="cat-author-avatar">
+        <article class="article-container">
+            <header class="article-header">
+                <div class="article-author-row">
+                    <img src="https://github.com/ceemv22.png" alt="ceem" class="article-avatar">
+                    <div class="article-author-info">
+                        <span class="article-author-name">written by ceem</span>
+                        <span class="article-date">last updated: june 2026</span>
                     </div>
-                    <span class="cat-meta-text">by <strong>ceem</strong> · 5 articles</span>
+                </div>
+                <h1 class="article-title">crypto payments</h1>
+                <p class="article-lead">pay for subscriptions and credit packs using cryptocurrency — supported currencies, session flow, and troubleshooting.</p>
+            </header>
+            <div class="article-body">
+
+                <h2>supported currencies</h2>
+                <p>the following currencies are accepted for both subscription plans and credit pack purchases:</p>
+                <ul>
+                    <li><strong>ETH</strong> — ethereum (evm mainnet)</li>
+                    <li><strong>BNB</strong> — binance smart chain</li>
+                    <li><strong>POL</strong> — polygon</li>
+                    <li><strong>BTC</strong> — bitcoin</li>
+                    <li><strong>USDT</strong> — tether (erc-20)</li>
+                    <li><strong>USDC</strong> — usd coin (erc-20)</li>
+                    <li><strong>DAI</strong> — dai stablecoin (erc-20)</li>
+                </ul>
+
+                <h2>payment session lifecycle</h2>
+                <p>when you select a crypto payment option, a unique deposit address is generated for your session. the session is valid for <strong>15 minutes</strong>. you must send the exact amount shown — converted from USD at the live rate at session creation time — to the displayed address before the timer expires.</p>
+                <ol>
+                    <li>select the currency and click <strong>pay with crypto</strong>.</li>
+                    <li>a deposit address and exact amount are shown. send the transaction from your wallet.</li>
+                    <li>the system monitors the blockchain via alchemy (evm chains) or blockcypher (bitcoin) for your incoming transaction.</li>
+                    <li>once at least one confirmation is detected, your purchase is credited automatically — your subscription is activated or your credits are added to the organization balance.</li>
+                </ol>
+
+                <div class="article-callout">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                    <p>each payment session generates a fresh deposit address. do not reuse a deposit address from a previous session — funds sent after the 15-minute window may not be automatically attributed to your account.</p>
+                </div>
+
+                <h2>if your payment doesn't confirm in time</h2>
+                <p>if the session expires before your transaction reaches one confirmation, the session is marked as expired. your funds are not lost — if you sent the transaction before expiry and it confirms after, contact support at <a href="mailto:support@sentinelpay.org">support@sentinelpay.org</a> with your transaction hash and the deposit address. we will manually credit your account once we can verify the transaction on-chain.</p>
+
+                <h2>exchange rates</h2>
+                <p>the fiat-to-crypto conversion rate is fetched from coingecko at the moment the payment session is created. the rate is locked for the duration of the 15-minute session. no adjustments are made after session creation.</p>
+
+            </div>
+            <div class="article-support">
+                <div class="support-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                </div>
+                <div class="support-text">
+                    <h4>still need help?</h4>
+                    <p>our team is here for you. reach out via email.</p>
+                </div>
+                <div class="support-actions">
+                    <a href="mailto:support@sentinelpay.org" class="support-btn support-btn-primary">email support</a>
                 </div>
             </div>
-        </section>
-
-        <section class="article-list">
-
-            <a href="/getting-started/quickstart" class="article-row">
-                <div class="article-row-body">
-                    <span class="article-title">quickstart</span>
-                    <span class="article-excerpt">get from zero to your first risk score in under five minutes — account, org, api key, first scan.</span>
-                </div>
-                <svg class="article-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-            </a>
-
-            <a href="/getting-started/what-is-sentinelpay" class="article-row">
-                <div class="article-row-body">
-                    <span class="article-title">what is sentinelpay?</span>
-                    <span class="article-excerpt">an overview of what we do, who we serve, and how our risk engine works at a high level.</span>
-                </div>
-                <svg class="article-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-            </a>
-
-            <a href="/getting-started/access-control" class="article-row">
-                <div class="article-row-body">
-                    <span class="article-title">access control</span>
-                    <span class="article-excerpt">granular permissions and roles to manage your sentinelpay organizations and projects.</span>
-                </div>
-                <svg class="article-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-            </a>
-
-            <a href="/getting-started/creating-your-organization" class="article-row">
-                <div class="article-row-body">
-                    <span class="article-title">creating your organization</span>
-                    <span class="article-excerpt">step-by-step guide to setting up your first organization, choosing a plan, and naming your workspace.</span>
-                </div>
-                <svg class="article-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-            </a>
-
-            <a href="/getting-started/inviting-team-members" class="article-row">
-                <div class="article-row-body">
-                    <span class="article-title">inviting team members</span>
-                    <span class="article-excerpt">how to add colleagues to your organization and manage their access permissions.</span>
-                </div>
-                <svg class="article-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-            </a>
-
-        </section>
+        </article>
 
     </main>
     <footer class="lp-footer">
@@ -203,7 +203,6 @@
             </div>
         </div>
     </footer>
-
     <script>
         (function() {
             var si = document.getElementById('search-input');
@@ -222,6 +221,5 @@
             }
         })();
     </script>
-
 </body>
 </html>

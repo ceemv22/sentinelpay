@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>sentinelpay | webhooks setup</title>
-    <meta name="description" content="How to configure real-time callbacks for async scan results.">
+    <title>sentinelpay | plans & pricing</title>
+    <meta name="description" content="A full breakdown of SentinelPay plans, credit packs, and what's included at each tier.">
     <meta name="theme-color" content="#050505">
     <link rel="icon" type="image/svg+xml" href="/logo.svg">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet">
@@ -65,9 +65,9 @@
                 all collections
             </a>
             <span class="breadcrumb-sep">/</span>
-            <a href="/api-integration" class="breadcrumb-link">api integration</a>
+            <a href="/account-billing" class="breadcrumb-link">account & billing</a>
             <span class="breadcrumb-sep">/</span>
-            <span class="breadcrumb-current">webhooks setup</span>
+            <span class="breadcrumb-current">plans & pricing</span>
         </nav>
         <article class="article-container">
             <header class="article-header">
@@ -78,27 +78,101 @@
                         <span class="article-date">last updated: june 2026</span>
                     </div>
                 </div>
-                <h1 class="article-title">webhooks setup</h1>
-                <p class="article-lead">webhooks are not yet available on sentinelpay. scan results are returned synchronously.</p>
+                <h1 class="article-title">plans & pricing</h1>
+                <p class="article-lead">a full breakdown of available plans, credit packs, and what each tier includes.</p>
             </header>
             <div class="article-body">
-                <h2>webhooks are not yet available</h2>
-                <p>sentinelpay does not currently support outbound webhooks. the scoring api is fully synchronous — the scan result is returned directly in the http response body within the same request. no callback url or polling is required.</p>
 
-                <h2>async processing pattern</h2>
-                <p>if your architecture requires non-blocking scan calls, the recommended approach is to call <code>POST /v1/score</code> inside your own background worker or job queue. the worker makes the request, receives the result, and stores or acts on it without blocking your main deposit flow.</p>
-                <p>example flow:</p>
-                <ol>
-                    <li>deposit request arrives at your platform</li>
-                    <li>enqueue a scan job with the sender's wallet address</li>
-                    <li>worker calls <code>POST /v1/score</code> and receives the result synchronously</li>
-                    <li>worker writes the result to your database and triggers your accept/review/block logic</li>
-                </ol>
+                <h2>subscription plans</h2>
+                <p>sentinelpay uses a credit-based model on top of a monthly subscription. each plan includes a monthly credit allocation and sets the api rate limit for your organization.</p>
 
-                <div class="article-callout">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-                    <p>webhook support is on the roadmap. if your use case requires it, let us know at <a href="mailto:support@sentinelpay.org">support@sentinelpay.org</a>.</p>
+                <div class="article-table-wrapper">
+                    <table class="article-table">
+                        <thead>
+                            <tr>
+                                <th>plan</th>
+                                <th>price</th>
+                                <th>monthly credits</th>
+                                <th>rate limit</th>
+                                <th>team members</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>free trial</strong></td>
+                                <td>$0</td>
+                                <td>10 (one-time)</td>
+                                <td>20 req / day (IP)</td>
+                                <td>1</td>
+                            </tr>
+                            <tr>
+                                <td><strong>starter</strong></td>
+                                <td>$99 / mo</td>
+                                <td>included in pack purchases</td>
+                                <td>30 req / 15 min</td>
+                                <td>unlimited</td>
+                            </tr>
+                            <tr>
+                                <td><strong>pro</strong></td>
+                                <td>$399 / mo</td>
+                                <td>included in pack purchases</td>
+                                <td>30 req / 15 min</td>
+                                <td>unlimited</td>
+                            </tr>
+                            <tr>
+                                <td><strong>enterprise</strong></td>
+                                <td>custom</td>
+                                <td>custom</td>
+                                <td>custom</td>
+                                <td>unlimited</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
+
+                <h2>credit packs</h2>
+                <p>credits are consumed per scan — one scan costs one credit. credits are purchased separately from the subscription and do not expire. two pack sizes are available:</p>
+
+                <div class="article-table-wrapper">
+                    <table class="article-table">
+                        <thead>
+                            <tr>
+                                <th>pack</th>
+                                <th>credits</th>
+                                <th>price</th>
+                                <th>cost per scan</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>small pack</td>
+                                <td>10</td>
+                                <td>$10</td>
+                                <td>$1.00</td>
+                            </tr>
+                            <tr>
+                                <td>large pack</td>
+                                <td>100</td>
+                                <td>$100</td>
+                                <td>$1.00</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h2>free trial credits</h2>
+                <p>every new organization receives 10 complimentary credits on creation. these work identically to purchased credits — each scan consumes one. no payment method is required to use them.</p>
+
+                <h2>payment methods</h2>
+                <p>subscriptions and credit packs can be purchased via:</p>
+                <ul>
+                    <li><strong>card</strong> — visa, mastercard, and amex via stripe.</li>
+                    <li><strong>crypto</strong> — ETH, BNB, POL, BTC, USDT, USDC, and DAI. crypto payments open a 15-minute payment session with a unique deposit address. see <a href="/account-billing/crypto-payments">crypto payments</a> for full details.</li>
+                </ul>
+
+                <h2>enterprise</h2>
+                <p>for high-volume integrations requiring custom rate limits, slas, or dedicated support, contact us at <a href="mailto:support@sentinelpay.org">support@sentinelpay.org</a> or visit the enterprise section of the pricing page.</p>
+
             </div>
             <div class="article-support">
                 <div class="support-icon">
@@ -207,4 +281,3 @@
     </script>
 </body>
 </html>
-
