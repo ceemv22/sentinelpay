@@ -3,19 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>sentinelpay | getting started</title>
-    <meta name="description" content="Organization setup, team members, and core concepts for SentinelPay.">
+    <title>sentinelpay | quickstart</title>
+    <meta name="description" content="Get from zero to your first risk score in under five minutes.">
     <meta name="theme-color" content="#050505">
     <link rel="icon" type="image/svg+xml" href="/logo.svg">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/style.css">
     <link rel="stylesheet" href="/category.css">
+    <link rel="stylesheet" href="/article.css">
 </head>
 <body>
-
     <div class="cyber-grid"></div>
     <div class="glow-orb"></div>
-
     <nav class="lp-nav">
         <div class="lp-nav-inner">
             <a href="https://sentinelpay.org" class="lp-logo-link">
@@ -48,8 +47,7 @@
             </div>
         </div>
     </nav>
-
-    <main class="kb-wrapper">
+    <main class="kb-wrapper article-layout">
 
         <div class="cat-search-wrapper">
             <div class="search-container" id="search-container">
@@ -67,68 +65,81 @@
                 all collections
             </a>
             <span class="breadcrumb-sep">/</span>
-            <span class="breadcrumb-current">getting started</span>
+            <a href="/getting-started" class="breadcrumb-link">getting started</a>
+            <span class="breadcrumb-sep">/</span>
+            <span class="breadcrumb-current">quickstart</span>
         </nav>
-
-        <section class="cat-header">
-            <div class="cat-icon-wrapper">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path></svg>
-            </div>
-            <div class="cat-header-text">
-                <h1 class="cat-title">getting started</h1>
-                <p class="cat-desc">organization setup, team members, and core concepts explained.</p>
-                <div class="cat-meta">
-                    <div class="cat-authors">
-                        <img src="https://github.com/ceemv22.png" alt="ceem" class="cat-author-avatar">
+        <article class="article-container">
+            <header class="article-header">
+                <div class="article-author-row">
+                    <img src="https://github.com/ceemv22.png" alt="ceem" class="article-avatar">
+                    <div class="article-author-info">
+                        <span class="article-author-name">written by ceem</span>
+                        <span class="article-date">last updated: june 2026</span>
                     </div>
-                    <span class="cat-meta-text">by <strong>ceem</strong> · 5 articles</span>
+                </div>
+                <h1 class="article-title">quickstart</h1>
+                <p class="article-lead">get from zero to your first risk score in under five minutes.</p>
+            </header>
+            <div class="article-body">
+
+                <h2>step 1 — create your account</h2>
+                <p>go to <strong>sentinelpay.org</strong> and register with your email address. you will receive a verification email — click the link inside to activate your account. once verified, log in to access the dashboard.</p>
+
+                <h2>step 2 — create an organization</h2>
+                <p>after logging in for the first time you will be prompted to create your first organization. enter a display name and a unique slug (e.g. <code>acme-corp</code>). the slug becomes part of your organization's identifier and cannot be changed after creation.</p>
+                <p>select a plan during setup. all new organizations receive <strong>10 free credits</strong> — enough to run your first scans immediately without entering payment details. you can add a payment method later when you need more credits.</p>
+
+                <h2>step 3 — find your api key</h2>
+                <p>your api key is automatically provisioned when your organization is created. it is displayed in full exactly once — copy it and store it securely in your environment's secrets manager or <code>.env</code> file. after the initial display, only the last four characters remain visible in the dashboard as a reference.</p>
+
+                <div class="article-callout">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                    <p>if you miss the key, the organization owner can roll it from the settings tab. rolling issues a new key and immediately invalidates the old one.</p>
+                </div>
+
+                <h2>step 4 — make your first scan</h2>
+                <p>send a <code>POST</code> request to the scan endpoint with the wallet address you want to assess:</p>
+                <div class="article-callout">
+                    <pre><code>curl -X POST https://sentinelpay.org/v1/score \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -d '{"wallet": "0xAbCd1234..."}'</code></pre>
+                </div>
+                <p>a successful response returns http <code>200</code> with a json body:</p>
+                <div class="article-callout">
+                    <pre><code>{
+  "score": 20,
+  "category": "low",
+  "flags": ["new_wallet"],
+  "history_incomplete": false,
+  "timestamp": "2026-06-01T10:00:00.000Z"
+}</code></pre>
+                </div>
+                <p>the <code>score</code> is an integer from 0 to 100. <code>category</code> is one of <code>low</code>, <code>medium</code>, or <code>high</code>. <code>flags</code> lists every heuristic that fired. see <a href="/risk-engine/understanding-heuristics">understanding heuristics</a> for full scoring logic.</p>
+
+                <h2>what's next</h2>
+                <ul>
+                    <li>read <a href="/api-integration/authentication">authentication</a> to understand key management and rotation.</li>
+                    <li>read <a href="/api-integration/scan-endpoint">the scan endpoint</a> for the full request and response reference.</li>
+                    <li>read <a href="/risk-engine/score-thresholds">score thresholds</a> to decide how to act on the scores in your own backend.</li>
+                    <li>read <a href="/account-billing/credit-usage">credit usage</a> to understand how scans consume credits and how to top up.</li>
+                </ul>
+
+            </div>
+            <div class="article-support">
+                <div class="support-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                </div>
+                <div class="support-text">
+                    <h4>still need help?</h4>
+                    <p>our team is here for you. reach out via email.</p>
+                </div>
+                <div class="support-actions">
+                    <a href="mailto:support@sentinelpay.org" class="support-btn support-btn-primary">email support</a>
                 </div>
             </div>
-        </section>
-
-        <section class="article-list">
-
-            <a href="/getting-started/quickstart" class="article-row">
-                <div class="article-row-body">
-                    <span class="article-title">quickstart</span>
-                    <span class="article-excerpt">get from zero to your first risk score in under five minutes — account, org, api key, first scan.</span>
-                </div>
-                <svg class="article-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-            </a>
-
-            <a href="/getting-started/what-is-sentinelpay" class="article-row">
-                <div class="article-row-body">
-                    <span class="article-title">what is sentinelpay?</span>
-                    <span class="article-excerpt">an overview of what we do, who we serve, and how our risk engine works at a high level.</span>
-                </div>
-                <svg class="article-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-            </a>
-
-            <a href="/getting-started/access-control" class="article-row">
-                <div class="article-row-body">
-                    <span class="article-title">access control</span>
-                    <span class="article-excerpt">granular permissions and roles to manage your sentinelpay organizations and projects.</span>
-                </div>
-                <svg class="article-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-            </a>
-
-            <a href="/getting-started/creating-your-organization" class="article-row">
-                <div class="article-row-body">
-                    <span class="article-title">creating your organization</span>
-                    <span class="article-excerpt">step-by-step guide to setting up your first organization, choosing a plan, and naming your workspace.</span>
-                </div>
-                <svg class="article-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-            </a>
-
-            <a href="/getting-started/inviting-team-members" class="article-row">
-                <div class="article-row-body">
-                    <span class="article-title">inviting team members</span>
-                    <span class="article-excerpt">how to add colleagues to your organization and manage their access permissions.</span>
-                </div>
-                <svg class="article-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-            </a>
-
-        </section>
+        </article>
 
     </main>
     <footer class="lp-footer">
@@ -203,7 +214,6 @@
             </div>
         </div>
     </footer>
-
     <script>
         (function() {
             var si = document.getElementById('search-input');
@@ -222,6 +232,5 @@
             }
         })();
     </script>
-
 </body>
 </html>
