@@ -82,10 +82,10 @@
                 <p class="article-lead">understand the rate limits applied to your organization's api usage.</p>
             </header>
             <div class=”article-body”>
-                <h2>api key usage (<code>/v1/score</code>)</h2>
-                <p>requests authenticated with an api key are limited to <strong>30 requests per 15 minutes</strong>. exceeding this limit returns a <code>429 too many requests</code> response.</p>
-                <h2>public endpoint (<code>/v1/public/score</code>)</h2>
-                <p>unauthenticated scans are subject to two independent limits:</p>
+                <h2>api key usage</h2>
+                <p>requests to <code>/v1/score</code> authenticated with an api key are limited to <strong>30 requests per 15 minutes</strong>. exceeding this limit returns a <code>429 too many requests</code> response.</p>
+                <h2>public endpoint</h2>
+                <p>unauthenticated scans via <code>/v1/public/score</code> are subject to two independent limits:</p>
                 <ul>
                     <li><strong>20 scans per day</strong> per ip address.</li>
                     <li><strong>3 scans lifetime</strong> per browser fingerprint.</li>
