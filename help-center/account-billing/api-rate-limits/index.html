@@ -82,14 +82,61 @@
                 <p class="article-lead">understand the rate limits applied to your organization's api usage.</p>
             </header>
             <div class=”article-body”>
-                <h2>api key usage</h2>
-                <p>requests to <code>/v1/score</code> authenticated with an api key are limited to <strong>30 requests per 15 minutes</strong>. exceeding this limit returns a <code>429 too many requests</code> response.</p>
-                <h2>public endpoint</h2>
-                <p>unauthenticated scans via <code>/v1/public/score</code> are subject to two independent limits:</p>
+                <h2>limits at a glance</h2>
+                <p>rate limits are applied per endpoint type and reset independently.</p>
+
+                <div class=”article-table-wrapper”>
+                    <table class=”article-table”>
+                        <thead>
+                            <tr>
+                                <th>endpoint</th>
+                                <th>limit</th>
+                                <th>window</th>
+                                <th>applies to</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>/v1/score</code></td>
+                                <td>30 requests</td>
+                                <td>per 15 minutes (rolling)</td>
+                                <td>authenticated api key</td>
+                            </tr>
+                            <tr>
+                                <td><code>/v1/public/score</code></td>
+                                <td>20 requests</td>
+                                <td>per day (resets midnight UTC)</td>
+                                <td>ip address</td>
+                            </tr>
+                            <tr>
+                                <td><code>/v1/public/score</code></td>
+                                <td>3 requests lifetime</td>
+                                <td>no reset</td>
+                                <td>browser fingerprint</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h2>authenticated api key — /v1/score</h2>
+                <p>requests to <code>/v1/score</code> authenticated with an <code>x-api-key</code> header are subject to a rolling window of <strong>30 requests per 15 minutes</strong>. the window is per organization — all team members sharing the same api key draw from the same pool. when the limit is exceeded, the api returns <code>429 too many requests</code> until the oldest requests in the window fall outside the 15-minute boundary.</p>
+
+                <h2>public endpoint — /v1/public/score</h2>
+                <p>the public endpoint allows unauthenticated scans for evaluation and prototyping. it is enforced by two independent limits that both apply simultaneously:</p>
                 <ul>
-                    <li><strong>20 scans per day</strong> per ip address.</li>
-                    <li><strong>3 scans lifetime</strong> per browser fingerprint.</li>
+                    <li><strong>20 scans per day per ip address.</strong> the counter resets at midnight UTC.</li>
+                    <li><strong>3 scans lifetime per browser fingerprint.</strong> this limit does not reset. it exists to prevent automated abuse of the public tier.</li>
                 </ul>
+                <p>the public endpoint is not intended for production workloads. it does not consume credits and does not require authentication, but it has no sla or consistency guarantees.</p>
+
+                <h2>handling 429 responses</h2>
+                <p>when your api key hits the rate limit, the api returns <code>429 too many requests</code>. the response body includes a <code>retryAfter</code> field indicating the number of seconds until the limit resets. implement exponential backoff in your integration and respect this value rather than polling immediately:</p>
+                <ul>
+                    <li>read the <code>retryAfter</code> value from the response body.</li>
+                    <li>wait at least that many seconds before retrying.</li>
+                    <li>if you are consistently hitting the limit, consider batching scans or contacting us about a higher-volume plan.</li>
+                </ul>
+
             </div>
             <div class="article-support">
                 <div class="support-icon">
