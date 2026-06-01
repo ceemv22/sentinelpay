@@ -3,19 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>sentinelpay | getting started</title>
-    <meta name="description" content="Organization setup, team members, and core concepts for SentinelPay.">
+    <title>sentinelpay | scan history</title>
+    <meta name="description" content="How to view past scan results, understand each field, and re-scan a wallet in SentinelPay.">
     <meta name="theme-color" content="#050505">
     <link rel="icon" type="image/svg+xml" href="/logo.svg">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/style.css">
     <link rel="stylesheet" href="/category.css">
+    <link rel="stylesheet" href="/article.css">
 </head>
 <body>
-
     <div class="cyber-grid"></div>
     <div class="glow-orb"></div>
-
     <nav class="lp-nav">
         <div class="lp-nav-inner">
             <a href="https://sentinelpay.org" class="lp-logo-link">
@@ -48,8 +47,7 @@
             </div>
         </div>
     </nav>
-
-    <main class="kb-wrapper">
+    <main class="kb-wrapper article-layout">
 
         <div class="cat-search-wrapper">
             <div class="search-container" id="search-container">
@@ -67,68 +65,96 @@
                 all collections
             </a>
             <span class="breadcrumb-sep">/</span>
-            <span class="breadcrumb-current">getting started</span>
+            <a href="/dashboard" class="breadcrumb-link">dashboard</a>
+            <span class="breadcrumb-sep">/</span>
+            <span class="breadcrumb-current">scan history</span>
         </nav>
-
-        <section class="cat-header">
-            <div class="cat-icon-wrapper">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path></svg>
-            </div>
-            <div class="cat-header-text">
-                <h1 class="cat-title">getting started</h1>
-                <p class="cat-desc">organization setup, team members, and core concepts explained.</p>
-                <div class="cat-meta">
-                    <div class="cat-authors">
-                        <img src="https://github.com/ceemv22.png" alt="ceem" class="cat-author-avatar">
+        <article class="article-container">
+            <header class="article-header">
+                <div class="article-author-row">
+                    <img src="https://github.com/ceemv22.png" alt="ceem" class="article-avatar">
+                    <div class="article-author-info">
+                        <span class="article-author-name">written by ceem</span>
+                        <span class="article-date">last updated: june 2026</span>
                     </div>
-                    <span class="cat-meta-text">by <strong>ceem</strong> · 5 articles</span>
+                </div>
+                <h1 class="article-title">scan history</h1>
+                <p class="article-lead">every scan your organization performs is stored and accessible from the dashboard — review past results, understand each field, and re-scan when needed.</p>
+            </header>
+            <div class="article-body">
+
+                <h2>what gets stored</h2>
+                <p>every call to the <code>/v1/score</code> endpoint that returns a <code>200</code> response is recorded in your organization's scan history. each record stores the full response: the wallet address, score, category, flags, <code>history_incomplete</code> status, and the timestamp of the scan.</p>
+                <p>scans that fail with a non-200 status (e.g. <code>400</code>, <code>402</code>, <code>503</code>) are not recorded and do not consume a credit.</p>
+
+                <h2>viewing history</h2>
+                <p>open the <strong>scan history</strong> tab from the main dashboard navigation. results are shown in reverse chronological order. each row displays the wallet address, score badge, category label, and timestamp. click any row to expand the full detail view including all flags and the complete json result.</p>
+
+                <h2>field reference</h2>
+                <div class="article-table-wrapper">
+                    <table class="article-table">
+                        <thead>
+                            <tr>
+                                <th>field</th>
+                                <th>type</th>
+                                <th>description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>wallet</code></td>
+                                <td>string</td>
+                                <td>the ethereum wallet address that was scanned.</td>
+                            </tr>
+                            <tr>
+                                <td><code>score</code></td>
+                                <td>integer (0–100)</td>
+                                <td>the calculated risk score at the time of the scan.</td>
+                            </tr>
+                            <tr>
+                                <td><code>category</code></td>
+                                <td>string</td>
+                                <td><code>low</code>, <code>medium</code>, or <code>high</code> based on the score.</td>
+                            </tr>
+                            <tr>
+                                <td><code>flags</code></td>
+                                <td>string[]</td>
+                                <td>list of heuristics that fired. empty array if no flags triggered.</td>
+                            </tr>
+                            <tr>
+                                <td><code>history_incomplete</code></td>
+                                <td>boolean</td>
+                                <td>true if the wallet's on-chain history exceeded the 10,000 entry per request limit. the score reflects only the analyzed portion.</td>
+                            </tr>
+                            <tr>
+                                <td><code>timestamp</code></td>
+                                <td>ISO 8601 string</td>
+                                <td>utc datetime when the scan was performed.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h2>re-scanning a wallet</h2>
+                <p>scan results reflect the state of the blockchain at the time the scan was performed. a wallet's risk profile can change — mixers may be added or removed from the blocklist, wallet age increases, and on-chain activity evolves. to get a current result, submit a new scan request via the api or use the <strong>re-scan</strong> button in the history detail view. each re-scan consumes one credit.</p>
+
+                <h2>history_incomplete</h2>
+                <p>when <code>history_incomplete</code> is <code>true</code>, the etherscan api returned the maximum of 10,000 transactions for one or more request types (normal, internal, or erc-20 transfers). the scoring engine only analyzed the returned subset. for very active wallets, this means some on-chain interactions — particularly older ones — were not included in the assessment. treat scores on such wallets with slightly more caution and consider supplementing with additional review.</p>
+
+            </div>
+            <div class="article-support">
+                <div class="support-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                </div>
+                <div class="support-text">
+                    <h4>still need help?</h4>
+                    <p>our team is here for you. reach out via email.</p>
+                </div>
+                <div class="support-actions">
+                    <a href="mailto:support@sentinelpay.org" class="support-btn support-btn-primary">email support</a>
                 </div>
             </div>
-        </section>
-
-        <section class="article-list">
-
-            <a href="/getting-started/quickstart" class="article-row">
-                <div class="article-row-body">
-                    <span class="article-title">quickstart</span>
-                    <span class="article-excerpt">get from zero to your first risk score in under five minutes — account, org, api key, first scan.</span>
-                </div>
-                <svg class="article-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-            </a>
-
-            <a href="/getting-started/what-is-sentinelpay" class="article-row">
-                <div class="article-row-body">
-                    <span class="article-title">what is sentinelpay?</span>
-                    <span class="article-excerpt">an overview of what we do, who we serve, and how our risk engine works at a high level.</span>
-                </div>
-                <svg class="article-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-            </a>
-
-            <a href="/getting-started/access-control" class="article-row">
-                <div class="article-row-body">
-                    <span class="article-title">access control</span>
-                    <span class="article-excerpt">granular permissions and roles to manage your sentinelpay organizations and projects.</span>
-                </div>
-                <svg class="article-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-            </a>
-
-            <a href="/getting-started/creating-your-organization" class="article-row">
-                <div class="article-row-body">
-                    <span class="article-title">creating your organization</span>
-                    <span class="article-excerpt">step-by-step guide to setting up your first organization, choosing a plan, and naming your workspace.</span>
-                </div>
-                <svg class="article-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-            </a>
-
-            <a href="/getting-started/inviting-team-members" class="article-row">
-                <div class="article-row-body">
-                    <span class="article-title">inviting team members</span>
-                    <span class="article-excerpt">how to add colleagues to your organization and manage their access permissions.</span>
-                </div>
-                <svg class="article-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-            </a>
-
-        </section>
+        </article>
 
     </main>
     <footer class="lp-footer">
@@ -203,7 +229,6 @@
             </div>
         </div>
     </footer>
-
     <script>
         (function() {
             var si = document.getElementById('search-input');
@@ -222,6 +247,5 @@
             }
         })();
     </script>
-
 </body>
 </html>
