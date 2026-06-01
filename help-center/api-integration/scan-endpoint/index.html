@@ -82,15 +82,49 @@
                 <p class="article-lead">learn how to interact with the /v1/score endpoint to assess wallet risk.</p>
             </header>
             <div class=”article-body”>
-                <h2>endpoint overview</h2>
-                <p>the <code>/v1/score</code> endpoint accepts a <code>POST</code> request with an ethereum wallet address. only ethereum addresses are currently supported.</p>
+                <h2>endpoint</h2>
                 <div class=”article-callout”>
-                    <code>POST https://api.sentinelpay.org/v1/score</code>
+                    <code>POST https://sentinelpay.org/v1/score</code>
                 </div>
-                <h2>request parameters</h2>
+
+                <h2>authentication</h2>
+                <p>this endpoint requires a valid api key passed in the <code>x-api-key</code> request header. see <a href=”/api-integration/authentication”>authentication</a> for details on obtaining and using your key.</p>
+
+                <h2>request</h2>
+                <p>send a <code>Content-Type: application/json</code> body with a single field:</p>
+                <div class=”article-callout”>
+                    <pre><code>{
+  “wallet”: “0xAbCd1234...”
+}</code></pre>
+                </div>
                 <ul>
-                    <li><code>wallet</code> (string) — the ethereum wallet address to scan (0x-prefixed, 42 characters).</li>
+                    <li><code>wallet</code> <em>(string, required)</em> — an ethereum wallet address. must be 0x-prefixed and exactly 42 characters long.</li>
                 </ul>
+
+                <h2>response</h2>
+                <p>a successful scan returns http <code>200</code> with the following json body:</p>
+                <div class=”article-callout”>
+                    <pre><code>{
+  “score”: 70,
+  “category”: “high”,
+  “flags”: [“mixer_interaction”, “high_velocity”],
+  “history_incomplete”: false,
+  “timestamp”: “2026-06-01T10:00:00.000Z”
+}</code></pre>
+                </div>
+                <p>see <a href=”/api-integration/request-payloads”>request payloads</a> for a full field-by-field breakdown of the response.</p>
+
+                <h2>example</h2>
+                <div class=”article-callout”>
+                    <pre><code>curl -X POST https://sentinelpay.org/v1/score \
+  -H “Content-Type: application/json” \
+  -H “x-api-key: your_api_key_here” \
+  -d '{“wallet”: “0xAbCd1234...”}'</code></pre>
+                </div>
+
+                <h2>rate limit</h2>
+                <p>api key requests are limited to <strong>30 per 15 minutes</strong>. exceeding this returns <code>429 too many requests</code>. see <a href=”/account-billing/api-rate-limits”>api rate limits</a> for the full limits table.</p>
+
             </div>
             <div class="article-support">
                 <div class="support-icon">

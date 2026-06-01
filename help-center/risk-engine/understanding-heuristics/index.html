@@ -82,15 +82,59 @@
                 <p class="article-lead">a deep dive into the on-chain signals our engine uses to calculate risk scores.</p>
             </header>
             <div class=”article-body”>
-                <h2>on-chain signals</h2>
-                <p>our engine analyzes up to 10,000 transactions per wallet to identify patterns associated with illicit activity. the following signals contribute to a wallet's risk score:</p>
-                <ul>
-                    <li><strong>mixer interaction</strong> — direct contact with known mixing services (e.g. tornado cash). inbound transfers above 0.001 eth from a mixer address add +50 points.</li>
-                    <li><strong>sanctioned entity</strong> — the wallet address itself appears in a known high-risk entity set. results in an immediate score of 100.</li>
-                    <li><strong>new wallet</strong> — account is less than 30 days old. adds +20 points.</li>
-                    <li><strong>high velocity</strong> — more than 50 transactions in the last 24 hours. adds +20 points.</li>
-                    <li><strong>io imbalance</strong> — output-to-input ratio exceeds 10:1 across at least 10 transactions. adds +10 points.</li>
-                </ul>
+                <h2>how scoring works</h2>
+                <p>the sentinelpay engine fetches up to 10,000 normal transactions, 10,000 internal transactions, and 10,000 erc-20 token transfers for the target wallet from the ethereum blockchain. it then runs five independent heuristics. each heuristic that fires adds a defined number of points to the total score, capped at 100.</p>
+
+                <div class=”article-table-wrapper”>
+                    <table class=”article-table”>
+                        <thead>
+                            <tr>
+                                <th>heuristic</th>
+                                <th>flag returned</th>
+                                <th>points</th>
+                                <th>trigger condition</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>sanctioned entity</td>
+                                <td><code>sanctioned_entity</code></td>
+                                <td>100 (immediate)</td>
+                                <td>the wallet address itself is on the known high-risk entity list. score is set to 100 and no further heuristics run.</td>
+                            </tr>
+                            <tr>
+                                <td>mixer interaction</td>
+                                <td><code>mixer_interaction</code></td>
+                                <td>+50</td>
+                                <td>any outbound transaction to a known mixer address, or any inbound transfer from a mixer where the value exceeds 0.001 eth.</td>
+                            </tr>
+                            <tr>
+                                <td>new wallet</td>
+                                <td><code>new_wallet</code></td>
+                                <td>+20</td>
+                                <td>the wallet's oldest recorded on-chain transaction is less than 30 days ago at the time of the scan.</td>
+                            </tr>
+                            <tr>
+                                <td>high velocity</td>
+                                <td><code>high_velocity</code></td>
+                                <td>+20</td>
+                                <td>more than 50 transactions recorded in the 24 hours preceding the scan.</td>
+                            </tr>
+                            <tr>
+                                <td>io imbalance</td>
+                                <td><code>io_imbalance</code></td>
+                                <td>+10</td>
+                                <td>the ratio of outgoing to incoming transaction value exceeds 10:1 across a minimum of 10 transactions.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h2>score cap</h2>
+                <p>the maximum possible combined score from non-sanctioned heuristics is 100 (50+20+20+10). if multiple flags fire simultaneously the result is capped at 100. a <code>sanctioned_entity</code> match short-circuits the engine entirely and returns 100 regardless of other signals.</p>
+
+                <h2>history incomplete</h2>
+                <p>the etherscan api returns a maximum of 10,000 entries per request type (normal, internal, erc-20). if a wallet's history exceeds this limit, the response will include <code>”history_incomplete”: true</code>. scores for such wallets reflect only the portion of history that was analyzed.</p>
             </div>
             <div class="article-support">
                 <div class="support-icon">
