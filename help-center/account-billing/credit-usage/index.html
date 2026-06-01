@@ -75,7 +75,7 @@
                     <img src="https://github.com/ceemv22.png" alt="ceem" class="article-avatar">
                     <div class="article-author-info">
                         <span class="article-author-name">written by ceem</span>
-                        <span class="article-date">last updated: may 2026</span>
+                        <span class="article-date">last updated: june 2026</span>
                     </div>
                 </div>
                 <h1 class="article-title">credit usage</h1>
@@ -83,11 +83,37 @@
             </header>
             <div class="article-body">
                 <h2>credit consumption</h2>
-                <p>each successful wallet scan via <code>/v1/user/score</code> consumes 1 credit. failed requests do not consume credits.</p>
+                <p>each successful wallet scan via <code>/v1/user/score</code> consumes 1 credit. failed requests do not consume credits — if the scoring engine returns an error, the credit is automatically refunded.</p>
+                <h2>free credits</h2>
+                <p>every new account starts with <strong>10 free credits</strong> to test your integration before committing to a paid plan.</p>
                 <h2>monitoring balance</h2>
-                <p>your current credit balance is visible in your dashboard profile. scan history is accessible via the dashboard or the <code>GET /v1/user/profile</code> endpoint.</p>
+                <p>your current credit balance is visible in the top-right corner of your dashboard. full scan history is accessible via the dashboard or the <code>GET /v1/user/profile</code> endpoint.</p>
                 <h2>purchasing credits</h2>
-                <p>additional credits can be purchased from the billing section of your dashboard. packs are available in increments of 10 or 100 credits.</p>
+                <p>additional credits can be purchased from the dashboard. two packs are available:</p>
+                <div class="article-table-wrapper">
+                    <table class="article-table">
+                        <thead>
+                            <tr>
+                                <th>pack</th>
+                                <th>credits</th>
+                                <th>price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>credit pack — small</td>
+                                <td>10 credits</td>
+                                <td>$10</td>
+                            </tr>
+                            <tr>
+                                <td>credit pack — large</td>
+                                <td>100 credits</td>
+                                <td>$100</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p>payment can be completed via <strong>card</strong> (stripe) or <strong>crypto</strong> — supported currencies include eth, bnb, pol, btc, usdt, usdc, and dai.</p>
             </div>
             <div class="article-support">
                 <div class="support-icon">
