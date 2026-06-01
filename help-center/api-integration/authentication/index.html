@@ -82,8 +82,12 @@
                 <p class="article-lead">all sentinelpay api requests must be authenticated using an api key passed in the request header.</p>
             </header>
             <div class="article-body">
-                <h2>generating an api key</h2>
-                <p>to generate an api key, navigate to your organization dashboard and go to <strong>settings > api keys</strong>. click "generate key", name it (e.g., "production-backend"), and copy the secret.</p>
+                <h2>your api key</h2>
+                <p>an api key is automatically provisioned when you create an organization. you can view the last four characters of your active key in the dashboard header. to retrieve or rotate your key, navigate to your organization <strong>settings</strong> tab and use the api key section.</p>
+                <div class="article-callout">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                    <p>your full api key is shown only once — at the moment it is created or rolled. store it securely before leaving the page.</p>
+                </div>
                 <div class="article-callout">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
                     <p>api keys are secrets. never share them or commit them to public repositories.</p>
