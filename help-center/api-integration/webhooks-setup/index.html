@@ -82,9 +82,23 @@
                 <p class="article-lead">webhooks are not yet available on sentinelpay. scan results are returned synchronously.</p>
             </header>
             <div class="article-body">
-                <h2>not yet available</h2>
-                <p>webhooks are not currently available on sentinelpay. the scoring api is synchronous — scan results are returned directly in the api response body, so no callback url is needed.</p>
-                <p>if you need to process results asynchronously, call <code>POST /v1/score</code> in your own async worker and handle the response there. see <a href="/api-integration/scan-endpoint">the scan endpoint</a> for details.</p>
+                <h2>webhooks are not yet available</h2>
+                <p>sentinelpay does not currently support outbound webhooks. the scoring api is fully synchronous — the scan result is returned directly in the http response body within the same request. no callback url or polling is required.</p>
+
+                <h2>async processing pattern</h2>
+                <p>if your architecture requires non-blocking scan calls, the recommended approach is to call <code>POST /v1/score</code> inside your own background worker or job queue. the worker makes the request, receives the result, and stores or acts on it without blocking your main deposit flow.</p>
+                <p>example flow:</p>
+                <ol>
+                    <li>deposit request arrives at your platform</li>
+                    <li>enqueue a scan job with the sender's wallet address</li>
+                    <li>worker calls <code>POST /v1/score</code> and receives the result synchronously</li>
+                    <li>worker writes the result to your database and triggers your accept/review/block logic</li>
+                </ol>
+
+                <div class="article-callout">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                    <p>webhook support is on the roadmap. if your use case requires it, let us know at <a href="mailto:support@sentinelpay.org">support@sentinelpay.org</a>.</p>
+                </div>
             </div>
             <div class="article-support">
                 <div class="support-icon">

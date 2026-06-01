@@ -82,15 +82,67 @@
                 <p class="article-lead">a guide to the error codes returned by the sentinelpay api.</p>
             </header>
             <div class=”article-body”>
-                <h2>common status codes</h2>
-                <ul>
-                    <li><code>400</code> — bad request (missing or invalid wallet address).</li>
-                    <li><code>401</code> — unauthorized (invalid or missing api key).</li>
-                    <li><code>403</code> — forbidden (insufficient credits, unverified account, or public scan limit reached).</li>
-                    <li><code>429</code> — rate limit exceeded (30 requests per 15 minutes for api key usage).</li>
-                    <li><code>500</code> — internal server error.</li>
-                    <li><code>504</code> — gateway timeout (scoring engine did not respond within 25 seconds).</li>
-                </ul>
+                <div class=”article-table-wrapper”>
+                    <table class=”article-table”>
+                        <thead>
+                            <tr>
+                                <th>status</th>
+                                <th>meaning</th>
+                                <th>common cause</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>400</code></td>
+                                <td>bad request</td>
+                                <td>missing or malformed <code>wallet</code> field. the address must be 0x-prefixed and exactly 42 characters long.</td>
+                            </tr>
+                            <tr>
+                                <td><code>401</code></td>
+                                <td>unauthorized</td>
+                                <td>missing or invalid <code>x-api-key</code> header. check that your key is active and correctly copied.</td>
+                            </tr>
+                            <tr>
+                                <td><code>402</code></td>
+                                <td>payment required</td>
+                                <td>your credit balance has reached zero. purchase additional credits from the dashboard.</td>
+                            </tr>
+                            <tr>
+                                <td><code>403</code></td>
+                                <td>forbidden</td>
+                                <td>account email is unverified, or the public endpoint scan limit has been reached for this ip or browser fingerprint.</td>
+                            </tr>
+                            <tr>
+                                <td><code>413</code></td>
+                                <td>payload too large</td>
+                                <td>request body exceeds the allowed size.</td>
+                            </tr>
+                            <tr>
+                                <td><code>429</code></td>
+                                <td>too many requests</td>
+                                <td>you have exceeded the rate limit of 30 requests per 15 minutes. wait before retrying.</td>
+                            </tr>
+                            <tr>
+                                <td><code>500</code></td>
+                                <td>internal server error</td>
+                                <td>unexpected server-side error. if persistent, contact support with the timestamp of the request.</td>
+                            </tr>
+                            <tr>
+                                <td><code>503</code></td>
+                                <td>service unavailable</td>
+                                <td>the upstream blockchain data provider returned an error. retry after a short delay.</td>
+                            </tr>
+                            <tr>
+                                <td><code>504</code></td>
+                                <td>gateway timeout</td>
+                                <td>the scoring engine did not respond within 25 seconds. this can happen for wallets with very high transaction counts. retry once.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h2>handling errors in production</h2>
+                <p>for <code>503</code> and <code>504</code> responses, implement an exponential backoff retry with a maximum of 3 attempts. for <code>429</code>, respect the rate limit window and do not retry immediately. credits are <strong>not deducted</strong> on failed requests — only successful <code>200</code> responses consume a credit.</p>
             </div>
             <div class="article-support">
                 <div class="support-icon">

@@ -87,26 +87,30 @@
             </header>
 
             <div class="article-body">
-                <h2>1. the team management panel</h2>
-                <p>navigate to your organization dashboard and select the <strong>"team"</strong> tab from the sidebar. here you can see all current members and pending invitations.</p>
+                <h2>opening the team panel</h2>
+                <p>navigate to your organization and select the <strong>team</strong> tab from the sidebar. the panel shows all active members alongside any pending invitations that have not yet been accepted.</p>
 
-                <h2>2. sending an invitation</h2>
-                <p>click the <strong>"invite member"</strong> button. enter the email address of the colleague you wish to invite and select their initial role.</p>
-
-                <h2>3. roles and permissions</h2>
-                <p>sentinelpay supports three primary roles:</p>
-                <ul>
-                    <li><strong>owner</strong> — full access to all settings, team management, and api keys. only the owner can invite or remove members.</li>
-                    <li><strong>developer</strong> — the default role for invited members. can make api requests and view scan history.</li>
-                </ul>
+                <h2>sending an invitation</h2>
+                <p>click <strong>invite member</strong> and enter the email address of the person you want to add. all invited members are automatically assigned the <strong>developer</strong> role — the only assignable role for team members other than the organization owner.</p>
 
                 <div class="article-callout">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-                    <p>you can only have one "owner" per organization. to transfer ownership, contact support at support@sentinelpay.org.</p>
+                    <p>invitation links expire after <strong>3 days</strong>. if the recipient misses the deadline, you can resend the invite from the team panel.</p>
                 </div>
 
-                <h2>4. accepting an invitation</h2>
-                <p>your colleague will receive an email with a unique join link. once they click the link and log in (or register), they will be automatically added to your organization workspace.</p>
+                <h2>the acceptance flow</h2>
+                <p>when an invite is sent, the recipient receives an email containing a unique join link. clicking the link takes them to sentinelpay where they can log in or register. once authenticated, they are automatically added to your organization as a developer.</p>
+                <p>if the recipient already has an active sentinelpay session, a notification will appear in their dashboard bell icon. they can accept the invitation directly from the notification without needing the email link.</p>
+
+                <h2>pending invitations</h2>
+                <p>active invitations are visible in the team panel under a separate pending section. from here you can see which email addresses have outstanding invites and resend any that have expired or gone undelivered.</p>
+
+                <h2>roles</h2>
+                <p>sentinelpay organizations have two roles:</p>
+                <ul>
+                    <li><strong>owner</strong> — the user who created the organization. has full access including team management and api key operations. one owner per organization.</li>
+                    <li><strong>developer</strong> — assigned to all invited members. can make api requests and view organization scan history.</li>
+                </ul>
             </div>
 
             <div class="article-related">
