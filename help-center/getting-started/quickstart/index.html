@@ -100,14 +100,14 @@
 
                 <h2>step 4 — make your first scan</h2>
                 <p>send a <code>POST</code> request to the scan endpoint with the wallet address you want to assess:</p>
-                <div class="article-callout">
+                <div class="article-code-block">
                     <pre><code>curl -X POST https://sentinelpay.org/v1/score \
   -H "Content-Type: application/json" \
   -H "x-api-key: YOUR_API_KEY" \
   -d '{"wallet": "0xAbCd1234..."}'</code></pre>
                 </div>
                 <p>a successful response returns http <code>200</code> with a json body:</p>
-                <div class="article-callout">
+                <div class="article-code-block">
                     <pre><code>{
   "score": 20,
   "category": "low",
