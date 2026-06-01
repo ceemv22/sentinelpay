@@ -90,11 +90,11 @@
             <div class="article-body">
 
                 <h2>the problem we solve</h2>
-                <p>crypto payment processors and platforms face a growing threat: compromised wallets. when a user deposits funds from a wallet involved in hacks, mixer activity, or sanctioned addresses, the operator absorbs that risk unknowingly. this can result in frozen funds, regulatory penalties, and reputational damage.</p>
-                <p>sentinelpay was built to solve this at the deposit layer — before transactions are accepted.</p>
+                <p>crypto payment processors and platforms face a growing threat: compromised wallets. when a user deposits funds from a wallet involved in hacks, mixer activity, or sanctioned addresses, the operator absorbs that risk unknowingly — leading to frozen funds, regulatory penalties, and serious reputational damage.</p>
+                <p>sentinelpay was built to solve this at the deposit layer, before transactions are accepted.</p>
 
                 <h2>what sentinelpay does</h2>
-                <p>sentinelpay is a wallet risk intelligence api. before your platform accepts a crypto deposit, you call our <code>/v1/score</code> endpoint with the sender's wallet address. we return a risk score from <code>0</code> to <code>100</code> and a category:</p>
+                <p>sentinelpay is a wallet risk intelligence api. before your platform accepts a crypto deposit, you call our <code>/v1/score</code> endpoint with the sender's wallet address. we return a risk score from <code>0</code> to <code>100</code> and a risk category:</p>
 
                 <div class="article-table-wrapper">
                     <table class="article-table">
@@ -108,49 +108,44 @@
                         <tbody>
                             <tr>
                                 <td><code>0 – 29</code></td>
-                                <td><span class="badge badge-green">low risk</span></td>
+                                <td><span class="badge badge-green">low</span></td>
                                 <td>accept deposit</td>
                             </tr>
                             <tr>
                                 <td><code>30 – 59</code></td>
-                                <td><span class="badge badge-yellow">medium risk</span></td>
-                                <td>accept with manual review</td>
+                                <td><span class="badge badge-yellow">medium</span></td>
+                                <td>manual review recommended</td>
                             </tr>
                             <tr>
                                 <td><code>60 – 100</code></td>
-                                <td><span class="badge badge-red">high risk</span></td>
-                                <td>block deposit, log event</td>
+                                <td><span class="badge badge-red">high</span></td>
+                                <td>block deposit</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
 
+                <h2>how it works</h2>
+                <p>our scoring engine fetches up to 10,000 transactions per wallet from the ethereum blockchain and runs them through five independent heuristics. each heuristic that triggers adds a defined number of points to the final score, which is capped at 100. results are returned synchronously — no webhooks or polling needed. typical response time is under 10 seconds.</p>
+
                 <h2>who is it for?</h2>
-                <p>sentinelpay is built for b2b operators who process high-volume crypto transactions, including:</p>
+                <p>sentinelpay is purpose-built for b2b operators processing high-volume crypto transactions:</p>
                 <ul>
                     <li>crypto casinos and gaming platforms</li>
-                    <li>crypto payment gateways</li>
+                    <li>crypto payment gateways and processors</li>
+                    <li>otc desks and exchanges</li>
                     <li>nft marketplaces and dex aggregators</li>
-                    <li>compliance and aml teams</li>
+                    <li>aml and compliance teams</li>
                 </ul>
 
-                <h2>how the risk engine works</h2>
-                <p>our engine combines multiple on-chain heuristics to produce a score. key signals include:</p>
-                <ul>
-                    <li><strong>mixer interaction</strong> — direct contact with known mixing services (e.g. tornado cash)</li>
-                    <li><strong>sanctioned entity</strong> — wallet address matched against a known high-risk entity set</li>
-                    <li><strong>new wallet</strong> — account active for less than 30 days</li>
-                    <li><strong>high velocity</strong> — more than 50 transactions in the past 24 hours</li>
-                    <li><strong>io imbalance</strong> — output-to-input value ratio exceeds 10:1</li>
-                </ul>
+                <h2>chain support</h2>
+                <p>sentinelpay currently scores <strong>ethereum mainnet</strong> wallet addresses. the engine analyzes standard transactions, internal transactions, and erc-20 token transfers. support for additional chains is on the roadmap.</p>
 
-                <div class="article-callout">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-                    <p>sentinelpay does not store or retain wallet scan results linked to your users. all queries are ephemeral and comply with gdpr data minimisation principles.</p>
-                </div>
+                <h2>scan history</h2>
+                <p>every scan your organization performs is stored in your scan history — accessible from the dashboard or via <code>GET /v1/user/profile</code>. each result includes the wallet address, score, category, triggered flags, and timestamp. your most recent 50 scans are available at any time.</p>
 
                 <h2>next steps</h2>
-                <p>ready to integrate? start with <a href="/getting-started/creating-your-organization">creating your organization</a>, then head to <a href="/api-integration">api integration</a> to make your first call.</p>
+                <p>ready to integrate? start with <a href="/getting-started/creating-your-organization">creating your organization</a>, then head to <a href="/api-integration/authentication">authentication</a> to make your first call.</p>
 
             </div>
 
