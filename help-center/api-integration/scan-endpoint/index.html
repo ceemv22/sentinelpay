@@ -82,28 +82,33 @@
                 <p class="article-lead">learn how to interact with the /v1/score endpoint to assess wallet risk.</p>
             </header>
             <div class=”article-body”>
-                <h2>endpoint</h2>
-                <div class=”article-callout”>
-                    <code>POST https://sentinelpay.org/v1/score</code>
+                <h2>endpoint overview</h2>
+                <p>the scan endpoint takes an ethereum wallet address and returns a risk score with full flag detail. it is synchronous — the result is returned in the same http response, typically within 3–25 seconds depending on wallet history size.</p>
+
+                <div class=”article-endpoint”>
+                    <span class=”endpoint-method”>POST</span>
+                    <span class=”endpoint-url”>https://sentinelpay.org/v1/score</span>
                 </div>
 
-                <h2>authentication</h2>
-                <p>this endpoint requires a valid api key passed in the <code>x-api-key</code> request header. see <a href=”/api-integration/authentication”>authentication</a> for details on obtaining and using your key.</p>
+                <p>all requests require a valid api key in the <code>x-api-key</code> header. see <a href=”/api-integration/authentication”>authentication</a> for key management and rotation.</p>
 
                 <h2>request</h2>
-                <p>send a <code>Content-Type: application/json</code> body with a single field:</p>
-                <div class=”article-callout”>
+                <p>send a <code>Content-Type: application/json</code> body with one required field:</p>
+
+                <div class=”article-code-block”>
                     <pre><code>{
   “wallet”: “0xAbCd1234...”
 }</code></pre>
                 </div>
+
                 <ul>
                     <li><code>wallet</code> <em>(string, required)</em> — an ethereum wallet address. must be 0x-prefixed and exactly 42 characters long.</li>
                 </ul>
 
                 <h2>response</h2>
                 <p>a successful scan returns http <code>200</code> with the following json body:</p>
-                <div class=”article-callout”>
+
+                <div class=”article-code-block”>
                     <pre><code>{
   “score”: 70,
   “category”: “high”,
@@ -112,10 +117,48 @@
   “timestamp”: “2026-06-01T10:00:00.000Z”
 }</code></pre>
                 </div>
-                <p>see <a href=”/api-integration/request-payloads”>request payloads</a> for a full field-by-field breakdown of the response.</p>
+
+                <div class=”article-table-wrapper”>
+                    <table class=”article-table”>
+                        <thead>
+                            <tr>
+                                <th>field</th>
+                                <th>type</th>
+                                <th>description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>score</code></td>
+                                <td>integer (0–100)</td>
+                                <td>the calculated risk score. higher is riskier.</td>
+                            </tr>
+                            <tr>
+                                <td><code>category</code></td>
+                                <td>string</td>
+                                <td><code>low</code> (0–29), <code>medium</code> (30–59), or <code>high</code> (60–100).</td>
+                            </tr>
+                            <tr>
+                                <td><code>flags</code></td>
+                                <td>string[]</td>
+                                <td>heuristics that fired. empty array if none triggered.</td>
+                            </tr>
+                            <tr>
+                                <td><code>history_incomplete</code></td>
+                                <td>boolean</td>
+                                <td>true if the wallet's history exceeded 10,000 entries and was only partially analyzed.</td>
+                            </tr>
+                            <tr>
+                                <td><code>timestamp</code></td>
+                                <td>ISO 8601 string</td>
+                                <td>utc datetime of when the scan was performed.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
 
                 <h2>example</h2>
-                <div class=”article-callout”>
+                <div class=”article-code-block”>
                     <pre><code>curl -X POST https://sentinelpay.org/v1/score \
   -H “Content-Type: application/json” \
   -H “x-api-key: your_api_key_here” \
