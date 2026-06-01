@@ -83,19 +83,26 @@
             </header>
             <div class="article-body">
                 <h2>your api key</h2>
-                <p>an api key is automatically provisioned when you create an organization. you can view the last four characters of your active key in the dashboard header. to retrieve or rotate your key, navigate to your organization <strong>settings</strong> tab and use the api key section.</p>
+                <p>an api key is automatically provisioned for your organization the moment it is created. the full raw key is displayed once at creation time — copy it and store it securely in your environment variables or secrets manager. after that, only the last four characters are visible in the dashboard header as a reference.</p>
+
                 <div class="article-callout">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-                    <p>your full api key is shown only once — at the moment it is created or rolled. store it securely before leaving the page.</p>
+                    <p>api keys are secrets. never commit them to source control, log them, or expose them in client-side code. treat them with the same sensitivity as passwords.</p>
                 </div>
-                <div class="article-callout">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-                    <p>api keys are secrets. never share them or commit them to public repositories.</p>
-                </div>
+
                 <h2>using your key</h2>
-                <p>include your key in every request using the <code>x-api-key</code> header:</p>
+                <p>pass your api key as a header on every request to authenticated endpoints:</p>
                 <div class="article-callout">
-                    <code>x-api-key: sp_live_your_key_here</code>
+                    <code>x-api-key: your_api_key_here</code>
+                </div>
+                <p>requests missing this header — or using an invalid or deactivated key — will receive a <code>401 unauthorized</code> response.</p>
+
+                <h2>rolling your key</h2>
+                <p>if your key is compromised or needs rotation, navigate to your organization <strong>settings</strong> tab and use the roll key option. rolling immediately deactivates the old key and issues a new one. any service still using the old key will receive <code>401</code> responses until updated.</p>
+
+                <div class="article-callout">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                    <p>only the organization <strong>owner</strong> can roll the api key. developer-role members do not have access to this action.</p>
                 </div>
             </div>
             <div class="article-support">

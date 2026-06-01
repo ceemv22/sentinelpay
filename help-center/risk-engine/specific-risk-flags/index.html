@@ -90,6 +90,26 @@
                     <li><code>high_velocity</code> — more than 50 transactions recorded in the last 24 hours. adds +20 to score.</li>
                     <li><code>io_imbalance</code> — output-to-input value ratio exceeds 10:1 across a minimum of 10 transactions. adds +10 to score.</li>
                 </ul>
+
+                <h2>sanctioned_entity</h2>
+                <p><strong>points: 100 (immediate return)</strong></p>
+                <p>the wallet address was found in our known high-risk entity list. this list includes wallets associated with hacks, ransomware, darknet markets, and other verified illicit activity. when this flag fires, the score is set to 100 immediately and no other heuristics run.</p>
+
+                <h2>mixer_interaction</h2>
+                <p><strong>points: +50</strong></p>
+                <p>the wallet has sent funds to a known mixing service, or has received funds from one where the incoming value exceeded 0.001 eth. mixing services are used to obscure the origin of funds. this is the single strongest individual risk signal — a wallet with only this flag scores 50 (medium), but combined with any other flag it reaches high risk.</p>
+
+                <h2>new_wallet</h2>
+                <p><strong>points: +20</strong></p>
+                <p>the wallet's oldest on-chain transaction is less than 30 days old at the time of the scan. newly created wallets are commonly used to add separation between illicit source wallets and final destination wallets. note that all legitimate new users will also have this flag — it should not be used as a standalone block trigger.</p>
+
+                <h2>high_velocity</h2>
+                <p><strong>points: +20</strong></p>
+                <p>more than 50 transactions were recorded from this wallet in the 24 hours preceding the scan. extremely high short-term transaction volume is associated with layering activity, automated bots, and rapid fund redistribution. this can also occur on legitimate defi-active wallets.</p>
+
+                <h2>io_imbalance</h2>
+                <p><strong>points: +10</strong></p>
+                <p>the wallet shows a 10:1 or greater ratio of outgoing to incoming transaction value across at least 10 transactions. this asymmetry can indicate a pass-through wallet — receiving funds and immediately redistributing them onward. it has the lowest individual weight of any heuristic (+10 points).</p>
             </div>
             <div class="article-support">
                 <div class="support-icon">

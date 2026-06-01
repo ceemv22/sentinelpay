@@ -88,19 +88,12 @@
             </header>
 
             <div class="article-body">
-                <p>each organization member is assigned one of two roles:</p>
+                <h2>roles</h2>
+                <p>every member of an organization is assigned one of two roles:</p>
                 <ul>
-                    <li><strong>owner:</strong> the user who created the organization. has full access to all settings, team management, and api key operations.</li>
-                    <li><strong>developer:</strong> the default role for invited members. can make api requests and view scan history within the organization.</li>
+                    <li><strong>owner</strong> — the user who created the organization. has full control over settings, team management, and api key operations. each organization has exactly one owner.</li>
+                    <li><strong>developer</strong> — the default role for all invited members. can call api endpoints and view the organization's scan history.</li>
                 </ul>
-
-                <p>when you create an organization, you are automatically assigned as the owner. any members you invite will be assigned the developer role.</p>
-
-                <h2>managing members</h2>
-                <p>to invite a collaborator, navigate to the <strong>team</strong> tab in your organization dashboard and click <strong>invite member</strong>. enter the recipient's email address and send the invite. invitation links expire after <strong>3 days</strong>.</p>
-
-                <h2>transferring ownership</h2>
-                <p>each sentinelpay organization must have exactly one owner. to transfer ownership, contact us at <a href="mailto:support@sentinelpay.org">support@sentinelpay.org</a> with your organization details.</p>
 
                 <h2>permissions overview</h2>
                 <div class="article-table-wrapper">
@@ -114,7 +107,7 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td>invite / remove members</td>
+                                <td>invite members</td>
                                 <td>✅</td>
                                 <td>❌</td>
                             </tr>
@@ -124,7 +117,12 @@
                                 <td>❌</td>
                             </tr>
                             <tr>
-                                <td>make api requests</td>
+                                <td>delete organization</td>
+                                <td>✅</td>
+                                <td>❌</td>
+                            </tr>
+                            <tr>
+                                <td>make api requests (<code>/v1/score</code>)</td>
                                 <td>✅</td>
                                 <td>✅</td>
                             </tr>
@@ -136,6 +134,15 @@
                         </tbody>
                     </table>
                 </div>
+
+                <h2>inviting members</h2>
+                <p>to add a collaborator, navigate to the <strong>team</strong> tab and click <strong>invite member</strong>. enter the recipient's email address. invitation links expire after <strong>3 days</strong> and can be resent from the same panel if needed.</p>
+
+                <h2>organization limits</h2>
+                <p>each user account can own or be a member of up to <strong>10 organizations</strong>. if you need more, contact us at <a href="mailto:support@sentinelpay.org">support@sentinelpay.org</a>.</p>
+
+                <h2>transferring ownership</h2>
+                <p>ownership transfer is handled manually. contact <a href="mailto:support@sentinelpay.org">support@sentinelpay.org</a> with your organization name and the email of the new owner.</p>
 
             </div>
 
