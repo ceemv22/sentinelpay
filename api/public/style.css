@@ -1009,13 +1009,15 @@ body.modal-open {
 
     .modal-overlay.active {
         padding: 1rem;
+        padding-top: 3.5rem;
+        align-items: flex-start;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        touch-action: pan-y;
     }
 
     .modal-overlay.active .modal-content {
-        max-height: 88dvh;
         overflow-x: hidden;
-        overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
         touch-action: pan-y;
         overscroll-behavior: contain;
     }
