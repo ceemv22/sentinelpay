@@ -1966,7 +1966,7 @@ html.auth-session-present #lp-mm-dashboard { display: block !important; }
     grid-template-columns: 1fr auto 1fr auto 1fr;
     gap: 0;
     align-items: start;
-    margin-top: 3rem;
+    margin-top: 2.5rem;
 }
 
 .lp-how-col {
@@ -1974,14 +1974,19 @@ html.auth-session-present #lp-mm-dashboard { display: block !important; }
     flex-direction: column;
     gap: 1rem;
     min-width: 0;
-    padding: 0 0.25rem;
+}
+
+.lp-how-col-top {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
 }
 
 .lp-how-col-divider {
     width: 1px;
     align-self: stretch;
     background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.07) 20%, rgba(255,255,255,0.07) 80%, transparent);
-    margin: 0 2.5rem;
+    margin: 0 2rem;
     flex-shrink: 0;
 }
 
@@ -1989,11 +1994,11 @@ html.auth-session-present #lp-mm-dashboard { display: block !important; }
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 26px;
-    height: 26px;
+    width: 24px;
+    height: 24px;
     border: 1px solid rgba(0, 240, 255, 0.18);
     background: rgba(0, 240, 255, 0.04);
-    border-radius: 6px;
+    border-radius: 5px;
     font-size: 0.6rem;
     color: var(--neon-blue);
     font-family: 'JetBrains Mono', monospace;
@@ -2002,28 +2007,9 @@ html.auth-session-present #lp-mm-dashboard { display: block !important; }
     flex-shrink: 0;
 }
 
-.lp-how-col-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 44px;
-    height: 44px;
-    border-radius: 10px;
-    background: rgba(0, 240, 255, 0.05);
-    border: 1px solid rgba(0, 240, 255, 0.1);
-    color: var(--neon-blue);
-    flex-shrink: 0;
-}
-
-.lp-how-col-icon-red {
-    background: rgba(255, 51, 51, 0.05);
-    border-color: rgba(255, 51, 51, 0.15);
-    color: var(--color-red);
-}
-
 .lp-how-title {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: 700;
     color: #fff;
     text-transform: lowercase;
@@ -2034,99 +2020,12 @@ html.auth-session-present #lp-mm-dashboard { display: block !important; }
 
 .lp-how-desc {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.78rem;
+    font-size: 0.74rem;
     color: var(--text-muted);
-    line-height: 1.7;
+    line-height: 1.65;
     font-weight: 300;
     text-transform: lowercase;
     margin: 0;
-}
-
-.lp-how-tag-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.35rem;
-    margin-top: 0.25rem;
-}
-
-.lp-how-tag {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.62rem;
-    color: rgba(255,255,255,0.3);
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.07);
-    border-radius: 4px;
-    padding: 0.2rem 0.5rem;
-    text-transform: lowercase;
-}
-
-.lp-how-stat-row {
-    display: flex;
-    align-items: center;
-    gap: 0;
-    margin-top: 0.25rem;
-    padding: 0.75rem;
-    background: rgba(255,255,255,0.02);
-    border: 1px solid rgba(255,255,255,0.06);
-    border-radius: 8px;
-}
-
-.lp-how-stat {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.2rem;
-    flex: 1;
-}
-
-.lp-how-stat-val {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: #fff;
-    letter-spacing: -0.02em;
-}
-
-.lp-how-stat-label {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.6rem;
-    color: var(--text-muted);
-    text-transform: lowercase;
-    letter-spacing: 0.04em;
-}
-
-.lp-how-stat-sep {
-    width: 1px;
-    height: 28px;
-    background: rgba(255,255,255,0.07);
-    flex-shrink: 0;
-}
-
-.lp-how-alert-preview {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-    padding: 0.7rem 0.85rem;
-    background: rgba(255, 51, 51, 0.04);
-    border: 1px solid rgba(255, 51, 51, 0.14);
-    border-radius: 8px;
-    margin-top: 0.25rem;
-}
-
-.lp-how-alert-badge {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.7rem;
-    color: var(--color-red);
-    font-weight: 700;
-    text-transform: lowercase;
-    letter-spacing: 0.02em;
-}
-
-.lp-how-alert-flags {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.62rem;
-    color: rgba(255,255,255,0.28);
-    text-transform: lowercase;
 }
 
 
@@ -2895,13 +2794,18 @@ html.auth-session-present #lp-cta-dashboard { display: inline-flex !important; }
 
     html.snap-mode .lp-how .lp-eyebrow { margin-bottom: 0.3rem; }
     html.snap-mode .lp-how .lp-h2 { font-size: 1.5rem; margin-bottom: 0; }
-    html.snap-mode .lp-how .lp-how-cols { margin-top: 2rem; }
-    html.snap-mode .lp-how .lp-how-col { gap: 0.75rem; }
-    html.snap-mode .lp-how .lp-how-col-divider { margin: 0 1.5rem; }
-    html.snap-mode .lp-how .lp-how-col-icon { width: 38px; height: 38px; }
-    html.snap-mode .lp-how .lp-how-title { font-size: 0.95rem; }
-    html.snap-mode .lp-how .lp-how-desc { font-size: 0.71rem; line-height: 1.55; }
-    html.snap-mode .lp-how .lp-how-stat-val { font-size: 0.95rem; }
-    html.snap-mode .lp-how .lp-how-stat-row { padding: 0.6rem; }
-    html.snap-mode .lp-how .lp-how-alert-preview { padding: 0.55rem 0.7rem; }
+    html.snap-mode .lp-how .lp-how-cols { margin-top: 1.5rem; }
+    html.snap-mode .lp-how .lp-how-col { gap: 0.7rem; }
+    html.snap-mode .lp-how .lp-how-col-top { gap: 0.4rem; }
+    html.snap-mode .lp-how .lp-how-col-divider { margin: 0 1.25rem; }
+    html.snap-mode .lp-how .lp-how-title { font-size: 0.88rem; }
+    html.snap-mode .lp-how .lp-how-desc { font-size: 0.67rem; line-height: 1.5; }
+    html.snap-mode .lp-how .lp-terminal-code { padding: 0.6rem 1rem; font-size: 0.7rem; line-height: 1.55; }
+    html.snap-mode .lp-how .lp-connected-bar-wrap { margin: 0 1rem; }
+    html.snap-mode .lp-how .lp-connected-label { padding: 0.3rem 1rem 0.55rem; font-size: 0.59rem; }
+    html.snap-mode .lp-how .lp-log-lines { padding: 0.35rem 1rem 0.5rem; }
+    html.snap-mode .lp-how .lp-log-line { line-height: 1.5; font-size: 0.67rem; }
+    html.snap-mode .lp-how .lp-alert-card { padding: 0.85rem; gap: 0.4rem; }
+    html.snap-mode .lp-how .lp-alert-score { font-size: 2rem; }
+    html.snap-mode .lp-how .lp-alert-header { margin-bottom: 0; }
 }
