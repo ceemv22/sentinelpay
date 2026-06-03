@@ -1010,7 +1010,7 @@ body.modal-open {
     .modal-overlay.active {
         padding: 1rem;
         padding-top: 3.5rem;
-        align-items: flex-start;
+        align-items: center;
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
         touch-action: pan-y;
@@ -1020,6 +1020,7 @@ body.modal-open {
         overflow-x: hidden;
         touch-action: pan-y;
         overscroll-behavior: contain;
+        margin: auto;
     }
 
     .auth-page-wrap {
