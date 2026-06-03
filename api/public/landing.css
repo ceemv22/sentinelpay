@@ -2761,14 +2761,6 @@ html.auth-session-present #lp-cta-dashboard { display: inline-flex !important; }
         display: none;
     }
 
-    html.snap-mode .lp-how {
-        justify-content: flex-start;
-    }
-
-    html.snap-mode .lp-how .lp-section-inner {
-        padding-top: 2rem;
-    }
-
     html.snap-mode .lp-cta-section {
         height: 100vh;
         overflow: hidden;
@@ -2789,20 +2781,27 @@ html.auth-session-present #lp-cta-dashboard { display: inline-flex !important; }
         box-sizing: border-box;
     }
 
-    html.snap-mode .lp-how .lp-eyebrow { margin-bottom: 0.3rem; }
-    html.snap-mode .lp-how .lp-h2 { font-size: 1.5rem; margin-bottom: 0; }
-    html.snap-mode .lp-how .lp-how-cols { margin-top: 1.5rem; }
-    html.snap-mode .lp-how .lp-how-col { gap: 0.7rem; }
-
-    html.snap-mode .lp-how .lp-how-col-divider { margin: 0 1.25rem; }
-    html.snap-mode .lp-how .lp-how-title { font-size: 0.88rem; }
-    html.snap-mode .lp-how .lp-how-desc { font-size: 0.67rem; line-height: 1.5; }
-    html.snap-mode .lp-how .lp-terminal-code { padding: 0.6rem 1rem; font-size: 0.7rem; line-height: 1.55; }
-    html.snap-mode .lp-how .lp-connected-bar-wrap { margin: 0 1rem; }
-    html.snap-mode .lp-how .lp-connected-label { padding: 0.3rem 1rem 0.55rem; font-size: 0.59rem; }
-    html.snap-mode .lp-how .lp-log-lines { padding: 0.35rem 1rem 0.5rem; }
-    html.snap-mode .lp-how .lp-log-line { line-height: 1.5; font-size: 0.67rem; }
-    html.snap-mode .lp-how .lp-alert-card { padding: 0.85rem; gap: 0.4rem; }
-    html.snap-mode .lp-how .lp-alert-score { font-size: 2rem; }
+    html.snap-mode .lp-how .lp-section-inner { padding: 0.75rem 2rem; }
+    html.snap-mode .lp-how .lp-eyebrow { margin-bottom: 0.2rem; font-size: 0.62rem; }
+    html.snap-mode .lp-how .lp-h2 { font-size: 1.35rem; margin-bottom: 0; }
+    html.snap-mode .lp-how .lp-how-cols { margin-top: 1rem; }
+    html.snap-mode .lp-how .lp-how-col { gap: 0.45rem; }
+    html.snap-mode .lp-how .lp-how-col-divider { margin: 0 1rem; }
+    html.snap-mode .lp-how .lp-how-step-num { font-size: 0.55rem; }
+    html.snap-mode .lp-how .lp-how-title { font-size: 0.82rem; }
+    html.snap-mode .lp-how .lp-how-desc { font-size: 0.63rem; line-height: 1.45; }
+    html.snap-mode .lp-how .lp-terminal-bar { padding: 0.4rem 0.75rem; }
+    html.snap-mode .lp-how .lp-dot { width: 7px; height: 7px; }
+    html.snap-mode .lp-how .lp-terminal-title { font-size: 0.58rem; }
+    html.snap-mode .lp-how .lp-terminal-code { padding: 0.45rem 0.75rem; font-size: 0.64rem; line-height: 1.5; }
+    html.snap-mode .lp-how .lp-log-lines { padding: 0.3rem 0.75rem 0.4rem; }
+    html.snap-mode .lp-how .lp-log-line { line-height: 1.45; font-size: 0.63rem; }
+    html.snap-mode .lp-how .lp-log-ts { font-size: 0.6rem; }
+    html.snap-mode .lp-how .lp-alert-card { padding: 0.65rem 0.75rem; gap: 0.3rem; }
+    html.snap-mode .lp-how .lp-alert-score { font-size: 1.6rem; }
+    html.snap-mode .lp-how .lp-alert-badge { font-size: 0.55rem; padding: 0.2rem 0.45rem; }
+    html.snap-mode .lp-how .lp-alert-wallet { font-size: 0.72rem; }
+    html.snap-mode .lp-how .lp-alert-flag { font-size: 0.6rem; padding: 0.18rem 0.45rem; }
+    html.snap-mode .lp-how .lp-alert-meta { font-size: 0.58rem; }
     html.snap-mode .lp-how .lp-alert-header { margin-bottom: 0; }
 }
