@@ -2138,6 +2138,55 @@ html.auth-session-present #lp-mm-dashboard { display: block !important; }
     flex-direction: column;
     gap: 1rem;
     box-shadow: 0 0 50px rgba(255, 51, 51, 0.07);
+    position: relative;
+    overflow: hidden;
+    animation: lp-alert-card-glow 2.6s ease-in-out infinite;
+}
+
+@keyframes lp-alert-card-glow {
+    0%, 100% { box-shadow: 0 0 8px rgba(255, 51, 51, 0.05); }
+    50%       { box-shadow: 0 0 40px rgba(255, 51, 51, 0.2); }
+}
+
+.lp-alert-incoming-dot {
+    position: absolute;
+    top: 0.85rem;
+    right: 0.85rem;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-red);
+    box-shadow: 0 0 10px var(--color-red);
+    animation: lp-incoming-dot-pulse 1.4s ease-in-out infinite;
+    z-index: 2;
+}
+
+@keyframes lp-incoming-dot-pulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 6px var(--color-red), 0 0 14px rgba(255, 51, 51, 0.5); }
+    50%       { opacity: 0.35; box-shadow: 0 0 3px var(--color-red); }
+}
+
+.lp-alert-shimmer {
+    position: absolute;
+    top: 0;
+    left: -120%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(
+        105deg,
+        transparent 30%,
+        rgba(255, 51, 51, 0.06) 50%,
+        transparent 70%
+    );
+    pointer-events: none;
+    animation: lp-alert-shimmer-scan 4s ease-in-out infinite;
+    z-index: 1;
+}
+
+@keyframes lp-alert-shimmer-scan {
+    0%   { left: -120%; }
+    50%  { left: 160%; }
+    100% { left: 160%; }
 }
 
 .lp-alert-header {
