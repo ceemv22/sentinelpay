@@ -544,19 +544,15 @@ function setupCreateOrgModal(token) {
                     <div id="crypto-selector-view">
                         <div style="font-family:'JetBrains Mono',monospace;font-size:0.67rem;color:var(--text-muted);margin-bottom:0.5rem;letter-spacing:0.03em;">select currency</div>
                         <div id="crypto-dd-wrap" style="position:relative;">
-                            <button id="crypto-dd-trigger" style="width:100%;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:0.6rem 0.8rem;cursor:pointer;display:flex;align-items:center;gap:0.6rem;-webkit-tap-highlight-color:transparent;">
-                                <div id="crypto-dd-selected" style="display:flex;align-items:center;gap:0.6rem;flex:1;min-width:0;">
-                                    <span style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--text-muted);">choose a currency...</span>
-                                </div>
+                            <button id="crypto-dd-trigger" style="width:100%;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:0.6rem 0.8rem;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:0.6rem;box-sizing:border-box;-webkit-tap-highlight-color:transparent;box-shadow:none !important;transform:none !important;transition:border-color 0.18s ease;">
+                                <span id="crypto-dd-selected" style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--text-muted);">choose a currency...</span>
                                 <svg id="crypto-dd-chevron" style="flex-shrink:0;transition:transform 0.18s;" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                             </button>
                             <div id="crypto-dd-panel" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:#090909;border:1px solid rgba(255,255,255,0.1);border-radius:8px;z-index:200;max-height:200px;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,0.7);"></div>
                         </div>
                         <div id="network-dd-wrap" style="display:none;position:relative;margin-top:0.5rem;">
-                            <button id="network-dd-trigger" style="width:100%;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:0.6rem 0.8rem;cursor:pointer;display:flex;align-items:center;gap:0.6rem;-webkit-tap-highlight-color:transparent;">
-                                <div id="network-dd-selected" style="display:flex;align-items:center;gap:0.6rem;flex:1;min-width:0;">
-                                    <span style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--text-muted);">select network...</span>
-                                </div>
+                            <button id="network-dd-trigger" style="width:100%;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:0.6rem 0.8rem;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:0.6rem;box-sizing:border-box;-webkit-tap-highlight-color:transparent;box-shadow:none !important;transform:none !important;transition:border-color 0.18s ease;">
+                                <span id="network-dd-selected" style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--text-muted);">select network...</span>
                                 <svg id="network-dd-chevron" style="flex-shrink:0;transition:transform 0.18s;" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                             </button>
                             <div id="network-dd-panel" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:#090909;border:1px solid rgba(255,255,255,0.1);border-radius:8px;z-index:200;max-height:160px;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,0.7);"></div>
@@ -600,14 +596,14 @@ function setupCreateOrgModal(token) {
             ddOpen = typeof force === 'boolean' ? force : !ddOpen;
             ddPanel.style.display = ddOpen ? '' : 'none';
             ddChevron.style.transform = ddOpen ? 'rotate(180deg)' : '';
-            ddTrigger.style.borderColor = ddOpen ? 'rgba(0,240,255,0.25)' : 'rgba(255,255,255,0.1)';
+            ddTrigger.style.borderColor = ddOpen ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.1)';
         };
 
         const toggleNetDd = (force) => {
             netOpen = typeof force === 'boolean' ? force : !netOpen;
             netPanel.style.display = netOpen ? '' : 'none';
             netChevron.style.transform = netOpen ? 'rotate(180deg)' : '';
-            netTrigger.style.borderColor = netOpen ? 'rgba(0,240,255,0.25)' : 'rgba(255,255,255,0.1)';
+            netTrigger.style.borderColor = netOpen ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.1)';
         };
 
         ddTrigger.addEventListener('click', (e) => { e.stopPropagation(); if (netOpen) toggleNetDd(false); toggleDd(); });
@@ -782,41 +778,23 @@ function setupCreateOrgModal(token) {
         let selectedNetwork = null;
 
         const renderDdSelected = (cur) => {
-            ddSelected.innerHTML = '';
-            const sWrap = document.createElement('div');
-            sWrap.style.cssText = 'width:20px;height:20px;border-radius:50%;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:' + cur.color + '1a;';
-            const sImg = document.createElement('img');
-            sImg.src = COIN_IMG[cur.currency] || '';
-            sImg.alt = cur.currency;
-            sImg.style.cssText = 'width:20px;height:20px;border-radius:50%;object-fit:cover;';
-            sImg.onerror = () => { sImg.style.display = 'none'; };
-            sWrap.appendChild(sImg);
-            const sTxt = document.createElement('span');
-            sTxt.style.cssText = "font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:#e0e0e0;font-weight:500;";
-            sTxt.textContent = cur.name;
-            ddSelected.appendChild(sWrap);
-            ddSelected.appendChild(sTxt);
+            ddSelected.textContent = cur.name;
+            ddSelected.style.color = '#e0e0e0';
         };
 
         const renderNetSelected = (net) => {
-            netSelected.innerHTML = '';
-            const sTxt = document.createElement('span');
-            sTxt.style.cssText = "font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:#e0e0e0;font-weight:500;";
-            sTxt.textContent = net.label;
-            netSelected.appendChild(sTxt);
+            netSelected.textContent = net.label;
+            netSelected.style.color = '#e0e0e0';
         };
 
         const populateNetworkDd = (cur) => {
             netPanel.innerHTML = '';
             cur.networks.forEach((net, i) => {
-                const item = document.createElement('button');
-                item.style.cssText = 'width:100%;background:transparent;border:none;' + (i < cur.networks.length - 1 ? 'border-bottom:1px solid rgba(255,255,255,0.04);' : '') + 'padding:0.5rem 0.8rem;cursor:pointer;display:flex;align-items:center;-webkit-tap-highlight-color:transparent;transition:background 0.13s;';
-                const label = document.createElement('span');
-                label.style.cssText = "font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:#e0e0e0;text-align:left;";
-                label.textContent = net.label;
-                item.appendChild(label);
-                item.addEventListener('mouseover', () => { item.style.background = 'rgba(255,255,255,0.04)'; });
-                item.addEventListener('mouseout', () => { item.style.background = 'transparent'; });
+                const item = document.createElement('div');
+                item.style.cssText = 'padding:0.5rem 0.8rem;font-family:\'JetBrains Mono\',monospace;font-size:0.7rem;color:var(--text-muted);cursor:pointer;transition:background 0.13s;' + (i < cur.networks.length - 1 ? 'border-bottom:1px solid rgba(255,255,255,0.04);' : '');
+                item.textContent = net.label;
+                item.addEventListener('mouseover', () => { item.style.background = 'rgba(255,255,255,0.04)'; item.style.color = '#fff'; });
+                item.addEventListener('mouseout', () => { item.style.background = 'transparent'; item.style.color = 'var(--text-muted)'; });
                 item.addEventListener('click', (e) => {
                     e.stopPropagation();
                     selectedNetwork = net;
@@ -852,30 +830,13 @@ function setupCreateOrgModal(token) {
             }
         };
 
-        CRYPTO_CURRENCIES.forEach(cur => {
-            const item = document.createElement('button');
-            item.style.cssText = 'width:100%;background:transparent;border:none;border-bottom:1px solid rgba(255,255,255,0.04);padding:0.5rem 0.8rem;cursor:pointer;display:flex;align-items:center;gap:0.65rem;transition:background 0.13s;-webkit-tap-highlight-color:transparent;';
-
-            const imgWrap = document.createElement('div');
-            imgWrap.style.cssText = 'width:28px;height:28px;border-radius:50%;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:' + cur.color + '1a;';
-            const img = document.createElement('img');
-            img.src = COIN_IMG[cur.currency] || '';
-            img.alt = cur.currency;
-            img.style.cssText = 'width:28px;height:28px;border-radius:50%;object-fit:cover;';
-            img.onerror = () => { img.style.display = 'none'; };
-            imgWrap.appendChild(img);
-
-            const nameEl = document.createElement('div');
-            nameEl.style.cssText = "font-family:'JetBrains Mono',monospace;font-size:0.7rem;font-weight:600;color:#e0e0e0;text-align:left;";
-            nameEl.textContent = cur.name;
-
-            item.appendChild(imgWrap);
-            item.appendChild(nameEl);
-
-            item.addEventListener('mouseover', () => { item.style.background = 'rgba(255,255,255,0.04)'; });
-            item.addEventListener('mouseout', () => { item.style.background = 'transparent'; });
+        CRYPTO_CURRENCIES.forEach((cur, i) => {
+            const item = document.createElement('div');
+            item.style.cssText = 'padding:0.5rem 0.8rem;font-family:\'JetBrains Mono\',monospace;font-size:0.7rem;color:var(--text-muted);cursor:pointer;transition:background 0.13s;' + (i < CRYPTO_CURRENCIES.length - 1 ? 'border-bottom:1px solid rgba(255,255,255,0.04);' : '');
+            item.textContent = cur.name;
+            item.addEventListener('mouseover', () => { item.style.background = 'rgba(255,255,255,0.04)'; item.style.color = '#fff'; });
+            item.addEventListener('mouseout', () => { item.style.background = 'transparent'; item.style.color = 'var(--text-muted)'; });
             item.addEventListener('click', (e) => { e.stopPropagation(); onCurrencySelect(cur); });
-
             ddPanel.appendChild(item);
         });
 
