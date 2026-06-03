@@ -545,7 +545,9 @@ function setupCreateOrgModal(token) {
                         <div style="font-family:'JetBrains Mono',monospace;font-size:0.67rem;color:var(--text-muted);margin-bottom:0.5rem;letter-spacing:0.03em;">select currency</div>
                         <div id="crypto-dd-wrap" style="position:relative;">
                             <button id="crypto-dd-trigger" style="width:100%;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:0.6rem 0.8rem;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:0.6rem;box-sizing:border-box;-webkit-tap-highlight-color:transparent;box-shadow:none !important;transform:none !important;transition:border-color 0.18s ease;">
-                                <span id="crypto-dd-selected" style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--text-muted);">choose a currency...</span>
+                                <div id="crypto-dd-selected" style="display:flex;align-items:center;gap:0.5rem;flex:1;min-width:0;">
+                                    <span style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--text-muted);">choose a currency...</span>
+                                </div>
                                 <svg id="crypto-dd-chevron" style="flex-shrink:0;transition:transform 0.18s;" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                             </button>
                             <div id="crypto-dd-panel" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:#090909;border:1px solid rgba(255,255,255,0.1);border-radius:8px;z-index:200;max-height:200px;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,0.7);"></div>
@@ -749,7 +751,7 @@ function setupCreateOrgModal(token) {
                     body: JSON.stringify({ plan, orgName: name })
                 });
                 const batchData = await batchRes.json();
-                if (!batchRes.ok) throw new Error((batchData.detail ? batchData.error + ': ' + batchData.detail : batchData.error) || 'failed to create payment session');
+                if (!batchRes.ok) throw new Error(batchData.error || 'failed to create payment session');
                 if (gen !== _currentSessionGen) return;
                 _batchSessions = batchData;
                 const sess = _batchSessions.sessions[cacheKey];
@@ -778,8 +780,20 @@ function setupCreateOrgModal(token) {
         let selectedNetwork = null;
 
         const renderDdSelected = (cur) => {
-            ddSelected.textContent = cur.name;
-            ddSelected.style.color = '#e0e0e0';
+            ddSelected.innerHTML = '';
+            const sWrap = document.createElement('div');
+            sWrap.style.cssText = 'width:18px;height:18px;border-radius:50%;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:' + cur.color + '1a;';
+            const sImg = document.createElement('img');
+            sImg.src = COIN_IMG[cur.currency] || '';
+            sImg.alt = cur.currency;
+            sImg.style.cssText = 'width:18px;height:18px;border-radius:50%;object-fit:cover;';
+            sImg.onerror = () => { sImg.style.display = 'none'; };
+            sWrap.appendChild(sImg);
+            const sTxt = document.createElement('span');
+            sTxt.style.cssText = "font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:#e0e0e0;";
+            sTxt.textContent = cur.name;
+            ddSelected.appendChild(sWrap);
+            ddSelected.appendChild(sTxt);
         };
 
         const renderNetSelected = (net) => {
