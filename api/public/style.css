@@ -1006,14 +1006,14 @@ body.modal-open {
         padding-right: 0.75rem;
         padding-top: max(0.75rem, env(safe-area-inset-top));
         padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
-        align-items: center;
+        align-items: flex-start;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        touch-action: pan-y;
     }
 
     .modal-overlay.active .modal-content {
-        max-height: calc(100dvh - max(1.5rem, env(safe-area-inset-top) + env(safe-area-inset-bottom)));
         overflow-x: hidden;
-        overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
         touch-action: pan-y;
         overscroll-behavior: contain;
     }
