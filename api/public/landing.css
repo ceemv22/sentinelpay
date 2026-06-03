@@ -956,9 +956,6 @@ body.lp-body {
 
 
 .lp-code-section {
-    border-top: 1px solid var(--border-glass);
-    border-bottom: 1px solid var(--border-glass);
-    background: rgba(3, 3, 3, 0.3);
 }
 
 .lp-code-grid {
@@ -1246,7 +1243,6 @@ body.lp-body {
     z-index: 10;
     padding: 7rem 0;
     text-align: center;
-    border-top: 1px solid var(--border-glass);
 }
 
 .lp-cta-inner {
@@ -2421,7 +2417,6 @@ html.auth-session-present #lp-cta-dashboard { display: inline-flex !important; }
 
 
 .lp-chains-section {
-    border-top: 1px solid var(--border-glass);
 }
 
 .lp-chains-desc {
