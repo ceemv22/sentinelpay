@@ -155,18 +155,17 @@ body.lp-body {
     top: calc(100% + 8px);
     left: 50%;
     transform: translateX(-50%) translateY(-6px);
-    min-width: 200px;
-    background: rgba(6, 6, 12, 0.98);
-    backdrop-filter: blur(28px);
-    -webkit-backdrop-filter: blur(28px);
-    border: 1px solid rgba(255,255,255,0.07);
-    border-radius: 12px;
-    padding: 0.4rem;
+    min-width: 190px;
+    background: #090909;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    padding: 0;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.16s ease 0.08s, transform 0.16s ease 0.08s;
     z-index: 200;
-    box-shadow: 0 0 0 1px rgba(0,240,255,0.04), inset 0 1px 0 rgba(0,240,255,0.12), 0 20px 48px rgba(0,0,0,0.7);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.7);
+    overflow: hidden;
 }
 
 .lp-nav-dd::before {
@@ -189,39 +188,29 @@ body.lp-body {
 .lp-nav-dd-item {
     display: flex;
     align-items: center;
-    gap: 0.55rem;
-    padding: 0.55rem 0.9rem;
-    border-radius: 7px;
-    border-left: 2px solid transparent;
+    padding: 0.5rem 0.8rem;
     color: var(--text-muted);
     text-decoration: none;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.77rem;
+    font-size: 0.7rem;
     text-transform: lowercase;
-    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+    transition: background 0.13s, color 0.13s;
     white-space: nowrap;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+
+.lp-nav-dd-item:last-child {
+    border-bottom: none;
 }
 
 .lp-nav-dd-item::before {
-    content: '';
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background: currentColor;
-    opacity: 0.3;
-    flex-shrink: 0;
-    transition: opacity 0.15s ease, background 0.15s ease;
+    display: none;
 }
 
 .lp-nav-dd-item:hover {
-    color: var(--text-main);
-    background: rgba(0, 240, 255, 0.04);
-    border-left-color: rgba(0, 240, 255, 0.35);
-}
-
-.lp-nav-dd-item:hover::before {
-    opacity: 1;
-    background: var(--neon-blue);
+    color: #fff;
+    background: rgba(255,255,255,0.04);
+    border-left: none;
 }
 
 .lp-btn-ghost.auth-nav-btn {
