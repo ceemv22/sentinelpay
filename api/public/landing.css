@@ -1914,6 +1914,52 @@ html.auth-session-present #lp-mm-dashboard { display: block !important; }
 
 .lp-c-comment { color: rgba(255, 255, 255, 0.28); }
 
+.lp-cursor-blink {
+    color: var(--color-green);
+    font-size: 0.85em;
+    animation: lp-cursor-blink 1s step-end infinite;
+    vertical-align: baseline;
+}
+@keyframes lp-cursor-blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0; }
+}
+
+.lp-connected-bar-wrap {
+    margin: 0 1.25rem 0;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.lp-connected-bar {
+    height: 100%;
+    width: 0;
+    background: linear-gradient(90deg, var(--color-green), rgba(0, 255, 136, 0.5));
+    border-radius: 2px;
+    transition: none;
+}
+
+.lp-connected-bar.lp-connected {
+    animation: lp-bar-fill 1.1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes lp-bar-fill {
+    from { width: 0; }
+    to   { width: 100%; }
+}
+
+.lp-connected-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.64rem;
+    color: var(--color-green);
+    padding: 0.4rem 1.25rem 0.8rem;
+    opacity: 0.7;
+    letter-spacing: 0.03em;
+    text-transform: lowercase;
+}
+
 
 .lp-how-row {
     display: grid;
@@ -1939,6 +1985,46 @@ html.auth-session-present #lp-mm-dashboard { display: block !important; }
     color: var(--neon-blue);
     font-weight: 700;
     letter-spacing: 0.1em;
+}
+
+.lp-how-step-chip {
+    display: inline-block;
+    border: 1px solid rgba(0, 240, 255, 0.2);
+    background: rgba(0, 240, 255, 0.04);
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.65rem;
+    color: var(--neon-blue);
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.08em;
+}
+
+.lp-how {
+    position: relative;
+}
+
+.lp-how .lp-how-text {
+    position: relative;
+}
+
+@media (min-width: 961px) {
+    .lp-how .lp-how-text::before {
+        content: '';
+        position: absolute;
+        left: 1.35rem;
+        top: 2.4rem;
+        bottom: -5.5rem;
+        width: 1px;
+        border-left: 1px dashed rgba(0, 240, 255, 0.14);
+        pointer-events: none;
+    }
+    .lp-how .lp-how-row:last-child .lp-how-text::before {
+        display: none;
+    }
+    .lp-how-row-reverse .lp-how-text::before {
+        left: auto;
+        right: 1.35rem;
+    }
 }
 
 .lp-how-title {
@@ -1989,11 +2075,57 @@ html.auth-session-present #lp-mm-dashboard { display: block !important; }
 .lp-log-alert  { color: var(--neon-blue); font-weight: 600; }
 
 .lp-log-line-blink .lp-log-alert {
-    animation: lp-blink 1.2s step-end infinite;
+    animation: lp-alert-pulse 1.8s ease-in-out infinite;
 }
 @keyframes lp-blink {
     0%, 100% { opacity: 1; }
     50%       { opacity: 0.15; }
+}
+@keyframes lp-alert-pulse {
+    0%, 100% { color: var(--neon-blue); }
+    50%       { color: #ffffff; }
+}
+
+.lp-monitor-log {
+    position: relative;
+    overflow: hidden;
+}
+
+.lp-scanline-wrap {
+    position: absolute;
+    top: 38px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 2;
+}
+
+.lp-scanline {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent 0%, rgba(0, 240, 255, 0.18) 40%, rgba(0, 240, 255, 0.22) 50%, rgba(0, 240, 255, 0.18) 60%, transparent 100%);
+    animation: lp-scanline-move 3.2s linear infinite;
+    top: 0;
+}
+@keyframes lp-scanline-move {
+    0%   { top: 0%; }
+    100% { top: 100%; }
+}
+
+.lp-log-stagger {
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.38s ease, transform 0.38s ease;
+}
+
+.lp-logs-visible .lp-log-stagger {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: calc(var(--li) * 0.12s);
 }
 
 
