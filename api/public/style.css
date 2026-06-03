@@ -989,6 +989,17 @@ body.modal-open {
     box-shadow: none !important;
 }
 
+#crypto-dd-trigger,
+#network-dd-trigger {
+    box-shadow: none !important;
+    transform: none !important;
+}
+#crypto-dd-trigger:hover:not(:disabled),
+#network-dd-trigger:hover:not(:disabled) {
+    box-shadow: none !important;
+    transform: none !important;
+}
+
 @media screen and (max-width: 600px) {
     .modal-overlay.active {
         padding: 1rem;
