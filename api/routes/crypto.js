@@ -52,6 +52,10 @@ router.get('/supported', requireSupabaseAuth, (req, res) => {
 });
 
 router.post('/session', json, requireSupabaseAuth, cryptoSessionLimiter, async (req, res) => {
+    if (!process.env.CRYPTO_MASTER_SEED) {
+        return res.status(503).json({ error: 'crypto payments not configured on this environment' });
+    }
+
     const { plan, currency, network, orgName } = req.body;
     if (!plan || !currency || !network) {
         return res.status(400).json({ error: 'plan, currency and network required' });
@@ -126,6 +130,10 @@ router.post('/session', json, requireSupabaseAuth, cryptoSessionLimiter, async (
 });
 
 router.post('/batch-session', json, requireSupabaseAuth, cryptoBatchLimiter, async (req, res) => {
+    if (!process.env.CRYPTO_MASTER_SEED) {
+        return res.status(503).json({ error: 'crypto payments not configured on this environment' });
+    }
+
     const { plan, orgName } = req.body;
     if (!plan) return res.status(400).json({ error: 'plan required' });
     const amountUsd = PLAN_USD[plan];
