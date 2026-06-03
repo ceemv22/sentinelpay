@@ -289,81 +289,50 @@
             <div class="lp-how-cols lp-reveal">
 
                 <div class="lp-how-col">
-                    <div class="lp-how-col-card lp-terminal lp-terminal-step01" id="lp-terminal-step01">
-                        <div class="lp-terminal-bar">
-                            <span class="lp-dot lp-dot-red"></span>
-                            <span class="lp-dot lp-dot-yellow"></span>
-                            <span class="lp-dot lp-dot-green"></span>
-                            <span class="lp-terminal-title">rpc config</span>
-                        </div>
-                        <pre class="lp-terminal-code"><code>{
-  <span class="lp-c-key">"rpc_url"</span>: <span class="lp-c-val">"https://eth.node.io/..."</span>,
-  <span class="lp-c-key">"alert_email"</span>: <span class="lp-c-val">"ops@yourco.com"</span>,
-  <span class="lp-c-key">"risk_threshold"</span>: <span class="lp-c-num">60</span><span class="lp-cursor-blink">▋</span>
-}</code></pre>
-                        <div class="lp-connected-bar-wrap">
-                            <div class="lp-connected-bar" id="lp-connected-bar"></div>
-                        </div>
-                        <div class="lp-connected-label">● monitoring active · ethereum mainnet</div>
+                    <div class="lp-how-step-chip">01</div>
+                    <div class="lp-how-col-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><path d="M6 8h.01M9 8h6"/></svg>
                     </div>
-                    <div class="lp-how-col-meta">
-                        <span class="lp-how-step-chip">01</span>
-                        <h3 class="lp-how-title">connect your rpc</h3>
-                        <p class="lp-how-desc">paste your rpc endpoint and alert threshold. supports ethereum, bnb chain, polygon, avalanche, arbitrum, base and more.</p>
+                    <h3 class="lp-how-title">connect your rpc</h3>
+                    <p class="lp-how-desc">paste your blockchain rpc endpoint into the sentinelpay dashboard. we support ethereum, bnb chain, polygon, avalanche, arbitrum, optimism, base and more.</p>
+                    <div class="lp-how-tag-row">
+                        <span class="lp-how-tag">ethereum</span>
+                        <span class="lp-how-tag">polygon</span>
+                        <span class="lp-how-tag">base</span>
+                        <span class="lp-how-tag">+7</span>
                     </div>
                 </div>
 
                 <div class="lp-how-col-divider"></div>
 
                 <div class="lp-how-col">
-                    <div class="lp-how-col-card lp-monitor-log" id="lp-monitor-log">
-                        <div class="lp-terminal-bar">
-                            <span class="lp-dot lp-dot-red"></span>
-                            <span class="lp-dot lp-dot-yellow"></span>
-                            <span class="lp-dot lp-dot-green"></span>
-                            <span class="lp-terminal-title">sentinel · live scan</span>
-                        </div>
-                        <div class="lp-scanline-wrap"><div class="lp-scanline"></div></div>
-                        <div class="lp-log-lines" id="lp-log-lines-02">
-                            <div class="lp-log-line lp-log-stagger" style="--li:0"><span class="lp-log-ts" id="lpts0"></span><span class="lp-log-ok"> ✓ </span>0x4f3a...d8c1 score=<span class="lp-log-green">12</span></div>
-                            <div class="lp-log-line lp-log-stagger" style="--li:1"><span class="lp-log-ts" id="lpts1"></span><span class="lp-log-ok"> ✓ </span>0xa1b2...9e3f score=<span class="lp-log-green">08</span></div>
-                            <div class="lp-log-line lp-log-stagger" style="--li:2"><span class="lp-log-ts" id="lpts2"></span><span class="lp-log-warn"> ⚠ </span>0x9c7d...3b2a score=<span class="lp-log-yellow">45</span></div>
-                            <div class="lp-log-line lp-log-stagger" style="--li:3"><span class="lp-log-ts" id="lpts3"></span><span class="lp-log-ok"> ✓ </span>0x2e8f...c5a7 score=<span class="lp-log-green">03</span></div>
-                            <div class="lp-log-line lp-log-line-danger lp-log-stagger" style="--li:4"><span class="lp-log-ts" id="lpts4"></span><span class="lp-log-danger"> ✕ </span>0x7f1e...9d04 score=<span class="lp-log-red">78</span></div>
-                            <div class="lp-log-line lp-log-line-blink lp-log-stagger" style="--li:5"><span class="lp-log-ts" id="lpts5"></span><span class="lp-log-danger"> → </span><span class="lp-log-alert">alert dispatched</span></div>
-                        </div>
+                    <div class="lp-how-step-chip">02</div>
+                    <div class="lp-how-col-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
                     </div>
-                    <div class="lp-how-col-meta">
-                        <span class="lp-how-step-chip">02</span>
-                        <h3 class="lp-how-title">we listen 24/7</h3>
-                        <p class="lp-how-desc">every inbound transaction is scored in real-time across 5 on-chain risk heuristics. zero manual work.</p>
+                    <h3 class="lp-how-title">we listen 24/7</h3>
+                    <p class="lp-how-desc">every inbound transaction is scored in real-time across 5 on-chain risk heuristics. zero manual work, zero infrastructure to manage.</p>
+                    <div class="lp-how-stat-row">
+                        <div class="lp-how-stat"><span class="lp-how-stat-val">5</span><span class="lp-how-stat-label">heuristics</span></div>
+                        <div class="lp-how-stat-sep"></div>
+                        <div class="lp-how-stat"><span class="lp-how-stat-val">&lt;2s</span><span class="lp-how-stat-label">latency</span></div>
+                        <div class="lp-how-stat-sep"></div>
+                        <div class="lp-how-stat"><span class="lp-how-stat-val">24/7</span><span class="lp-how-stat-label">uptime</span></div>
                     </div>
                 </div>
 
                 <div class="lp-how-col-divider"></div>
 
                 <div class="lp-how-col">
-                    <div class="lp-how-col-card lp-alert-card" id="lp-alert-card">
-                        <div class="lp-alert-incoming-dot"></div>
-                        <div class="lp-alert-shimmer"></div>
-                        <div class="lp-alert-header">
-                            <div class="lp-alert-badge">high risk</div>
-                            <div class="lp-alert-score"><span id="lp-score-display">78</span><span class="lp-alert-score-max">/100</span></div>
-                        </div>
-                        <div class="lp-alert-wallet">0x7f1e...9d04</div>
-                        <div class="lp-alert-flags">
-                            <span class="lp-alert-flag">mixer_interaction</span>
-                            <span class="lp-alert-flag">high_velocity</span>
-                        </div>
-                        <div class="lp-alert-meta">
-                            <span>tx: 0xabc123...</span>
-                            <span id="lp-alert-meta-ts"></span>
-                        </div>
+                    <div class="lp-how-step-chip">03</div>
+                    <div class="lp-how-col-icon lp-how-col-icon-red">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
                     </div>
-                    <div class="lp-how-col-meta">
-                        <span class="lp-how-step-chip">03</span>
-                        <h3 class="lp-how-title">get the alert</h3>
-                        <p class="lp-how-desc">score exceeds threshold → instant email to your team with flags, score, and transaction details.</p>
+                    <h3 class="lp-how-title">get the alert</h3>
+                    <p class="lp-how-desc">the moment a wallet scores above your threshold, your team receives an email with the score, flags, and full transaction details.</p>
+                    <div class="lp-how-alert-preview">
+                        <span class="lp-how-alert-badge">high risk · 78/100</span>
+                        <span class="lp-how-alert-flags">mixer_interaction · high_velocity</span>
                     </div>
                 </div>
 
