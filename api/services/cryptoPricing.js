@@ -12,6 +12,8 @@ const COINGECKO_IDS = {
 
 let priceCache = {};
 let cacheTtl = 0;
+let cacheSetAt = 0;
+const MAX_STALE_MS = 60 * 60 * 1000;
 
 async function refreshPrices() {
     const ids = Object.values(COINGECKO_IDS).join(',');
@@ -50,8 +52,10 @@ async function convertUsdToCrypto(amountUsd, currency) {
         try {
             priceCache = await refreshPrices();
             cacheTtl = Date.now() + 10 * 60 * 1000;
+            cacheSetAt = Date.now();
         } catch (err) {
-            if (priceCache[currency]) {
+            const staleAge = Date.now() - cacheSetAt;
+            if (priceCache[currency] && staleAge < MAX_STALE_MS) {
                 console.warn('[crypto-pricing] using stale cache after fetch failure:', err.message);
             } else {
                 throw new Error(`price unavailable for ${currency}`);

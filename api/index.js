@@ -76,12 +76,13 @@ if (process.env.STAGING_BASIC_AUTH) {
     const sepIdx = process.env.STAGING_BASIC_AUTH.indexOf(':');
     const stagingUser = process.env.STAGING_BASIC_AUTH.slice(0, sepIdx);
     const stagingPass = process.env.STAGING_BASIC_AUTH.slice(sepIdx + 1);
-    const expected = Buffer.from(`${stagingUser}:${stagingPass}`);
+    const expectedHash = crypto.createHash('sha256').update(`${stagingUser}:${stagingPass}`).digest();
     app.use((req, res, next) => {
         const auth = req.headers['authorization'];
         if (auth && auth.startsWith('Basic ')) {
-            const provided = Buffer.from(auth.slice(6), 'base64');
-            if (provided.length === expected.length && crypto.timingSafeEqual(provided, expected)) {
+            const decoded = Buffer.from(auth.slice(6), 'base64').toString('utf8');
+            const providedHash = crypto.createHash('sha256').update(decoded).digest();
+            if (crypto.timingSafeEqual(providedHash, expectedHash)) {
                 return next();
             }
         }
@@ -187,7 +188,7 @@ app.use(helmet({
 }));
 
 app.use((req, res, next) => {
-    res.setHeader('Permissions-Policy', 'xr-spatial-tracking=(), camera=(), microphone=(), geolocation=(), interest-cohort=()');
+    res.setHeader('Permissions-Policy', 'xr-spatial-tracking=(), camera=(), microphone=(), geolocation=(), interest-cohort=(), payment=(), usb=(), bluetooth=(), serial=(), hid=(), ambient-light-sensor=(), accelerometer=(), gyroscope=(), magnetometer=(), display-capture=()');
     next();
 });
 app.use(cors({
@@ -209,7 +210,7 @@ app.use(cors({
         }
         callback(new Error('Not allowed by CORS'));
     },
-    methods: ['POST', 'GET'],
+    methods: ['POST', 'GET', 'DELETE'],
 }));
 
 app.use('/v1/stripe', require('./routes/stripe'));
@@ -628,7 +629,7 @@ app.get('/v1/user/api-key/reveal', requireSupabaseAuth, async (req, res) => {
         }
 
         res.json({
-            apiKey: apiKey.keyHash,
+            apiKey: decrypt(apiKey.rawKey),
             plan: apiKey.plan,
             createdAt: apiKey.createdAt
         });
@@ -694,7 +695,16 @@ app.use((err, req, res, next) => {
     if (err.type === 'entity.too.large') {
         return res.status(413).json({ error: 'request body too large', code: 413 });
     }
-    next(err);
+    if (err.type === 'entity.parse.failed') {
+        return res.status(400).json({ error: 'invalid request body', code: 400 });
+    }
+    if (err.message === 'Not allowed by CORS') {
+        return res.status(403).json({ error: 'cors policy violation', code: 403 });
+    }
+    console.error('[unhandled error]', err.message || err);
+    if (!res.headersSent) {
+        return res.status(500).json({ error: 'internal server error', code: 500 });
+    }
 });
 
 app.get('/v1/organizations/check', requireSupabaseAuth, async (req, res) => {
@@ -843,7 +853,7 @@ app.post('/v1/organizations/:slug/team/invite', requireSupabaseAuth, async (req,
                     where: { username: { equals: identifier, mode: 'insensitive' } }
                 });
                 if (!user || !user.email) {
-                    throw new Error(`user '${identifier}' not found or has no email address`);
+                    throw new Error('one or more recipients could not be resolved');
                 }
                 targetEmail = user.email;
             }
@@ -1125,6 +1135,15 @@ app.delete('/v1/organizations/:slug', requireSupabaseAuth, async (req, res) => {
         console.error('[org-delete] error:', err);
         res.status(500).json({ error: 'failed to delete organization' });
     }
+});
+
+process.on('unhandledRejection', (reason) => {
+    console.error('[unhandled rejection]', reason instanceof Error ? reason.message : reason);
+});
+
+process.on('uncaughtException', (err) => {
+    console.error('[uncaught exception]', err.message);
+    process.exit(1);
 });
 
 async function start() {
