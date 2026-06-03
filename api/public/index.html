@@ -286,22 +286,17 @@
             <p class="lp-eyebrow lp-reveal">integration</p>
             <h2 class="lp-h2 lp-reveal">up and running in minutes</h2>
 
-            <div class="lp-how-row lp-reveal">
-                <div class="lp-how-text">
-                    <div class="lp-how-step-num"><span class="lp-how-step-chip">[ 01 ]</span></div>
-                    <h3 class="lp-how-title">connect your rpc</h3>
-                    <p class="lp-how-desc">paste your blockchain rpc endpoint into the sentinelpay dashboard. we support ethereum, bnb chain, polygon, avalanche, arbitrum, optimism, base, solana, tron and more.</p>
-                </div>
-                <div class="lp-how-visual">
-                    <div class="lp-terminal lp-terminal-step01" id="lp-terminal-step01">
+            <div class="lp-how-cols lp-reveal">
+
+                <div class="lp-how-col">
+                    <div class="lp-how-col-card lp-terminal lp-terminal-step01" id="lp-terminal-step01">
                         <div class="lp-terminal-bar">
                             <span class="lp-dot lp-dot-red"></span>
                             <span class="lp-dot lp-dot-yellow"></span>
                             <span class="lp-dot lp-dot-green"></span>
-                            <span class="lp-terminal-title">dashboard · rpc config</span>
+                            <span class="lp-terminal-title">rpc config</span>
                         </div>
                         <pre class="lp-terminal-code"><code>{
-  <span class="lp-c-key">"name"</span>: <span class="lp-c-val">"mainnet-node"</span>,
   <span class="lp-c-key">"rpc_url"</span>: <span class="lp-c-val">"https://eth.node.io/..."</span>,
   <span class="lp-c-key">"alert_email"</span>: <span class="lp-c-val">"ops@yourco.com"</span>,
   <span class="lp-c-key">"risk_threshold"</span>: <span class="lp-c-num">60</span><span class="lp-cursor-blink">▋</span>
@@ -311,17 +306,17 @@
                         </div>
                         <div class="lp-connected-label">● monitoring active · ethereum mainnet</div>
                     </div>
+                    <div class="lp-how-col-meta">
+                        <span class="lp-how-step-chip">01</span>
+                        <h3 class="lp-how-title">connect your rpc</h3>
+                        <p class="lp-how-desc">paste your rpc endpoint and alert threshold. supports ethereum, bnb chain, polygon, avalanche, arbitrum, base and more.</p>
+                    </div>
                 </div>
-            </div>
 
-            <div class="lp-how-row lp-how-row-reverse lp-reveal">
-                <div class="lp-how-text">
-                    <div class="lp-how-step-num"><span class="lp-how-step-chip">[ 02 ]</span></div>
-                    <h3 class="lp-how-title">we listen 24/7</h3>
-                    <p class="lp-how-desc">sentinelpay subscribes to your chain and runs every transaction through 5 on-chain risk heuristics in real-time. zero manual work required.</p>
-                </div>
-                <div class="lp-how-visual">
-                    <div class="lp-monitor-log" id="lp-monitor-log">
+                <div class="lp-how-col-divider"></div>
+
+                <div class="lp-how-col">
+                    <div class="lp-how-col-card lp-monitor-log" id="lp-monitor-log">
                         <div class="lp-terminal-bar">
                             <span class="lp-dot lp-dot-red"></span>
                             <span class="lp-dot lp-dot-yellow"></span>
@@ -338,17 +333,17 @@
                             <div class="lp-log-line lp-log-line-blink lp-log-stagger" style="--li:5"><span class="lp-log-ts" id="lpts5"></span><span class="lp-log-danger"> → </span><span class="lp-log-alert">alert dispatched</span></div>
                         </div>
                     </div>
+                    <div class="lp-how-col-meta">
+                        <span class="lp-how-step-chip">02</span>
+                        <h3 class="lp-how-title">we listen 24/7</h3>
+                        <p class="lp-how-desc">every inbound transaction is scored in real-time across 5 on-chain risk heuristics. zero manual work.</p>
+                    </div>
                 </div>
-            </div>
 
-            <div class="lp-how-row lp-reveal">
-                <div class="lp-how-text">
-                    <div class="lp-how-step-num"><span class="lp-how-step-chip">[ 03 ]</span></div>
-                    <h3 class="lp-how-title">get the alert</h3>
-                    <p class="lp-how-desc">the moment a wallet scores above your configured threshold, we send an email to your team with the score, flags, and transaction details.</p>
-                </div>
-                <div class="lp-how-visual">
-                    <div class="lp-alert-card" id="lp-alert-card">
+                <div class="lp-how-col-divider"></div>
+
+                <div class="lp-how-col">
+                    <div class="lp-how-col-card lp-alert-card" id="lp-alert-card">
                         <div class="lp-alert-incoming-dot"></div>
                         <div class="lp-alert-shimmer"></div>
                         <div class="lp-alert-header">
@@ -365,7 +360,13 @@
                             <span id="lp-alert-meta-ts"></span>
                         </div>
                     </div>
+                    <div class="lp-how-col-meta">
+                        <span class="lp-how-step-chip">03</span>
+                        <h3 class="lp-how-title">get the alert</h3>
+                        <p class="lp-how-desc">score exceeds threshold → instant email to your team with flags, score, and transaction details.</p>
+                    </div>
                 </div>
+
             </div>
         </div>
     </section>
