@@ -1502,15 +1502,19 @@ body.modal-open .sidebar-container {
     background: rgba(255, 255, 255, 0.04);
 }
 
+.sentinel-select-trigger .selected-value {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
+}
+
 .sentinel-select-trigger .chevron {
     flex-shrink: 0;
     transition: transform 0.18s ease;
-    opacity: 0.4;
 }
 
 .sentinel-select-trigger.active .chevron {
     transform: rotate(180deg);
-    opacity: 0.7;
 }
 
 .sentinel-select-dropdown {
@@ -1537,9 +1541,9 @@ body.modal-open .sidebar-container {
     width: 100%;
     background: transparent;
     border: none;
-    padding: 0.55rem 0.8rem;
+    padding: 0.5rem 0.8rem;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     color: var(--text-muted);
     cursor: pointer;
     transition: background 0.13s;
