@@ -792,6 +792,7 @@
 
             document.querySelectorAll('a[href^="#"]').forEach(function(a) {
                 a.addEventListener('click', function(e) {
+                    if (window._sentinelSnap && window._sentinelSnap.active) return;
                     var id = this.getAttribute('href').slice(1);
                     if (!id) return;
                     var el = document.getElementById(id);
@@ -1074,7 +1075,7 @@
                 var fromPos = window.pageYOffset;
                 var to = SECTIONS[cur].getBoundingClientRect().top + window.pageYOffset;
                 var dist = to - fromPos;
-                if (Math.abs(dist) < 2) { setVis(cur, cur); return; }
+                if (Math.abs(dist) < 2) { clearVis(); return; }
 
                 var t0 = performance.now();
                 function tick(ts) {
@@ -1082,7 +1083,7 @@
                     var p = Math.min((ts - t0) / DUR, 1);
                     window.scrollTo(0, fromPos + dist * ease(p));
                     if (p < 1) requestAnimationFrame(tick);
-                    else { setVis(cur, cur); }
+                    else { clearVis(); }
                 }
                 requestAnimationFrame(tick);
             }
@@ -1114,9 +1115,12 @@
                 });
             }
 
+            window._sentinelSnap = { active: false };
+
             function activateSnap() {
                 if (snapActive) return;
                 snapActive = true;
+                window._sentinelSnap.active = true;
                 document.documentElement.classList.add('snap-mode');
                 cur = curIdx();
                 window.scrollTo(0, SECTIONS[cur].offsetTop);
@@ -1128,6 +1132,7 @@
             function deactivateSnap() {
                 if (!snapActive) return;
                 snapActive = false;
+                window._sentinelSnap.active = false;
                 ++animToken;
                 document.documentElement.classList.remove('snap-mode');
                 clearVis();
@@ -1180,11 +1185,13 @@
 
             document.querySelectorAll('a[href^="#"]').forEach(function (a) {
                 a.addEventListener('click', function (e) {
+                    if (!snapActive) return;
                     var target = document.querySelector(this.getAttribute('href'));
                     if (!target) return;
                     e.preventDefault();
                     var idx = SECTIONS.indexOf(target);
                     if (idx !== -1) { goTo(idx); return; }
+                    clearVis();
                     var from = window.pageYOffset;
                     var to = target.getBoundingClientRect().top + from;
                     var dist = to - from;
@@ -1195,6 +1202,7 @@
                         var p = Math.min((ts - t0) / DUR, 1);
                         window.scrollTo(0, from + dist * ease(p));
                         if (p < 1) requestAnimationFrame(tick);
+                        else { cur = curIdx(); syncInd(); }
                     }
                     requestAnimationFrame(tick);
                 });
