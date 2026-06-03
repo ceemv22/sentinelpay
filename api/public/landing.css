@@ -131,6 +131,13 @@ body.lp-body {
     display: inline-flex;
     align-items: center;
     gap: 0.3rem;
+    box-shadow: none !important;
+    transform: none !important;
+}
+
+.lp-nav-dd-btn:hover {
+    box-shadow: none !important;
+    transform: none !important;
 }
 
 .lp-nav-chevron {
@@ -144,6 +151,15 @@ body.lp-body {
     position: relative;
 }
 
+.lp-nav-dd-wrap::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    height: 12px;
+}
+
 .lp-nav-dd-wrap:hover .lp-nav-chevron,
 .lp-nav-dd-wrap.lp-dd-open .lp-nav-chevron {
     transform: rotate(180deg);
@@ -152,7 +168,7 @@ body.lp-body {
 
 .lp-nav-dd {
     position: absolute;
-    top: calc(100% + 8px);
+    top: calc(100% + 4px);
     left: 50%;
     transform: translateX(-50%) translateY(-6px);
     min-width: 190px;
@@ -166,15 +182,6 @@ body.lp-body {
     z-index: 200;
     box-shadow: 0 8px 32px rgba(0,0,0,0.7);
     overflow: hidden;
-}
-
-.lp-nav-dd::before {
-    content: '';
-    position: absolute;
-    bottom: 100%;
-    left: 0;
-    right: 0;
-    height: 12px;
 }
 
 .lp-nav-dd-wrap:hover .lp-nav-dd,
