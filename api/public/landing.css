@@ -2040,11 +2040,15 @@ html.auth-session-present #lp-mm-dashboard { display: block !important; }
 .lp-log-alert  { color: var(--neon-blue); font-weight: 600; }
 
 .lp-log-line-blink .lp-log-alert {
-    animation: lp-alert-pulse 1.8s ease-in-out infinite;
+    animation: lp-alert-blink 1s step-end infinite;
 }
 @keyframes lp-blink {
     0%, 100% { opacity: 1; }
     50%       { opacity: 0.15; }
+}
+@keyframes lp-alert-blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0; }
 }
 @keyframes lp-alert-pulse {
     0%, 100% { color: var(--neon-blue); }
@@ -2755,6 +2759,14 @@ html.auth-session-present #lp-cta-dashboard { display: inline-flex !important; }
 
     html.snap-mode .lp-section-inner::-webkit-scrollbar {
         display: none;
+    }
+
+    html.snap-mode .lp-how {
+        justify-content: flex-start;
+    }
+
+    html.snap-mode .lp-how .lp-section-inner {
+        padding-top: 2rem;
     }
 
     html.snap-mode .lp-cta-section {
