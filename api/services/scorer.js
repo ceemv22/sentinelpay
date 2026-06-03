@@ -15,7 +15,11 @@ function runScoringEngine(wallet) {
         const scriptPath = path.join(__dirname, '..', '..', 'engine', 'score.py');
         
         const python = spawn('python3', [scriptPath, wallet], {
-            env: { ...process.env, ETHERSCAN_API_KEY: apiKey }
+            env: {
+                PATH: process.env.PATH || '/usr/bin:/bin',
+                HOME: process.env.HOME || '/tmp',
+                ETHERSCAN_API_KEY: apiKey
+            }
         });
 
         let output = '';
