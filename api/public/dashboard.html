@@ -1285,12 +1285,16 @@
             :root { --sidebar-width: 0px; }
 
             body {
-                overflow-y: auto;
+                overflow: hidden;
                 padding-top: 0 !important;
             }
             .content-area {
-                overflow-y: visible !important;
-                height: auto !important;
+                overflow-y: auto !important;
+                height: 100dvh !important;
+                scrollbar-width: none !important;
+            }
+            .content-area::-webkit-scrollbar {
+                display: none !important;
             }
 
             .dashboard-header {
