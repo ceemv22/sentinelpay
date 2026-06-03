@@ -1472,59 +1472,61 @@ body.modal-open .sidebar-container {
 }
 
 .sentinel-select-trigger {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 8px;
-    color: var(--text-main);
-    padding: 0.8rem 1rem;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.85rem;
     width: 100%;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 0.6rem 0.8rem;
     cursor: pointer;
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    transition: all 0.2s ease;
+    justify-content: space-between;
+    gap: 0.6rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--text-main);
+    transition: border-color 0.18s ease;
     box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+    box-shadow: none !important;
+    transform: none !important;
 }
 
 .sentinel-select-trigger:hover {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.18);
+    background: rgba(255, 255, 255, 0.04);
 }
 
 .sentinel-select-trigger.active {
-    border-color: var(--neon-blue);
-    background: rgba(255, 255, 255, 0.05);
-    box-shadow: 0 0 20px rgba(0, 240, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.04);
 }
 
 .sentinel-select-trigger .chevron {
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    opacity: 0.5;
+    flex-shrink: 0;
+    transition: transform 0.18s ease;
+    opacity: 0.4;
 }
 
 .sentinel-select-trigger.active .chevron {
     transform: rotate(180deg);
-    opacity: 1;
-    color: var(--neon-blue);
+    opacity: 0.7;
 }
 
 .sentinel-select-dropdown {
     position: absolute;
-    top: calc(100% + 8px);
+    top: calc(100% + 4px);
     left: 0;
     right: 0;
-    background: rgba(10, 12, 15, 0.95);
-    backdrop-filter: blur(20px);
+    background: #090909;
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    padding: 6px;
+    border-radius: 8px;
     z-index: 1000;
     display: none;
     flex-direction: column;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-    animation: selectDropdownFade 0.2s ease-out;
+    max-height: 200px;
+    overflow-y: auto;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.7);
 }
 
 .sentinel-select-dropdown.active {
@@ -1532,28 +1534,30 @@ body.modal-open .sidebar-container {
 }
 
 .sentinel-select-option {
-    padding: 0.75rem 1rem;
+    width: 100%;
+    background: transparent;
+    border: none;
+    padding: 0.55rem 0.8rem;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     color: var(--text-muted);
-    border-radius: 8px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: background 0.13s;
+    text-align: left;
+}
+
+.sentinel-select-option:not(:last-child) {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
 }
 
 .sentinel-select-option:hover {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.04);
     color: #fff;
 }
 
 .sentinel-select-option.selected {
-    color: var(--neon-blue);
-    background: rgba(0, 240, 255, 0.05);
-}
-
-@keyframes selectDropdownFade {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
+    color: #fff;
+    background: rgba(255, 255, 255, 0.03);
 }
 
 .hidden {
