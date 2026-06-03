@@ -325,12 +325,12 @@
                             <span class="lp-terminal-title">sentinel · live scan</span>
                         </div>
                         <div class="lp-log-lines">
-                            <div class="lp-log-line"><span class="lp-log-ts">10:41:02</span><span class="lp-log-ok"> ✓ </span>0x4f3a...d8c1 score=<span class="lp-log-green">12</span></div>
-                            <div class="lp-log-line"><span class="lp-log-ts">10:41:04</span><span class="lp-log-ok"> ✓ </span>0xa1b2...9e3f score=<span class="lp-log-green">08</span></div>
-                            <div class="lp-log-line"><span class="lp-log-ts">10:41:07</span><span class="lp-log-warn"> ⚠ </span>0x9c7d...3b2a score=<span class="lp-log-yellow">45</span></div>
-                            <div class="lp-log-line"><span class="lp-log-ts">10:41:09</span><span class="lp-log-ok"> ✓ </span>0x2e8f...c5a7 score=<span class="lp-log-green">03</span></div>
-                            <div class="lp-log-line lp-log-line-danger"><span class="lp-log-ts">10:41:11</span><span class="lp-log-danger"> ✕ </span>0x7f1e...9d04 score=<span class="lp-log-red">78</span></div>
-                            <div class="lp-log-line lp-log-line-blink"><span class="lp-log-ts">10:41:11</span><span class="lp-log-danger"> → </span><span class="lp-log-alert">alert dispatched</span></div>
+                            <div class="lp-log-line"><span class="lp-log-ts" id="lpts0"></span><span class="lp-log-ok"> ✓ </span>0x4f3a...d8c1 score=<span class="lp-log-green">12</span></div>
+                            <div class="lp-log-line"><span class="lp-log-ts" id="lpts1"></span><span class="lp-log-ok"> ✓ </span>0xa1b2...9e3f score=<span class="lp-log-green">08</span></div>
+                            <div class="lp-log-line"><span class="lp-log-ts" id="lpts2"></span><span class="lp-log-warn"> ⚠ </span>0x9c7d...3b2a score=<span class="lp-log-yellow">45</span></div>
+                            <div class="lp-log-line"><span class="lp-log-ts" id="lpts3"></span><span class="lp-log-ok"> ✓ </span>0x2e8f...c5a7 score=<span class="lp-log-green">03</span></div>
+                            <div class="lp-log-line lp-log-line-danger"><span class="lp-log-ts" id="lpts4"></span><span class="lp-log-danger"> ✕ </span>0x7f1e...9d04 score=<span class="lp-log-red">78</span></div>
+                            <div class="lp-log-line lp-log-line-blink"><span class="lp-log-ts" id="lpts5"></span><span class="lp-log-danger"> → </span><span class="lp-log-alert">alert dispatched</span></div>
                         </div>
                     </div>
                 </div>
@@ -355,7 +355,7 @@
                         </div>
                         <div class="lp-alert-meta">
                             <span>tx: 0xabc123...</span>
-                            <span>2026-05-23 · 10:41:11</span>
+                            <span id="lp-alert-meta-ts"></span>
                         </div>
                     </div>
                 </div>
@@ -482,7 +482,7 @@
   <span class="lp-c-key">"wallet"</span>: <span class="lp-c-val">"0x742d35Cc..."</span>,
   <span class="lp-c-key">"flags"</span>: [<span class="lp-c-val">"mixer_interaction"</span>],
   <span class="lp-c-key">"tx_hash"</span>: <span class="lp-c-val">"0xabc123..."</span>,
-  <span class="lp-c-key">"timestamp"</span>: <span class="lp-c-val">"2026-05-23T10:00:00Z"</span>
+  <span class="lp-c-key">"timestamp"</span>: <span class="lp-c-val" id="lp-json-ts"></span>
 }</code></pre>
                 </div>
             </div>
@@ -1282,6 +1282,42 @@
                 }, 220);
             });
         }
+    </script>
+    <script>
+        (function() {
+            var now = new Date();
+            var pad = function(n) { return String(n).padStart(2, '0'); };
+            var hh = pad(now.getHours());
+            var mm = pad(now.getMinutes());
+            var ss = pad(now.getSeconds());
+            var yyyy = now.getFullYear();
+            var mo = pad(now.getMonth() + 1);
+            var dd = pad(now.getDate());
+            var baseS = now.getSeconds();
+            var offsets = [0, 2, 5, 7, 9, 9];
+            var ids = ['lpts0','lpts1','lpts2','lpts3','lpts4','lpts5'];
+            ids.forEach(function(id, i) {
+                var el = document.getElementById(id);
+                if (!el) return;
+                var s = baseS + offsets[i];
+                var m = parseInt(mm) + Math.floor(s / 60);
+                s = s % 60;
+                m = m % 60;
+                el.textContent = hh + ':' + pad(m) + ':' + pad(s);
+            });
+            var metaEl = document.getElementById('lp-alert-meta-ts');
+            if (metaEl) {
+                var alertS = baseS + 9;
+                var alertM = parseInt(mm) + Math.floor(alertS / 60);
+                alertS = alertS % 60;
+                alertM = alertM % 60;
+                metaEl.textContent = yyyy + '-' + mo + '-' + dd + ' · ' + hh + ':' + pad(alertM) + ':' + pad(alertS);
+            }
+            var jsonEl = document.getElementById('lp-json-ts');
+            if (jsonEl) {
+                jsonEl.textContent = '"' + now.toISOString().replace(/\.\d{3}Z$/, 'Z') + '"';
+            }
+        })();
     </script>
 </body>
 </html>
