@@ -1002,21 +1002,17 @@ body.modal-open {
 
 @media screen and (max-width: 600px) {
     .modal-overlay.active {
-        padding: 1rem;
-        align-items: flex-start;
-        padding-top: max(1rem, env(safe-area-inset-top, 1rem));
-        overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
+        padding: 0.75rem;
+        align-items: center;
     }
 
     .modal-overlay.active .modal-content {
-        max-height: none;
-        width: 100%;
+        max-height: calc(100dvh - 1.5rem);
         overflow-x: hidden;
-        overflow-y: visible;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
         touch-action: pan-y;
         overscroll-behavior: contain;
-        margin: auto 0;
     }
 
     .auth-page-wrap {
