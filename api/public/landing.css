@@ -2749,10 +2749,15 @@ html.auth-session-present #lp-cta-dashboard { display: inline-flex !important; }
         scrollbar-width: none;
         padding: 1.5rem 2rem;
         box-sizing: border-box;
+        overscroll-behavior: none;
     }
 
     html.snap-mode .lp-section-inner::-webkit-scrollbar {
         display: none;
+    }
+
+    html.snap-mode .lp-how .lp-section-inner {
+        overflow-y: hidden;
     }
 
     html.snap-mode .lp-cta-section {
