@@ -220,7 +220,11 @@ function renderDashboard(session) {
         if (teamEmailEl) teamEmailEl.textContent = rawUsername;
 
         const dropdownEmailEl = document.getElementById('dropdown-email');
-        if (dropdownEmailEl) dropdownEmailEl.textContent = displayIdentifier;
+        if (dropdownEmailEl) {
+            dropdownEmailEl.textContent = displayIdentifier;
+            const len = displayIdentifier.length;
+            dropdownEmailEl.style.fontSize = len > 28 ? '0.6rem' : len > 22 ? '0.68rem' : len > 16 ? '0.73rem' : '0.78rem';
+        }
 
         const menuTrigger = document.getElementById('user-menu-trigger');
         const dropdownMenu = document.getElementById('user-dropdown');
