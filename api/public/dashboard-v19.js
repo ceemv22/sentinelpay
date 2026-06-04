@@ -1702,8 +1702,10 @@ function switchToHomeView() {
 
     const globalNav = document.getElementById('sidebar-global-nav');
     const orgNav = document.getElementById('sidebar-org-nav');
+    const accountNav = document.getElementById('sidebar-account-nav');
     if (globalNav) globalNav.classList.remove('hidden');
     if (orgNav) orgNav.classList.add('hidden');
+    if (accountNav) accountNav.classList.add('hidden');
 }
 
 function switchToAccountSettings() {
@@ -1712,11 +1714,14 @@ function switchToAccountSettings() {
     document.body.classList.add('state-org-home');
     hideAllViews();
     document.getElementById('account-settings-view').classList.remove('hidden');
+    document.title = 'sentinelpay | account settings';
 
     const globalNav = document.getElementById('sidebar-global-nav');
     const orgNav = document.getElementById('sidebar-org-nav');
-    if (globalNav) globalNav.classList.remove('hidden');
+    const accountNav = document.getElementById('sidebar-account-nav');
+    if (globalNav) globalNav.classList.add('hidden');
     if (orgNav) orgNav.classList.add('hidden');
+    if (accountNav) accountNav.classList.remove('hidden');
 }
 
 function switchToOrgView(slug, view = 'projects') {
@@ -1728,8 +1733,10 @@ function switchToOrgView(slug, view = 'projects') {
     
     const globalNav = document.getElementById('sidebar-global-nav');
     const orgNav = document.getElementById('sidebar-org-nav');
+    const accountNav = document.getElementById('sidebar-account-nav');
     if (globalNav) globalNav.classList.add('hidden');
     if (orgNav) orgNav.classList.remove('hidden');
+    if (accountNav) accountNav.classList.add('hidden');
 
     const subViews = ['org-dashboard-view', 'org-team-view', 'org-settings-view'];
     subViews.forEach(id => {
