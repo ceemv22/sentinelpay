@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/style.css">
     <link rel="stylesheet" href="/category.css">
-    <link rel="stylesheet" href="/article.css?v=2">
+    <link rel="stylesheet" href="/article.css?v=3">
 </head>
 <body>
     <div class="cyber-grid"></div>
@@ -85,33 +85,28 @@
                 <h2>recommended tiers</h2>
                 <p>sentinelpay returns a raw integer score from 0 to 100. we provide three baseline categories to help you decide how to act on each result:</p>
 
-                <div class=”article-table-wrapper”>
-                    <table class=”article-table”>
-                        <thead>
-                            <tr>
-                                <th>score range</th>
-                                <th>category</th>
-                                <th>recommended action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>0 — 29</td>
-                                <td><span class=”badge badge-green”>low</span></td>
-                                <td>safe for automatic processing. low probability of illicit activity.</td>
-                            </tr>
-                            <tr>
-                                <td>30 — 59</td>
-                                <td><span class=”badge badge-yellow”>medium</span></td>
-                                <td>some suspicious signals detected. manual review or secondary aml checks recommended.</td>
-                            </tr>
-                            <tr>
-                                <td>60 — 100</td>
-                                <td><span class=”badge badge-red”>high</span></td>
-                                <td>direct links to high-risk entities. blocking these transactions is recommended.</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div style=”display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1.5rem 0 2rem;”>
+                    <div style=”background: rgba(0,255,136,0.04); border: 1px solid rgba(0,255,136,0.2); border-radius: 10px; padding: 1.25rem 1.35rem;”>
+                        <div style=”display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.85rem;”>
+                            <span class=”badge badge-green”>low</span>
+                            <span style=”font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: rgba(255,255,255,0.35); letter-spacing: -0.5px;”>0 — 29</span>
+                        </div>
+                        <p style=”font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: rgba(224,224,224,0.7); line-height: 1.65; margin: 0;”>safe for automatic processing. low probability of illicit activity.</p>
+                    </div>
+                    <div style=”background: rgba(255,184,0,0.04); border: 1px solid rgba(255,184,0,0.2); border-radius: 10px; padding: 1.25rem 1.35rem;”>
+                        <div style=”display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.85rem;”>
+                            <span class=”badge badge-yellow”>medium</span>
+                            <span style=”font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: rgba(255,255,255,0.35); letter-spacing: -0.5px;”>30 — 59</span>
+                        </div>
+                        <p style=”font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: rgba(224,224,224,0.7); line-height: 1.65; margin: 0;”>some suspicious signals detected. manual review or secondary aml checks recommended.</p>
+                    </div>
+                    <div style=”background: rgba(255,51,51,0.04); border: 1px solid rgba(255,51,51,0.2); border-radius: 10px; padding: 1.25rem 1.35rem;”>
+                        <div style=”display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.85rem;”>
+                            <span class=”badge badge-red”>high</span>
+                            <span style=”font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: rgba(255,255,255,0.35); letter-spacing: -0.5px;”>60 — 100</span>
+                        </div>
+                        <p style=”font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: rgba(224,224,224,0.7); line-height: 1.65; margin: 0;”>direct links to high-risk entities. blocking these transactions is recommended.</p>
+                    </div>
                 </div>
 
                 <h2>score 100 — sanctioned entity</h2>
