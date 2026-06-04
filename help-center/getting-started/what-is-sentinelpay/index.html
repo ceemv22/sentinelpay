@@ -263,6 +263,88 @@
                 si.addEventListener('focus', function() { sc.classList.add('focused'); });
                 si.addEventListener('blur', function() { sc.classList.remove('focused'); });
             }
+
+            var ARTICLES = [
+                { title: 'what is sentinelpay?', desc: 'an overview of sentinelpay — what we do, who we serve, and how our risk engine works.', category: 'getting started', url: '/getting-started/what-is-sentinelpay', tags: 'overview intro about product' },
+                { title: 'quickstart', desc: 'get from zero to your first risk score in under five minutes.', category: 'getting started', url: '/getting-started/quickstart', tags: 'quick start setup guide first steps onboarding' },
+                { title: 'creating your organization', desc: 'step-by-step guide to setting up your first organization, choosing a plan, and naming your workspace.', category: 'getting started', url: '/getting-started/creating-your-organization', tags: 'org organisation workspace setup create' },
+                { title: 'inviting team members', desc: 'how to add colleagues to your organization and manage their access permissions.', category: 'getting started', url: '/getting-started/inviting-team-members', tags: 'invite team members colleagues add user users' },
+                { title: 'access control', desc: 'manage permissions and roles across your sentinelpay organizations and projects.', category: 'getting started', url: '/getting-started/access-control', tags: 'permissions roles admin member owner rbac' },
+                { title: 'authentication', desc: 'how to generate and use api keys to secure your requests to sentinelpay.', category: 'api integration', url: '/api-integration/authentication', tags: 'api key keys auth bearer token secret header authorization' },
+                { title: 'the scan endpoint', desc: 'detailed documentation for the /v1/score endpoint — request format, parameters, and response fields.', category: 'api integration', url: '/api-integration/scan-endpoint', tags: 'endpoints endpoint scan v1 score request response parameters fields wallet address http post' },
+                { title: 'api error codes', desc: 'a reference list of http status codes and error messages returned by the api.', category: 'api integration', url: '/api-integration/api-error-codes', tags: 'error code codes errors http status 400 401 403 404 429 500 503 504 rate limit messages' },
+                { title: 'understanding heuristics', desc: 'a deep dive into the on-chain signals our engine uses to calculate risk scores.', category: 'risk scoring engine', url: '/risk-engine/understanding-heuristics', tags: 'heuristic heuristics signals on-chain onchain scoring algorithm how it works flags' },
+                { title: 'specific risk flags', desc: 'definitions for flags like mixer exposure, darknet markets, and sanctions hits.', category: 'risk scoring engine', url: '/risk-engine/specific-risk-flags', tags: 'risk flag flags mixer darknet sanctions exposure blacklist ofac aml' },
+                { title: 'score thresholds', desc: 'how to interpret the numerical score and set your own acceptance levels.', category: 'risk scoring engine', url: '/risk-engine/score-thresholds', tags: 'score threshold thresholds risk level low medium high block allow 0 100' },
+                { title: 'handling false positives', desc: "what to do if a trusted user's wallet is flagged, and how to whitelist addresses.", category: 'risk scoring engine', url: '/risk-engine/false-positives', tags: 'false positive whitelist trusted override flag wallet' },
+                { title: 'plans & pricing', desc: "a full breakdown of sentinelpay plans, credit packs, and what's included at each tier.", category: 'account & billing', url: '/account-billing/plans-and-pricing', tags: 'plan plans price pricing tier starter pro enterprise subscription upgrade' },
+                { title: 'credit usage', desc: 'how scans consume credits and how to set up auto-refills.', category: 'account & billing', url: '/account-billing/credit-usage', tags: 'credits credit usage refill auto scan consume balance' },
+                { title: 'crypto payments', desc: 'how to pay for credits and subscriptions using cryptocurrency on sentinelpay.', category: 'account & billing', url: '/account-billing/crypto-payments', tags: 'crypto cryptocurrency bitcoin usdc usdt eth payment pay blockchain wallet' },
+                { title: 'api rate limits', desc: 'understanding how many requests you can make per minute based on your plan.', category: 'account & billing', url: '/account-billing/api-rate-limits', tags: 'rate limit limits throttle requests per minute quota 429 too many' },
+                { title: 'managing organizations', desc: 'how to create, switch between, and delete organizations in sentinelpay.', category: 'dashboard', url: '/dashboard/managing-organizations', tags: 'org organisation manage delete switch create workspace' },
+                { title: 'scan history', desc: 'how to view past scan results, understand each field, and re-scan a wallet.', category: 'dashboard', url: '/dashboard/scan-history', tags: 'history past scans results log wallet re-scan previous' }
+            ];
+
+            var articleHeader = document.querySelector('.article-header');
+            var articleBody = document.querySelector('.article-body');
+            var articleSupport = document.querySelector('.article-support');
+            var breadcrumb = document.querySelector('.breadcrumb');
+
+            var resultsPanel = document.createElement('div');
+            resultsPanel.className = 'search-results-panel';
+            var searchWrapper = document.querySelector('.cat-search-wrapper');
+            if (searchWrapper) searchWrapper.parentNode.insertBefore(resultsPanel, searchWrapper.nextSibling);
+
+            function escapeHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+            function escapeRegex(s) { return s.replace(/[.*+?^${}()|[\]\]/g, '\$&'); }
+
+            function renderResults(q) {
+                var term = q.toLowerCase().trim();
+                if (!term) {
+                    resultsPanel.style.display = 'none';
+                    if (articleHeader) articleHeader.style.display = '';
+                    if (articleBody) articleBody.style.display = '';
+                    if (articleSupport) articleSupport.style.display = '';
+                    if (breadcrumb) breadcrumb.style.display = '';
+                    return;
+                }
+                var matches = ARTICLES.filter(function(a) {
+                    return a.title.includes(term) || a.desc.includes(term) || a.category.includes(term) || a.tags.includes(term);
+                });
+                if (articleHeader) articleHeader.style.display = 'none';
+                if (articleBody) articleBody.style.display = 'none';
+                if (articleSupport) articleSupport.style.display = 'none';
+                if (breadcrumb) breadcrumb.style.display = 'none';
+                resultsPanel.style.display = 'flex';
+                if (matches.length === 0) {
+                    resultsPanel.innerHTML = '<div class="search-no-results">no articles found for <span class="search-term-highlight">' + escapeHtml(q) + '</span></div>';
+                    return;
+                }
+                var hi = new RegExp('(' + escapeRegex(term) + ')', 'gi');
+                resultsPanel.innerHTML = '<div class="search-results-count">' + matches.length + ' article' + (matches.length === 1 ? '' : 's') + ' found</div>' +
+                    matches.map(function(a) {
+                        var titleHl = escapeHtml(a.title).replace(hi, '<mark>$1</mark>');
+                        var descHl = escapeHtml(a.desc).replace(hi, '<mark>$1</mark>');
+                        return '<a href="' + a.url + '" class="search-result-item">' +
+                            '<div class="search-result-top">' +
+                                '<span class="search-result-title">' + titleHl + '</span>' +
+                                '<span class="search-result-cat">' + escapeHtml(a.category) + '</span>' +
+                            '</div>' +
+                            '<span class="search-result-desc">' + descHl + '</span>' +
+                        '</a>';
+                    }).join('');
+            }
+
+            if (si) {
+                var urlQ = new URLSearchParams(window.location.search).get('q') || '';
+                if (urlQ) { si.value = urlQ; renderResults(urlQ); }
+                si.addEventListener('input', function() {
+                    var q = this.value.trim();
+                    history.replaceState({}, '', q ? window.location.pathname + '?q=' + encodeURIComponent(q) : window.location.pathname);
+                    renderResults(q);
+                });
+            }
+
             var pupil = document.getElementById('eye-pupil-page');
             if (pupil) {
                 document.addEventListener('mousemove', function(e) {
