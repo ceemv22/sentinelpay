@@ -85,43 +85,40 @@
                 <h2>flag reference</h2>
                 <p>each flag below corresponds to a heuristic that fired during the scan. the <code>flags</code> array in the api response lists only the flags that triggered — an empty array means no heuristics fired.</p>
 
-                <div class=”article-table-wrapper”>
-                    <table class=”article-table”>
-                        <thead>
-                            <tr>
-                                <th>flag</th>
-                                <th>points</th>
-                                <th>severity</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><code>sanctioned_entity</code></td>
-                                <td>→ 100</td>
-                                <td><span class=”badge badge-red”>critical</span></td>
-                            </tr>
-                            <tr>
-                                <td><code>mixer_interaction</code></td>
-                                <td>+50</td>
-                                <td><span class=”badge badge-red”>high</span></td>
-                            </tr>
-                            <tr>
-                                <td><code>new_wallet</code></td>
-                                <td>+20</td>
-                                <td><span class=”badge badge-yellow”>medium</span></td>
-                            </tr>
-                            <tr>
-                                <td><code>high_velocity</code></td>
-                                <td>+20</td>
-                                <td><span class=”badge badge-yellow”>medium</span></td>
-                            </tr>
-                            <tr>
-                                <td><code>io_imbalance</code></td>
-                                <td>+10</td>
-                                <td><span class=”badge badge-green”>low</span></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div style=”background: rgba(5,5,5,0.6); border: 1px solid rgba(255,255,255,0.06); border-left: 3px solid #ff3333; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; display: flex; align-items: flex-start; gap: 1rem;”>
+                    <span class=”badge badge-red” style=”flex-shrink: 0; margin-top: 1px;”>critical</span>
+                    <div>
+                        <div style=”font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; background: rgba(0,240,255,0.07); border: 1px solid rgba(0,240,255,0.15); color: #00f0ff; padding: 0.15rem 0.45rem; border-radius: 4px; display: inline-block; margin-bottom: 0.5rem;”>sanctioned_entity</div>
+                        <p style=”font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: rgba(224,224,224,0.75); line-height: 1.65; margin: 0;”>→ 100 points. short-circuits the engine entirely.</p>
+                    </div>
+                </div>
+                <div style=”background: rgba(5,5,5,0.6); border: 1px solid rgba(255,255,255,0.06); border-left: 3px solid #ff3333; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; display: flex; align-items: flex-start; gap: 1rem;”>
+                    <span class=”badge badge-red” style=”flex-shrink: 0; margin-top: 1px;”>high</span>
+                    <div>
+                        <div style=”font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; background: rgba(0,240,255,0.07); border: 1px solid rgba(0,240,255,0.15); color: #00f0ff; padding: 0.15rem 0.45rem; border-radius: 4px; display: inline-block; margin-bottom: 0.5rem;”>mixer_interaction</div>
+                        <p style=”font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: rgba(224,224,224,0.75); line-height: 1.65; margin: 0;”>+50 points. interaction with a known mixing service detected.</p>
+                    </div>
+                </div>
+                <div style=”background: rgba(5,5,5,0.6); border: 1px solid rgba(255,255,255,0.06); border-left: 3px solid #ffb800; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; display: flex; align-items: flex-start; gap: 1rem;”>
+                    <span class=”badge badge-yellow” style=”flex-shrink: 0; margin-top: 1px;”>medium</span>
+                    <div>
+                        <div style=”font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; background: rgba(0,240,255,0.07); border: 1px solid rgba(0,240,255,0.15); color: #00f0ff; padding: 0.15rem 0.45rem; border-radius: 4px; display: inline-block; margin-bottom: 0.5rem;”>new_wallet</div>
+                        <p style=”font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: rgba(224,224,224,0.75); line-height: 1.65; margin: 0;”>+20 points. wallet's oldest transaction is under 30 days old.</p>
+                    </div>
+                </div>
+                <div style=”background: rgba(5,5,5,0.6); border: 1px solid rgba(255,255,255,0.06); border-left: 3px solid #ffb800; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; display: flex; align-items: flex-start; gap: 1rem;”>
+                    <span class=”badge badge-yellow” style=”flex-shrink: 0; margin-top: 1px;”>medium</span>
+                    <div>
+                        <div style=”font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; background: rgba(0,240,255,0.07); border: 1px solid rgba(0,240,255,0.15); color: #00f0ff; padding: 0.15rem 0.45rem; border-radius: 4px; display: inline-block; margin-bottom: 0.5rem;”>high_velocity</div>
+                        <p style=”font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: rgba(224,224,224,0.75); line-height: 1.65; margin: 0;”>+20 points. more than 50 transactions in the preceding 24 hours.</p>
+                    </div>
+                </div>
+                <div style=”background: rgba(5,5,5,0.6); border: 1px solid rgba(255,255,255,0.06); border-left: 3px solid #00ff88; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; display: flex; align-items: flex-start; gap: 1rem;”>
+                    <span class=”badge badge-green” style=”flex-shrink: 0; margin-top: 1px;”>low</span>
+                    <div>
+                        <div style=”font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; background: rgba(0,240,255,0.07); border: 1px solid rgba(0,240,255,0.15); color: #00f0ff; padding: 0.15rem 0.45rem; border-radius: 4px; display: inline-block; margin-bottom: 0.5rem;”>io_imbalance</div>
+                        <p style=”font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: rgba(224,224,224,0.75); line-height: 1.65; margin: 0;”>+10 points. 10:1 or greater outgoing-to-incoming value ratio across at least 10 transactions.</p>
+                    </div>
                 </div>
 
                 <h2>sanctioned_entity</h2>

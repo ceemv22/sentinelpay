@@ -118,43 +118,54 @@
 }</code></pre>
                 </div>
 
-                <div class=”article-table-wrapper”>
-                    <table class=”article-table”>
-                        <thead>
-                            <tr>
-                                <th>field</th>
-                                <th>type</th>
-                                <th>description</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><code>score</code></td>
-                                <td>integer (0–100)</td>
-                                <td>the calculated risk score. higher is riskier.</td>
-                            </tr>
-                            <tr>
-                                <td><code>category</code></td>
-                                <td>string</td>
-                                <td><code>low</code> (0–29), <code>medium</code> (30–59), or <code>high</code> (60–100).</td>
-                            </tr>
-                            <tr>
-                                <td><code>flags</code></td>
-                                <td>string[]</td>
-                                <td>heuristics that fired. empty array if none triggered.</td>
-                            </tr>
-                            <tr>
-                                <td><code>history_incomplete</code></td>
-                                <td>boolean</td>
-                                <td>true if the wallet's history exceeded 10,000 entries and was only partially analyzed.</td>
-                            </tr>
-                            <tr>
-                                <td><code>timestamp</code></td>
-                                <td>ISO 8601 string</td>
-                                <td>utc datetime of when the scan was performed.</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div style=”background: rgba(5,5,5,0.6); border: 1px solid rgba(255,255,255,0.06); border-left: 3px solid rgba(0,240,255,0.4); border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; display: flex; align-items: flex-start; gap: 1rem;”>
+                    <div>
+                        <div style=”display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.4rem; flex-wrap: wrap;”>
+                            <span style=”font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; background: rgba(0,240,255,0.07); border: 1px solid rgba(0,240,255,0.15); color: #00f0ff; padding: 0.15rem 0.45rem; border-radius: 4px;”>score</span>
+                            <span style=”font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: rgba(255,255,255,0.35);”>integer (0–100)</span>
+                        </div>
+                        <p style=”font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: rgba(224,224,224,0.75); line-height: 1.65; margin: 0;”>the calculated risk score. higher is riskier.</p>
+                    </div>
+                </div>
+
+                <div style=”background: rgba(5,5,5,0.6); border: 1px solid rgba(255,255,255,0.06); border-left: 3px solid rgba(0,240,255,0.4); border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; display: flex; align-items: flex-start; gap: 1rem;”>
+                    <div>
+                        <div style=”display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.4rem; flex-wrap: wrap;”>
+                            <span style=”font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; background: rgba(0,240,255,0.07); border: 1px solid rgba(0,240,255,0.15); color: #00f0ff; padding: 0.15rem 0.45rem; border-radius: 4px;”>category</span>
+                            <span style=”font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: rgba(255,255,255,0.35);”>string</span>
+                        </div>
+                        <p style=”font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: rgba(224,224,224,0.75); line-height: 1.65; margin: 0;”><span style=”font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; background: rgba(0,240,255,0.07); border: 1px solid rgba(0,240,255,0.15); color: #00f0ff; padding: 0.15rem 0.45rem; border-radius: 4px;”>low</span> (0–29), <span style=”font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; background: rgba(0,240,255,0.07); border: 1px solid rgba(0,240,255,0.15); color: #00f0ff; padding: 0.15rem 0.45rem; border-radius: 4px;”>medium</span> (30–59), or <span style=”font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; background: rgba(0,240,255,0.07); border: 1px solid rgba(0,240,255,0.15); color: #00f0ff; padding: 0.15rem 0.45rem; border-radius: 4px;”>high</span> (60–100).</p>
+                    </div>
+                </div>
+
+                <div style=”background: rgba(5,5,5,0.6); border: 1px solid rgba(255,255,255,0.06); border-left: 3px solid rgba(0,240,255,0.4); border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; display: flex; align-items: flex-start; gap: 1rem;”>
+                    <div>
+                        <div style=”display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.4rem; flex-wrap: wrap;”>
+                            <span style=”font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; background: rgba(0,240,255,0.07); border: 1px solid rgba(0,240,255,0.15); color: #00f0ff; padding: 0.15rem 0.45rem; border-radius: 4px;”>flags</span>
+                            <span style=”font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: rgba(255,255,255,0.35);”>string[]</span>
+                        </div>
+                        <p style=”font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: rgba(224,224,224,0.75); line-height: 1.65; margin: 0;”>heuristics that fired. empty array if none triggered.</p>
+                    </div>
+                </div>
+
+                <div style=”background: rgba(5,5,5,0.6); border: 1px solid rgba(255,255,255,0.06); border-left: 3px solid rgba(0,240,255,0.4); border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; display: flex; align-items: flex-start; gap: 1rem;”>
+                    <div>
+                        <div style=”display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.4rem; flex-wrap: wrap;”>
+                            <span style=”font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; background: rgba(0,240,255,0.07); border: 1px solid rgba(0,240,255,0.15); color: #00f0ff; padding: 0.15rem 0.45rem; border-radius: 4px;”>history_incomplete</span>
+                            <span style=”font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: rgba(255,255,255,0.35);”>boolean</span>
+                        </div>
+                        <p style=”font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: rgba(224,224,224,0.75); line-height: 1.65; margin: 0;”>true if the wallet's history exceeded 10,000 entries and was only partially analyzed.</p>
+                    </div>
+                </div>
+
+                <div style=”background: rgba(5,5,5,0.6); border: 1px solid rgba(255,255,255,0.06); border-left: 3px solid rgba(0,240,255,0.4); border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; display: flex; align-items: flex-start; gap: 1rem;”>
+                    <div>
+                        <div style=”display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.4rem; flex-wrap: wrap;”>
+                            <span style=”font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; background: rgba(0,240,255,0.07); border: 1px solid rgba(0,240,255,0.15); color: #00f0ff; padding: 0.15rem 0.45rem; border-radius: 4px;”>timestamp</span>
+                            <span style=”font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: rgba(255,255,255,0.35);”>iso 8601 string</span>
+                        </div>
+                        <p style=”font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: rgba(224,224,224,0.75); line-height: 1.65; margin: 0;”>utc datetime of when the scan was performed.</p>
+                    </div>
                 </div>
 
                 <h2>example</h2>

@@ -85,37 +85,37 @@
                 <h2>limits at a glance</h2>
                 <p>rate limits are applied per endpoint type and reset independently.</p>
 
-                <div class=”article-table-wrapper”>
-                    <table class=”article-table”>
-                        <thead>
-                            <tr>
-                                <th>endpoint</th>
-                                <th>limit</th>
-                                <th>window</th>
-                                <th>applies to</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><code>/v1/score</code></td>
-                                <td><span class=”badge badge-green”>30 requests</span></td>
-                                <td>per 15 minutes (rolling)</td>
-                                <td>authenticated api key</td>
-                            </tr>
-                            <tr>
-                                <td><code>/v1/public/score</code></td>
-                                <td><span class=”badge badge-yellow”>20 requests</span></td>
-                                <td>per day (resets midnight utc)</td>
-                                <td>ip address</td>
-                            </tr>
-                            <tr>
-                                <td><code>/v1/public/score</code></td>
-                                <td><span class=”badge badge-yellow”>3 requests lifetime</span></td>
-                                <td>no reset</td>
-                                <td>browser fingerprint</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div style=”background: rgba(5,5,5,0.6); border: 1px solid rgba(0,255,136,0.12); border-left: 3px solid #00ff88; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.75rem;”>
+                    <div style=”display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;”>
+                        <span class=”badge badge-green” style=”flex-shrink: 0;”>30 req / 15 min</span>
+                        <span style=”font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: rgba(255,255,255,0.35);”>rolling window</span>
+                    </div>
+                    <div style=”display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;”>
+                        <span style=”font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; background: rgba(0,240,255,0.07); border: 1px solid rgba(0,240,255,0.15); color: #00f0ff; padding: 0.15rem 0.45rem; border-radius: 4px;”>/v1/score</span>
+                        <span style=”font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: rgba(224,224,224,0.6);”>authenticated api key</span>
+                    </div>
+                </div>
+
+                <div style=”background: rgba(5,5,5,0.6); border: 1px solid rgba(255,184,0,0.12); border-left: 3px solid #ffb800; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.75rem;”>
+                    <div style=”display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;”>
+                        <span class=”badge badge-yellow” style=”flex-shrink: 0;”>20 req / day</span>
+                        <span style=”font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: rgba(255,255,255,0.35);”>resets midnight utc</span>
+                    </div>
+                    <div style=”display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;”>
+                        <span style=”font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; background: rgba(0,240,255,0.07); border: 1px solid rgba(0,240,255,0.15); color: #00f0ff; padding: 0.15rem 0.45rem; border-radius: 4px;”>/v1/public/score</span>
+                        <span style=”font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: rgba(224,224,224,0.6);”>per ip address</span>
+                    </div>
+                </div>
+
+                <div style=”background: rgba(5,5,5,0.6); border: 1px solid rgba(255,184,0,0.12); border-left: 3px solid #ffb800; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.75rem;”>
+                    <div style=”display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;”>
+                        <span class=”badge badge-yellow” style=”flex-shrink: 0;”>3 req lifetime</span>
+                        <span style=”font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: rgba(255,255,255,0.35);”>no reset</span>
+                    </div>
+                    <div style=”display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;”>
+                        <span style=”font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; background: rgba(0,240,255,0.07); border: 1px solid rgba(0,240,255,0.15); color: #00f0ff; padding: 0.15rem 0.45rem; border-radius: 4px;”>/v1/public/score</span>
+                        <span style=”font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: rgba(224,224,224,0.6);”>per fingerprint</span>
+                    </div>
                 </div>
 
                 <h2>authenticated api key — /v1/score</h2>
