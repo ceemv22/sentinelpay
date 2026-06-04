@@ -250,7 +250,7 @@
 }
 
 @media (max-width: 768px) {
-    .cat-search-wrapper { padding-top: 4.5rem; }
+    .cat-search-wrapper { padding-top: 2rem; margin-bottom: 1.5rem; }
     .cat-header { flex-direction: column; gap: 1rem; }
     .cat-icon-wrapper { margin-top: 0; }
     .cat-title { font-size: 1.5rem; }
