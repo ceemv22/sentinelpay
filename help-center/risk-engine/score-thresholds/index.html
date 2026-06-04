@@ -83,18 +83,47 @@
             </header>
             <div class=”article-body”>
                 <h2>recommended tiers</h2>
-                <p>we provide three baseline categories based on the numerical score:</p>
-                <ul>
-                    <li><strong>0 — 29 (low)</strong> — low probability of illicit activity. safe for automatic processing.</li>
-                    <li><strong>30 — 59 (medium)</strong> — some suspicious signals detected. we recommend manual review or secondary aml checks.</li>
-                    <li><strong>60 — 100 (high)</strong> — direct links to high-risk entities. we recommend blocking these transactions.</li>
-                </ul>
+                <p>sentinelpay returns a raw integer score from 0 to 100. we provide three baseline categories to help you decide how to act on each result:</p>
+
+                <div class=”article-table-wrapper”>
+                    <table class=”article-table”>
+                        <thead>
+                            <tr>
+                                <th>score range</th>
+                                <th>category</th>
+                                <th>recommended action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>0 — 29</td>
+                                <td><span class=”badge badge-green”>low</span></td>
+                                <td>safe for automatic processing. low probability of illicit activity.</td>
+                            </tr>
+                            <tr>
+                                <td>30 — 59</td>
+                                <td><span class=”badge badge-yellow”>medium</span></td>
+                                <td>some suspicious signals detected. manual review or secondary aml checks recommended.</td>
+                            </tr>
+                            <tr>
+                                <td>60 — 100</td>
+                                <td><span class=”badge badge-red”>high</span></td>
+                                <td>direct links to high-risk entities. blocking these transactions is recommended.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
 
                 <h2>score 100 — sanctioned entity</h2>
                 <p>a score of exactly 100 with the <code>sanctioned_entity</code> flag means the wallet address was found directly in our blocklist. this is the most severe classification — no further analysis is performed and the block recommendation is absolute.</p>
 
                 <h2>setting your own threshold</h2>
                 <p>the recommended thresholds above are starting points. the <code>score</code> field is a raw integer, so you can apply any custom threshold logic in your own backend. depending on your platform's risk appetite, you may choose to block any score above 40, or to allow medium-risk deposits with enhanced kyc verification.</p>
+
+                <div class=”article-callout”>
+                    <svg xmlns=”http://www.w3.org/2000/svg” viewBox=”0 0 24 24” fill=”none” stroke=”currentColor” stroke-width=”2” stroke-linecap=”round” stroke-linejoin=”round”><circle cx=”12” cy=”12” r=”10”></circle><line x1=”12” y1=”8” x2=”12” y2=”12”></line><line x1=”12” y1=”16” x2=”12.01” y2=”16”></line></svg>
+                    <p>the <code>flags</code> array gives you granular signal data. even at the same score, a wallet flagged for <code>mixer_interaction</code> carries a different risk profile than one flagged only for <code>new_wallet</code>.</p>
+                </div>
             </div>
             <div class="article-related">
                 <h3 class="related-title">related articles</h3>

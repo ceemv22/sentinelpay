@@ -98,19 +98,19 @@
                         <tbody>
                             <tr>
                                 <td><code>/v1/score</code></td>
-                                <td>30 requests</td>
+                                <td><span class=”badge badge-green”>30 requests</span></td>
                                 <td>per 15 minutes (rolling)</td>
                                 <td>authenticated api key</td>
                             </tr>
                             <tr>
                                 <td><code>/v1/public/score</code></td>
-                                <td>20 requests</td>
-                                <td>per day (resets midnight UTC)</td>
+                                <td><span class=”badge badge-yellow”>20 requests</span></td>
+                                <td>per day (resets midnight utc)</td>
                                 <td>ip address</td>
                             </tr>
                             <tr>
                                 <td><code>/v1/public/score</code></td>
-                                <td>3 requests lifetime</td>
+                                <td><span class=”badge badge-yellow”>3 requests lifetime</span></td>
                                 <td>no reset</td>
                                 <td>browser fingerprint</td>
                             </tr>
@@ -124,10 +124,14 @@
                 <h2>public endpoint — /v1/public/score</h2>
                 <p>the public endpoint allows unauthenticated scans for evaluation and prototyping. it is enforced by two independent limits that both apply simultaneously:</p>
                 <ul>
-                    <li><strong>20 scans per day per ip address.</strong> the counter resets at midnight UTC.</li>
+                    <li><strong>20 scans per day per ip address.</strong> the counter resets at midnight utc.</li>
                     <li><strong>3 scans lifetime per browser fingerprint.</strong> this limit does not reset. it exists to prevent automated abuse of the public tier.</li>
                 </ul>
-                <p>the public endpoint is not intended for production workloads. it does not consume credits and does not require authentication, but it has no sla or consistency guarantees.</p>
+
+                <div class=”article-callout”>
+                    <svg xmlns=”http://www.w3.org/2000/svg” viewBox=”0 0 24 24” fill=”none” stroke=”currentColor” stroke-width=”2” stroke-linecap=”round” stroke-linejoin=”round”><path d=”M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z”/><line x1=”12” y1=”9” x2=”12” y2=”13”/><line x1=”12” y1=”17” x2=”12.01” y2=”17”/></svg>
+                    <p>the public endpoint is not intended for production workloads. it has no sla or consistency guarantees and does not consume credits.</p>
+                </div>
 
                 <h2>handling 429 responses</h2>
                 <p>when your api key hits the rate limit, the api returns <code>429 too many requests</code>. the response body includes a <code>retryAfter</code> field indicating the number of seconds until the limit resets. implement exponential backoff in your integration and respect this value rather than polling immediately:</p>
@@ -136,7 +140,6 @@
                     <li>wait at least that many seconds before retrying.</li>
                     <li>if you are consistently hitting the limit, consider batching scans or contacting us about a higher-volume plan.</li>
                 </ul>
-
             </div>
             <div class="article-related">
                 <h3 class="related-title">related articles</h3>
