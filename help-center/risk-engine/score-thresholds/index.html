@@ -81,31 +81,31 @@
                 <h1 class="article-title">score thresholds</h1>
                 <p class="article-lead">interpret risk scores and set thresholds that align with your platform's risk appetite.</p>
             </header>
-            <div class=”article-body”>
+            <div class="article-body">
                 <h2>recommended tiers</h2>
                 <p>sentinelpay returns a raw integer score from 0 to 100. we provide three baseline categories to help you decide how to act on each result:</p>
 
-                <div style=”display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1.5rem 0 2rem;”>
-                    <div style=”background: rgba(0,255,136,0.04); border: 1px solid rgba(0,255,136,0.2); border-radius: 10px; padding: 1.25rem 1.35rem;”>
-                        <div style=”display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.85rem;”>
-                            <span class=”badge badge-green”>low</span>
-                            <span style=”font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: rgba(255,255,255,0.35); letter-spacing: -0.5px;”>0 — 29</span>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1.5rem 0 2rem;">
+                    <div style="background: rgba(0,255,136,0.04); border: 1px solid rgba(0,255,136,0.2); border-radius: 10px; padding: 1.25rem 1.35rem;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.85rem;">
+                            <span class="badge badge-green">low</span>
+                            <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: rgba(255,255,255,0.35); letter-spacing: -0.5px;">0 — 29</span>
                         </div>
-                        <p style=”font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: rgba(224,224,224,0.7); line-height: 1.65; margin: 0;”>safe for automatic processing. low probability of illicit activity.</p>
+                        <p style="font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: rgba(224,224,224,0.7); line-height: 1.65; margin: 0;">safe for automatic processing. low probability of illicit activity.</p>
                     </div>
-                    <div style=”background: rgba(255,184,0,0.04); border: 1px solid rgba(255,184,0,0.2); border-radius: 10px; padding: 1.25rem 1.35rem;”>
-                        <div style=”display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.85rem;”>
-                            <span class=”badge badge-yellow”>medium</span>
-                            <span style=”font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: rgba(255,255,255,0.35); letter-spacing: -0.5px;”>30 — 59</span>
+                    <div style="background: rgba(255,184,0,0.04); border: 1px solid rgba(255,184,0,0.2); border-radius: 10px; padding: 1.25rem 1.35rem;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.85rem;">
+                            <span class="badge badge-yellow">medium</span>
+                            <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: rgba(255,255,255,0.35); letter-spacing: -0.5px;">30 — 59</span>
                         </div>
-                        <p style=”font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: rgba(224,224,224,0.7); line-height: 1.65; margin: 0;”>some suspicious signals detected. manual review or secondary aml checks recommended.</p>
+                        <p style="font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: rgba(224,224,224,0.7); line-height: 1.65; margin: 0;">some suspicious signals detected. manual review or secondary aml checks recommended.</p>
                     </div>
-                    <div style=”background: rgba(255,51,51,0.04); border: 1px solid rgba(255,51,51,0.2); border-radius: 10px; padding: 1.25rem 1.35rem;”>
-                        <div style=”display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.85rem;”>
-                            <span class=”badge badge-red”>high</span>
-                            <span style=”font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: rgba(255,255,255,0.35); letter-spacing: -0.5px;”>60 — 100</span>
+                    <div style="background: rgba(255,51,51,0.04); border: 1px solid rgba(255,51,51,0.2); border-radius: 10px; padding: 1.25rem 1.35rem;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.85rem;">
+                            <span class="badge badge-red">high</span>
+                            <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: rgba(255,255,255,0.35); letter-spacing: -0.5px;">60 — 100</span>
                         </div>
-                        <p style=”font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: rgba(224,224,224,0.7); line-height: 1.65; margin: 0;”>direct links to high-risk entities. blocking these transactions is recommended.</p>
+                        <p style="font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: rgba(224,224,224,0.7); line-height: 1.65; margin: 0;">direct links to high-risk entities. blocking these transactions is recommended.</p>
                     </div>
                 </div>
 
@@ -115,8 +115,8 @@
                 <h2>setting your own threshold</h2>
                 <p>the recommended thresholds above are starting points. the <code>score</code> field is a raw integer, so you can apply any custom threshold logic in your own backend. depending on your platform's risk appetite, you may choose to block any score above 40, or to allow medium-risk deposits with enhanced kyc verification.</p>
 
-                <div class=”article-callout”>
-                    <svg xmlns=”http://www.w3.org/2000/svg” viewBox=”0 0 24 24” fill=”none” stroke=”currentColor” stroke-width=”2” stroke-linecap=”round” stroke-linejoin=”round”><circle cx=”12” cy=”12” r=”10”></circle><line x1=”12” y1=”8” x2=”12” y2=”12”></line><line x1=”12” y1=”16” x2=”12.01” y2=”16”></line></svg>
+                <div class="article-callout">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
                     <p>the <code>flags</code> array gives you granular signal data. even at the same score, a wallet flagged for <code>mixer_interaction</code> carries a different risk profile than one flagged only for <code>new_wallet</code>.</p>
                 </div>
             </div>
