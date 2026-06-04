@@ -1801,32 +1801,6 @@
                 transform: translateX(-10px);
             }
 
-            #dropdown-user-chip {
-                display: inline-flex;
-                align-items: center;
-                background: rgba(10, 12, 15, 0.7);
-                backdrop-filter: blur(25px);
-                -webkit-backdrop-filter: blur(25px);
-                border: 1px solid rgba(255, 255, 255, 0.08);
-                border-radius: 50px;
-                padding: 6px 14px;
-                box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
-                max-width: 100%;
-                overflow: hidden;
-            }
-
-            #dropdown-user-chip #dropdown-email {
-                font-family: 'JetBrains Mono', monospace;
-                font-size: 0.78rem;
-                font-weight: 500;
-                color: rgba(255, 255, 255, 0.85);
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                letter-spacing: 0;
-                text-transform: none;
-            }
-
             #user-dropdown .org-only {
                 display: none !important;
             }
@@ -2412,10 +2386,8 @@
                         organization settings
                     </a>
                     <div class="dropdown-divider org-only"></div>
-                    <div id="dropdown-user-header" style="padding: 6px 10px 8px; display: flex; justify-content: center;">
-                        <div id="dropdown-user-chip">
-                            <span id="dropdown-email">user@email.com</span>
-                        </div>
+                    <div class="dropdown-header" id="dropdown-user-header" style="margin-top: 8px;">
+                        <span id="dropdown-email" style="text-transform: none; color: var(--text-muted); font-size: 0.7rem; letter-spacing: 0;">user@email.com</span>
                     </div>
                     <a href="#" class="dropdown-item">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
