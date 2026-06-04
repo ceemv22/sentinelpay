@@ -272,6 +272,7 @@ function renderDashboard(session) {
         setupInviteMemberModal(token);
         setupSidebar();
         setupMobileNav();
+        initOrgSearch();
     } catch (e) {
         console.error('[sentinel-render] Critical failure:', e);
         showStatus('Render Error', 'error');
@@ -1598,7 +1599,7 @@ function updateOrgGrid(orgs) {
             card.className = 'org-card-item';
             
             const initial = org.name.charAt(0).toUpperCase();
-            const planText = org.plan ? `${org.plan.charAt(0).toUpperCase() + org.plan.slice(1)} Plan` : 'Standard Plan';
+            const planText = org.plan ? `${org.plan} plan` : 'standard plan';
             
             card.innerHTML = `
                 <div class="org-card-avatar"></div>
@@ -1621,6 +1622,41 @@ function updateOrgGrid(orgs) {
             orgCardsGrid.appendChild(card);
         });
     }
+}
+
+let _allOrgsCache = [];
+
+function filterOrgGrid(q) {
+    const grid = document.querySelector('.org-cards-grid');
+    if (!grid) return;
+    const cards = grid.querySelectorAll('.org-card-item');
+    const term = q.toLowerCase().trim();
+    cards.forEach(card => {
+        const name = (card.querySelector('.org-card-name') || {}).textContent || '';
+        const matches = !term || name.toLowerCase().includes(term);
+        card.style.display = matches ? '' : 'none';
+        if (term && matches) {
+            card.classList.add('org-card-match');
+        } else {
+            card.classList.remove('org-card-match');
+        }
+    });
+}
+
+function initOrgSearch() {
+    const input = document.querySelector('.org-search-input');
+    if (!input) return;
+    const urlQ = new URLSearchParams(window.location.search).get('q') || '';
+    if (urlQ) {
+        input.value = urlQ;
+        filterOrgGrid(urlQ);
+    }
+    input.addEventListener('input', function() {
+        const q = this.value.trim();
+        const url = q ? '/dashboard/organizations?q=' + encodeURIComponent(q) : '/dashboard/organizations';
+        history.replaceState({}, '', url);
+        filterOrgGrid(q);
+    });
 }
 
 function switchToHomeView() {
@@ -1703,7 +1739,7 @@ async function renderOrgDashboard(slug, token) {
             try { updateDropdownOrgList(JSON.parse(cached), slug); } catch (e) {}
         }
 
-        const planLabel = org.plan ? org.plan.charAt(0).toUpperCase() + org.plan.slice(1) : 'Starter';
+        const planLabel = org.plan || 'starter';
         const regionLabel = org.region || 'americas';
         const createdLabel = new Date(org.createdAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
 
@@ -2063,6 +2099,8 @@ async function fetchProfile(token) {
         localStorage.setItem('sentinel-cached-orgs', JSON.stringify(orgs));
         updateOrgGrid(orgs);
         updateDropdownOrgList(orgs, currentOrgSlug);
+        const _sq = new URLSearchParams(window.location.search).get('q') || '';
+        if (_sq) filterOrgGrid(_sq);
     } catch (err) {}
 }
 
