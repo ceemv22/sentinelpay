@@ -11,6 +11,8 @@ model User {
   id               String           @id @default(uuid())
   email            String?          @unique
   username         String?
+  firstName        String?
+  lastName         String?
   supabaseId       String           @unique
   authProvider     String           @default("email")
   isEmailVerified  Boolean          @default(false)

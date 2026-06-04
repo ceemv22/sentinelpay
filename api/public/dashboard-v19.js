@@ -1734,6 +1734,15 @@ function switchToAccountSettings(tab) {
         if (activeEl) activeEl.classList.add('active');
     }
 
+    const tabTitles = { 'preferences': 'preferences', 'security': 'security', 'access-tokens': 'access tokens' };
+    const titleEl = document.getElementById('account-settings-tab-title');
+    if (titleEl) titleEl.textContent = tabTitles[tab] || tab;
+
+    ['preferences', 'security', 'access-tokens'].forEach(t => {
+        const panel = document.getElementById('account-tab-' + t);
+        if (panel) panel.style.display = t === tab ? '' : 'none';
+    });
+
     if (!accountNav || accountNav.dataset.accountNavBound) return;
     accountNav.dataset.accountNavBound = 'true';
     [
@@ -2171,6 +2180,54 @@ async function fetchProfile(token) {
             teamEmailEl.textContent = displayId;
             const teamAvatarEl = document.getElementById('team-owner-avatar');
             if (teamAvatarEl) teamAvatarEl.textContent = displayId.charAt(0).toUpperCase();
+        }
+
+        const prefEmail = document.getElementById('pref-email');
+        const prefUsername = document.getElementById('pref-username');
+        const prefFirstName = document.getElementById('pref-first-name');
+        const prefLastName = document.getElementById('pref-last-name');
+        if (prefEmail) prefEmail.value = profile.email || '';
+        if (prefUsername) prefUsername.value = profile.username || '';
+        if (prefFirstName) prefFirstName.value = profile.firstName || '';
+        if (prefLastName) prefLastName.value = profile.lastName || '';
+
+        const saveBtn = document.getElementById('btn-save-preferences');
+        if (saveBtn && !saveBtn.dataset.bound) {
+            saveBtn.dataset.bound = 'true';
+            saveBtn.addEventListener('click', async () => {
+                const tok = localStorage.getItem('sentinel-token');
+                if (!tok) return;
+                saveBtn.disabled = true;
+                saveBtn.textContent = 'saving...';
+                try {
+                    const r = await fetch('/v1/user/profile', {
+                        method: 'PATCH',
+                        headers: { 'Authorization': `Bearer ${tok}`, 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            firstName: document.getElementById('pref-first-name')?.value || '',
+                            lastName: document.getElementById('pref-last-name')?.value || '',
+                            username: document.getElementById('pref-username')?.value || ''
+                        })
+                    });
+                    const data = await r.json();
+                    if (r.ok) {
+                        saveBtn.textContent = 'saved';
+                        setTimeout(() => { saveBtn.textContent = 'save'; saveBtn.disabled = false; }, 1800);
+                        if (data.username) {
+                            const el = document.getElementById('current-user-email');
+                            if (el) el.textContent = data.username;
+                            const av = document.getElementById('team-owner-avatar');
+                            if (av) av.textContent = data.username.charAt(0).toUpperCase();
+                        }
+                    } else {
+                        saveBtn.textContent = data.error || 'error';
+                        setTimeout(() => { saveBtn.textContent = 'save'; saveBtn.disabled = false; }, 2500);
+                    }
+                } catch {
+                    saveBtn.textContent = 'error';
+                    setTimeout(() => { saveBtn.textContent = 'save'; saveBtn.disabled = false; }, 2500);
+                }
+            });
         }
 
         const orgsRes = await fetch('/v1/organizations', { headers: { 'Authorization': `Bearer ${token}` } });
