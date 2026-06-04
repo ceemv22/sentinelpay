@@ -239,14 +239,18 @@ function renderDashboard(session) {
         const currentPath = window.location.pathname;
         const orgMatch = currentPath.match(/^\/dashboard\/org\/([a-z0-9]{20})(\/[a-z0-9-]+)?$/);
         const isValidHome = currentPath === '/dashboard' || currentPath === '/dashboard/organizations' || currentPath === '/dashboard/';
-        const isAccountSettings = currentPath === '/dashboard/account/settings';
+        const accountMatch = currentPath.match(/^\/dashboard\/account\/settings(?:\/(preferences|security|access-tokens))?$/);
 
         if (orgMatch) {
             switchToOrgView(orgMatch[1], orgMatch[2] ? orgMatch[2].substring(1) : 'projects');
         } else if (isValidHome) {
             switchToHomeView();
-        } else if (isAccountSettings) {
-            switchToAccountSettings();
+        } else if (accountMatch) {
+            const tab = accountMatch[1] || 'preferences';
+            if (!accountMatch[1]) {
+                history.replaceState({}, '', '/dashboard/account/settings/preferences');
+            }
+            switchToAccountSettings(tab);
         } else {
             window.location.replace('/dashboard/organizations');
             return;
@@ -1708,7 +1712,8 @@ function switchToHomeView() {
     if (accountNav) accountNav.classList.add('hidden');
 }
 
-function switchToAccountSettings() {
+function switchToAccountSettings(tab) {
+    tab = tab || 'preferences';
     currentOrgSlug = null;
     document.body.classList.remove('state-in-org');
     document.body.classList.add('state-org-home');
@@ -1721,7 +1726,29 @@ function switchToAccountSettings() {
     const accountNav = document.getElementById('sidebar-account-nav');
     if (globalNav) globalNav.classList.add('hidden');
     if (orgNav) orgNav.classList.add('hidden');
-    if (accountNav) accountNav.classList.remove('hidden');
+    if (accountNav) {
+        accountNav.classList.remove('hidden');
+        accountNav.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
+        const tabToId = { 'preferences': 'sidebar-item-preferences', 'security': 'sidebar-item-security', 'access-tokens': 'sidebar-item-tokens' };
+        const activeEl = document.getElementById(tabToId[tab]);
+        if (activeEl) activeEl.classList.add('active');
+    }
+
+    if (!accountNav || accountNav.dataset.accountNavBound) return;
+    accountNav.dataset.accountNavBound = 'true';
+    [
+        { id: 'sidebar-item-preferences', tab: 'preferences' },
+        { id: 'sidebar-item-security', tab: 'security' },
+        { id: 'sidebar-item-tokens', tab: 'access-tokens' }
+    ].forEach(({ id, tab: t }) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener('click', e => {
+            e.preventDefault();
+            history.pushState({}, '', '/dashboard/account/settings/' + t);
+            switchToAccountSettings(t);
+        });
+    });
 }
 
 function switchToOrgView(slug, view = 'projects') {
