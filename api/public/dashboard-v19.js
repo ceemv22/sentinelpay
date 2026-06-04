@@ -1455,10 +1455,21 @@ function flipToNotifPanel() {
     const items = document.getElementById('notification-items');
     const panelBody = document.getElementById('notif-panel-body');
     if (!dropdown || !mainPanel || !notifPanel || !panelBody) return;
-    dropdown.style.height = dropdown.offsetHeight + 'px';
     if (items) panelBody.appendChild(items);
-    mainPanel.style.display = 'none';
-    notifPanel.classList.add('active');
+    mainPanel.style.transition = 'opacity 0.18s ease';
+    mainPanel.style.opacity = '0';
+    setTimeout(() => {
+        mainPanel.style.display = 'none';
+        mainPanel.style.opacity = '';
+        mainPanel.style.transition = '';
+        notifPanel.style.opacity = '0';
+        notifPanel.style.transition = 'opacity 0.18s ease';
+        notifPanel.classList.add('active');
+        requestAnimationFrame(() => {
+            notifPanel.style.opacity = '1';
+            setTimeout(() => { notifPanel.style.opacity = ''; notifPanel.style.transition = ''; }, 180);
+        });
+    }, 180);
 }
 
 function flipToMainPanel() {
@@ -1468,10 +1479,21 @@ function flipToMainPanel() {
     const items = document.getElementById('notification-items');
     const itemsWrapper = document.getElementById('notification-items-wrapper');
     if (!dropdown || !mainPanel || !notifPanel) return;
-    notifPanel.classList.remove('active');
-    mainPanel.style.display = '';
-    dropdown.style.height = '';
-    if (items && itemsWrapper) itemsWrapper.appendChild(items);
+    notifPanel.style.transition = 'opacity 0.18s ease';
+    notifPanel.style.opacity = '0';
+    setTimeout(() => {
+        notifPanel.classList.remove('active');
+        notifPanel.style.opacity = '';
+        notifPanel.style.transition = '';
+        if (items && itemsWrapper) itemsWrapper.appendChild(items);
+        mainPanel.style.display = '';
+        mainPanel.style.opacity = '0';
+        mainPanel.style.transition = 'opacity 0.18s ease';
+        requestAnimationFrame(() => {
+            mainPanel.style.opacity = '1';
+            setTimeout(() => { mainPanel.style.opacity = ''; mainPanel.style.transition = ''; }, 180);
+        });
+    }, 180);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
