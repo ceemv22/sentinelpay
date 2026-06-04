@@ -282,7 +282,7 @@
                     return a.title.includes(term) || a.desc.includes(term) || a.category.includes(term);
                 });
                 categoryGrid.style.display = 'none';
-                resultsPanel.style.display = '';
+                resultsPanel.style.display = 'flex';
                 if (matches.length === 0) {
                     resultsPanel.innerHTML = '<div class="search-no-results">no articles found for <span class="search-term-highlight">' + escapeHtml(q) + '</span></div>';
                     return;
