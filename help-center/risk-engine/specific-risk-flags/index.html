@@ -82,33 +82,65 @@
                 <p class="article-lead">understand the specific triggers that can impact a wallet's risk score.</p>
             </header>
             <div class=”article-body”>
-                <h2>flag definitions</h2>
-                <ul>
-                    <li><code>mixer_interaction</code> — direct contact with known mixing services. inbound transfers above 0.001 eth from a mixer address are flagged. adds +50 to score.</li>
-                    <li><code>sanctioned_entity</code> — the wallet appears in a known high-risk entity set. triggers an immediate score of 100.</li>
-                    <li><code>new_wallet</code> — the wallet is less than 30 days old. adds +20 to score.</li>
-                    <li><code>high_velocity</code> — more than 50 transactions recorded in the last 24 hours. adds +20 to score.</li>
-                    <li><code>io_imbalance</code> — output-to-input value ratio exceeds 10:1 across a minimum of 10 transactions. adds +10 to score.</li>
-                </ul>
+                <h2>flag reference</h2>
+                <p>each flag below corresponds to a heuristic that fired during the scan. the <code>flags</code> array in the api response lists only the flags that triggered — an empty array means no heuristics fired.</p>
+
+                <div class=”article-table-wrapper”>
+                    <table class=”article-table”>
+                        <thead>
+                            <tr>
+                                <th>flag</th>
+                                <th>points</th>
+                                <th>severity</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>sanctioned_entity</code></td>
+                                <td>→ 100</td>
+                                <td><span class=”badge badge-red”>critical</span></td>
+                            </tr>
+                            <tr>
+                                <td><code>mixer_interaction</code></td>
+                                <td>+50</td>
+                                <td><span class=”badge badge-red”>high</span></td>
+                            </tr>
+                            <tr>
+                                <td><code>new_wallet</code></td>
+                                <td>+20</td>
+                                <td><span class=”badge badge-yellow”>medium</span></td>
+                            </tr>
+                            <tr>
+                                <td><code>high_velocity</code></td>
+                                <td>+20</td>
+                                <td><span class=”badge badge-yellow”>medium</span></td>
+                            </tr>
+                            <tr>
+                                <td><code>io_imbalance</code></td>
+                                <td>+10</td>
+                                <td><span class=”badge badge-green”>low</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
 
                 <h2>sanctioned_entity</h2>
-                <p><strong>points: 100 (immediate return)</strong></p>
                 <p>the wallet address was found in our known high-risk entity list. this list includes wallets associated with hacks, ransomware, darknet markets, and other verified illicit activity. when this flag fires, the score is set to 100 immediately and no other heuristics run.</p>
+                <div class=”article-callout”>
+                    <svg xmlns=”http://www.w3.org/2000/svg” viewBox=”0 0 24 24” fill=”none” stroke=”currentColor” stroke-width=”2” stroke-linecap=”round” stroke-linejoin=”round”><path d=”M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z”/><line x1=”12” y1=”9” x2=”12” y2=”13”/><line x1=”12” y1=”17” x2=”12.01” y2=”17”/></svg>
+                    <p>this is the only flag that short-circuits the engine. a block recommendation is absolute when <code>sanctioned_entity</code> is present.</p>
+                </div>
 
                 <h2>mixer_interaction</h2>
-                <p><strong>points: +50</strong></p>
                 <p>the wallet has sent funds to a known mixing service, or has received funds from one where the incoming value exceeded 0.001 eth. mixing services are used to obscure the origin of funds. this is the single strongest individual risk signal — a wallet with only this flag scores 50 (medium), but combined with any other flag it reaches high risk.</p>
 
                 <h2>new_wallet</h2>
-                <p><strong>points: +20</strong></p>
                 <p>the wallet's oldest on-chain transaction is less than 30 days old at the time of the scan. newly created wallets are commonly used to add separation between illicit source wallets and final destination wallets. note that all legitimate new users will also have this flag — it should not be used as a standalone block trigger.</p>
 
                 <h2>high_velocity</h2>
-                <p><strong>points: +20</strong></p>
                 <p>more than 50 transactions were recorded from this wallet in the 24 hours preceding the scan. extremely high short-term transaction volume is associated with layering activity, automated bots, and rapid fund redistribution. this can also occur on legitimate defi-active wallets.</p>
 
                 <h2>io_imbalance</h2>
-                <p><strong>points: +10</strong></p>
                 <p>the wallet shows a 10:1 or greater ratio of outgoing to incoming transaction value across at least 10 transactions. this asymmetry can indicate a pass-through wallet — receiving funds and immediately redistributing them onward. it has the lowest individual weight of any heuristic (+10 points).</p>
             </div>
             <div class="article-related">

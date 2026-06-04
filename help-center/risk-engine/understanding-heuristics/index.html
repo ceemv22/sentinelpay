@@ -83,51 +83,50 @@
             </header>
             <div class=”article-body”>
                 <h2>how scoring works</h2>
-                <p>the sentinelpay engine fetches up to 10,000 normal transactions, 10,000 internal transactions, and 10,000 erc-20 token transfers for the target wallet from the ethereum blockchain. it then runs five independent heuristics. each heuristic that fires adds a defined number of points to the total score, capped at 100.</p>
+                <p>the sentinelpay engine fetches up to 10,000 normal transactions, 10,000 internal transactions, and 10,000 erc-20 token transfers for the target wallet. it then runs five independent heuristics. each heuristic that fires adds a defined number of points to the total score, capped at 100.</p>
 
                 <div class=”article-table-wrapper”>
                     <table class=”article-table”>
                         <thead>
                             <tr>
-                                <th>heuristic</th>
-                                <th>flag returned</th>
+                                <th>flag</th>
                                 <th>points</th>
-                                <th>trigger condition</th>
+                                <th>what triggers it</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>sanctioned entity</td>
                                 <td><code>sanctioned_entity</code></td>
-                                <td>100 (immediate)</td>
-                                <td>the wallet address itself is on the known high-risk entity list. score is set to 100 and no further heuristics run.</td>
+                                <td><span class=”badge badge-red”>→ 100</span></td>
+                                <td>wallet address matched in the known high-risk entity blocklist. short-circuits all other heuristics.</td>
                             </tr>
                             <tr>
-                                <td>mixer interaction</td>
                                 <td><code>mixer_interaction</code></td>
-                                <td>+50</td>
-                                <td>any outbound transaction to a known mixer address, or any inbound transfer from a mixer where the value exceeds 0.001 eth.</td>
+                                <td><span class=”badge badge-red”>+50</span></td>
+                                <td>wallet sent to or received from a known mixing service (above 0.001 eth threshold).</td>
                             </tr>
                             <tr>
-                                <td>new wallet</td>
                                 <td><code>new_wallet</code></td>
-                                <td>+20</td>
-                                <td>the wallet's oldest recorded on-chain transaction is less than 30 days ago at the time of the scan.</td>
+                                <td><span class=”badge badge-yellow”>+20</span></td>
+                                <td>oldest on-chain transaction is less than 30 days old at scan time.</td>
                             </tr>
                             <tr>
-                                <td>high velocity</td>
                                 <td><code>high_velocity</code></td>
-                                <td>+20</td>
+                                <td><span class=”badge badge-yellow”>+20</span></td>
                                 <td>more than 50 transactions recorded in the 24 hours preceding the scan.</td>
                             </tr>
                             <tr>
-                                <td>io imbalance</td>
                                 <td><code>io_imbalance</code></td>
-                                <td>+10</td>
-                                <td>the ratio of outgoing to incoming transaction value exceeds 10:1 across a minimum of 10 transactions.</td>
+                                <td><span class=”badge badge-green”>+10</span></td>
+                                <td>10:1 or greater ratio of outgoing to incoming value across at least 10 transactions.</td>
                             </tr>
                         </tbody>
                     </table>
+                </div>
+
+                <div class=”article-callout”>
+                    <svg xmlns=”http://www.w3.org/2000/svg” viewBox=”0 0 24 24” fill=”none” stroke=”currentColor” stroke-width=”2” stroke-linecap=”round” stroke-linejoin=”round”><path d=”M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z”/><line x1=”12” y1=”9” x2=”12” y2=”13”/><line x1=”12” y1=”17” x2=”12.01” y2=”17”/></svg>
+                    <p><code>sanctioned_entity</code> short-circuits the engine entirely — the score is set to 100 immediately and no other heuristics run.</p>
                 </div>
 
                 <h2>score cap</h2>
