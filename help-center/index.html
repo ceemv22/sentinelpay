@@ -247,24 +247,24 @@
             var categoryGrid = document.querySelector('.category-grid');
 
             var ARTICLES = [
-                { title: 'what is sentinelpay?', desc: 'an overview of sentinelpay — what we do, who we serve, and how our risk engine works.', category: 'getting started', url: '/getting-started/what-is-sentinelpay' },
-                { title: 'quickstart', desc: 'get from zero to your first risk score in under five minutes.', category: 'getting started', url: '/getting-started/quickstart' },
-                { title: 'creating your organization', desc: 'step-by-step guide to setting up your first organization, choosing a plan, and naming your workspace.', category: 'getting started', url: '/getting-started/creating-your-organization' },
-                { title: 'inviting team members', desc: 'how to add colleagues to your organization and manage their access permissions.', category: 'getting started', url: '/getting-started/inviting-team-members' },
-                { title: 'access control', desc: 'manage permissions and roles across your sentinelpay organizations and projects.', category: 'getting started', url: '/getting-started/access-control' },
-                { title: 'authentication', desc: 'how to generate and use api keys to secure your requests to sentinelpay.', category: 'api integration', url: '/api-integration/authentication' },
-                { title: 'the scan endpoint', desc: 'detailed documentation for the /v1/score endpoint — request format, parameters, and response fields.', category: 'api integration', url: '/api-integration/scan-endpoint' },
-                { title: 'api error codes', desc: 'a reference list of http status codes and error messages returned by the api.', category: 'api integration', url: '/api-integration/api-error-codes' },
-                { title: 'understanding heuristics', desc: 'a deep dive into the on-chain signals our engine uses to calculate risk scores.', category: 'risk scoring engine', url: '/risk-engine/understanding-heuristics' },
-                { title: 'specific risk flags', desc: 'definitions for flags like mixer exposure, darknet markets, and sanctions hits.', category: 'risk scoring engine', url: '/risk-engine/specific-risk-flags' },
-                { title: 'score thresholds', desc: 'how to interpret the numerical score and set your own acceptance levels.', category: 'risk scoring engine', url: '/risk-engine/score-thresholds' },
-                { title: 'handling false positives', desc: 'what to do if a trusted user\'s wallet is flagged, and how to whitelist addresses.', category: 'risk scoring engine', url: '/risk-engine/false-positives' },
-                { title: 'plans & pricing', desc: 'a full breakdown of sentinelpay plans, credit packs, and what\'s included at each tier.', category: 'account & billing', url: '/account-billing/plans-and-pricing' },
-                { title: 'credit usage', desc: 'how scans consume credits and how to set up auto-refills.', category: 'account & billing', url: '/account-billing/credit-usage' },
-                { title: 'crypto payments', desc: 'how to pay for credits and subscriptions using cryptocurrency on sentinelpay.', category: 'account & billing', url: '/account-billing/crypto-payments' },
-                { title: 'api rate limits', desc: 'understanding how many requests you can make per minute based on your plan.', category: 'account & billing', url: '/account-billing/api-rate-limits' },
-                { title: 'managing organizations', desc: 'how to create, switch between, and delete organizations in sentinelpay.', category: 'dashboard', url: '/dashboard/managing-organizations' },
-                { title: 'scan history', desc: 'how to view past scan results, understand each field, and re-scan a wallet.', category: 'dashboard', url: '/dashboard/scan-history' }
+                { title: 'what is sentinelpay?', desc: 'an overview of sentinelpay — what we do, who we serve, and how our risk engine works.', category: 'getting started', url: '/getting-started/what-is-sentinelpay', tags: 'overview intro about product' },
+                { title: 'quickstart', desc: 'get from zero to your first risk score in under five minutes.', category: 'getting started', url: '/getting-started/quickstart', tags: 'quick start setup guide first steps onboarding' },
+                { title: 'creating your organization', desc: 'step-by-step guide to setting up your first organization, choosing a plan, and naming your workspace.', category: 'getting started', url: '/getting-started/creating-your-organization', tags: 'org organisation workspace setup create' },
+                { title: 'inviting team members', desc: 'how to add colleagues to your organization and manage their access permissions.', category: 'getting started', url: '/getting-started/inviting-team-members', tags: 'invite team members colleagues add user users' },
+                { title: 'access control', desc: 'manage permissions and roles across your sentinelpay organizations and projects.', category: 'getting started', url: '/getting-started/access-control', tags: 'permissions roles admin member owner rbac' },
+                { title: 'authentication', desc: 'how to generate and use api keys to secure your requests to sentinelpay.', category: 'api integration', url: '/api-integration/authentication', tags: 'api key keys auth bearer token secret header authorization' },
+                { title: 'the scan endpoint', desc: 'detailed documentation for the /v1/score endpoint — request format, parameters, and response fields.', category: 'api integration', url: '/api-integration/scan-endpoint', tags: 'endpoints endpoint scan v1 score request response parameters fields wallet address http post' },
+                { title: 'api error codes', desc: 'a reference list of http status codes and error messages returned by the api.', category: 'api integration', url: '/api-integration/api-error-codes', tags: 'error code codes errors http status 400 401 403 404 429 500 503 504 rate limit messages' },
+                { title: 'understanding heuristics', desc: 'a deep dive into the on-chain signals our engine uses to calculate risk scores.', category: 'risk scoring engine', url: '/risk-engine/understanding-heuristics', tags: 'heuristic heuristics signals on-chain onchain scoring algorithm how it works flags' },
+                { title: 'specific risk flags', desc: 'definitions for flags like mixer exposure, darknet markets, and sanctions hits.', category: 'risk scoring engine', url: '/risk-engine/specific-risk-flags', tags: 'risk flag flags mixer darknet sanctions exposure blacklist ofac aml' },
+                { title: 'score thresholds', desc: 'how to interpret the numerical score and set your own acceptance levels.', category: 'risk scoring engine', url: '/risk-engine/score-thresholds', tags: 'score threshold thresholds risk level low medium high block allow 0 100' },
+                { title: 'handling false positives', desc: 'what to do if a trusted user\'s wallet is flagged, and how to whitelist addresses.', category: 'risk scoring engine', url: '/risk-engine/false-positives', tags: 'false positive whitelist trusted override flag wallet' },
+                { title: 'plans & pricing', desc: 'a full breakdown of sentinelpay plans, credit packs, and what\'s included at each tier.', category: 'account & billing', url: '/account-billing/plans-and-pricing', tags: 'plan plans price pricing tier starter pro enterprise subscription upgrade' },
+                { title: 'credit usage', desc: 'how scans consume credits and how to set up auto-refills.', category: 'account & billing', url: '/account-billing/credit-usage', tags: 'credits credit usage refill auto scan consume balance' },
+                { title: 'crypto payments', desc: 'how to pay for credits and subscriptions using cryptocurrency on sentinelpay.', category: 'account & billing', url: '/account-billing/crypto-payments', tags: 'crypto cryptocurrency bitcoin usdc usdt eth payment pay blockchain wallet' },
+                { title: 'api rate limits', desc: 'understanding how many requests you can make per minute based on your plan.', category: 'account & billing', url: '/account-billing/api-rate-limits', tags: 'rate limit limits throttle requests per minute quota 429 too many' },
+                { title: 'managing organizations', desc: 'how to create, switch between, and delete organizations in sentinelpay.', category: 'dashboard', url: '/dashboard/managing-organizations', tags: 'org organisation manage delete switch create workspace' },
+                { title: 'scan history', desc: 'how to view past scan results, understand each field, and re-scan a wallet.', category: 'dashboard', url: '/dashboard/scan-history', tags: 'history past scans results log wallet re-scan previous' }
             ];
 
             var resultsPanel = document.createElement('div');
@@ -279,7 +279,7 @@
                     return;
                 }
                 var matches = ARTICLES.filter(function(a) {
-                    return a.title.includes(term) || a.desc.includes(term) || a.category.includes(term);
+                    return a.title.includes(term) || a.desc.includes(term) || a.category.includes(term) || a.tags.includes(term);
                 });
                 categoryGrid.style.display = 'none';
                 resultsPanel.style.display = 'flex';
