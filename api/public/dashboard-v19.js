@@ -239,11 +239,14 @@ function renderDashboard(session) {
         const currentPath = window.location.pathname;
         const orgMatch = currentPath.match(/^\/dashboard\/org\/([a-z0-9]{20})(\/[a-z0-9-]+)?$/);
         const isValidHome = currentPath === '/dashboard' || currentPath === '/dashboard/organizations' || currentPath === '/dashboard/';
+        const isAccountSettings = currentPath === '/dashboard/account/settings';
 
         if (orgMatch) {
             switchToOrgView(orgMatch[1], orgMatch[2] ? orgMatch[2].substring(1) : 'projects');
         } else if (isValidHome) {
             switchToHomeView();
+        } else if (isAccountSettings) {
+            switchToAccountSettings();
         } else {
             window.location.replace('/dashboard/organizations');
             return;
@@ -1683,13 +1686,32 @@ function initOrgSearch() {
     });
 }
 
+function hideAllViews() {
+    ['org-home-view','org-dashboard-view','dashboard-view','org-team-view','org-settings-view','account-settings-view'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.add('hidden');
+    });
+}
+
 function switchToHomeView() {
     currentOrgSlug = null;
     document.body.classList.remove('state-in-org');
     document.body.classList.add('state-org-home');
+    hideAllViews();
     document.getElementById('org-home-view').classList.remove('hidden');
-    document.getElementById('org-dashboard-view').classList.add('hidden');
-    document.getElementById('dashboard-view').classList.add('hidden');
+
+    const globalNav = document.getElementById('sidebar-global-nav');
+    const orgNav = document.getElementById('sidebar-org-nav');
+    if (globalNav) globalNav.classList.remove('hidden');
+    if (orgNav) orgNav.classList.add('hidden');
+}
+
+function switchToAccountSettings() {
+    currentOrgSlug = null;
+    document.body.classList.remove('state-in-org');
+    document.body.classList.add('state-org-home');
+    hideAllViews();
+    document.getElementById('account-settings-view').classList.remove('hidden');
 
     const globalNav = document.getElementById('sidebar-global-nav');
     const orgNav = document.getElementById('sidebar-org-nav');
