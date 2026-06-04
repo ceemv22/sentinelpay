@@ -264,6 +264,15 @@ body {
     opacity: 1;
 }
 
+.category-card.card-match {
+    border-color: rgba(0, 240, 255, 0.35);
+    box-shadow: 0 0 0 1px rgba(0, 240, 255, 0.18), 0 0 32px rgba(0, 240, 255, 0.08), 0 25px 50px -12px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.category-card.card-match::before {
+    opacity: 1;
+}
+
 .card-icon-wrapper {
     width: 40px;
     height: 40px;

@@ -247,6 +247,35 @@
             searchInput.addEventListener('focus', function() { searchContainer.classList.add('focused'); });
             searchInput.addEventListener('blur', function() { searchContainer.classList.remove('focused'); });
 
+            var cards = document.querySelectorAll('.category-card');
+
+            function filterCards(q) {
+                var term = q.toLowerCase().trim();
+                cards.forEach(function(card) {
+                    var text = card.textContent.toLowerCase();
+                    var matches = !term || text.includes(term);
+                    card.style.display = matches ? '' : 'none';
+                    if (term && matches) {
+                        card.classList.add('card-match');
+                    } else {
+                        card.classList.remove('card-match');
+                    }
+                });
+            }
+
+            var urlQ = new URLSearchParams(window.location.search).get('q') || '';
+            if (urlQ) {
+                searchInput.value = urlQ;
+                filterCards(urlQ);
+            }
+
+            searchInput.addEventListener('input', function() {
+                var q = this.value.trim();
+                var url = q ? '/?q=' + encodeURIComponent(q) : '/';
+                history.replaceState({}, '', url);
+                filterCards(q);
+            });
+
             var pupil = document.getElementById('eye-pupil-help');
             if (pupil) {
                 document.addEventListener('mousemove', function(e) {
