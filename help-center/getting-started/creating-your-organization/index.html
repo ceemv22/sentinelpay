@@ -297,7 +297,7 @@
             if (searchWrapper) searchWrapper.parentNode.insertBefore(resultsPanel, searchWrapper.nextSibling);
 
             function escapeHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-            function escapeRegex(s) { return s.replace(/[.*+?^${}()|[\]\]/g, '\$&'); }
+            function escapeRegex(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
 
             function renderResults(q) {
                 var term = q.toLowerCase().trim();
