@@ -1020,6 +1020,7 @@
             ];
 
             var cur = 0, animToken = 0, lastJump = 0, snapActive = false;
+            var isAnimating = false, pendingDelta = 0;
             var DUR = 500;
 
             function ease(t) {
@@ -1047,19 +1048,29 @@
                 });
             }
 
+            function flushPending() {
+                if (pendingDelta === 0) return;
+                var d = pendingDelta;
+                pendingDelta = 0;
+                goTo(cur + d);
+            }
+
             function goTo(idx) {
                 idx = Math.max(0, Math.min(idx, SECTIONS.length - 1));
+                if (idx === cur && !isAnimating) return;
                 var from = cur;
                 cur = idx;
+                pendingDelta = 0;
                 var myToken = ++animToken;
                 lastJump = Date.now();
+                isAnimating = true;
                 syncInd();
                 setVis(from, cur);
 
                 var fromPos = window.pageYOffset;
                 var to = SECTIONS[cur].getBoundingClientRect().top + window.pageYOffset;
                 var dist = to - fromPos;
-                if (Math.abs(dist) < 2) { clearVis(); return; }
+                if (Math.abs(dist) < 2) { clearVis(); isAnimating = false; flushPending(); return; }
 
                 var t0 = performance.now();
                 function tick(ts) {
@@ -1067,7 +1078,7 @@
                     var p = Math.min((ts - t0) / DUR, 1);
                     window.scrollTo(0, fromPos + dist * ease(p));
                     if (p < 1) requestAnimationFrame(tick);
-                    else { clearVis(); }
+                    else { clearVis(); isAnimating = false; flushPending(); }
                 }
                 requestAnimationFrame(tick);
             }
@@ -1132,16 +1143,23 @@
             window.addEventListener('wheel', function (e) {
                 if (!snapActive) return;
                 if (e.ctrlKey) return;
-                var inner = SECTIONS[cur].querySelector('.lp-section-inner');
+                var checkIdx = isAnimating ? cur : curIdx();
+                var inner = SECTIONS[checkIdx].querySelector('.lp-section-inner');
                 if (inner) {
                     var atTop = inner.scrollTop <= 0;
                     var atBot = inner.scrollTop + inner.clientHeight >= inner.scrollHeight - 12;
                     if ((e.deltaY < 0 && !atTop) || (e.deltaY > 0 && !atBot)) return;
                 }
                 e.preventDefault();
-                if (Date.now() - lastJump < 200) return;
+                var dir = e.deltaY > 0 ? 1 : -1;
+                if (isAnimating) {
+                    var next = cur + pendingDelta + dir;
+                    if (next >= 0 && next < SECTIONS.length) pendingDelta += dir;
+                    return;
+                }
+                if (Date.now() - lastJump < 100) return;
                 cur = curIdx();
-                goTo(cur + (e.deltaY > 0 ? 1 : -1));
+                goTo(cur + dir);
             }, { passive: false });
 
             document.addEventListener('keydown', function (e) {
