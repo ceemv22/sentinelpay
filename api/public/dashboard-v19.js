@@ -1455,6 +1455,7 @@ function flipToNotifPanel() {
     const items = document.getElementById('notification-items');
     const panelBody = document.getElementById('notif-panel-body');
     if (!dropdown || !mainPanel || !notifPanel || !panelBody) return;
+    dropdown.style.height = dropdown.offsetHeight + 'px';
     if (items) panelBody.appendChild(items);
     mainPanel.style.transition = 'opacity 0.18s ease';
     mainPanel.style.opacity = '0';
@@ -1487,6 +1488,7 @@ function flipToMainPanel() {
         notifPanel.style.transition = '';
         if (items && itemsWrapper) itemsWrapper.appendChild(items);
         mainPanel.style.display = '';
+        dropdown.style.height = '';
         mainPanel.style.opacity = '0';
         mainPanel.style.transition = 'opacity 0.18s ease';
         requestAnimationFrame(() => {
