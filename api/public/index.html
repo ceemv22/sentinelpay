@@ -1135,7 +1135,7 @@
                 var inner = SECTIONS[cur].querySelector('.lp-section-inner');
                 if (inner) {
                     var atTop = inner.scrollTop <= 0;
-                    var atBot = inner.scrollTop + inner.clientHeight >= inner.scrollHeight - 1;
+                    var atBot = inner.scrollTop + inner.clientHeight >= inner.scrollHeight - 12;
                     if ((e.deltaY < 0 && !atTop) || (e.deltaY > 0 && !atBot)) return;
                 }
                 e.preventDefault();
