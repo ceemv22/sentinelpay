@@ -458,7 +458,7 @@
 }
 
 @media (max-width: 768px) {
-    .article-layout .breadcrumb { padding-top: 4.5rem; }
+    .article-layout .breadcrumb { padding-top: 2rem; }
     .article-title { font-size: 1.6rem; letter-spacing: -1px; }
     .article-body { font-size: 0.9rem; }
     .article-support {
