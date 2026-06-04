@@ -484,6 +484,31 @@
             text-overflow: ellipsis;
         }
 
+        #dropdown-user-header {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            padding: 8px 10px;
+            margin: 0 0 4px 0;
+            border-bottom: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #dropdown-email {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: none;
+            letter-spacing: 0;
+            max-width: 195px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            display: block;
+            text-align: center;
+        }
+
         .dropdown-divider {
             height: 1px;
             background: var(--border-glass);
@@ -2386,8 +2411,8 @@
                         organization settings
                     </a>
                     <div class="dropdown-divider org-only"></div>
-                    <div class="dropdown-header" id="dropdown-user-header" style="margin-top: 8px;">
-                        <span id="dropdown-email" style="text-transform: none; color: var(--text-muted); font-size: 0.7rem; letter-spacing: 0;">user@email.com</span>
+                    <div id="dropdown-user-header">
+                        <span id="dropdown-email">user@email.com</span>
                     </div>
                     <a href="#" class="dropdown-item">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
