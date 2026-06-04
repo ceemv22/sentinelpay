@@ -1153,8 +1153,7 @@
                 e.preventDefault();
                 var dir = e.deltaY > 0 ? 1 : -1;
                 if (isAnimating) {
-                    var next = cur + pendingDelta + dir;
-                    if (next >= 0 && next < SECTIONS.length) pendingDelta += dir;
+                    pendingDelta = dir;
                     return;
                 }
                 if (Date.now() - lastJump < 100) return;
