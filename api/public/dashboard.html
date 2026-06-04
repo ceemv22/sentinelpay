@@ -2029,6 +2029,91 @@
             }
         }
 
+        .account-tab-panel {
+            width: 100%;
+        }
+
+        .settings-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            padding-top: 2rem;
+        }
+
+        .settings-section-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: lowercase;
+            letter-spacing: 0.08em;
+            margin: 0 0 0.25rem;
+        }
+
+        .settings-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+            max-width: 560px;
+        }
+
+        .settings-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .settings-field {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .settings-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: lowercase;
+            letter-spacing: 0.03em;
+        }
+
+        .settings-input {
+            background: rgba(10, 12, 15, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            padding: 0.65rem 0.9rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: #fff;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .settings-input:focus {
+            border-color: rgba(0, 240, 255, 0.35);
+            box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.07);
+        }
+
+        .settings-input-readonly {
+            color: var(--text-muted);
+            cursor: default;
+            opacity: 0.7;
+        }
+
+        .settings-hint {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.68rem;
+            color: var(--text-muted);
+            opacity: 0.7;
+        }
+
+        .settings-actions {
+            padding-top: 0.5rem;
+        }
+
         .org-plan-card-summary {
             border: 1px solid rgba(255,255,255,0.08);
             border-radius: 12px;
@@ -2640,12 +2725,43 @@
         </div>
 
         <div id="account-settings-view" class="org-home-container hidden">
-            <div class="page-header">
-                <div>
-                    <h1 class="org-home-header">account settings</h1>
-                    <p style="font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:var(--text-muted);margin-top:0.35rem;">manage your profile, security, and preferences.</p>
+            <div class="org-home-intro">
+                <h1 class="org-home-header" id="account-settings-tab-title">preferences</h1>
+            </div>
+
+            <div id="account-tab-preferences" class="account-tab-panel">
+                <div class="settings-section">
+                    <h2 class="settings-section-title">profile information</h2>
+                    <div class="settings-form">
+                        <div class="settings-row">
+                            <div class="settings-field">
+                                <label class="settings-label">first name</label>
+                                <input type="text" class="settings-input" id="pref-first-name" placeholder="first name" autocomplete="given-name">
+                            </div>
+                            <div class="settings-field">
+                                <label class="settings-label">last name</label>
+                                <input type="text" class="settings-input" id="pref-last-name" placeholder="last name" autocomplete="family-name">
+                            </div>
+                        </div>
+                        <div class="settings-field">
+                            <label class="settings-label">primary email</label>
+                            <input type="email" class="settings-input settings-input-readonly" id="pref-email" readonly tabindex="-1">
+                            <span class="settings-hint">used for account notifications</span>
+                        </div>
+                        <div class="settings-field">
+                            <label class="settings-label">username</label>
+                            <input type="text" class="settings-input" id="pref-username" placeholder="username" autocomplete="username">
+                            <span class="settings-hint">display name used across dashboard</span>
+                        </div>
+                        <div class="settings-actions">
+                            <button class="btn-primary" id="btn-save-preferences" style="padding:0.65rem 1.6rem;font-size:0.8rem;">save</button>
+                        </div>
+                    </div>
                 </div>
             </div>
+
+            <div id="account-tab-security" class="account-tab-panel" style="display:none;"></div>
+            <div id="account-tab-access-tokens" class="account-tab-panel" style="display:none;"></div>
         </div>
     </main>
 
