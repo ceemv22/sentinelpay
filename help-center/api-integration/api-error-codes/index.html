@@ -81,90 +81,84 @@
                 <h1 class="article-title">api error codes</h1>
                 <p class="article-lead">a guide to the error codes returned by the sentinelpay api.</p>
             </header>
-            <div class=”article-body”>
+            <div class="article-body">
                 <h2>error codes</h2>
                 <p>all api errors return a standard http status code. the response body is json and includes a human-readable <code>error</code> field where applicable.</p>
 
-                <div style=”background: rgba(5,5,5,0.6); border: 1px solid rgba(255,255,255,0.06); border-left: 3px solid #ffb800; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; display: flex; align-items: flex-start; gap: 1rem;”>
-                    <span class=”badge badge-yellow” style=”flex-shrink: 0; margin-top: 1px; font-size: 0.78rem; letter-spacing: 0.5px;”>400</span>
-                    <div>
-                        <p style=”font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; font-weight: 700; color: #fff; margin-bottom: 0.35rem;”>bad request</p>
-                        <p style=”font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: rgba(224,224,224,0.7); line-height: 1.65; margin: 0;”>missing or malformed <span style=”font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; background: rgba(0,240,255,0.07); border: 1px solid rgba(0,240,255,0.15); color: #00f0ff; padding: 0.15rem 0.45rem; border-radius: 4px;”>wallet</span> field. the address must be 0x-prefixed and exactly 42 characters long.</p>
+                <div style="margin: 1.5rem 0 2rem;">
+                    <div style="background: rgba(5,5,5,0.6); border: 1px solid rgba(255,255,255,0.06); border-left: 3px solid #ffb800; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; display: flex; align-items: flex-start; gap: 1rem;">
+                        <span class="badge badge-yellow" style="flex-shrink: 0; margin-top: 1px; letter-spacing: 0.5px;">400</span>
+                        <div>
+                            <p style="font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; font-weight: 700; color: #fff; margin-bottom: 0.3rem;">bad request</p>
+                            <p style="font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: rgba(224,224,224,0.7); line-height: 1.65; margin: 0;">missing or malformed <code>wallet</code> field. the address must be 0x-prefixed and exactly 42 characters long.</p>
+                        </div>
+                    </div>
+                    <div style="background: rgba(5,5,5,0.6); border: 1px solid rgba(255,255,255,0.06); border-left: 3px solid #ffb800; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; display: flex; align-items: flex-start; gap: 1rem;">
+                        <span class="badge badge-yellow" style="flex-shrink: 0; margin-top: 1px; letter-spacing: 0.5px;">401</span>
+                        <div>
+                            <p style="font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; font-weight: 700; color: #fff; margin-bottom: 0.3rem;">unauthorized</p>
+                            <p style="font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: rgba(224,224,224,0.7); line-height: 1.65; margin: 0;">missing or invalid <code>x-api-key</code> header. check that your key is active and correctly copied.</p>
+                        </div>
+                    </div>
+                    <div style="background: rgba(5,5,5,0.6); border: 1px solid rgba(255,255,255,0.06); border-left: 3px solid #ffb800; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; display: flex; align-items: flex-start; gap: 1rem;">
+                        <span class="badge badge-yellow" style="flex-shrink: 0; margin-top: 1px; letter-spacing: 0.5px;">402</span>
+                        <div>
+                            <p style="font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; font-weight: 700; color: #fff; margin-bottom: 0.3rem;">payment required</p>
+                            <p style="font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: rgba(224,224,224,0.7); line-height: 1.65; margin: 0;">your credit balance has reached zero. purchase additional credits from the dashboard.</p>
+                        </div>
+                    </div>
+                    <div style="background: rgba(5,5,5,0.6); border: 1px solid rgba(255,255,255,0.06); border-left: 3px solid #ffb800; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; display: flex; align-items: flex-start; gap: 1rem;">
+                        <span class="badge badge-yellow" style="flex-shrink: 0; margin-top: 1px; letter-spacing: 0.5px;">403</span>
+                        <div>
+                            <p style="font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; font-weight: 700; color: #fff; margin-bottom: 0.3rem;">forbidden</p>
+                            <p style="font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: rgba(224,224,224,0.7); line-height: 1.65; margin: 0;">account email is unverified, or the public endpoint scan limit has been reached for this ip or browser fingerprint.</p>
+                        </div>
+                    </div>
+                    <div style="background: rgba(5,5,5,0.6); border: 1px solid rgba(255,255,255,0.06); border-left: 3px solid #ffb800; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; display: flex; align-items: flex-start; gap: 1rem;">
+                        <span class="badge badge-yellow" style="flex-shrink: 0; margin-top: 1px; letter-spacing: 0.5px;">413</span>
+                        <div>
+                            <p style="font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; font-weight: 700; color: #fff; margin-bottom: 0.3rem;">payload too large</p>
+                            <p style="font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: rgba(224,224,224,0.7); line-height: 1.65; margin: 0;">request body exceeds the allowed size.</p>
+                        </div>
+                    </div>
+                    <div style="background: rgba(5,5,5,0.6); border: 1px solid rgba(255,255,255,0.06); border-left: 3px solid #ffb800; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; display: flex; align-items: flex-start; gap: 1rem;">
+                        <span class="badge badge-yellow" style="flex-shrink: 0; margin-top: 1px; letter-spacing: 0.5px;">429</span>
+                        <div>
+                            <p style="font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; font-weight: 700; color: #fff; margin-bottom: 0.3rem;">too many requests</p>
+                            <p style="font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: rgba(224,224,224,0.7); line-height: 1.65; margin: 0;">you have exceeded the rate limit of 30 requests per 15 minutes. wait before retrying.</p>
+                        </div>
+                    </div>
+                    <div style="background: rgba(5,5,5,0.6); border: 1px solid rgba(255,255,255,0.06); border-left: 3px solid #ff3333; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; display: flex; align-items: flex-start; gap: 1rem;">
+                        <span class="badge badge-red" style="flex-shrink: 0; margin-top: 1px; letter-spacing: 0.5px;">500</span>
+                        <div>
+                            <p style="font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; font-weight: 700; color: #fff; margin-bottom: 0.3rem;">internal server error</p>
+                            <p style="font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: rgba(224,224,224,0.7); line-height: 1.65; margin: 0;">unexpected server-side error. if persistent, contact support with the timestamp of the request.</p>
+                        </div>
+                    </div>
+                    <div style="background: rgba(5,5,5,0.6); border: 1px solid rgba(255,255,255,0.06); border-left: 3px solid #ff3333; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; display: flex; align-items: flex-start; gap: 1rem;">
+                        <span class="badge badge-red" style="flex-shrink: 0; margin-top: 1px; letter-spacing: 0.5px;">503</span>
+                        <div>
+                            <p style="font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; font-weight: 700; color: #fff; margin-bottom: 0.3rem;">service unavailable</p>
+                            <p style="font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: rgba(224,224,224,0.7); line-height: 1.65; margin: 0;">the upstream blockchain data provider returned an error. retry after a short delay.</p>
+                        </div>
+                    </div>
+                    <div style="background: rgba(5,5,5,0.6); border: 1px solid rgba(255,255,255,0.06); border-left: 3px solid #ff3333; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0; display: flex; align-items: flex-start; gap: 1rem;">
+                        <span class="badge badge-red" style="flex-shrink: 0; margin-top: 1px; letter-spacing: 0.5px;">504</span>
+                        <div>
+                            <p style="font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; font-weight: 700; color: #fff; margin-bottom: 0.3rem;">gateway timeout</p>
+                            <p style="font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: rgba(224,224,224,0.7); line-height: 1.65; margin: 0;">the scoring engine did not respond within 25 seconds. this can happen for wallets with very high transaction counts. retry once.</p>
+                        </div>
                     </div>
                 </div>
 
-                <div style=”background: rgba(5,5,5,0.6); border: 1px solid rgba(255,255,255,0.06); border-left: 3px solid #ffb800; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; display: flex; align-items: flex-start; gap: 1rem;”>
-                    <span class=”badge badge-yellow” style=”flex-shrink: 0; margin-top: 1px; font-size: 0.78rem; letter-spacing: 0.5px;”>401</span>
-                    <div>
-                        <p style=”font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; font-weight: 700; color: #fff; margin-bottom: 0.35rem;”>unauthorized</p>
-                        <p style=”font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: rgba(224,224,224,0.7); line-height: 1.65; margin: 0;”>missing or invalid <span style=”font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; background: rgba(0,240,255,0.07); border: 1px solid rgba(0,240,255,0.15); color: #00f0ff; padding: 0.15rem 0.45rem; border-radius: 4px;”>x-api-key</span> header. check that your key is active and correctly copied.</p>
-                    </div>
-                </div>
-
-                <div style=”background: rgba(5,5,5,0.6); border: 1px solid rgba(255,255,255,0.06); border-left: 3px solid #ffb800; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; display: flex; align-items: flex-start; gap: 1rem;”>
-                    <span class=”badge badge-yellow” style=”flex-shrink: 0; margin-top: 1px; font-size: 0.78rem; letter-spacing: 0.5px;”>402</span>
-                    <div>
-                        <p style=”font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; font-weight: 700; color: #fff; margin-bottom: 0.35rem;”>payment required</p>
-                        <p style=”font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: rgba(224,224,224,0.7); line-height: 1.65; margin: 0;”>your credit balance has reached zero. purchase additional credits from the dashboard.</p>
-                    </div>
-                </div>
-
-                <div style=”background: rgba(5,5,5,0.6); border: 1px solid rgba(255,255,255,0.06); border-left: 3px solid #ffb800; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; display: flex; align-items: flex-start; gap: 1rem;”>
-                    <span class=”badge badge-yellow” style=”flex-shrink: 0; margin-top: 1px; font-size: 0.78rem; letter-spacing: 0.5px;”>403</span>
-                    <div>
-                        <p style=”font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; font-weight: 700; color: #fff; margin-bottom: 0.35rem;”>forbidden</p>
-                        <p style=”font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: rgba(224,224,224,0.7); line-height: 1.65; margin: 0;”>account email is unverified, or the public endpoint scan limit has been reached for this ip or browser fingerprint.</p>
-                    </div>
-                </div>
-
-                <div style=”background: rgba(5,5,5,0.6); border: 1px solid rgba(255,255,255,0.06); border-left: 3px solid #ffb800; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; display: flex; align-items: flex-start; gap: 1rem;”>
-                    <span class=”badge badge-yellow” style=”flex-shrink: 0; margin-top: 1px; font-size: 0.78rem; letter-spacing: 0.5px;”>413</span>
-                    <div>
-                        <p style=”font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; font-weight: 700; color: #fff; margin-bottom: 0.35rem;”>payload too large</p>
-                        <p style=”font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: rgba(224,224,224,0.7); line-height: 1.65; margin: 0;”>request body exceeds the allowed size.</p>
-                    </div>
-                </div>
-
-                <div style=”background: rgba(5,5,5,0.6); border: 1px solid rgba(255,255,255,0.06); border-left: 3px solid #ffb800; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; display: flex; align-items: flex-start; gap: 1rem;”>
-                    <span class=”badge badge-yellow” style=”flex-shrink: 0; margin-top: 1px; font-size: 0.78rem; letter-spacing: 0.5px;”>429</span>
-                    <div>
-                        <p style=”font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; font-weight: 700; color: #fff; margin-bottom: 0.35rem;”>too many requests</p>
-                        <p style=”font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: rgba(224,224,224,0.7); line-height: 1.65; margin: 0;”>you have exceeded the rate limit of 30 requests per 15 minutes. wait before retrying.</p>
-                    </div>
-                </div>
-
-                <div style=”background: rgba(5,5,5,0.6); border: 1px solid rgba(255,255,255,0.06); border-left: 3px solid #ff3333; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; display: flex; align-items: flex-start; gap: 1rem;”>
-                    <span class=”badge badge-red” style=”flex-shrink: 0; margin-top: 1px; font-size: 0.78rem; letter-spacing: 0.5px;”>500</span>
-                    <div>
-                        <p style=”font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; font-weight: 700; color: #fff; margin-bottom: 0.35rem;”>internal server error</p>
-                        <p style=”font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: rgba(224,224,224,0.7); line-height: 1.65; margin: 0;”>unexpected server-side error. if persistent, contact support with the timestamp of the request.</p>
-                    </div>
-                </div>
-
-                <div style=”background: rgba(5,5,5,0.6); border: 1px solid rgba(255,255,255,0.06); border-left: 3px solid #ff3333; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; display: flex; align-items: flex-start; gap: 1rem;”>
-                    <span class=”badge badge-red” style=”flex-shrink: 0; margin-top: 1px; font-size: 0.78rem; letter-spacing: 0.5px;”>503</span>
-                    <div>
-                        <p style=”font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; font-weight: 700; color: #fff; margin-bottom: 0.35rem;”>service unavailable</p>
-                        <p style=”font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: rgba(224,224,224,0.7); line-height: 1.65; margin: 0;”>the upstream blockchain data provider returned an error. retry after a short delay.</p>
-                    </div>
-                </div>
-
-                <div style=”background: rgba(5,5,5,0.6); border: 1px solid rgba(255,255,255,0.06); border-left: 3px solid #ff3333; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; display: flex; align-items: flex-start; gap: 1rem;”>
-                    <span class=”badge badge-red” style=”flex-shrink: 0; margin-top: 1px; font-size: 0.78rem; letter-spacing: 0.5px;”>504</span>
-                    <div>
-                        <p style=”font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; font-weight: 700; color: #fff; margin-bottom: 0.35rem;”>gateway timeout</p>
-                        <p style=”font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: rgba(224,224,224,0.7); line-height: 1.65; margin: 0;”>the scoring engine did not respond within 25 seconds. this can happen for wallets with very high transaction counts. retry once.</p>
-                    </div>
-                </div>
-
-                <div class=”article-callout”>
-                    <svg xmlns=”http://www.w3.org/2000/svg” viewBox=”0 0 24 24” fill=”none” stroke=”currentColor” stroke-width=”2” stroke-linecap=”round” stroke-linejoin=”round”><circle cx=”12” cy=”12” r=”10”></circle><line x1=”12” y1=”8” x2=”12” y2=”12”></line><line x1=”12” y1=”16” x2=”12.01” y2=”16”></line></svg>
+                <div class="article-callout">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
                     <p>credits are <strong>not deducted</strong> on failed requests — only successful <code>200</code> responses consume a credit.</p>
                 </div>
 
                 <h2>handling errors in production</h2>
                 <p>for <code>503</code> and <code>504</code> responses, implement exponential backoff with a maximum of 3 attempts. for <code>429</code>, read the <code>retryAfter</code> field from the response body and wait that many seconds before retrying:</p>
-                <div class=”article-code-block”>
+                <div class="article-code-block">
                     <pre><code>if (res.status === 429) {
   const { retryAfter } = await res.json();
   await sleep(retryAfter * 1000);

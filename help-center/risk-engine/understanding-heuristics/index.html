@@ -81,48 +81,50 @@
                 <h1 class="article-title">understanding heuristics</h1>
                 <p class="article-lead">a deep dive into the on-chain signals our engine uses to calculate risk scores.</p>
             </header>
-            <div class=”article-body”>
+            <div class="article-body">
                 <h2>how scoring works</h2>
                 <p>the sentinelpay engine fetches up to 10,000 normal transactions, 10,000 internal transactions, and 10,000 erc-20 token transfers for the target wallet. it then runs five independent heuristics. each heuristic that fires adds a defined number of points to the total score, capped at 100.</p>
 
-                <div style=”background: rgba(5,5,5,0.6); border: 1px solid rgba(255,255,255,0.06); border-left: 3px solid #ff3333; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; display: flex; align-items: flex-start; gap: 1rem;”>
-                    <span class=”badge badge-red” style=”flex-shrink: 0; margin-top: 1px;”>→ 100</span>
-                    <div>
-                        <div style=”font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; background: rgba(0,240,255,0.07); border: 1px solid rgba(0,240,255,0.15); color: #00f0ff; padding: 0.15rem 0.45rem; border-radius: 4px; display: inline-block; margin-bottom: 0.5rem;”>sanctioned_entity</div>
-                        <p style=”font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: rgba(224,224,224,0.75); line-height: 1.65; margin: 0;”>wallet address matched in the known high-risk entity blocklist. short-circuits all other heuristics.</p>
+                <div style="margin: 1.5rem 0 2rem;">
+                    <div style="background: rgba(5,5,5,0.6); border: 1px solid rgba(255,255,255,0.06); border-left: 3px solid #ff3333; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; display: flex; align-items: flex-start; gap: 1rem;">
+                        <span class="badge badge-red" style="flex-shrink: 0; margin-top: 1px;">→ 100</span>
+                        <div>
+                            <code style="font-size: 0.85rem; background: rgba(0,240,255,0.07); border: 1px solid rgba(0,240,255,0.15); color: #00f0ff; padding: 0.15rem 0.45rem; border-radius: 4px; display: inline-block; margin-bottom: 0.5rem;">sanctioned_entity</code>
+                            <p style="font-size: 0.8rem; color: rgba(224,224,224,0.75); line-height: 1.65; margin: 0;">wallet address matched in the known high-risk entity blocklist. short-circuits all other heuristics — score is set to 100 immediately.</p>
+                        </div>
                     </div>
-                </div>
-                <div style=”background: rgba(5,5,5,0.6); border: 1px solid rgba(255,255,255,0.06); border-left: 3px solid #ff3333; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; display: flex; align-items: flex-start; gap: 1rem;”>
-                    <span class=”badge badge-red” style=”flex-shrink: 0; margin-top: 1px;”>+50</span>
-                    <div>
-                        <div style=”font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; background: rgba(0,240,255,0.07); border: 1px solid rgba(0,240,255,0.15); color: #00f0ff; padding: 0.15rem 0.45rem; border-radius: 4px; display: inline-block; margin-bottom: 0.5rem;”>mixer_interaction</div>
-                        <p style=”font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: rgba(224,224,224,0.75); line-height: 1.65; margin: 0;”>wallet sent to or received from a known mixing service (above 0.001 eth threshold).</p>
+                    <div style="background: rgba(5,5,5,0.6); border: 1px solid rgba(255,255,255,0.06); border-left: 3px solid #ff3333; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; display: flex; align-items: flex-start; gap: 1rem;">
+                        <span class="badge badge-red" style="flex-shrink: 0; margin-top: 1px;">+50</span>
+                        <div>
+                            <code style="font-size: 0.85rem; background: rgba(0,240,255,0.07); border: 1px solid rgba(0,240,255,0.15); color: #00f0ff; padding: 0.15rem 0.45rem; border-radius: 4px; display: inline-block; margin-bottom: 0.5rem;">mixer_interaction</code>
+                            <p style="font-size: 0.8rem; color: rgba(224,224,224,0.75); line-height: 1.65; margin: 0;">wallet sent to or received from a known mixing service (above 0.001 eth threshold).</p>
+                        </div>
                     </div>
-                </div>
-                <div style=”background: rgba(5,5,5,0.6); border: 1px solid rgba(255,255,255,0.06); border-left: 3px solid #ffb800; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; display: flex; align-items: flex-start; gap: 1rem;”>
-                    <span class=”badge badge-yellow” style=”flex-shrink: 0; margin-top: 1px;”>+20</span>
-                    <div>
-                        <div style=”font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; background: rgba(0,240,255,0.07); border: 1px solid rgba(0,240,255,0.15); color: #00f0ff; padding: 0.15rem 0.45rem; border-radius: 4px; display: inline-block; margin-bottom: 0.5rem;”>new_wallet</div>
-                        <p style=”font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: rgba(224,224,224,0.75); line-height: 1.65; margin: 0;”>oldest on-chain transaction is less than 30 days old at scan time.</p>
+                    <div style="background: rgba(5,5,5,0.6); border: 1px solid rgba(255,255,255,0.06); border-left: 3px solid #ffb800; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; display: flex; align-items: flex-start; gap: 1rem;">
+                        <span class="badge badge-yellow" style="flex-shrink: 0; margin-top: 1px;">+20</span>
+                        <div>
+                            <code style="font-size: 0.85rem; background: rgba(0,240,255,0.07); border: 1px solid rgba(0,240,255,0.15); color: #00f0ff; padding: 0.15rem 0.45rem; border-radius: 4px; display: inline-block; margin-bottom: 0.5rem;">new_wallet</code>
+                            <p style="font-size: 0.8rem; color: rgba(224,224,224,0.75); line-height: 1.65; margin: 0;">oldest on-chain transaction is less than 30 days old at scan time.</p>
+                        </div>
                     </div>
-                </div>
-                <div style=”background: rgba(5,5,5,0.6); border: 1px solid rgba(255,255,255,0.06); border-left: 3px solid #ffb800; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; display: flex; align-items: flex-start; gap: 1rem;”>
-                    <span class=”badge badge-yellow” style=”flex-shrink: 0; margin-top: 1px;”>+20</span>
-                    <div>
-                        <div style=”font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; background: rgba(0,240,255,0.07); border: 1px solid rgba(0,240,255,0.15); color: #00f0ff; padding: 0.15rem 0.45rem; border-radius: 4px; display: inline-block; margin-bottom: 0.5rem;”>high_velocity</div>
-                        <p style=”font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: rgba(224,224,224,0.75); line-height: 1.65; margin: 0;”>more than 50 transactions recorded in the 24 hours preceding the scan.</p>
+                    <div style="background: rgba(5,5,5,0.6); border: 1px solid rgba(255,255,255,0.06); border-left: 3px solid #ffb800; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; display: flex; align-items: flex-start; gap: 1rem;">
+                        <span class="badge badge-yellow" style="flex-shrink: 0; margin-top: 1px;">+20</span>
+                        <div>
+                            <code style="font-size: 0.85rem; background: rgba(0,240,255,0.07); border: 1px solid rgba(0,240,255,0.15); color: #00f0ff; padding: 0.15rem 0.45rem; border-radius: 4px; display: inline-block; margin-bottom: 0.5rem;">high_velocity</code>
+                            <p style="font-size: 0.8rem; color: rgba(224,224,224,0.75); line-height: 1.65; margin: 0;">more than 50 transactions recorded in the 24 hours preceding the scan.</p>
+                        </div>
                     </div>
-                </div>
-                <div style=”background: rgba(5,5,5,0.6); border: 1px solid rgba(255,255,255,0.06); border-left: 3px solid #00ff88; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; display: flex; align-items: flex-start; gap: 1rem;”>
-                    <span class=”badge badge-green” style=”flex-shrink: 0; margin-top: 1px;”>+10</span>
-                    <div>
-                        <div style=”font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; background: rgba(0,240,255,0.07); border: 1px solid rgba(0,240,255,0.15); color: #00f0ff; padding: 0.15rem 0.45rem; border-radius: 4px; display: inline-block; margin-bottom: 0.5rem;”>io_imbalance</div>
-                        <p style=”font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: rgba(224,224,224,0.75); line-height: 1.65; margin: 0;”>10:1 or greater ratio of outgoing to incoming value across at least 10 transactions.</p>
+                    <div style="background: rgba(5,5,5,0.6); border: 1px solid rgba(255,255,255,0.06); border-left: 3px solid #00ff88; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0; display: flex; align-items: flex-start; gap: 1rem;">
+                        <span class="badge badge-green" style="flex-shrink: 0; margin-top: 1px;">+10</span>
+                        <div>
+                            <code style="font-size: 0.85rem; background: rgba(0,240,255,0.07); border: 1px solid rgba(0,240,255,0.15); color: #00f0ff; padding: 0.15rem 0.45rem; border-radius: 4px; display: inline-block; margin-bottom: 0.5rem;">io_imbalance</code>
+                            <p style="font-size: 0.8rem; color: rgba(224,224,224,0.75); line-height: 1.65; margin: 0;">10:1 or greater ratio of outgoing to incoming value across at least 10 transactions.</p>
+                        </div>
                     </div>
                 </div>
 
-                <div class=”article-callout”>
-                    <svg xmlns=”http://www.w3.org/2000/svg” viewBox=”0 0 24 24” fill=”none” stroke=”currentColor” stroke-width=”2” stroke-linecap=”round” stroke-linejoin=”round”><path d=”M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z”/><line x1=”12” y1=”9” x2=”12” y2=”13”/><line x1=”12” y1=”17” x2=”12.01” y2=”17”/></svg>
+                <div class="article-callout">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
                     <p><code>sanctioned_entity</code> short-circuits the engine entirely — the score is set to 100 immediately and no other heuristics run.</p>
                 </div>
 
@@ -130,7 +132,7 @@
                 <p>the maximum possible combined score from non-sanctioned heuristics is 100 (50+20+20+10). if multiple flags fire simultaneously the result is capped at 100. a <code>sanctioned_entity</code> match short-circuits the engine entirely and returns 100 regardless of other signals.</p>
 
                 <h2>history incomplete</h2>
-                <p>the etherscan api returns a maximum of 10,000 entries per request type (normal, internal, erc-20). if a wallet's history exceeds this limit, the response will include <code>”history_incomplete”: true</code>. scores for such wallets reflect only the portion of history that was analyzed.</p>
+                <p>the etherscan api returns a maximum of 10,000 entries per request type (normal, internal, erc-20). if a wallet's history exceeds this limit, the response will include <code>"history_incomplete": true</code>. scores for such wallets reflect only the portion of history that was analyzed.</p>
             </div>
             <div class="article-related">
                 <h3 class="related-title">related articles</h3>

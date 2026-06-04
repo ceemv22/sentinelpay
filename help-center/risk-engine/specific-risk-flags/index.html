@@ -81,50 +81,42 @@
                 <h1 class="article-title">specific risk flags</h1>
                 <p class="article-lead">understand the specific triggers that can impact a wallet's risk score.</p>
             </header>
-            <div class=”article-body”>
+            <div class="article-body">
                 <h2>flag reference</h2>
                 <p>each flag below corresponds to a heuristic that fired during the scan. the <code>flags</code> array in the api response lists only the flags that triggered — an empty array means no heuristics fired.</p>
 
-                <div style=”background: rgba(5,5,5,0.6); border: 1px solid rgba(255,255,255,0.06); border-left: 3px solid #ff3333; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; display: flex; align-items: flex-start; gap: 1rem;”>
-                    <span class=”badge badge-red” style=”flex-shrink: 0; margin-top: 1px;”>critical</span>
-                    <div>
-                        <div style=”font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; background: rgba(0,240,255,0.07); border: 1px solid rgba(0,240,255,0.15); color: #00f0ff; padding: 0.15rem 0.45rem; border-radius: 4px; display: inline-block; margin-bottom: 0.5rem;”>sanctioned_entity</div>
-                        <p style=”font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: rgba(224,224,224,0.75); line-height: 1.65; margin: 0;”>→ 100 points. short-circuits the engine entirely.</p>
+                <div style="margin: 1.5rem 0 2rem;">
+                    <div style="background: rgba(5,5,5,0.6); border: 1px solid rgba(255,255,255,0.06); border-left: 3px solid #ff3333; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 1rem;">
+                        <span class="badge badge-red" style="flex-shrink: 0;">→ 100</span>
+                        <code style="font-size: 0.85rem; background: rgba(0,240,255,0.07); border: 1px solid rgba(0,240,255,0.15); color: #00f0ff; padding: 0.15rem 0.45rem; border-radius: 4px; flex: 1;">sanctioned_entity</code>
+                        <span class="badge badge-red" style="flex-shrink: 0;">critical</span>
                     </div>
-                </div>
-                <div style=”background: rgba(5,5,5,0.6); border: 1px solid rgba(255,255,255,0.06); border-left: 3px solid #ff3333; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; display: flex; align-items: flex-start; gap: 1rem;”>
-                    <span class=”badge badge-red” style=”flex-shrink: 0; margin-top: 1px;”>high</span>
-                    <div>
-                        <div style=”font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; background: rgba(0,240,255,0.07); border: 1px solid rgba(0,240,255,0.15); color: #00f0ff; padding: 0.15rem 0.45rem; border-radius: 4px; display: inline-block; margin-bottom: 0.5rem;”>mixer_interaction</div>
-                        <p style=”font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: rgba(224,224,224,0.75); line-height: 1.65; margin: 0;”>+50 points. interaction with a known mixing service detected.</p>
+                    <div style="background: rgba(5,5,5,0.6); border: 1px solid rgba(255,255,255,0.06); border-left: 3px solid #ff3333; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 1rem;">
+                        <span class="badge badge-red" style="flex-shrink: 0;">+50</span>
+                        <code style="font-size: 0.85rem; background: rgba(0,240,255,0.07); border: 1px solid rgba(0,240,255,0.15); color: #00f0ff; padding: 0.15rem 0.45rem; border-radius: 4px; flex: 1;">mixer_interaction</code>
+                        <span class="badge badge-red" style="flex-shrink: 0;">high</span>
                     </div>
-                </div>
-                <div style=”background: rgba(5,5,5,0.6); border: 1px solid rgba(255,255,255,0.06); border-left: 3px solid #ffb800; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; display: flex; align-items: flex-start; gap: 1rem;”>
-                    <span class=”badge badge-yellow” style=”flex-shrink: 0; margin-top: 1px;”>medium</span>
-                    <div>
-                        <div style=”font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; background: rgba(0,240,255,0.07); border: 1px solid rgba(0,240,255,0.15); color: #00f0ff; padding: 0.15rem 0.45rem; border-radius: 4px; display: inline-block; margin-bottom: 0.5rem;”>new_wallet</div>
-                        <p style=”font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: rgba(224,224,224,0.75); line-height: 1.65; margin: 0;”>+20 points. wallet's oldest transaction is under 30 days old.</p>
+                    <div style="background: rgba(5,5,5,0.6); border: 1px solid rgba(255,255,255,0.06); border-left: 3px solid #ffb800; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 1rem;">
+                        <span class="badge badge-yellow" style="flex-shrink: 0;">+20</span>
+                        <code style="font-size: 0.85rem; background: rgba(0,240,255,0.07); border: 1px solid rgba(0,240,255,0.15); color: #00f0ff; padding: 0.15rem 0.45rem; border-radius: 4px; flex: 1;">new_wallet</code>
+                        <span class="badge badge-yellow" style="flex-shrink: 0;">medium</span>
                     </div>
-                </div>
-                <div style=”background: rgba(5,5,5,0.6); border: 1px solid rgba(255,255,255,0.06); border-left: 3px solid #ffb800; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; display: flex; align-items: flex-start; gap: 1rem;”>
-                    <span class=”badge badge-yellow” style=”flex-shrink: 0; margin-top: 1px;”>medium</span>
-                    <div>
-                        <div style=”font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; background: rgba(0,240,255,0.07); border: 1px solid rgba(0,240,255,0.15); color: #00f0ff; padding: 0.15rem 0.45rem; border-radius: 4px; display: inline-block; margin-bottom: 0.5rem;”>high_velocity</div>
-                        <p style=”font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: rgba(224,224,224,0.75); line-height: 1.65; margin: 0;”>+20 points. more than 50 transactions in the preceding 24 hours.</p>
+                    <div style="background: rgba(5,5,5,0.6); border: 1px solid rgba(255,255,255,0.06); border-left: 3px solid #ffb800; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 1rem;">
+                        <span class="badge badge-yellow" style="flex-shrink: 0;">+20</span>
+                        <code style="font-size: 0.85rem; background: rgba(0,240,255,0.07); border: 1px solid rgba(0,240,255,0.15); color: #00f0ff; padding: 0.15rem 0.45rem; border-radius: 4px; flex: 1;">high_velocity</code>
+                        <span class="badge badge-yellow" style="flex-shrink: 0;">medium</span>
                     </div>
-                </div>
-                <div style=”background: rgba(5,5,5,0.6); border: 1px solid rgba(255,255,255,0.06); border-left: 3px solid #00ff88; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; display: flex; align-items: flex-start; gap: 1rem;”>
-                    <span class=”badge badge-green” style=”flex-shrink: 0; margin-top: 1px;”>low</span>
-                    <div>
-                        <div style=”font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; background: rgba(0,240,255,0.07); border: 1px solid rgba(0,240,255,0.15); color: #00f0ff; padding: 0.15rem 0.45rem; border-radius: 4px; display: inline-block; margin-bottom: 0.5rem;”>io_imbalance</div>
-                        <p style=”font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: rgba(224,224,224,0.75); line-height: 1.65; margin: 0;”>+10 points. 10:1 or greater outgoing-to-incoming value ratio across at least 10 transactions.</p>
+                    <div style="background: rgba(5,5,5,0.6); border: 1px solid rgba(255,255,255,0.06); border-left: 3px solid #00ff88; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0; display: flex; align-items: center; gap: 1rem;">
+                        <span class="badge badge-green" style="flex-shrink: 0;">+10</span>
+                        <code style="font-size: 0.85rem; background: rgba(0,240,255,0.07); border: 1px solid rgba(0,240,255,0.15); color: #00f0ff; padding: 0.15rem 0.45rem; border-radius: 4px; flex: 1;">io_imbalance</code>
+                        <span class="badge badge-green" style="flex-shrink: 0;">low</span>
                     </div>
                 </div>
 
                 <h2>sanctioned_entity</h2>
                 <p>the wallet address was found in our known high-risk entity list. this list includes wallets associated with hacks, ransomware, darknet markets, and other verified illicit activity. when this flag fires, the score is set to 100 immediately and no other heuristics run.</p>
-                <div class=”article-callout”>
-                    <svg xmlns=”http://www.w3.org/2000/svg” viewBox=”0 0 24 24” fill=”none” stroke=”currentColor” stroke-width=”2” stroke-linecap=”round” stroke-linejoin=”round”><path d=”M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z”/><line x1=”12” y1=”9” x2=”12” y2=”13”/><line x1=”12” y1=”17” x2=”12.01” y2=”17”/></svg>
+                <div class="article-callout">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
                     <p>this is the only flag that short-circuits the engine. a block recommendation is absolute when <code>sanctioned_entity</code> is present.</p>
                 </div>
 
