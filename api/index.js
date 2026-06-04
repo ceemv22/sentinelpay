@@ -606,6 +606,8 @@ app.get('/v1/user/profile', requireSupabaseAuth, async (req, res) => {
         res.json({
             email: user.email,
             username: user.username,
+            firstName: user.firstName || '',
+            lastName: user.lastName || '',
             credits: user.credits,
             authProvider: user.authProvider,
             isEmailVerified: user.isEmailVerified,
@@ -614,6 +616,28 @@ app.get('/v1/user/profile', requireSupabaseAuth, async (req, res) => {
     } catch (err) {
         console.error('[profile error]', err);
         res.status(500).json({ error: 'failed to fetch profile' });
+    }
+});
+
+app.patch('/v1/user/profile', requireSupabaseAuth, async (req, res) => {
+    try {
+        const { firstName, lastName, username } = req.body;
+        const data = {};
+        if (typeof firstName === 'string') data.firstName = firstName.trim();
+        if (typeof lastName === 'string') data.lastName = lastName.trim();
+        if (typeof username === 'string') {
+            const u = username.trim();
+            if (u.length < 2 || u.length > 32 || !/^[a-zA-Z0-9_-]+$/.test(u)) {
+                return res.status(400).json({ error: 'invalid username' });
+            }
+            data.username = u;
+        }
+        if (Object.keys(data).length === 0) return res.status(400).json({ error: 'nothing to update' });
+        const user = await prisma.user.update({ where: { id: req.user.id }, data });
+        res.json({ ok: true, username: user.username, firstName: user.firstName || '', lastName: user.lastName || '' });
+    } catch (err) {
+        console.error('[profile patch error]', err);
+        res.status(500).json({ error: 'failed to update profile' });
     }
 });
 
