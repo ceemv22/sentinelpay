@@ -27,7 +27,7 @@ async function requireSupabaseAuth(req, res, next) {
         }
 
         const authProvider = user.app_metadata?.provider || 'email';
-        const username = user.user_metadata?.user_name || user.user_metadata?.full_name || null;
+        const oauthUsername = user.user_metadata?.user_name || user.user_metadata?.full_name || null;
         const isOAuth = authProvider !== 'email';
         const isEmailVerified = Boolean(user.email_confirmed_at || user.confirmed_at || user.phone_confirmed_at) || isOAuth;
 
@@ -51,7 +51,7 @@ async function requireSupabaseAuth(req, res, next) {
                 where: { id: dbUser.id },
                 data: {
                     supabaseId: user.id,
-                    username,
+                    username: dbUser.username || oauthUsername,
                     authProvider,
                     isEmailVerified
                 }
@@ -64,14 +64,13 @@ async function requireSupabaseAuth(req, res, next) {
                 where: { supabaseId: user.id },
                 update: {
                     email: userEmail,
-                    username,
                     authProvider,
                     isEmailVerified
                 },
                 create: {
                     supabaseId: user.id,
                     email: userEmail,
-                    username,
+                    username: oauthUsername,
                     authProvider,
                     isEmailVerified,
                     credits: 10,
