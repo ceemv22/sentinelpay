@@ -247,6 +247,7 @@ function renderDashboard(session) {
             switchToHomeView();
         } else if (accountMatch) {
             const tab = accountMatch[1] || 'preferences';
+            document.title = 'sentinelpay | account settings';
             if (!accountMatch[1]) {
                 history.replaceState({}, '', '/dashboard/account/settings/preferences');
             }
