@@ -6,6 +6,7 @@
     <script>(function(){var q=window.location.search,h=window.location.hash;if(q.indexOf('code=')!==-1||h.indexOf('access_token=')!==-1)return;try{var s=localStorage.getItem('sb-aivqwkgjdpklxxuvkxpy-auth-token');if(!s){window.location.replace('/auth');return;}var d=JSON.parse(s);if(!d||!d.expires_at||Math.floor(Date.now()/1000)>=d.expires_at){window.location.replace('/auth');}}catch(e){window.location.replace('/auth');}})();</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>sentinelpay | dashboard</title>
+    <script>(function(){if(/^\/dashboard\/account\/settings/.test(window.location.pathname))document.title='sentinelpay | account settings';})();</script>
     
     <meta name="theme-color" content="#050505">
     <link rel="icon" type="image/svg+xml" href="logo.svg">
