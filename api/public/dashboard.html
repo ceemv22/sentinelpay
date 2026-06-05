@@ -2036,10 +2036,8 @@
         }
 
         .settings-section {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
             padding-top: 2rem;
+            max-width: 760px;
         }
 
         .settings-section-title {
@@ -2049,42 +2047,70 @@
             color: var(--text-muted);
             text-transform: lowercase;
             letter-spacing: 0.08em;
-            margin: 0 0 0.25rem;
+            margin: 0 0 1.25rem;
         }
 
-        .settings-form {
-            display: flex;
-            flex-direction: column;
-            gap: 1.25rem;
-            max-width: 560px;
+        .settings-table {
+            width: 100%;
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 10px;
+            overflow: hidden;
         }
 
-        .settings-row {
+        .settings-table-row {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
+            grid-template-columns: 220px 1fr;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            min-height: 58px;
         }
 
-        .settings-field {
+        .settings-table-row:last-child {
+            border-bottom: none;
+        }
+
+        .settings-table-label {
             display: flex;
             flex-direction: column;
-            gap: 0.4rem;
+            justify-content: center;
+            gap: 0.2rem;
+            padding: 1rem 1.5rem;
+            background: rgba(255,255,255,0.015);
+            border-right: 1px solid rgba(255,255,255,0.05);
         }
 
-        .settings-label {
+        .settings-table-label span {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.72rem;
+            font-size: 0.78rem;
             font-weight: 600;
+            color: #fff;
+            text-transform: lowercase;
+            letter-spacing: -0.2px;
+        }
+
+        .settings-table-label small {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
             color: var(--text-muted);
             text-transform: lowercase;
-            letter-spacing: 0.03em;
+            opacity: 0.7;
+        }
+
+        .settings-table-value {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1.25rem;
+            background: rgba(10,12,15,0.4);
+        }
+
+        .settings-table-row.settings-row-pair .settings-table-value {
+            gap: 0.75rem;
         }
 
         .settings-input {
-            background: rgba(10, 12, 15, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 8px;
-            padding: 0.65rem 0.9rem;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 7px;
+            padding: 0.55rem 0.85rem;
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.8rem;
             color: #fff;
@@ -2094,26 +2120,27 @@
             box-sizing: border-box;
         }
 
+        .settings-input::placeholder {
+            color: rgba(255,255,255,0.18);
+        }
+
         .settings-input:focus {
             border-color: rgba(0, 240, 255, 0.35);
-            box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.07);
+            box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.06);
         }
 
         .settings-input-readonly {
             color: var(--text-muted);
             cursor: default;
-            opacity: 0.7;
-        }
-
-        .settings-hint {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.68rem;
-            color: var(--text-muted);
-            opacity: 0.7;
+            opacity: 0.6;
         }
 
         .settings-actions {
-            padding-top: 0.5rem;
+            display: flex;
+            justify-content: flex-end;
+            padding: 1rem 1.25rem;
+            background: rgba(10,12,15,0.4);
+            border-top: 1px solid rgba(255,255,255,0.05);
         }
 
         .org-plan-card-summary {
@@ -2734,29 +2761,43 @@
             <div id="account-tab-preferences" class="account-tab-panel">
                 <div class="settings-section">
                     <h2 class="settings-section-title">profile information</h2>
-                    <div class="settings-form">
-                        <div class="settings-row">
-                            <div class="settings-field">
-                                <label class="settings-label">first name</label>
+                    <div class="settings-table">
+                        <div class="settings-table-row settings-row-pair">
+                            <div class="settings-table-label">
+                                <span>first name</span>
+                            </div>
+                            <div class="settings-table-value">
                                 <input type="text" class="settings-input" id="pref-first-name" placeholder="first name" autocomplete="given-name">
                             </div>
-                            <div class="settings-field">
-                                <label class="settings-label">last name</label>
+                        </div>
+                        <div class="settings-table-row">
+                            <div class="settings-table-label">
+                                <span>last name</span>
+                            </div>
+                            <div class="settings-table-value">
                                 <input type="text" class="settings-input" id="pref-last-name" placeholder="last name" autocomplete="family-name">
                             </div>
                         </div>
-                        <div class="settings-field">
-                            <label class="settings-label">primary email</label>
-                            <input type="email" class="settings-input settings-input-readonly" id="pref-email" readonly tabindex="-1">
-                            <span class="settings-hint">used for account notifications</span>
+                        <div class="settings-table-row">
+                            <div class="settings-table-label">
+                                <span>primary email</span>
+                                <small>used for account notifications</small>
+                            </div>
+                            <div class="settings-table-value">
+                                <input type="email" class="settings-input settings-input-readonly" id="pref-email" readonly tabindex="-1">
+                            </div>
                         </div>
-                        <div class="settings-field">
-                            <label class="settings-label">username</label>
-                            <input type="text" class="settings-input" id="pref-username" placeholder="username" autocomplete="username">
-                            <span class="settings-hint">display name used across dashboard</span>
+                        <div class="settings-table-row">
+                            <div class="settings-table-label">
+                                <span>username</span>
+                                <small>display name used across dashboard</small>
+                            </div>
+                            <div class="settings-table-value">
+                                <input type="text" class="settings-input" id="pref-username" placeholder="username" autocomplete="username">
+                            </div>
                         </div>
                         <div class="settings-actions">
-                            <button class="btn-primary" id="btn-save-preferences" style="padding:0.65rem 1.6rem;font-size:0.8rem;">save</button>
+                            <button class="btn-primary" id="btn-save-preferences" style="padding:0.6rem 1.5rem;font-size:0.78rem;">save</button>
                         </div>
                     </div>
                 </div>
