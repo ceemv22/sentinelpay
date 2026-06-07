@@ -2167,6 +2167,10 @@
             padding-left: 0.3rem;
         }
 
+        .settings-input-prefix-wrap.no-prefix .settings-input-prefixed {
+            padding-left: 0.85rem;
+        }
+
         .settings-input-prefixed:focus {
             box-shadow: none;
         }
@@ -2830,7 +2834,7 @@
                             </div>
                             <div class="settings-table-value">
                                 <div class="settings-input-prefix-wrap">
-                                    <span class="settings-input-prefix">@</span>
+                                    <span class="settings-input-prefix" id="pref-username-prefix">@</span>
                                     <input type="text" class="settings-input settings-input-prefixed" id="pref-username" placeholder="username" autocomplete="username">
                                 </div>
                             </div>
