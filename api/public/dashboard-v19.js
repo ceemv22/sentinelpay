@@ -2273,8 +2273,8 @@ async function fetchProfile(token) {
                         notify('error: username cannot contain symbols', 'error');
                         return;
                     }
-                    if (usernameRaw.length < 2 || usernameRaw.length > 32) {
-                        notify('error: username must be between 2 and 32 characters', 'error');
+                    if (usernameRaw.length < 2 || usernameRaw.length > 16) {
+                        notify('error: username must be between 2 and 16 characters', 'error');
                         return;
                     }
                 }
