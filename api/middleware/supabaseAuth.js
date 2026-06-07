@@ -27,7 +27,11 @@ async function requireSupabaseAuth(req, res, next) {
         }
 
         const authProvider = user.app_metadata?.provider || 'email';
-        const oauthUsername = user.user_metadata?.user_name || user.user_metadata?.full_name || null;
+        const oauthUsername = user.user_metadata?.user_name
+            || user.user_metadata?.preferred_username
+            || user.user_metadata?.full_name
+            || user.user_metadata?.name
+            || null;
         const isOAuth = authProvider !== 'email';
         const isEmailVerified = Boolean(user.email_confirmed_at || user.confirmed_at || user.phone_confirmed_at) || isOAuth;
 
