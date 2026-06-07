@@ -2234,19 +2234,71 @@ async function fetchProfile(token) {
         const saveBtn = document.getElementById('btn-save-preferences');
         if (saveBtn && !saveBtn.dataset.bound) {
             saveBtn.dataset.bound = 'true';
+            const saveMsg = document.getElementById('preferences-save-msg');
+            let saveMsgTimer = null;
+            const showSaveMsg = (text, kind, persist) => {
+                if (!saveMsg) return;
+                if (saveMsgTimer) { clearTimeout(saveMsgTimer); saveMsgTimer = null; }
+                saveMsg.textContent = text;
+                saveMsg.classList.remove('is-error', 'is-success');
+                if (kind) saveMsg.classList.add(kind);
+                requestAnimationFrame(() => saveMsg.classList.add('visible'));
+                if (!persist) {
+                    saveMsgTimer = setTimeout(() => {
+                        saveMsg.classList.remove('visible');
+                        saveMsgTimer = setTimeout(() => {
+                            saveMsg.textContent = '';
+                            saveMsg.classList.remove('is-error', 'is-success');
+                        }, 200);
+                    }, 3200);
+                }
+            };
+            const resetSaveBtn = () => {
+                saveBtn.disabled = false;
+                saveBtn.removeAttribute('data-busy');
+                saveBtn.textContent = 'save';
+            };
+            const setSaveBtnBusy = () => {
+                saveBtn.disabled = true;
+                saveBtn.setAttribute('data-busy', '1');
+                saveBtn.textContent = 'saving...';
+            };
             saveBtn.addEventListener('click', async () => {
                 const tok = localStorage.getItem('sentinel-token');
                 if (!tok) return;
-                saveBtn.disabled = true;
-                saveBtn.textContent = 'saving...';
+
+                const usernameInput = document.getElementById('pref-username');
+                const usernameRaw = usernameInput ? usernameInput.value.trim() : '';
+                const usernameProvided = Boolean(usernameInput && usernameInput.dataset.isFallback !== 'true');
+
+                if (usernameProvided && usernameRaw.length > 0) {
+                    if (/\s/.test(usernameRaw)) {
+                        showSaveMsg('username cannot contain spaces', 'is-error');
+                        return;
+                    }
+                    if (!/^[a-zA-Z0-9_-]+$/.test(usernameRaw)) {
+                        showSaveMsg('username can only contain letters, numbers, underscores and hyphens', 'is-error');
+                        return;
+                    }
+                    if (usernameRaw.length < 2 || usernameRaw.length > 32) {
+                        showSaveMsg('username must be between 2 and 32 characters', 'is-error');
+                        return;
+                    }
+                }
+
+                setSaveBtnBusy();
+                if (saveMsg) {
+                    saveMsg.classList.remove('visible', 'is-error', 'is-success');
+                    saveMsg.textContent = '';
+                }
+
                 try {
-                    const usernameInput = document.getElementById('pref-username');
                     const payload = {
                         firstName: document.getElementById('pref-first-name')?.value || '',
                         lastName: document.getElementById('pref-last-name')?.value || ''
                     };
-                    if (usernameInput && usernameInput.dataset.isFallback !== 'true') {
-                        payload.username = usernameInput.value || '';
+                    if (usernameProvided) {
+                        payload.username = usernameRaw;
                     }
                     const r = await fetch('/v1/user/profile', {
                         method: 'PATCH',
@@ -2255,8 +2307,8 @@ async function fetchProfile(token) {
                     });
                     const data = await r.json();
                     if (r.ok) {
-                        saveBtn.textContent = 'saved';
-                        setTimeout(() => { saveBtn.textContent = 'save'; saveBtn.disabled = false; }, 1800);
+                        resetSaveBtn();
+                        showSaveMsg('all changes saved successfully', 'is-success');
 
                         const cachedRaw = localStorage.getItem('sentinel-cached-profile');
                         const cached = cachedRaw ? JSON.parse(cachedRaw) : {};
@@ -2284,12 +2336,12 @@ async function fetchProfile(token) {
                             }));
                         } catch {}
                     } else {
-                        saveBtn.textContent = data.error || 'error';
-                        setTimeout(() => { saveBtn.textContent = 'save'; saveBtn.disabled = false; }, 2500);
+                        resetSaveBtn();
+                        showSaveMsg(data.error || 'failed to save changes', 'is-error');
                     }
                 } catch {
-                    saveBtn.textContent = 'error';
-                    setTimeout(() => { saveBtn.textContent = 'save'; saveBtn.disabled = false; }, 2500);
+                    resetSaveBtn();
+                    showSaveMsg('failed to save changes', 'is-error');
                 }
             });
         }
