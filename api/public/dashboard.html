@@ -2155,9 +2155,21 @@
             font-size: 0.8rem;
             line-height: 1;
             color: var(--text-muted);
-            opacity: 0.6;
-            padding-left: 0.85rem;
             user-select: none;
+            display: inline-block;
+            overflow: hidden;
+            opacity: 1;
+            max-width: 1.4rem;
+            margin-left: 0.85rem;
+            transform: translateX(0);
+            transition: opacity 0.18s ease, max-width 0.18s ease, margin-left 0.18s ease, transform 0.18s ease;
+        }
+
+        .settings-input-prefix.prefix-hidden {
+            opacity: 0;
+            max-width: 0;
+            margin-left: 0.85rem;
+            transform: translateX(-6px);
         }
 
         .settings-input-prefixed {
@@ -2165,10 +2177,11 @@
             border: none;
             border-radius: 0;
             padding-left: 0.3rem;
+            transition: padding-left 0.18s ease;
         }
 
         .settings-input-prefix-wrap.no-prefix .settings-input-prefixed {
-            padding-left: 0.85rem;
+            padding-left: 0;
         }
 
         .settings-input-prefixed:focus {

@@ -627,13 +627,28 @@ app.patch('/v1/user/profile', requireSupabaseAuth, async (req, res) => {
         if (typeof lastName === 'string') data.lastName = lastName.trim();
         if (typeof username === 'string') {
             const u = username.trim();
-            if (u.length < 2 || u.length > 32 || !/^[a-zA-Z0-9_-]+$/.test(u)) {
-                return res.status(400).json({ error: 'invalid username' });
+            if (u.length === 0) {
+                data.username = null;
+            } else if (/\s/.test(u)) {
+                return res.status(400).json({ error: 'username cannot contain spaces' });
+            } else if (!/^[a-zA-Z0-9_-]+$/.test(u)) {
+                return res.status(400).json({ error: 'username can only contain letters, numbers, underscores and hyphens' });
+            } else if (u.length < 2 || u.length > 32) {
+                return res.status(400).json({ error: 'username must be between 2 and 32 characters' });
+            } else {
+                data.username = u;
             }
-            data.username = u;
         }
         if (Object.keys(data).length === 0) return res.status(400).json({ error: 'nothing to update' });
-        const user = await prisma.user.update({ where: { id: req.user.id }, data });
+        let user;
+        try {
+            user = await prisma.user.update({ where: { id: req.user.id }, data });
+        } catch (err) {
+            if (err.code === 'P2002' && err.meta?.target?.includes('username')) {
+                return res.status(409).json({ error: 'username is already taken' });
+            }
+            throw err;
+        }
         res.json({ ok: true, username: user.username, firstName: user.firstName || '', lastName: user.lastName || '' });
     } catch (err) {
         console.error('[profile patch error]', err);

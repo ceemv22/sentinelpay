@@ -2169,21 +2169,27 @@ async function fetchHeaderApiKey(token) {
     } catch (err) {}
 }
 
+function setUsernamePrefixVisible(visible) {
+    const prefUsernamePrefix = document.getElementById('pref-username-prefix');
+    if (!prefUsernamePrefix) return;
+    prefUsernamePrefix.classList.toggle('prefix-hidden', !visible);
+    const wrap = prefUsernamePrefix.closest('.settings-input-prefix-wrap');
+    if (wrap) wrap.classList.toggle('no-prefix', !visible);
+}
+
 function applyProfileToForm(profile) {
     if (!profile) return;
     const prefEmail = document.getElementById('pref-email');
     const prefUsername = document.getElementById('pref-username');
-    const prefUsernamePrefix = document.getElementById('pref-username-prefix');
     const prefFirstName = document.getElementById('pref-first-name');
     const prefLastName = document.getElementById('pref-last-name');
     const hasUsername = Boolean(profile.username);
     if (prefEmail) prefEmail.value = profile.email || '';
-    if (prefUsername) prefUsername.value = hasUsername ? profile.username : (profile.email || '');
-    if (prefUsernamePrefix) {
-        prefUsernamePrefix.style.display = hasUsername ? '' : 'none';
-        const wrap = prefUsernamePrefix.closest('.settings-input-prefix-wrap');
-        if (wrap) wrap.classList.toggle('no-prefix', !hasUsername);
+    if (prefUsername) {
+        prefUsername.value = hasUsername ? profile.username : (profile.email || '');
+        prefUsername.dataset.isFallback = hasUsername ? 'false' : 'true';
     }
+    setUsernamePrefixVisible(hasUsername);
     if (prefFirstName) prefFirstName.value = profile.firstName || '';
     if (prefLastName) prefLastName.value = profile.lastName || '';
 }
@@ -2215,6 +2221,16 @@ async function fetchProfile(token) {
 
         applyProfileToForm(profile);
 
+        const prefUsernameInput = document.getElementById('pref-username');
+        if (prefUsernameInput && !prefUsernameInput.dataset.prefixBound) {
+            prefUsernameInput.dataset.prefixBound = 'true';
+            prefUsernameInput.addEventListener('input', () => {
+                prefUsernameInput.dataset.isFallback = 'false';
+                setUsernamePrefixVisible(true);
+            });
+            prefUsernameInput.addEventListener('focus', () => setUsernamePrefixVisible(true));
+        }
+
         const saveBtn = document.getElementById('btn-save-preferences');
         if (saveBtn && !saveBtn.dataset.bound) {
             saveBtn.dataset.bound = 'true';
@@ -2224,31 +2240,45 @@ async function fetchProfile(token) {
                 saveBtn.disabled = true;
                 saveBtn.textContent = 'saving...';
                 try {
+                    const usernameInput = document.getElementById('pref-username');
+                    const payload = {
+                        firstName: document.getElementById('pref-first-name')?.value || '',
+                        lastName: document.getElementById('pref-last-name')?.value || ''
+                    };
+                    if (usernameInput && usernameInput.dataset.isFallback !== 'true') {
+                        payload.username = usernameInput.value || '';
+                    }
                     const r = await fetch('/v1/user/profile', {
                         method: 'PATCH',
                         headers: { 'Authorization': `Bearer ${tok}`, 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            firstName: document.getElementById('pref-first-name')?.value || '',
-                            lastName: document.getElementById('pref-last-name')?.value || '',
-                            username: document.getElementById('pref-username')?.value || ''
-                        })
+                        body: JSON.stringify(payload)
                     });
                     const data = await r.json();
                     if (r.ok) {
                         saveBtn.textContent = 'saved';
                         setTimeout(() => { saveBtn.textContent = 'save'; saveBtn.disabled = false; }, 1800);
-                        if (data.username) {
-                            const el = document.getElementById('current-user-email');
-                            if (el) el.textContent = data.username;
-                            const av = document.getElementById('team-owner-avatar');
-                            if (av) av.textContent = data.username.charAt(0).toUpperCase();
+
+                        const cachedRaw = localStorage.getItem('sentinel-cached-profile');
+                        const cached = cachedRaw ? JSON.parse(cachedRaw) : {};
+                        const newUsername = data.username || '';
+                        const fallbackEmail = cached.email || '';
+                        const displayId = newUsername || fallbackEmail;
+
+                        const el = document.getElementById('current-user-email');
+                        if (el && displayId) el.textContent = displayId;
+                        const av = document.getElementById('team-owner-avatar');
+                        if (av && displayId) av.textContent = displayId.charAt(0).toUpperCase();
+
+                        if (usernameInput) {
+                            usernameInput.value = newUsername || fallbackEmail;
+                            usernameInput.dataset.isFallback = newUsername ? 'false' : 'true';
                         }
+                        setUsernamePrefixVisible(Boolean(newUsername));
+
                         try {
-                            const cachedRaw = localStorage.getItem('sentinel-cached-profile');
-                            const cached = cachedRaw ? JSON.parse(cachedRaw) : {};
                             localStorage.setItem('sentinel-cached-profile', JSON.stringify({
                                 ...cached,
-                                username: data.username ?? cached.username ?? '',
+                                username: newUsername,
                                 firstName: data.firstName ?? cached.firstName ?? '',
                                 lastName: data.lastName ?? cached.lastName ?? ''
                             }));
