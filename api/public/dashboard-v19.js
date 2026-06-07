@@ -2169,11 +2169,34 @@ async function fetchHeaderApiKey(token) {
     } catch (err) {}
 }
 
+function applyProfileToForm(profile) {
+    if (!profile) return;
+    const prefEmail = document.getElementById('pref-email');
+    const prefUsername = document.getElementById('pref-username');
+    const prefFirstName = document.getElementById('pref-first-name');
+    const prefLastName = document.getElementById('pref-last-name');
+    if (prefEmail) prefEmail.value = profile.email || '';
+    if (prefUsername) prefUsername.value = profile.username || '';
+    if (prefFirstName) prefFirstName.value = profile.firstName || '';
+    if (prefLastName) prefLastName.value = profile.lastName || '';
+}
+
 async function fetchProfile(token) {
     try {
+        const cachedRaw = localStorage.getItem('sentinel-cached-profile');
+        if (cachedRaw) {
+            try { applyProfileToForm(JSON.parse(cachedRaw)); } catch {}
+        }
+
         const response = await fetch('/v1/user/profile', { headers: { 'Authorization': `Bearer ${token}` } });
         if (!response.ok) return;
         const profile = await response.json();
+        localStorage.setItem('sentinel-cached-profile', JSON.stringify({
+            email: profile.email || '',
+            username: profile.username || '',
+            firstName: profile.firstName || '',
+            lastName: profile.lastName || ''
+        }));
 
         const teamEmailEl = document.getElementById('current-user-email');
         const displayId = profile.username || profile.email;
@@ -2183,14 +2206,7 @@ async function fetchProfile(token) {
             if (teamAvatarEl) teamAvatarEl.textContent = displayId.charAt(0).toUpperCase();
         }
 
-        const prefEmail = document.getElementById('pref-email');
-        const prefUsername = document.getElementById('pref-username');
-        const prefFirstName = document.getElementById('pref-first-name');
-        const prefLastName = document.getElementById('pref-last-name');
-        if (prefEmail) prefEmail.value = profile.email || '';
-        if (prefUsername) prefUsername.value = profile.username || '';
-        if (prefFirstName) prefFirstName.value = profile.firstName || '';
-        if (prefLastName) prefLastName.value = profile.lastName || '';
+        applyProfileToForm(profile);
 
         const saveBtn = document.getElementById('btn-save-preferences');
         if (saveBtn && !saveBtn.dataset.bound) {
@@ -2220,6 +2236,16 @@ async function fetchProfile(token) {
                             const av = document.getElementById('team-owner-avatar');
                             if (av) av.textContent = data.username.charAt(0).toUpperCase();
                         }
+                        try {
+                            const cachedRaw = localStorage.getItem('sentinel-cached-profile');
+                            const cached = cachedRaw ? JSON.parse(cachedRaw) : {};
+                            localStorage.setItem('sentinel-cached-profile', JSON.stringify({
+                                ...cached,
+                                username: data.username ?? cached.username ?? '',
+                                firstName: data.firstName ?? cached.firstName ?? '',
+                                lastName: data.lastName ?? cached.lastName ?? ''
+                            }));
+                        } catch {}
                     } else {
                         saveBtn.textContent = data.error || 'error';
                         setTimeout(() => { saveBtn.textContent = 'save'; saveBtn.disabled = false; }, 2500);
