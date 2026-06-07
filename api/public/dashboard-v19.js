@@ -2269,7 +2269,7 @@ async function fetchProfile(token) {
                         notify('error: username cannot contain spaces', 'error');
                         return;
                     }
-                    if (!/^[a-zA-Z0-9_-]+$/.test(usernameRaw)) {
+                    if (!/^[a-zA-Z0-9]+$/.test(usernameRaw)) {
                         notify('error: username cannot contain symbols', 'error');
                         return;
                     }
