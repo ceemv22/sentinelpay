@@ -2264,7 +2264,7 @@ async function fetchProfile(token) {
                 saveBtn.textContent = 'saving...';
             };
             saveBtn.addEventListener('click', async () => {
-                const tok = localStorage.getItem('sentinel-token');
+                const tok = token;
                 if (!tok) return;
 
                 const usernameInput = document.getElementById('pref-username');
