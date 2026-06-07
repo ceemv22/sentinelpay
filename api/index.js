@@ -623,8 +623,19 @@ app.patch('/v1/user/profile', requireSupabaseAuth, async (req, res) => {
     try {
         const { firstName, lastName, username } = req.body;
         const data = {};
-        if (typeof firstName === 'string') data.firstName = firstName.trim();
-        if (typeof lastName === 'string') data.lastName = lastName.trim();
+        const NAME_RE = /^[a-zA-Z ]*$/;
+        if (typeof firstName === 'string') {
+            const fn = firstName.trim();
+            if (fn.length > 32) return res.status(400).json({ error: 'first name must be at most 32 characters' });
+            if (!NAME_RE.test(fn)) return res.status(400).json({ error: 'first name cannot contain symbols or numbers' });
+            data.firstName = fn;
+        }
+        if (typeof lastName === 'string') {
+            const ln = lastName.trim();
+            if (ln.length > 32) return res.status(400).json({ error: 'last name must be at most 32 characters' });
+            if (!NAME_RE.test(ln)) return res.status(400).json({ error: 'last name cannot contain symbols or numbers' });
+            data.lastName = ln;
+        }
         if (typeof username === 'string') {
             const u = username.trim();
             if (u.length === 0) {

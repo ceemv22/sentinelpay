@@ -2279,12 +2279,33 @@ async function fetchProfile(token) {
                     }
                 }
 
+                const firstNameRaw = document.getElementById('pref-first-name')?.value.trim() || '';
+                const lastNameRaw = document.getElementById('pref-last-name')?.value.trim() || '';
+                const NAME_RE = /^[a-zA-Z ]*$/;
+
+                if (!NAME_RE.test(firstNameRaw)) {
+                    notify('error: first name cannot contain symbols or numbers', 'error');
+                    return;
+                }
+                if (firstNameRaw.length > 32) {
+                    notify('error: first name must be at most 32 characters', 'error');
+                    return;
+                }
+                if (!NAME_RE.test(lastNameRaw)) {
+                    notify('error: last name cannot contain symbols or numbers', 'error');
+                    return;
+                }
+                if (lastNameRaw.length > 32) {
+                    notify('error: last name must be at most 32 characters', 'error');
+                    return;
+                }
+
                 setSaveBtnBusy();
 
                 try {
                     const payload = {
-                        firstName: document.getElementById('pref-first-name')?.value || '',
-                        lastName: document.getElementById('pref-last-name')?.value || ''
+                        firstName: firstNameRaw,
+                        lastName: lastNameRaw
                     };
                     if (usernameProvided) {
                         payload.username = usernameRaw;
