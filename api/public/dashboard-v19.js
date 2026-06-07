@@ -2173,10 +2173,17 @@ function applyProfileToForm(profile) {
     if (!profile) return;
     const prefEmail = document.getElementById('pref-email');
     const prefUsername = document.getElementById('pref-username');
+    const prefUsernamePrefix = document.getElementById('pref-username-prefix');
     const prefFirstName = document.getElementById('pref-first-name');
     const prefLastName = document.getElementById('pref-last-name');
+    const hasUsername = Boolean(profile.username);
     if (prefEmail) prefEmail.value = profile.email || '';
-    if (prefUsername) prefUsername.value = profile.username || '';
+    if (prefUsername) prefUsername.value = hasUsername ? profile.username : (profile.email || '');
+    if (prefUsernamePrefix) {
+        prefUsernamePrefix.style.display = hasUsername ? '' : 'none';
+        const wrap = prefUsernamePrefix.closest('.settings-input-prefix-wrap');
+        if (wrap) wrap.classList.toggle('no-prefix', !hasUsername);
+    }
     if (prefFirstName) prefFirstName.value = profile.firstName || '';
     if (prefLastName) prefLastName.value = profile.lastName || '';
 }
