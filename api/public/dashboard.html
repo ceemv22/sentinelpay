@@ -2135,6 +2135,27 @@
             opacity: 0.6;
         }
 
+        .settings-input-prefix-wrap {
+            position: relative;
+            width: 100%;
+        }
+
+        .settings-input-prefix {
+            position: absolute;
+            left: 0.85rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .settings-input-prefixed {
+            padding-left: 1.6rem;
+        }
+
         .settings-actions {
             display: flex;
             justify-content: flex-end;
@@ -2793,7 +2814,10 @@
                                 <small>display name used across dashboard</small>
                             </div>
                             <div class="settings-table-value">
-                                <input type="text" class="settings-input" id="pref-username" placeholder="username" autocomplete="username">
+                                <div class="settings-input-prefix-wrap">
+                                    <span class="settings-input-prefix">@</span>
+                                    <input type="text" class="settings-input settings-input-prefixed" id="pref-username" placeholder="username" autocomplete="username">
+                                </div>
                             </div>
                         </div>
                         <div class="settings-actions">
