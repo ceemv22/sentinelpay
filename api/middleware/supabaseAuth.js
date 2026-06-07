@@ -10,6 +10,8 @@ const supabase = createClient(
 );
 
 const generateApiKey = () => `sp_live_${crypto.randomBytes(24).toString('hex')}`;
+const VALID_USERNAME_RE = /^[a-zA-Z0-9_-]+$/;
+const sanitizeUsername = (u) => (u && VALID_USERNAME_RE.test(u)) ? u : null;
 
 async function requireSupabaseAuth(req, res, next) {
     const authHeader = req.headers.authorization;
@@ -27,10 +29,8 @@ async function requireSupabaseAuth(req, res, next) {
         }
 
         const authProvider = user.app_metadata?.provider || 'email';
-        const oauthUsername = user.user_metadata?.user_name
-            || user.user_metadata?.preferred_username
-            || user.user_metadata?.full_name
-            || user.user_metadata?.name
+        const oauthUsername = sanitizeUsername(user.user_metadata?.user_name)
+            || sanitizeUsername(user.user_metadata?.preferred_username)
             || null;
         const isOAuth = authProvider !== 'email';
         const isEmailVerified = Boolean(user.email_confirmed_at || user.confirmed_at || user.phone_confirmed_at) || isOAuth;
@@ -55,7 +55,7 @@ async function requireSupabaseAuth(req, res, next) {
                 where: { id: dbUser.id },
                 data: {
                     supabaseId: user.id,
-                    username: dbUser.username || oauthUsername,
+                    username: sanitizeUsername(dbUser.username) || oauthUsername,
                     authProvider,
                     isEmailVerified
                 }
