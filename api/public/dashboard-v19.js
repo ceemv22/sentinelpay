@@ -2322,6 +2322,10 @@ async function fetchProfile(token) {
                         if (el && displayId) el.textContent = displayId;
                         const av = document.getElementById('team-owner-avatar');
                         if (av && displayId) av.textContent = displayId.charAt(0).toUpperCase();
+                        const topAvatar = document.getElementById('org-avatar-circle');
+                        if (topAvatar && displayId) topAvatar.textContent = displayId.charAt(0).toUpperCase();
+                        const dropdownEmailEl = document.getElementById('dropdown-email');
+                        if (dropdownEmailEl) dropdownEmailEl.textContent = newUsername ? `@${newUsername}` : fallbackEmail;
 
                         if (usernameInput) {
                             usernameInput.value = newUsername || fallbackEmail;
