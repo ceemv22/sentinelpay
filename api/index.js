@@ -647,6 +647,10 @@ app.patch('/v1/user/profile', requireSupabaseAuth, async (req, res) => {
             } else if (u.length < 2 || u.length > 16) {
                 return res.status(400).json({ error: 'username must be between 2 and 16 characters' });
             } else {
+                const taken = await prisma.user.findFirst({
+                    where: { username: { equals: u, mode: 'insensitive' }, NOT: { id: req.user.id } }
+                });
+                if (taken) return res.status(409).json({ error: 'username is already taken' });
                 data.username = u;
             }
         }
