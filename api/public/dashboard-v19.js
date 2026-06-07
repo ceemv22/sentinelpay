@@ -2236,24 +2236,15 @@ async function fetchProfile(token) {
         const saveBtn = document.getElementById('btn-save-preferences');
         if (saveBtn && !saveBtn.dataset.bound) {
             saveBtn.dataset.bound = 'true';
-            const saveMsg = document.getElementById('preferences-save-msg');
-            let saveMsgTimer = null;
-            const showSaveMsg = (text, kind, persist) => {
-                if (!saveMsg) return;
-                if (saveMsgTimer) { clearTimeout(saveMsgTimer); saveMsgTimer = null; }
-                saveMsg.textContent = text;
-                saveMsg.classList.remove('is-error', 'is-success');
-                if (kind) saveMsg.classList.add(kind);
-                requestAnimationFrame(() => saveMsg.classList.add('visible'));
-                if (!persist) {
-                    saveMsgTimer = setTimeout(() => {
-                        saveMsg.classList.remove('visible');
-                        saveMsgTimer = setTimeout(() => {
-                            saveMsg.textContent = '';
-                            saveMsg.classList.remove('is-error', 'is-success');
-                        }, 200);
-                    }, 3200);
-                }
+            const notify = (text, kind) => {
+                if (window.SentinelToast) window.SentinelToast.show(text, kind);
+            };
+            const playPulse = (el, cls) => {
+                if (!el) return;
+                el.classList.remove(cls);
+                void el.offsetWidth;
+                el.classList.add(cls);
+                setTimeout(() => el.classList.remove(cls), 700);
             };
             const resetSaveBtn = () => {
                 saveBtn.disabled = false;
@@ -2275,24 +2266,20 @@ async function fetchProfile(token) {
 
                 if (usernameProvided && usernameRaw.length > 0) {
                     if (/\s/.test(usernameRaw)) {
-                        showSaveMsg('error: username cannot contain spaces', 'is-error');
+                        notify('error: username cannot contain spaces', 'error');
                         return;
                     }
                     if (!/^[a-zA-Z0-9_-]+$/.test(usernameRaw)) {
-                        showSaveMsg('error: username cannot contain symbols', 'is-error');
+                        notify('error: username cannot contain symbols', 'error');
                         return;
                     }
                     if (usernameRaw.length < 2 || usernameRaw.length > 32) {
-                        showSaveMsg('error: username must be between 2 and 32 characters', 'is-error');
+                        notify('error: username must be between 2 and 32 characters', 'error');
                         return;
                     }
                 }
 
                 setSaveBtnBusy();
-                if (saveMsg) {
-                    saveMsg.classList.remove('visible', 'is-error', 'is-success');
-                    saveMsg.textContent = '';
-                }
 
                 try {
                     const payload = {
@@ -2310,13 +2297,14 @@ async function fetchProfile(token) {
                     const data = await r.json();
                     if (r.ok) {
                         resetSaveBtn();
-                        showSaveMsg('all changes saved successfully', 'is-success');
+                        notify('all changes saved successfully', 'success');
 
                         const cachedRaw = localStorage.getItem('sentinel-cached-profile');
                         const cached = cachedRaw ? JSON.parse(cachedRaw) : {};
                         const newUsername = data.username || '';
                         const fallbackEmail = cached.email || '';
                         const displayId = newUsername || fallbackEmail;
+                        const identityChanged = (cached.username || '') !== newUsername;
 
                         const el = document.getElementById('current-user-email');
                         if (el && displayId) el.textContent = displayId;
@@ -2326,6 +2314,13 @@ async function fetchProfile(token) {
                         if (topAvatar && displayId) topAvatar.textContent = displayId.charAt(0).toUpperCase();
                         const dropdownEmailEl = document.getElementById('dropdown-email');
                         if (dropdownEmailEl) dropdownEmailEl.textContent = newUsername ? `@${newUsername}` : fallbackEmail;
+
+                        if (identityChanged) {
+                            playPulse(av, 'identity-flash');
+                            playPulse(topAvatar, 'identity-flash');
+                            playPulse(el, 'identity-swap');
+                            playPulse(dropdownEmailEl, 'identity-swap');
+                        }
 
                         if (usernameInput) {
                             usernameInput.value = newUsername || fallbackEmail;
@@ -2343,11 +2338,11 @@ async function fetchProfile(token) {
                         } catch {}
                     } else {
                         resetSaveBtn();
-                        showSaveMsg(`error: ${data.error || 'failed to save changes'}`, 'is-error');
+                        notify(`error: ${data.error || 'failed to save changes'}`, 'error');
                     }
                 } catch {
                     resetSaveBtn();
-                    showSaveMsg('error: failed to save changes', 'is-error');
+                    notify('error: failed to save changes', 'error');
                 }
             });
         }
