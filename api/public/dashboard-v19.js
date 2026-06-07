@@ -2300,9 +2300,48 @@ async function fetchProfile(token) {
                     return;
                 }
 
+                const emailInput = document.getElementById('pref-email');
+                const emailRaw = emailInput ? emailInput.value.trim() : '';
+                const EMAIL_RE = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,}$/;
+
+                if (emailRaw.length === 0) {
+                    notify('error: email cannot be empty', 'error');
+                    return;
+                }
+                if (/[^a-zA-Z0-9._%+@-]/.test(emailRaw)) {
+                    notify('error: email contains invalid characters', 'error');
+                    return;
+                }
+                if (!EMAIL_RE.test(emailRaw)) {
+                    notify('error: invalid email format', 'error');
+                    return;
+                }
+
                 setSaveBtnBusy();
 
                 try {
+                    const cachedRawForEmail = localStorage.getItem('sentinel-cached-profile');
+                    const cachedForEmail = cachedRawForEmail ? JSON.parse(cachedRawForEmail) : {};
+                    const currentEmail = cachedForEmail.email || '';
+                    let emailChangeRequested = false;
+
+                    if (emailRaw.toLowerCase() !== currentEmail.toLowerCase() && sentinelAuth) {
+                        const { error: emailErr } = await sentinelAuth.auth.updateUser({ email: emailRaw });
+                        if (emailErr) {
+                            resetSaveBtn();
+                            const m = (emailErr.message || '').toLowerCase();
+                            if (m.includes('already') || m.includes('registered') || m.includes('exists')) {
+                                notify('error: this email is already in use', 'error');
+                            } else if (m.includes('invalid') || m.includes('format')) {
+                                notify('error: invalid email format', 'error');
+                            } else {
+                                notify('error: failed to update email', 'error');
+                            }
+                            return;
+                        }
+                        emailChangeRequested = true;
+                    }
+
                     const payload = {
                         firstName: firstNameRaw,
                         lastName: lastNameRaw
@@ -2318,7 +2357,11 @@ async function fetchProfile(token) {
                     const data = await r.json();
                     if (r.ok) {
                         resetSaveBtn();
-                        notify('all changes saved successfully', 'success');
+                        if (emailChangeRequested) {
+                            notify('changes saved. check your new email inbox to confirm the address change', 'success');
+                        } else {
+                            notify('all changes saved successfully', 'success');
+                        }
 
                         const cachedRaw = localStorage.getItem('sentinel-cached-profile');
                         const cached = cachedRaw ? JSON.parse(cachedRaw) : {};
