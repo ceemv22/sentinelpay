@@ -2136,24 +2136,39 @@
         }
 
         .settings-input-prefix-wrap {
-            position: relative;
+            display: flex;
+            align-items: center;
             width: 100%;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 7px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .settings-input-prefix-wrap:focus-within {
+            border-color: rgba(0, 240, 255, 0.35);
+            box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.06);
         }
 
         .settings-input-prefix {
-            position: absolute;
-            left: 0.85rem;
-            top: 50%;
-            transform: translateY(-50%);
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.8rem;
+            line-height: 1;
             color: var(--text-muted);
             opacity: 0.6;
-            pointer-events: none;
+            padding-left: 0.85rem;
+            user-select: none;
         }
 
         .settings-input-prefixed {
-            padding-left: 1.6rem;
+            background: transparent;
+            border: none;
+            border-radius: 0;
+            padding-left: 0.3rem;
+        }
+
+        .settings-input-prefixed:focus {
+            box-shadow: none;
         }
 
         .settings-actions {
