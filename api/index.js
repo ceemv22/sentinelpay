@@ -631,8 +631,8 @@ app.patch('/v1/user/profile', requireSupabaseAuth, async (req, res) => {
                 data.username = null;
             } else if (/\s/.test(u)) {
                 return res.status(400).json({ error: 'username cannot contain spaces' });
-            } else if (!/^[a-zA-Z0-9_-]+$/.test(u)) {
-                return res.status(400).json({ error: 'username can only contain letters, numbers, underscores and hyphens' });
+            } else if (!/^[a-zA-Z0-9]+$/.test(u)) {
+                return res.status(400).json({ error: 'username cannot contain symbols' });
             } else if (u.length < 2 || u.length > 32) {
                 return res.status(400).json({ error: 'username must be between 2 and 32 characters' });
             } else {

@@ -10,7 +10,7 @@ const supabase = createClient(
 );
 
 const generateApiKey = () => `sp_live_${crypto.randomBytes(24).toString('hex')}`;
-const VALID_USERNAME_RE = /^[a-zA-Z0-9_-]+$/;
+const VALID_USERNAME_RE = /^[a-zA-Z0-9]+$/;
 const sanitizeUsername = (u) => (u && VALID_USERNAME_RE.test(u)) ? u : null;
 
 async function requireSupabaseAuth(req, res, next) {
