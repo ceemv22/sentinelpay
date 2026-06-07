@@ -2224,11 +2224,13 @@ async function fetchProfile(token) {
         const prefUsernameInput = document.getElementById('pref-username');
         if (prefUsernameInput && !prefUsernameInput.dataset.prefixBound) {
             prefUsernameInput.dataset.prefixBound = 'true';
+            const refreshPrefix = () => setUsernamePrefixVisible(prefUsernameInput.dataset.isFallback !== 'true');
             prefUsernameInput.addEventListener('input', () => {
                 prefUsernameInput.dataset.isFallback = 'false';
-                setUsernamePrefixVisible(true);
+                refreshPrefix();
             });
-            prefUsernameInput.addEventListener('focus', () => setUsernamePrefixVisible(true));
+            prefUsernameInput.addEventListener('focus', refreshPrefix);
+            prefUsernameInput.addEventListener('blur', refreshPrefix);
         }
 
         const saveBtn = document.getElementById('btn-save-preferences');
@@ -2273,15 +2275,15 @@ async function fetchProfile(token) {
 
                 if (usernameProvided && usernameRaw.length > 0) {
                     if (/\s/.test(usernameRaw)) {
-                        showSaveMsg('username cannot contain spaces', 'is-error');
+                        showSaveMsg('error: username cannot contain spaces', 'is-error');
                         return;
                     }
                     if (!/^[a-zA-Z0-9_-]+$/.test(usernameRaw)) {
-                        showSaveMsg('username can only contain letters, numbers, underscores and hyphens', 'is-error');
+                        showSaveMsg('error: username cannot contain symbols', 'is-error');
                         return;
                     }
                     if (usernameRaw.length < 2 || usernameRaw.length > 32) {
-                        showSaveMsg('username must be between 2 and 32 characters', 'is-error');
+                        showSaveMsg('error: username must be between 2 and 32 characters', 'is-error');
                         return;
                     }
                 }
@@ -2337,11 +2339,11 @@ async function fetchProfile(token) {
                         } catch {}
                     } else {
                         resetSaveBtn();
-                        showSaveMsg(data.error || 'failed to save changes', 'is-error');
+                        showSaveMsg(`error: ${data.error || 'failed to save changes'}`, 'is-error');
                     }
                 } catch {
                     resetSaveBtn();
-                    showSaveMsg('failed to save changes', 'is-error');
+                    showSaveMsg('error: failed to save changes', 'is-error');
                 }
             });
         }
