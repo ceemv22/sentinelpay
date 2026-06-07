@@ -187,8 +187,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 const email = document.getElementById('reg-email').value;
                 const password = document.getElementById('reg-password').value;
 
-                if (password.length < 8 || !/[A-Z]/.test(password) || !/[0-9]/.test(password)) {
-                    document.getElementById('register-error-msg').textContent = 'error: security requirements not met';
+                const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!EMAIL_RE.test(email)) {
+                    document.getElementById('register-error-msg').textContent = 'error: invalid email format';
                     document.getElementById('register-error-msg').style.display = 'block';
                     btn.disabled = false;
                     btn.textContent = 'create account';
@@ -197,15 +198,41 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
 
-                const { data, error } = await s.auth.signUp({ 
-                    email, 
-                    password, 
-                    options: { captchaToken: token } 
+                if (password.length < 8 || !/[A-Z]/.test(password) || !/[0-9]/.test(password)) {
+                    document.getElementById('register-error-msg').textContent = 'error: password must be at least 8 characters and include an uppercase letter and a number';
+                    document.getElementById('register-error-msg').style.display = 'block';
+                    btn.disabled = false;
+                    btn.textContent = 'create account';
+                    btn.removeAttribute('data-captcha-token');
+                    isBusy = false;
+                    return;
+                }
+
+                const { data, error } = await s.auth.signUp({
+                    email,
+                    password,
+                    options: { captchaToken: token }
                 });
 
                 const isExisting = !error && data?.user && data.user.identities?.length === 0;
                 if (error || isExisting) {
-                    const msg = isExisting ? 'error: unable to register. try logging in.' : 'error: registration failed.';
+                    let msg = 'error: registration failed. try again.';
+                    if (isExisting) {
+                        msg = 'error: this email is already registered. try logging in instead.';
+                    } else if (error) {
+                        const m = (error.message || '').toLowerCase();
+                        if (m.includes('email') && (m.includes('invalid') || m.includes('format'))) {
+                            msg = 'error: invalid email format';
+                        } else if (m.includes('already registered') || m.includes('already exists') || m.includes('already been registered')) {
+                            msg = 'error: this email is already registered. try logging in instead.';
+                        } else if (m.includes('password')) {
+                            msg = 'error: password does not meet security requirements';
+                        } else if (m.includes('rate limit') || m.includes('too many')) {
+                            msg = 'error: too many attempts. wait a moment and try again';
+                        } else if (m.includes('captcha')) {
+                            msg = 'error: verification failed. please retry';
+                        }
+                    }
                     document.getElementById('register-error-msg').textContent = msg;
                     document.getElementById('register-error-msg').style.display = 'block';
                     btn.disabled = false;
