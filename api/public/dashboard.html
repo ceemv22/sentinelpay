@@ -3048,8 +3048,48 @@
             </div>
         </div>
     </div>
+
+    <div id="email-verify-modal-overlay" class="modal-overlay">
+        <div class="auth-card modal-content" style="position: relative; z-index: 1000; display: flex; flex-direction: column; max-width: 420px;">
+            <button class="modal-close-btn" id="btn-close-email-verify">✕</button>
+
+            <div id="email-verify-step-password" style="display: none; flex-direction: column; width: 100%;">
+                <div class="auth-tabs" style="margin-bottom: 1.5rem; display: flex; justify-content: flex-start;">
+                    <button class="auth-tab active" style="width: auto; padding: 0.4rem 1rem; cursor: default; pointer-events: none; font-size: 0.7rem; border-radius: 6px;">confirm identity</button>
+                </div>
+                <p style="color: var(--text-muted); font-size: 0.85rem; font-family: 'JetBrains Mono', monospace; line-height: 1.6; margin-bottom: 2rem; width: 100%; text-align: center;">enter your password to continue changing your email</p>
+
+                <form id="email-verify-password-form" class="auth-form" style="display: flex; flex-direction: column; gap: 1.5rem; width: 100%; box-sizing: border-box;">
+                    <div class="input-group">
+                        <label for="email-verify-password">password</label>
+                        <input type="password" id="email-verify-password" placeholder="••••••••" required autocomplete="current-password" style="width: 100%; box-sizing: border-box;">
+                    </div>
+                    <p id="email-verify-password-error" class="error-msg" style="display: none;"></p>
+                    <button type="submit" class="submit-btn" id="email-verify-password-btn">continue</button>
+                </form>
+            </div>
+
+            <div id="email-verify-step-code" style="display: none; flex-direction: column; width: 100%;">
+                <div class="auth-tabs" style="margin-bottom: 1.5rem; display: flex; justify-content: flex-start;">
+                    <button class="auth-tab active" style="width: auto; padding: 0.4rem 1rem; cursor: default; pointer-events: none; font-size: 0.7rem; border-radius: 6px;">verification code</button>
+                </div>
+                <p id="email-verify-code-copy" style="color: var(--text-muted); font-size: 0.85rem; font-family: 'JetBrains Mono', monospace; line-height: 1.6; margin-bottom: 2rem; width: 100%; text-align: center;">enter the 6-digit code we sent to your email</p>
+
+                <form id="email-verify-code-form" class="auth-form" style="display: flex; flex-direction: column; gap: 1.5rem; width: 100%; box-sizing: border-box;">
+                    <div class="input-group">
+                        <label for="email-verify-code">verification code</label>
+                        <input type="text" id="email-verify-code" placeholder="000000" required inputmode="numeric" pattern="[0-9]{6}" maxlength="6" autocomplete="one-time-code" style="width: 100%; box-sizing: border-box; text-align: center; letter-spacing: 0.5rem; font-size: 1.1rem;">
+                    </div>
+                    <p id="email-verify-code-error" class="error-msg" style="display: none;"></p>
+                    <button type="submit" class="submit-btn" id="email-verify-code-btn">verify</button>
+                    <button type="button" id="email-verify-resend-btn" style="background: transparent; border: none; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; cursor: pointer; text-decoration: underline; padding: 0;">resend code</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <script src="toast.js?v=2"></script>
-    <script src="dashboard-v19.js?v=29"></script>
+    <script src="dashboard-v19.js?v=30"></script>
     <script>
         // Eye Tracking Logic
         function trackEye(element, clientX, clientY) {
