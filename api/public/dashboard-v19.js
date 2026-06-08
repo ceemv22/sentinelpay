@@ -2208,7 +2208,8 @@ async function fetchProfile(token) {
             email: profile.email || '',
             username: profile.username || '',
             firstName: profile.firstName || '',
-            lastName: profile.lastName || ''
+            lastName: profile.lastName || '',
+            authProvider: profile.authProvider || 'email'
         }));
 
         const teamEmailEl = document.getElementById('current-user-email');
@@ -2256,6 +2257,178 @@ async function fetchProfile(token) {
                 saveBtn.setAttribute('data-busy', '1');
                 saveBtn.textContent = 'saving...';
             };
+
+            function verifyEmailChangeFlow(currentEmail, mode) {
+                return new Promise((resolve) => {
+                    const overlay = document.getElementById('email-verify-modal-overlay');
+                    const stepPassword = document.getElementById('email-verify-step-password');
+                    const stepCode = document.getElementById('email-verify-step-code');
+                    const closeBtn = document.getElementById('btn-close-email-verify');
+                    const passwordForm = document.getElementById('email-verify-password-form');
+                    const passwordInput = document.getElementById('email-verify-password');
+                    const passwordError = document.getElementById('email-verify-password-error');
+                    const passwordBtn = document.getElementById('email-verify-password-btn');
+                    const codeForm = document.getElementById('email-verify-code-form');
+                    const codeInput = document.getElementById('email-verify-code');
+                    const codeError = document.getElementById('email-verify-code-error');
+                    const codeBtn = document.getElementById('email-verify-code-btn');
+                    const resendBtn = document.getElementById('email-verify-resend-btn');
+
+                    if (!overlay || !stepPassword || !stepCode) { resolve(false); return; }
+
+                    const showError = (el, msg) => { el.textContent = msg; el.style.display = 'block'; };
+                    const hideError = (el) => { el.style.display = 'none'; el.textContent = ''; };
+
+                    let settled = false;
+                    let resendInterval = null;
+                    const finish = (result) => {
+                        if (settled) return;
+                        settled = true;
+                        if (resendInterval) clearInterval(resendInterval);
+                        cleanup();
+                        overlay.classList.remove('active');
+                        document.body.classList.remove('modal-open');
+                        resolve(result);
+                    };
+
+                    const onClose = () => finish(false);
+                    const onOverlayClick = (e) => { if (e.target === overlay) finish(false); };
+
+                    const sendCode = async () => {
+                        try {
+                            await fetch('/v1/user/email-change/send-code', {
+                                method: 'POST',
+                                headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
+                            });
+                        } catch {}
+                    };
+
+                    const showCodeStep = async () => {
+                        stepPassword.style.display = 'none';
+                        stepCode.style.display = 'flex';
+                        codeInput.value = '';
+                        hideError(codeError);
+                        codeBtn.disabled = false;
+                        codeBtn.textContent = 'verify';
+                        await sendCode();
+                        setTimeout(() => codeInput.focus(), 100);
+                    };
+
+                    const onPasswordSubmit = async (e) => {
+                        e.preventDefault();
+                        const pwd = passwordInput.value;
+                        if (!pwd) return;
+                        hideError(passwordError);
+                        passwordBtn.disabled = true;
+                        passwordBtn.textContent = 'verifying...';
+                        try {
+                            const { error } = await sentinelAuth.auth.signInWithPassword({ email: currentEmail, password: pwd });
+                            passwordBtn.disabled = false;
+                            passwordBtn.textContent = 'continue';
+                            if (error) {
+                                showError(passwordError, 'error: incorrect password');
+                                return;
+                            }
+                            passwordInput.value = '';
+                            await showCodeStep();
+                        } catch {
+                            passwordBtn.disabled = false;
+                            passwordBtn.textContent = 'continue';
+                            showError(passwordError, 'error: verification failed. try again');
+                        }
+                    };
+
+                    let resendCooldown = false;
+                    const onResend = async (e) => {
+                        e.preventDefault();
+                        if (resendCooldown) return;
+                        resendCooldown = true;
+                        resendBtn.textContent = 'sending...';
+                        await sendCode();
+                        notify('a new code has been sent to your email', 'info');
+                        let secs = 60;
+                        resendBtn.textContent = `resend in ${secs}s`;
+                        resendInterval = setInterval(() => {
+                            secs -= 1;
+                            if (secs <= 0) {
+                                clearInterval(resendInterval);
+                                resendInterval = null;
+                                resendBtn.textContent = 'resend code';
+                                resendCooldown = false;
+                            } else {
+                                resendBtn.textContent = `resend in ${secs}s`;
+                            }
+                        }, 1000);
+                    };
+
+                    const onCodeSubmit = async (e) => {
+                        e.preventDefault();
+                        const code = codeInput.value.trim();
+                        if (!/^[0-9]{6}$/.test(code)) {
+                            showError(codeError, 'error: enter the 6-digit code');
+                            return;
+                        }
+                        hideError(codeError);
+                        codeBtn.disabled = true;
+                        codeBtn.textContent = 'verifying...';
+                        try {
+                            const r = await fetch('/v1/user/email-change/verify-code', {
+                                method: 'POST',
+                                headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ code })
+                            });
+                            const data = await r.json();
+                            codeBtn.disabled = false;
+                            codeBtn.textContent = 'verify';
+                            if (!r.ok) {
+                                showError(codeError, `error: ${data.error || 'incorrect code'}`);
+                                return;
+                            }
+                            finish(true);
+                        } catch {
+                            codeBtn.disabled = false;
+                            codeBtn.textContent = 'verify';
+                            showError(codeError, 'error: verification failed. try again');
+                        }
+                    };
+
+                    function cleanup() {
+                        closeBtn.removeEventListener('click', onClose);
+                        overlay.removeEventListener('click', onOverlayClick);
+                        passwordForm.removeEventListener('submit', onPasswordSubmit);
+                        codeForm.removeEventListener('submit', onCodeSubmit);
+                        resendBtn.removeEventListener('click', onResend);
+                    }
+
+                    closeBtn.addEventListener('click', onClose);
+                    overlay.addEventListener('click', onOverlayClick);
+                    passwordForm.addEventListener('submit', onPasswordSubmit);
+                    codeForm.addEventListener('submit', onCodeSubmit);
+                    resendBtn.addEventListener('click', onResend);
+
+                    hideError(passwordError);
+                    hideError(codeError);
+                    passwordInput.value = '';
+                    codeInput.value = '';
+                    resendBtn.textContent = 'resend code';
+                    passwordBtn.disabled = false;
+                    passwordBtn.textContent = 'continue';
+
+                    if (mode === 'password') {
+                        stepPassword.style.display = 'flex';
+                        stepCode.style.display = 'none';
+                        overlay.classList.add('active');
+                        document.body.classList.add('modal-open');
+                        setTimeout(() => passwordInput.focus(), 100);
+                    } else {
+                        stepPassword.style.display = 'none';
+                        overlay.classList.add('active');
+                        document.body.classList.add('modal-open');
+                        showCodeStep();
+                    }
+                });
+            }
+
             saveBtn.addEventListener('click', async () => {
                 const tok = token;
                 if (!tok) return;
@@ -2326,6 +2499,25 @@ async function fetchProfile(token) {
                     let emailChangeRequested = false;
 
                     if (emailRaw.toLowerCase() !== currentEmail.toLowerCase() && sentinelAuth) {
+                        const authProvider = cachedForEmail.authProvider || 'email';
+                        let verificationMode = null;
+                        if (authProvider === 'email') {
+                            verificationMode = 'password';
+                        } else if (authProvider === 'google') {
+                            verificationMode = 'code';
+                        } else if (currentEmail) {
+                            verificationMode = 'code';
+                        }
+
+                        if (verificationMode) {
+                            const verified = await verifyEmailChangeFlow(currentEmail, verificationMode);
+                            if (!verified) {
+                                resetSaveBtn();
+                                return;
+                            }
+                            setSaveBtnBusy();
+                        }
+
                         const { error: emailErr } = await sentinelAuth.auth.updateUser({ email: emailRaw });
                         if (emailErr) {
                             resetSaveBtn();
