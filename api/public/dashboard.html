@@ -3088,7 +3088,7 @@
                 <div class="auth-tabs" style="margin-bottom: 2rem;">
                     <button class="auth-tab active" style="width: 100%; cursor: default; pointer-events: none;">confirm identity</button>
                 </div>
-                <p style="color: var(--text-muted); font-size: 0.85rem; font-family: 'JetBrains Mono', monospace; line-height: 1.6; margin-bottom: 2rem; width: 100%; text-align: center;">enter your current password to continue</p>
+                <p style="color: var(--text-muted); font-size: 0.85rem; font-family: 'JetBrains Mono', monospace; line-height: 1.6; margin-bottom: 2rem; width: 100%; text-align: center;">enter your current password to continue changing your email.</p>
                 <form id="email-verify-password-form" class="auth-form" style="width: 100%; display: flex; flex-direction: column;" novalidate>
                     <div class="input-group">
                         <label for="email-verify-password">password</label>
@@ -3099,40 +3099,24 @@
                 </form>
             </div>
 
-            <div id="email-verify-step-code" style="display: none; flex-direction: column; align-items: center; justify-content: space-between; text-align: center; width: 100%; min-height: 380px; padding-top: 1rem;">
-                <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%;">
-                    <div style="margin-bottom: 2rem; filter: drop-shadow(0 0 20px rgba(0, 240, 255, 0.25)); display: flex; justify-content: center;">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" style="width: 100px; height: 100px;">
-                            <defs>
-                                <linearGradient id="checkGradOtp" x1="0%" y1="0%" x2="100%" y2="100%">
-                                    <stop offset="0%" stop-color="#00f0ff" />
-                                    <stop offset="100%" stop-color="#a020f0" />
-                                </linearGradient>
-                            </defs>
-                            <g fill="none" stroke="url(#checkGradOtp)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z" style="opacity: 0.25;" />
-                                <path d="M42 60 L54 72 L78 48" stroke-width="4"></path>
-                            </g>
-                        </svg>
-                    </div>
-                    <h2 style="font-size: 2.25rem; font-weight: 800; letter-spacing: -1.75px; color: #fff; margin-bottom: 1rem; font-family: 'JetBrains Mono', monospace; text-transform: lowercase;">check inbox</h2>
-                    <p style="color: rgba(255,255,255,0.4); font-size: 0.9rem; font-family: 'JetBrains Mono', monospace; line-height: 1.8; max-width: 280px; margin: 0 auto 2rem;">we've sent a 6-digit code to your email.</p>
-
-                    <form id="email-verify-code-form" style="display: flex; flex-direction: column; align-items: center; gap: 1rem; width: 100%;" novalidate>
-                        <div class="otp-boxes" id="otp-boxes">
-                            <input class="otp-box" type="text" inputmode="numeric" maxlength="1" autocomplete="off" data-idx="0">
-                            <input class="otp-box" type="text" inputmode="numeric" maxlength="1" autocomplete="off" data-idx="1">
-                            <input class="otp-box" type="text" inputmode="numeric" maxlength="1" autocomplete="off" data-idx="2">
-                            <input class="otp-box" type="text" inputmode="numeric" maxlength="1" autocomplete="off" data-idx="3">
-                            <input class="otp-box" type="text" inputmode="numeric" maxlength="1" autocomplete="off" data-idx="4">
-                            <input class="otp-box" type="text" inputmode="numeric" maxlength="1" autocomplete="off" data-idx="5">
-                        </div>
-                        <p id="email-verify-code-error" class="error-msg" style="display: none;"></p>
-                        <button type="submit" class="submit-btn" id="email-verify-code-btn" style="width: 100%; margin-top: 0.5rem;">verify</button>
-                    </form>
+            <div id="email-verify-step-code" style="display: none; flex-direction: column; width: 100%;">
+                <div class="auth-tabs" style="margin-bottom: 2rem;">
+                    <button class="auth-tab active" style="width: 100%; cursor: default; pointer-events: none;">verify email</button>
                 </div>
-
-                <div style="width: 100%; display: flex; flex-direction: column; align-items: center; padding-bottom: 0.5rem; min-height: 100px; justify-content: flex-end;">
+                <p style="color: var(--text-muted); font-size: 0.85rem; font-family: 'JetBrains Mono', monospace; line-height: 1.6; margin-bottom: 2rem; width: 100%; text-align: center;">enter the 6-digit code we sent to your email.</p>
+                <form id="email-verify-code-form" class="auth-form" style="width: 100%; display: flex; flex-direction: column; align-items: center;" novalidate>
+                    <div class="otp-boxes" id="otp-boxes">
+                        <input class="otp-box" type="text" inputmode="numeric" maxlength="1" autocomplete="off" data-idx="0">
+                        <input class="otp-box" type="text" inputmode="numeric" maxlength="1" autocomplete="off" data-idx="1">
+                        <input class="otp-box" type="text" inputmode="numeric" maxlength="1" autocomplete="off" data-idx="2">
+                        <input class="otp-box" type="text" inputmode="numeric" maxlength="1" autocomplete="off" data-idx="3">
+                        <input class="otp-box" type="text" inputmode="numeric" maxlength="1" autocomplete="off" data-idx="4">
+                        <input class="otp-box" type="text" inputmode="numeric" maxlength="1" autocomplete="off" data-idx="5">
+                    </div>
+                    <p id="email-verify-code-error" class="error-msg" style="display: none; margin-top: 1rem;"></p>
+                    <button type="submit" class="submit-btn" id="email-verify-code-btn" style="margin-top: 1.5rem; width: 100%;">verify</button>
+                </form>
+                <div style="width: 100%; display: flex; flex-direction: column; align-items: center; padding-top: 1.5rem;">
                     <button type="button" id="email-verify-resend-btn" style="background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.1); padding: 12px 24px; border-radius: 12px; font-size: 0.72rem; cursor: pointer; font-family: 'JetBrains Mono', monospace; transition: all 0.3s ease; display: inline-block; min-width: 180px;">resend code</button>
                 </div>
             </div>
@@ -3140,7 +3124,7 @@
     </div>
 
     <script src="toast.js?v=3"></script>
-    <script src="dashboard-v19.js?v=34"></script>
+    <script src="dashboard-v19.js?v=35"></script>
     <script>
         // Eye Tracking Logic
         function trackEye(element, clientX, clientY) {
