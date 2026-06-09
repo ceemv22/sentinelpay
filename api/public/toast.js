@@ -31,9 +31,12 @@ window.SentinelToast = {
         const { message, type } = this.queue.shift();
 
         if (this.active) {
-            this._dismiss(this.active, () => this._render(message, type));
-            return;
+            const old = this.active;
+            this.active = null;
+            old.classList.remove('show');
+            setTimeout(() => { if (old.parentNode) old.parentNode.removeChild(old); }, 350);
         }
+
         this._render(message, type);
     },
 
