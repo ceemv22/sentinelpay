@@ -2220,6 +2220,13 @@ async function fetchProfile(token) {
             if (teamAvatarEl) teamAvatarEl.textContent = displayId.charAt(0).toUpperCase();
         }
 
+        const dropdownEl = document.getElementById('dropdown-email');
+        if (dropdownEl) {
+            dropdownEl.textContent = profile.username ? `@${profile.username}` : (profile.email || '');
+        }
+        const topAvatarEl = document.getElementById('org-avatar-circle');
+        if (topAvatarEl && displayId) topAvatarEl.textContent = displayId.charAt(0).toUpperCase();
+
         applyProfileToForm(profile);
 
         const prefUsernameInput = document.getElementById('pref-username');
