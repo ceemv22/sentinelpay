@@ -33,8 +33,10 @@ window.SentinelToast = {
         if (this.active) {
             const old = this.active;
             this.active = null;
-            old.classList.remove('show');
-            setTimeout(() => { if (old.parentNode) old.parentNode.removeChild(old); }, 350);
+            old.style.transition = 'none';
+            old.style.opacity = '0';
+            old.style.transform = 'translateX(120%)';
+            setTimeout(() => { if (old.parentNode) old.parentNode.removeChild(old); }, 50);
         }
 
         this._render(message, type);

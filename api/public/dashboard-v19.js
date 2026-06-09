@@ -2497,8 +2497,6 @@ async function fetchProfile(token) {
                     return;
                 }
 
-                setSaveBtnBusy();
-
                 try {
                     const cachedRawForEmail = localStorage.getItem('sentinel-cached-profile');
                     const cachedForEmail = cachedRawForEmail ? JSON.parse(cachedRawForEmail) : {};
@@ -2518,13 +2516,13 @@ async function fetchProfile(token) {
 
                         if (verificationMode) {
                             const verified = await verifyEmailChangeFlow(currentEmail, verificationMode);
-                            if (!verified) {
-                                resetSaveBtn();
-                                return;
-                            }
-                            setSaveBtnBusy();
+                            if (!verified) return;
                         }
+                    }
 
+                    setSaveBtnBusy();
+
+                    if (emailRaw.toLowerCase() !== currentEmail.toLowerCase() && sentinelAuth) {
                         const { error: emailErr } = await sentinelAuth.auth.updateUser({ email: emailRaw });
                         if (emailErr) {
                             resetSaveBtn();
