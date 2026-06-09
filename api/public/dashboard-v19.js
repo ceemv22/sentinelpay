@@ -2265,6 +2265,8 @@ async function fetchProfile(token) {
                 saveBtn.textContent = 'saving...';
             };
 
+            const otpSentAt = { old: 0, new: 0 };
+
             const maskEmail = (email) => {
                 const [local, domain] = email.split('@');
                 if (!domain) return email;
@@ -2350,16 +2352,25 @@ async function fetchProfile(token) {
                     const onClose = () => finish(false);
                     const onOverlayClick = (e) => { if (e.target === overlay) finish(false); };
 
-                    const startCooldown = (btn) => {
-                        let secs = 60;
+                    let cooldownIntervalOld = null;
+                    let cooldownIntervalNew = null;
+
+                    const applyCooldown = (btn, secs, intervalRef) => {
+                        if (intervalRef.id) { clearInterval(intervalRef.id); intervalRef.id = null; }
+                        if (secs <= 0) { btn.disabled = false; btn.textContent = 'resend code'; return; }
                         btn.disabled = true;
                         btn.textContent = `resend in ${secs}s`;
-                        const id = setInterval(() => {
+                        intervalRef.id = setInterval(() => {
                             secs -= 1;
-                            if (secs <= 0) { clearInterval(id); btn.disabled = false; btn.textContent = 'resend code'; }
-                            else btn.textContent = `resend in ${secs}s`;
+                            if (secs <= 0) {
+                                clearInterval(intervalRef.id); intervalRef.id = null;
+                                btn.disabled = false; btn.textContent = 'resend code';
+                            } else { btn.textContent = `resend in ${secs}s`; }
                         }, 1000);
                     };
+
+                    const oldIntervalRef = { id: cooldownIntervalOld };
+                    const newIntervalRef = { id: cooldownIntervalNew };
 
                     const sendOldCode = async (btn) => {
                         try {
@@ -2367,7 +2378,18 @@ async function fetchProfile(token) {
                                 method: 'POST',
                                 headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
                             });
-                            if (r.status === 429 || r.ok) { if (btn) startCooldown(btn); return 'sent'; }
+                            if (r.ok) {
+                                otpSentAt.old = Date.now();
+                                if (btn) applyCooldown(btn, 60, oldIntervalRef);
+                                return 'sent';
+                            }
+                            if (r.status === 429) {
+                                const data = await r.json().catch(() => ({}));
+                                const remaining = data.retryAfter || 60;
+                                otpSentAt.old = Date.now() - (60 - remaining) * 1000;
+                                if (btn) applyCooldown(btn, remaining, oldIntervalRef);
+                                return 'sent';
+                            }
                             return 'error';
                         } catch { return 'error'; }
                     };
@@ -2379,7 +2401,18 @@ async function fetchProfile(token) {
                                 headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
                                 body: JSON.stringify({ newEmail })
                             });
-                            if (r.status === 429 || r.ok) { if (btn) startCooldown(btn); return 'sent'; }
+                            if (r.ok) {
+                                otpSentAt.new = Date.now();
+                                if (btn) applyCooldown(btn, 60, newIntervalRef);
+                                return 'sent';
+                            }
+                            if (r.status === 429) {
+                                const data = await r.json().catch(() => ({}));
+                                const remaining = data.retryAfter || 60;
+                                otpSentAt.new = Date.now() - (60 - remaining) * 1000;
+                                if (btn) applyCooldown(btn, remaining, newIntervalRef);
+                                return 'sent';
+                            }
                             return 'error';
                         } catch { return 'error'; }
                     };
@@ -2392,14 +2425,19 @@ async function fetchProfile(token) {
                         hideError(codeError);
                         codeBtn.disabled = false;
                         codeBtn.textContent = 'verify';
-                        resendBtn.disabled = true;
-                        resendBtn.textContent = 'sending...';
+                        const remaining = otpSentAt.old ? Math.ceil((60000 - (Date.now() - otpSentAt.old)) / 1000) : 0;
+                        if (remaining > 0) {
+                            applyCooldown(resendBtn, remaining, oldIntervalRef);
+                        } else {
+                            resendBtn.disabled = true;
+                            resendBtn.textContent = 'sending...';
+                            sendOldCode(resendBtn).then(s => {
+                                if (s === 'error') { resendBtn.disabled = false; resendBtn.textContent = 'resend code'; }
+                            });
+                        }
                         const targetEl = document.getElementById('email-verify-code-target');
                         if (targetEl) targetEl.textContent = currentEmail ? maskEmail(currentEmail) : 'your email';
                         otpOld.boxes[0].focus();
-                        sendOldCode(resendBtn).then(s => {
-                            if (s === 'error') { resendBtn.disabled = false; resendBtn.textContent = 'resend code'; }
-                        });
                     };
 
                     const showNewCodeStep = () => {
@@ -2410,14 +2448,19 @@ async function fetchProfile(token) {
                         hideError(newCodeError);
                         newCodeBtn.disabled = false;
                         newCodeBtn.textContent = 'verify';
-                        resendNewBtn.disabled = true;
-                        resendNewBtn.textContent = 'sending...';
+                        const remainingNew = otpSentAt.new ? Math.ceil((60000 - (Date.now() - otpSentAt.new)) / 1000) : 0;
+                        if (remainingNew > 0) {
+                            applyCooldown(resendNewBtn, remainingNew, newIntervalRef);
+                        } else {
+                            resendNewBtn.disabled = true;
+                            resendNewBtn.textContent = 'sending...';
+                            sendNewCode(resendNewBtn).then(s => {
+                                if (s === 'error') { resendNewBtn.disabled = false; resendNewBtn.textContent = 'resend code'; }
+                            });
+                        }
                         const targetEl = document.getElementById('email-verify-new-target');
                         if (targetEl) targetEl.textContent = maskEmail(newEmail);
                         otpNew.boxes[0].focus();
-                        sendNewCode(resendNewBtn).then(s => {
-                            if (s === 'error') { resendNewBtn.disabled = false; resendNewBtn.textContent = 'resend code'; }
-                        });
                     };
 
                     const onPasswordSubmit = async (e) => {
@@ -2626,6 +2669,11 @@ async function fetchProfile(token) {
                     let emailChangeRequested = false;
 
                     if (emailRaw.toLowerCase() !== currentEmail.toLowerCase() && sentinelAuth) {
+                        if (otpSentAt._lastNewEmail && otpSentAt._lastNewEmail !== emailRaw.toLowerCase()) {
+                            otpSentAt.new = 0;
+                        }
+                        otpSentAt._lastNewEmail = emailRaw.toLowerCase();
+
                         try {
                             const checkRes = await fetch('/v1/user/check-email', {
                                 method: 'POST',
