@@ -2346,6 +2346,13 @@ async function fetchProfile(token) {
                         } catch {}
                     };
 
+                    const maskEmail = (email) => {
+                        const [local, domain] = email.split('@');
+                        if (!domain) return email;
+                        const visible = local.slice(0, Math.min(2, local.length));
+                        return `${visible}${'*'.repeat(Math.max(3, local.length - visible.length))}@${domain}`;
+                    };
+
                     const showCodeStep = () => {
                         stepPassword.style.display = 'none';
                         stepCode.style.display = 'flex';
@@ -2353,6 +2360,8 @@ async function fetchProfile(token) {
                         hideError(codeError);
                         codeBtn.disabled = false;
                         codeBtn.textContent = 'verify';
+                        const targetEl = document.getElementById('email-verify-code-target');
+                        if (targetEl) targetEl.textContent = currentEmail ? maskEmail(currentEmail) : 'your email';
                         otpBoxes[0].focus();
                         sendCode();
                     };
