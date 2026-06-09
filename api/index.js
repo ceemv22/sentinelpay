@@ -671,6 +671,20 @@ app.patch('/v1/user/profile', requireSupabaseAuth, async (req, res) => {
     }
 });
 
+app.post('/v1/user/check-email', requireSupabaseAuth, async (req, res) => {
+    try {
+        const { email } = req.body;
+        if (typeof email !== 'string' || !email.trim()) return res.status(400).json({ error: 'email required' });
+        const existing = await prisma.user.findFirst({
+            where: { email: { equals: email.trim(), mode: 'insensitive' }, NOT: { id: req.user.id } }
+        });
+        res.json({ available: !existing });
+    } catch (err) {
+        console.error('[check-email error]', err);
+        res.status(500).json({ error: 'failed to check email' });
+    }
+});
+
 const emailOtpStore = new Map();
 
 app.post('/v1/user/email-change/send-code', requireSupabaseAuth, async (req, res) => {

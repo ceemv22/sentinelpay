@@ -2549,6 +2549,23 @@ async function fetchProfile(token) {
                     let emailChangeRequested = false;
 
                     if (emailRaw.toLowerCase() !== currentEmail.toLowerCase() && sentinelAuth) {
+                        try {
+                            const checkRes = await fetch('/v1/user/check-email', {
+                                method: 'POST',
+                                headers: { 'Authorization': `Bearer ${tok}`, 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ email: emailRaw })
+                            });
+                            const checkData = await checkRes.json();
+                            if (!checkData.available) {
+                                if (emailInput) emailInput.value = currentEmail;
+                                notify('error: this email is already registered to another account', 'error');
+                                return;
+                            }
+                        } catch {
+                            notify('error: could not verify email availability', 'error');
+                            return;
+                        }
+
                         const authProvider = cachedForEmail.authProvider || 'email';
                         let verificationMode = null;
                         if (authProvider === 'email') {
