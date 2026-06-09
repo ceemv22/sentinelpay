@@ -2338,13 +2338,9 @@ async function fetchProfile(token) {
                     const hideError = (el) => { el.style.display = 'none'; el.textContent = ''; };
 
                     let settled = false;
-                    let resendInterval = null;
-                    let resendNewInterval = null;
                     const finish = (result) => {
                         if (settled) return;
                         settled = true;
-                        if (resendInterval) clearInterval(resendInterval);
-                        if (resendNewInterval) clearInterval(resendNewInterval);
                         cleanup();
                         overlay.classList.remove('active');
                         document.body.classList.remove('modal-open');
@@ -2354,23 +2350,40 @@ async function fetchProfile(token) {
                     const onClose = () => finish(false);
                     const onOverlayClick = (e) => { if (e.target === overlay) finish(false); };
 
-                    const sendOldCode = async () => {
+                    const startCooldown = (btn) => {
+                        let secs = 60;
+                        btn.disabled = true;
+                        btn.textContent = `resend in ${secs}s`;
+                        const id = setInterval(() => {
+                            secs -= 1;
+                            if (secs <= 0) { clearInterval(id); btn.disabled = false; btn.textContent = 'resend code'; }
+                            else btn.textContent = `resend in ${secs}s`;
+                        }, 1000);
+                    };
+
+                    const sendOldCode = async (btn) => {
                         try {
-                            await fetch('/v1/user/email-change/send-code', {
+                            const r = await fetch('/v1/user/email-change/send-code', {
                                 method: 'POST',
                                 headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
                             });
-                        } catch {}
+                            if (r.status === 429) { if (btn) startCooldown(btn); return false; }
+                            if (r.ok && btn) startCooldown(btn);
+                            return r.ok;
+                        } catch { return false; }
                     };
 
-                    const sendNewCode = async () => {
+                    const sendNewCode = async (btn) => {
                         try {
-                            await fetch('/v1/user/email-change/send-code-new', {
+                            const r = await fetch('/v1/user/email-change/send-code-new', {
                                 method: 'POST',
                                 headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
                                 body: JSON.stringify({ newEmail })
                             });
-                        } catch {}
+                            if (r.status === 429) { if (btn) startCooldown(btn); return false; }
+                            if (r.ok && btn) startCooldown(btn);
+                            return r.ok;
+                        } catch { return false; }
                     };
 
                     const showCodeStep = () => {
@@ -2381,10 +2394,12 @@ async function fetchProfile(token) {
                         hideError(codeError);
                         codeBtn.disabled = false;
                         codeBtn.textContent = 'verify';
+                        resendBtn.disabled = false;
+                        resendBtn.textContent = 'resend code';
                         const targetEl = document.getElementById('email-verify-code-target');
                         if (targetEl) targetEl.textContent = currentEmail ? maskEmail(currentEmail) : 'your email';
                         otpOld.boxes[0].focus();
-                        sendOldCode();
+                        sendOldCode(resendBtn);
                     };
 
                     const showNewCodeStep = () => {
@@ -2395,10 +2410,12 @@ async function fetchProfile(token) {
                         hideError(newCodeError);
                         newCodeBtn.disabled = false;
                         newCodeBtn.textContent = 'verify';
+                        resendNewBtn.disabled = false;
+                        resendNewBtn.textContent = 'resend code';
                         const targetEl = document.getElementById('email-verify-new-target');
                         if (targetEl) targetEl.textContent = maskEmail(newEmail);
                         otpNew.boxes[0].focus();
-                        sendNewCode();
+                        sendNewCode(resendNewBtn);
                     };
 
                     const onPasswordSubmit = async (e) => {
@@ -2422,37 +2439,36 @@ async function fetchProfile(token) {
                         }
                     };
 
-                    const startResendCooldown = (btn, intervalRef, sendFn) => {
-                        btn.textContent = 'sending...';
-                        sendFn().then(() => {
+                    const onResend = async (e) => {
+                        e.preventDefault();
+                        if (resendBtn.disabled) return;
+                        resendBtn.disabled = true;
+                        resendBtn.textContent = 'sending...';
+                        const ok = await sendOldCode(null);
+                        if (ok) {
                             notify('a new code has been sent', 'info');
-                            let secs = 60;
-                            btn.textContent = `resend in ${secs}s`;
-                            const id = setInterval(() => {
-                                secs -= 1;
-                                if (secs <= 0) { clearInterval(id); btn.textContent = 'resend code'; intervalRef.v = null; }
-                                else btn.textContent = `resend in ${secs}s`;
-                            }, 1000);
-                            intervalRef.v = id;
-                        });
+                            startCooldown(resendBtn);
+                        } else {
+                            resendBtn.disabled = false;
+                            resendBtn.textContent = 'resend code';
+                            notify('error: please wait before requesting another code', 'error');
+                        }
                     };
 
-                    const resendOldRef = { v: null, busy: false };
-                    const onResend = (e) => {
+                    const onResendNew = async (e) => {
                         e.preventDefault();
-                        if (resendOldRef.busy) return;
-                        resendOldRef.busy = true;
-                        startResendCooldown(resendBtn, resendOldRef, sendOldCode);
-                        setTimeout(() => { resendOldRef.busy = false; }, 60000);
-                    };
-
-                    const resendNewRef = { v: null, busy: false };
-                    const onResendNew = (e) => {
-                        e.preventDefault();
-                        if (resendNewRef.busy) return;
-                        resendNewRef.busy = true;
-                        startResendCooldown(resendNewBtn, resendNewRef, sendNewCode);
-                        setTimeout(() => { resendNewRef.busy = false; }, 60000);
+                        if (resendNewBtn.disabled) return;
+                        resendNewBtn.disabled = true;
+                        resendNewBtn.textContent = 'sending...';
+                        const ok = await sendNewCode(null);
+                        if (ok) {
+                            notify('a new code has been sent', 'info');
+                            startCooldown(resendNewBtn);
+                        } else {
+                            resendNewBtn.disabled = false;
+                            resendNewBtn.textContent = 'resend code';
+                            notify('error: please wait before requesting another code', 'error');
+                        }
                     };
 
                     const onCodeSubmit = async (e) => {
