@@ -2367,10 +2367,9 @@ async function fetchProfile(token) {
                                 method: 'POST',
                                 headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
                             });
-                            if (r.status === 429) { if (btn) startCooldown(btn); return false; }
-                            if (r.ok && btn) startCooldown(btn);
-                            return r.ok;
-                        } catch { return false; }
+                            if (r.status === 429 || r.ok) { if (btn) startCooldown(btn); return 'sent'; }
+                            return 'error';
+                        } catch { return 'error'; }
                     };
 
                     const sendNewCode = async (btn) => {
@@ -2380,10 +2379,9 @@ async function fetchProfile(token) {
                                 headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
                                 body: JSON.stringify({ newEmail })
                             });
-                            if (r.status === 429) { if (btn) startCooldown(btn); return false; }
-                            if (r.ok && btn) startCooldown(btn);
-                            return r.ok;
-                        } catch { return false; }
+                            if (r.status === 429 || r.ok) { if (btn) startCooldown(btn); return 'sent'; }
+                            return 'error';
+                        } catch { return 'error'; }
                     };
 
                     const showCodeStep = () => {
@@ -2394,12 +2392,14 @@ async function fetchProfile(token) {
                         hideError(codeError);
                         codeBtn.disabled = false;
                         codeBtn.textContent = 'verify';
-                        resendBtn.disabled = false;
-                        resendBtn.textContent = 'resend code';
+                        resendBtn.disabled = true;
+                        resendBtn.textContent = 'sending...';
                         const targetEl = document.getElementById('email-verify-code-target');
                         if (targetEl) targetEl.textContent = currentEmail ? maskEmail(currentEmail) : 'your email';
                         otpOld.boxes[0].focus();
-                        sendOldCode(resendBtn);
+                        sendOldCode(resendBtn).then(s => {
+                            if (s === 'error') { resendBtn.disabled = false; resendBtn.textContent = 'resend code'; }
+                        });
                     };
 
                     const showNewCodeStep = () => {
@@ -2410,12 +2410,14 @@ async function fetchProfile(token) {
                         hideError(newCodeError);
                         newCodeBtn.disabled = false;
                         newCodeBtn.textContent = 'verify';
-                        resendNewBtn.disabled = false;
-                        resendNewBtn.textContent = 'resend code';
+                        resendNewBtn.disabled = true;
+                        resendNewBtn.textContent = 'sending...';
                         const targetEl = document.getElementById('email-verify-new-target');
                         if (targetEl) targetEl.textContent = maskEmail(newEmail);
                         otpNew.boxes[0].focus();
-                        sendNewCode(resendNewBtn);
+                        sendNewCode(resendNewBtn).then(s => {
+                            if (s === 'error') { resendNewBtn.disabled = false; resendNewBtn.textContent = 'resend code'; }
+                        });
                     };
 
                     const onPasswordSubmit = async (e) => {
@@ -2444,15 +2446,9 @@ async function fetchProfile(token) {
                         if (resendBtn.disabled) return;
                         resendBtn.disabled = true;
                         resendBtn.textContent = 'sending...';
-                        const ok = await sendOldCode(null);
-                        if (ok) {
-                            notify('a new code has been sent', 'info');
-                            startCooldown(resendBtn);
-                        } else {
-                            resendBtn.disabled = false;
-                            resendBtn.textContent = 'resend code';
-                            notify('error: please wait before requesting another code', 'error');
-                        }
+                        const s = await sendOldCode(resendBtn);
+                        if (s === 'sent') notify('a new code has been sent', 'info');
+                        else { resendBtn.disabled = false; resendBtn.textContent = 'resend code'; }
                     };
 
                     const onResendNew = async (e) => {
@@ -2460,15 +2456,9 @@ async function fetchProfile(token) {
                         if (resendNewBtn.disabled) return;
                         resendNewBtn.disabled = true;
                         resendNewBtn.textContent = 'sending...';
-                        const ok = await sendNewCode(null);
-                        if (ok) {
-                            notify('a new code has been sent', 'info');
-                            startCooldown(resendNewBtn);
-                        } else {
-                            resendNewBtn.disabled = false;
-                            resendNewBtn.textContent = 'resend code';
-                            notify('error: please wait before requesting another code', 'error');
-                        }
+                        const s = await sendNewCode(resendNewBtn);
+                        if (s === 'sent') notify('a new code has been sent', 'info');
+                        else { resendNewBtn.disabled = false; resendNewBtn.textContent = 'resend code'; }
                     };
 
                     const onCodeSubmit = async (e) => {
