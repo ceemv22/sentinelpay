@@ -693,7 +693,8 @@ app.post('/v1/user/email-change/send-code', requireSupabaseAuth, async (req, res
 
         const existing = emailOtpStore.get(req.user.id);
         if (existing && Date.now() - existing.sentAt < 60 * 1000) {
-            return res.status(429).json({ error: 'please wait before requesting another code' });
+            const retryAfter = Math.ceil((60 * 1000 - (Date.now() - existing.sentAt)) / 1000);
+            return res.status(429).json({ error: 'please wait before requesting another code', retryAfter });
         }
 
         const code = crypto.randomInt(100000, 1000000).toString();
@@ -801,7 +802,8 @@ app.post('/v1/user/email-change/send-code-new', requireSupabaseAuth, async (req,
 
         const existing = emailOtpNewStore.get(req.user.id);
         if (existing && Date.now() - existing.sentAt < 60 * 1000) {
-            return res.status(429).json({ error: 'please wait before requesting another code' });
+            const retryAfter = Math.ceil((60 * 1000 - (Date.now() - existing.sentAt)) / 1000);
+            return res.status(429).json({ error: 'please wait before requesting another code', retryAfter });
         }
 
         const code = crypto.randomInt(100000, 1000000).toString();
