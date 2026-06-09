@@ -787,6 +787,107 @@ app.post('/v1/user/email-change/verify-code', requireSupabaseAuth, async (req, r
     }
 });
 
+const emailOtpNewStore = new Map();
+
+const NEW_EMAIL_RE = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,}$/;
+
+app.post('/v1/user/email-change/send-code-new', requireSupabaseAuth, async (req, res) => {
+    try {
+        const { newEmail } = req.body;
+        if (typeof newEmail !== 'string' || !NEW_EMAIL_RE.test(newEmail.trim())) {
+            return res.status(400).json({ error: 'invalid email' });
+        }
+        const target = newEmail.trim();
+
+        const existing = emailOtpNewStore.get(req.user.id);
+        if (existing && Date.now() - existing.sentAt < 60 * 1000) {
+            return res.status(429).json({ error: 'please wait before requesting another code' });
+        }
+
+        const code = crypto.randomInt(100000, 1000000).toString();
+        const codeHash = crypto.createHash('sha256').update(code).digest('hex');
+        emailOtpNewStore.set(req.user.id, {
+            codeHash,
+            email: target,
+            expiresAt: Date.now() + 10 * 60 * 1000,
+            attempts: 0,
+            sentAt: Date.now()
+        });
+
+        const { Resend } = require('resend');
+        const resend = new Resend(process.env.RESEND_API_KEY);
+        await resend.emails.send({
+            from: 'sentinelpay <noreply@sentinelpay.org>',
+            to: target,
+            subject: 'confirm your new sentinelpay email',
+            html: `
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="utf-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>confirm new email | SentinelPay</title>
+                <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
+            </head>
+            <body style="margin: 0; padding: 0; background-color: #050505; color: #ffffff; font-family: 'JetBrains Mono', 'Courier New', monospace; -webkit-font-smoothing: antialiased;">
+                <div style="background-color: #050505; padding: 100px 20px; text-align: center;">
+                    <table align="center" border="0" cellpadding="0" cellspacing="0" style="margin-bottom: 50px;">
+                        <tr><td align="center"><img src="https://sentinelpay.org/logo.png" alt="SentinelPay" width="64" height="64" style="display: block; border: 0;"></td></tr>
+                    </table>
+                    <table align="center" border="0" cellpadding="0" cellspacing="0" style="max-width: 420px; width: 100%; border-top: 1px solid rgba(255,255,255,0.05);">
+                        <tr>
+                            <td style="padding: 40px 0;">
+                                <h1 style="font-family: 'JetBrains Mono', monospace; font-size: 24px; font-weight: 800; letter-spacing: -1.5px; margin: 0 0 25px 0; color: #ffffff; text-transform: lowercase;">confirm new email</h1>
+                                <p style="font-family: 'JetBrains Mono', monospace; font-size: 14px; line-height: 1.6; color: #777777; margin: 0 0 35px 0;">someone requested to link this address to a sentinelpay account. use this code to confirm. expires in 10 minutes.</p>
+                                <div style="font-family: 'JetBrains Mono', monospace; font-size: 36px; font-weight: 800; letter-spacing: 10px; color: #00f0ff; margin: 0 0 35px 0;">${code}</div>
+                                <p style="font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.6; color: #555555; margin: 0;">if you didn't request this, you can safely ignore this email.</p>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </body>
+            </html>`
+        });
+
+        res.json({ ok: true });
+    } catch (err) {
+        console.error('[email-otp-new send error]', err);
+        res.status(500).json({ error: 'failed to send verification code' });
+    }
+});
+
+app.post('/v1/user/email-change/verify-code-new', requireSupabaseAuth, async (req, res) => {
+    try {
+        const { code } = req.body;
+        if (typeof code !== 'string' || !/^[0-9]{6}$/.test(code)) {
+            return res.status(400).json({ error: 'invalid code format' });
+        }
+
+        const entry = emailOtpNewStore.get(req.user.id);
+        if (!entry) return res.status(400).json({ error: 'no verification code requested' });
+        if (Date.now() > entry.expiresAt) {
+            emailOtpNewStore.delete(req.user.id);
+            return res.status(400).json({ error: 'code expired. request a new one' });
+        }
+        if (entry.attempts >= 5) {
+            emailOtpNewStore.delete(req.user.id);
+            return res.status(429).json({ error: 'too many attempts. request a new code' });
+        }
+
+        const codeHash = crypto.createHash('sha256').update(code).digest('hex');
+        if (codeHash !== entry.codeHash) {
+            entry.attempts += 1;
+            return res.status(400).json({ error: 'incorrect code' });
+        }
+
+        emailOtpNewStore.delete(req.user.id);
+        res.json({ ok: true });
+    } catch (err) {
+        console.error('[email-otp-new verify error]', err);
+        res.status(500).json({ error: 'failed to verify code' });
+    }
+});
+
 app.get('/v1/user/api-key/reveal', requireSupabaseAuth, async (req, res) => {
     try {
         const apiKey = await prisma.apiKey.findFirst({

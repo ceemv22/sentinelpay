@@ -2265,69 +2265,86 @@ async function fetchProfile(token) {
                 saveBtn.textContent = 'saving...';
             };
 
-            function verifyEmailChangeFlow(currentEmail, mode) {
+            const maskEmail = (email) => {
+                const [local, domain] = email.split('@');
+                if (!domain) return email;
+                const visible = local.slice(0, Math.min(2, local.length));
+                return `${visible}${'*'.repeat(Math.max(3, local.length - visible.length))}@${domain}`;
+            };
+
+            const makeOtpGroup = (containerSelector, formId) => {
+                const boxes = Array.from(document.querySelectorAll(`${containerSelector} .otp-box`));
+                const form = document.getElementById(formId);
+                const getValue = () => boxes.map(b => b.value).join('');
+                const clear = () => boxes.forEach(b => { b.value = ''; b.classList.remove('filled'); });
+                boxes.forEach((box, i) => {
+                    box.addEventListener('input', () => {
+                        const val = box.value.replace(/[^0-9]/g, '');
+                        box.value = val.slice(-1);
+                        box.classList.toggle('filled', Boolean(box.value));
+                        if (box.value && i < boxes.length - 1) boxes[i + 1].focus();
+                        if (getValue().length === 6) form.requestSubmit();
+                    });
+                    box.addEventListener('keydown', (e) => {
+                        if (e.key === 'Backspace' && !box.value && i > 0) {
+                            boxes[i - 1].value = '';
+                            boxes[i - 1].classList.remove('filled');
+                            boxes[i - 1].focus();
+                        }
+                        if (e.key === 'ArrowLeft' && i > 0) boxes[i - 1].focus();
+                        if (e.key === 'ArrowRight' && i < boxes.length - 1) boxes[i + 1].focus();
+                    });
+                    box.addEventListener('paste', (e) => {
+                        e.preventDefault();
+                        const pasted = (e.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g, '');
+                        pasted.split('').slice(0, 6).forEach((ch, j) => {
+                            if (boxes[j]) { boxes[j].value = ch; boxes[j].classList.add('filled'); }
+                        });
+                        const next = boxes[Math.min(pasted.length, 5)];
+                        if (next) next.focus();
+                        if (pasted.length >= 6) form.requestSubmit();
+                    });
+                    box.addEventListener('focus', () => box.select());
+                });
+                return { boxes, getValue, clear };
+            };
+
+            const otpOld = makeOtpGroup('#otp-boxes', 'email-verify-code-form');
+            const otpNew = makeOtpGroup('#otp-boxes-new', 'email-verify-new-code-form');
+
+            function verifyEmailChangeFlow(currentEmail, mode, newEmail) {
                 return new Promise((resolve) => {
                     const overlay = document.getElementById('email-verify-modal-overlay');
                     const stepPassword = document.getElementById('email-verify-step-password');
                     const stepCode = document.getElementById('email-verify-step-code');
+                    const stepNewCode = document.getElementById('email-verify-step-new-code');
                     const closeBtn = document.getElementById('btn-close-email-verify');
                     const passwordForm = document.getElementById('email-verify-password-form');
                     const passwordInput = document.getElementById('email-verify-password');
                     const passwordError = document.getElementById('email-verify-password-error');
                     const passwordBtn = document.getElementById('email-verify-password-btn');
                     const codeForm = document.getElementById('email-verify-code-form');
-                    const otpBoxes = Array.from(document.querySelectorAll('.otp-box'));
                     const codeError = document.getElementById('email-verify-code-error');
                     const codeBtn = document.getElementById('email-verify-code-btn');
                     const resendBtn = document.getElementById('email-verify-resend-btn');
+                    const newCodeForm = document.getElementById('email-verify-new-code-form');
+                    const newCodeError = document.getElementById('email-verify-new-code-error');
+                    const newCodeBtn = document.getElementById('email-verify-new-code-btn');
+                    const resendNewBtn = document.getElementById('email-verify-resend-new-btn');
 
-                    const getOtpValue = () => otpBoxes.map(b => b.value).join('');
-                    const clearOtp = () => { otpBoxes.forEach(b => { b.value = ''; b.classList.remove('filled'); }); };
-
-                    const wireOtpBoxes = () => {
-                        otpBoxes.forEach((box, i) => {
-                            box.addEventListener('input', () => {
-                                const val = box.value.replace(/[^0-9]/g, '');
-                                box.value = val.slice(-1);
-                                box.classList.toggle('filled', Boolean(box.value));
-                                if (box.value && i < otpBoxes.length - 1) otpBoxes[i + 1].focus();
-                                if (getOtpValue().length === 6) codeForm.requestSubmit();
-                            });
-                            box.addEventListener('keydown', (e) => {
-                                if (e.key === 'Backspace' && !box.value && i > 0) {
-                                    otpBoxes[i - 1].value = '';
-                                    otpBoxes[i - 1].classList.remove('filled');
-                                    otpBoxes[i - 1].focus();
-                                }
-                                if (e.key === 'ArrowLeft' && i > 0) otpBoxes[i - 1].focus();
-                                if (e.key === 'ArrowRight' && i < otpBoxes.length - 1) otpBoxes[i + 1].focus();
-                            });
-                            box.addEventListener('paste', (e) => {
-                                e.preventDefault();
-                                const pasted = (e.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g, '');
-                                pasted.split('').slice(0, 6).forEach((ch, j) => {
-                                    if (otpBoxes[j]) { otpBoxes[j].value = ch; otpBoxes[j].classList.add('filled'); }
-                                });
-                                const next = otpBoxes[Math.min(pasted.length, 5)];
-                                if (next) next.focus();
-                                if (pasted.length >= 6) codeForm.requestSubmit();
-                            });
-                            box.addEventListener('focus', () => box.select());
-                        });
-                    };
-                    wireOtpBoxes();
-
-                    if (!overlay || !stepPassword || !stepCode) { resolve(false); return; }
+                    if (!overlay || !stepPassword || !stepCode || !stepNewCode) { resolve(false); return; }
 
                     const showError = (el, msg) => { el.textContent = msg; el.style.display = 'block'; };
                     const hideError = (el) => { el.style.display = 'none'; el.textContent = ''; };
 
                     let settled = false;
                     let resendInterval = null;
+                    let resendNewInterval = null;
                     const finish = (result) => {
                         if (settled) return;
                         settled = true;
                         if (resendInterval) clearInterval(resendInterval);
+                        if (resendNewInterval) clearInterval(resendNewInterval);
                         cleanup();
                         overlay.classList.remove('active');
                         document.body.classList.remove('modal-open');
@@ -2337,7 +2354,7 @@ async function fetchProfile(token) {
                     const onClose = () => finish(false);
                     const onOverlayClick = (e) => { if (e.target === overlay) finish(false); };
 
-                    const sendCode = async () => {
+                    const sendOldCode = async () => {
                         try {
                             await fetch('/v1/user/email-change/send-code', {
                                 method: 'POST',
@@ -2346,24 +2363,42 @@ async function fetchProfile(token) {
                         } catch {}
                     };
 
-                    const maskEmail = (email) => {
-                        const [local, domain] = email.split('@');
-                        if (!domain) return email;
-                        const visible = local.slice(0, Math.min(2, local.length));
-                        return `${visible}${'*'.repeat(Math.max(3, local.length - visible.length))}@${domain}`;
+                    const sendNewCode = async () => {
+                        try {
+                            await fetch('/v1/user/email-change/send-code-new', {
+                                method: 'POST',
+                                headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ newEmail })
+                            });
+                        } catch {}
                     };
 
                     const showCodeStep = () => {
                         stepPassword.style.display = 'none';
                         stepCode.style.display = 'flex';
-                        clearOtp();
+                        stepNewCode.style.display = 'none';
+                        otpOld.clear();
                         hideError(codeError);
                         codeBtn.disabled = false;
                         codeBtn.textContent = 'verify';
                         const targetEl = document.getElementById('email-verify-code-target');
                         if (targetEl) targetEl.textContent = currentEmail ? maskEmail(currentEmail) : 'your email';
-                        otpBoxes[0].focus();
-                        sendCode();
+                        otpOld.boxes[0].focus();
+                        sendOldCode();
+                    };
+
+                    const showNewCodeStep = () => {
+                        stepPassword.style.display = 'none';
+                        stepCode.style.display = 'none';
+                        stepNewCode.style.display = 'flex';
+                        otpNew.clear();
+                        hideError(newCodeError);
+                        newCodeBtn.disabled = false;
+                        newCodeBtn.textContent = 'verify';
+                        const targetEl = document.getElementById('email-verify-new-target');
+                        if (targetEl) targetEl.textContent = maskEmail(newEmail);
+                        otpNew.boxes[0].focus();
+                        sendNewCode();
                     };
 
                     const onPasswordSubmit = async (e) => {
@@ -2377,10 +2412,7 @@ async function fetchProfile(token) {
                             const { error } = await sentinelAuth.auth.signInWithPassword({ email: currentEmail, password: pwd });
                             passwordBtn.disabled = false;
                             passwordBtn.textContent = 'continue';
-                            if (error) {
-                                showError(passwordError, 'error: incorrect password');
-                                return;
-                            }
+                            if (error) { showError(passwordError, 'error: incorrect password'); return; }
                             passwordInput.value = '';
                             showCodeStep();
                         } catch {
@@ -2390,36 +2422,43 @@ async function fetchProfile(token) {
                         }
                     };
 
-                    let resendCooldown = false;
-                    const onResend = async (e) => {
+                    const startResendCooldown = (btn, intervalRef, sendFn) => {
+                        btn.textContent = 'sending...';
+                        sendFn().then(() => {
+                            notify('a new code has been sent', 'info');
+                            let secs = 60;
+                            btn.textContent = `resend in ${secs}s`;
+                            const id = setInterval(() => {
+                                secs -= 1;
+                                if (secs <= 0) { clearInterval(id); btn.textContent = 'resend code'; intervalRef.v = null; }
+                                else btn.textContent = `resend in ${secs}s`;
+                            }, 1000);
+                            intervalRef.v = id;
+                        });
+                    };
+
+                    const resendOldRef = { v: null, busy: false };
+                    const onResend = (e) => {
                         e.preventDefault();
-                        if (resendCooldown) return;
-                        resendCooldown = true;
-                        resendBtn.textContent = 'sending...';
-                        await sendCode();
-                        notify('a new code has been sent to your email', 'info');
-                        let secs = 60;
-                        resendBtn.textContent = `resend in ${secs}s`;
-                        resendInterval = setInterval(() => {
-                            secs -= 1;
-                            if (secs <= 0) {
-                                clearInterval(resendInterval);
-                                resendInterval = null;
-                                resendBtn.textContent = 'resend code';
-                                resendCooldown = false;
-                            } else {
-                                resendBtn.textContent = `resend in ${secs}s`;
-                            }
-                        }, 1000);
+                        if (resendOldRef.busy) return;
+                        resendOldRef.busy = true;
+                        startResendCooldown(resendBtn, resendOldRef, sendOldCode);
+                        setTimeout(() => { resendOldRef.busy = false; }, 60000);
+                    };
+
+                    const resendNewRef = { v: null, busy: false };
+                    const onResendNew = (e) => {
+                        e.preventDefault();
+                        if (resendNewRef.busy) return;
+                        resendNewRef.busy = true;
+                        startResendCooldown(resendNewBtn, resendNewRef, sendNewCode);
+                        setTimeout(() => { resendNewRef.busy = false; }, 60000);
                     };
 
                     const onCodeSubmit = async (e) => {
                         e.preventDefault();
-                        const code = getOtpValue();
-                        if (!/^[0-9]{6}$/.test(code)) {
-                            showError(codeError, 'error: enter all 6 digits');
-                            return;
-                        }
+                        const code = otpOld.getValue();
+                        if (!/^[0-9]{6}$/.test(code)) { showError(codeError, 'error: enter all 6 digits'); return; }
                         hideError(codeError);
                         codeBtn.disabled = true;
                         codeBtn.textContent = 'verifying...';
@@ -2432,15 +2471,37 @@ async function fetchProfile(token) {
                             const data = await r.json();
                             codeBtn.disabled = false;
                             codeBtn.textContent = 'verify';
-                            if (!r.ok) {
-                                showError(codeError, `error: ${data.error || 'incorrect code'}`);
-                                return;
-                            }
-                            finish(true);
+                            if (!r.ok) { showError(codeError, `error: ${data.error || 'incorrect code'}`); return; }
+                            showNewCodeStep();
                         } catch {
                             codeBtn.disabled = false;
                             codeBtn.textContent = 'verify';
                             showError(codeError, 'error: verification failed. try again');
+                        }
+                    };
+
+                    const onNewCodeSubmit = async (e) => {
+                        e.preventDefault();
+                        const code = otpNew.getValue();
+                        if (!/^[0-9]{6}$/.test(code)) { showError(newCodeError, 'error: enter all 6 digits'); return; }
+                        hideError(newCodeError);
+                        newCodeBtn.disabled = true;
+                        newCodeBtn.textContent = 'verifying...';
+                        try {
+                            const r = await fetch('/v1/user/email-change/verify-code-new', {
+                                method: 'POST',
+                                headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ code })
+                            });
+                            const data = await r.json();
+                            newCodeBtn.disabled = false;
+                            newCodeBtn.textContent = 'verify';
+                            if (!r.ok) { showError(newCodeError, `error: ${data.error || 'incorrect code'}`); return; }
+                            finish(true);
+                        } catch {
+                            newCodeBtn.disabled = false;
+                            newCodeBtn.textContent = 'verify';
+                            showError(newCodeError, 'error: verification failed. try again');
                         }
                     };
 
@@ -2449,33 +2510,43 @@ async function fetchProfile(token) {
                         overlay.removeEventListener('click', onOverlayClick);
                         passwordForm.removeEventListener('submit', onPasswordSubmit);
                         codeForm.removeEventListener('submit', onCodeSubmit);
+                        newCodeForm.removeEventListener('submit', onNewCodeSubmit);
                         resendBtn.removeEventListener('click', onResend);
+                        resendNewBtn.removeEventListener('click', onResendNew);
                     }
 
                     closeBtn.addEventListener('click', onClose);
                     overlay.addEventListener('click', onOverlayClick);
                     passwordForm.addEventListener('submit', onPasswordSubmit);
                     codeForm.addEventListener('submit', onCodeSubmit);
+                    newCodeForm.addEventListener('submit', onNewCodeSubmit);
                     resendBtn.addEventListener('click', onResend);
+                    resendNewBtn.addEventListener('click', onResendNew);
 
                     hideError(passwordError);
                     hideError(codeError);
+                    hideError(newCodeError);
                     passwordInput.value = '';
-                    clearOtp();
+                    otpOld.clear();
+                    otpNew.clear();
                     resendBtn.textContent = 'resend code';
+                    resendNewBtn.textContent = 'resend code';
                     passwordBtn.disabled = false;
                     passwordBtn.textContent = 'continue';
+                    stepNewCode.style.display = 'none';
 
+                    overlay.classList.add('active');
+                    document.body.classList.add('modal-open');
                     if (mode === 'password') {
                         stepPassword.style.display = 'flex';
                         stepCode.style.display = 'none';
-                        overlay.classList.add('active');
-                        document.body.classList.add('modal-open');
                         setTimeout(() => passwordInput.focus(), 100);
+                    } else if (mode === 'new-only') {
+                        stepPassword.style.display = 'none';
+                        stepCode.style.display = 'none';
+                        showNewCodeStep();
                     } else {
                         stepPassword.style.display = 'none';
-                        overlay.classList.add('active');
-                        document.body.classList.add('modal-open');
                         showCodeStep();
                     }
                 });
@@ -2567,19 +2638,17 @@ async function fetchProfile(token) {
                         }
 
                         const authProvider = cachedForEmail.authProvider || 'email';
-                        let verificationMode = null;
+                        let verificationMode;
                         if (authProvider === 'email') {
                             verificationMode = 'password';
-                        } else if (authProvider === 'google') {
+                        } else if (authProvider === 'google' || currentEmail) {
                             verificationMode = 'code';
-                        } else if (currentEmail) {
-                            verificationMode = 'code';
+                        } else {
+                            verificationMode = 'new-only';
                         }
 
-                        if (verificationMode) {
-                            const verified = await verifyEmailChangeFlow(currentEmail, verificationMode);
-                            if (!verified) return;
-                        }
+                        const verified = await verifyEmailChangeFlow(currentEmail, verificationMode, emailRaw);
+                        if (!verified) return;
                     }
 
                     setSaveBtnBusy();

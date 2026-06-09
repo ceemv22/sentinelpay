@@ -3120,11 +3120,33 @@
                     <button type="button" id="email-verify-resend-btn" style="background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.1); padding: 12px 24px; border-radius: 12px; font-size: 0.72rem; cursor: pointer; font-family: 'JetBrains Mono', monospace; transition: all 0.3s ease; display: inline-block; min-width: 180px;">resend code</button>
                 </div>
             </div>
+
+            <div id="email-verify-step-new-code" style="display: none; flex-direction: column; width: 100%;">
+                <div class="auth-tabs" style="margin-bottom: 2rem;">
+                    <button class="auth-tab active" style="width: 100%; cursor: default; pointer-events: none;">confirm new email</button>
+                </div>
+                <p style="color: var(--text-muted); font-size: 0.85rem; font-family: 'JetBrains Mono', monospace; line-height: 1.6; margin-bottom: 2rem; width: 100%; text-align: center;">we sent a 6-digit code to <span id="email-verify-new-target" style="color: #fff; font-weight: 700;"></span></p>
+                <form id="email-verify-new-code-form" class="auth-form" style="width: 100%; display: flex; flex-direction: column; align-items: center;" novalidate>
+                    <div class="otp-boxes" id="otp-boxes-new">
+                        <input class="otp-box" type="text" inputmode="numeric" maxlength="1" autocomplete="off">
+                        <input class="otp-box" type="text" inputmode="numeric" maxlength="1" autocomplete="off">
+                        <input class="otp-box" type="text" inputmode="numeric" maxlength="1" autocomplete="off">
+                        <input class="otp-box" type="text" inputmode="numeric" maxlength="1" autocomplete="off">
+                        <input class="otp-box" type="text" inputmode="numeric" maxlength="1" autocomplete="off">
+                        <input class="otp-box" type="text" inputmode="numeric" maxlength="1" autocomplete="off">
+                    </div>
+                    <p id="email-verify-new-code-error" class="error-msg" style="display: none; margin-top: 1rem;"></p>
+                    <button type="submit" class="submit-btn" id="email-verify-new-code-btn" style="margin-top: 1.5rem; width: 100%;">verify</button>
+                </form>
+                <div style="width: 100%; display: flex; flex-direction: column; align-items: center; padding-top: 1.5rem;">
+                    <button type="button" id="email-verify-resend-new-btn" style="background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.1); padding: 12px 24px; border-radius: 12px; font-size: 0.72rem; cursor: pointer; font-family: 'JetBrains Mono', monospace; transition: all 0.3s ease; display: inline-block; min-width: 180px;">resend code</button>
+                </div>
+            </div>
         </div>
     </div>
 
     <script src="toast.js?v=3"></script>
-    <script src="dashboard-v19.js?v=39"></script>
+    <script src="dashboard-v19.js?v=40"></script>
     <script>
         // Eye Tracking Logic
         function trackEye(element, clientX, clientY) {
