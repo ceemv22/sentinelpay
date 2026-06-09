@@ -2354,7 +2354,7 @@ async function fetchProfile(token) {
                         codeBtn.disabled = false;
                         codeBtn.textContent = 'verify';
                         await sendCode();
-                        setTimeout(() => otpBoxes[0].focus(), 100);
+                        otpBoxes[0].focus();
                     };
 
                     const onPasswordSubmit = async (e) => {
