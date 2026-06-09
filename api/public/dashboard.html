@@ -2246,6 +2246,14 @@
             border-color: rgba(0,240,255,0.3);
         }
 
+        @keyframes evStepFadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .ev-step-enter {
+            animation: evStepFadeIn 0.32s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
         .org-plan-card-summary {
             border: 1px solid rgba(255,255,255,0.08);
             border-radius: 12px;
@@ -3198,7 +3206,7 @@
     </div>
 
     <script src="toast.js?v=3"></script>
-    <script src="dashboard-v19.js?v=45"></script>
+    <script src="dashboard-v19.js?v=46"></script>
     <script>
         // Eye Tracking Logic
         function trackEye(element, clientX, clientY) {

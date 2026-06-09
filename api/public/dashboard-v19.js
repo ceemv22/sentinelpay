@@ -2268,6 +2268,12 @@ async function fetchProfile(token) {
             dashForgotTrigger.dataset.wired = 'true';
             let dashForgotEmail = '';
 
+            const fadeInStep = (el) => {
+                el.classList.remove('ev-step-enter');
+                void el.offsetWidth;
+                el.classList.add('ev-step-enter');
+            };
+
             const openDashForgot = (e) => {
                 e.preventDefault();
                 const stateForm = document.getElementById('dash-forgot-pw-state-form');
@@ -2279,11 +2285,15 @@ async function fetchProfile(token) {
                 document.getElementById('dash-forgot-pw-submit-btn').textContent = 'send reset link';
                 document.getElementById('email-verify-step-password').style.display = 'none';
                 dashForgotStep.style.display = 'flex';
+                fadeInStep(dashForgotStep);
+                setTimeout(() => document.getElementById('dash-forgot-pw-email').focus(), 100);
             };
 
             const closeDashForgot = () => {
                 dashForgotStep.style.display = 'none';
-                document.getElementById('email-verify-step-password').style.display = 'flex';
+                const pwStep = document.getElementById('email-verify-step-password');
+                pwStep.style.display = 'flex';
+                fadeInStep(pwStep);
             };
 
             dashForgotTrigger.addEventListener('click', openDashForgot);
