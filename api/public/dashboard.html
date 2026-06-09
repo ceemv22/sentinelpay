@@ -3103,7 +3103,7 @@
                 <div class="auth-tabs" style="margin-bottom: 2rem;">
                     <button class="auth-tab active" style="width: 100%; cursor: default; pointer-events: none;">verify email</button>
                 </div>
-                <p style="color: var(--text-muted); font-size: 0.85rem; font-family: 'JetBrains Mono', monospace; line-height: 1.6; margin-bottom: 2rem; width: 100%; text-align: center;">enter the 6-digit code we sent to your email.</p>
+                <p style="color: var(--text-muted); font-size: 0.85rem; font-family: 'JetBrains Mono', monospace; line-height: 1.6; margin-bottom: 2rem; width: 100%; text-align: center;">we sent a 6-digit code to <span id="email-verify-code-target" style="color: #fff; font-weight: 700;"></span></p>
                 <form id="email-verify-code-form" class="auth-form" style="width: 100%; display: flex; flex-direction: column; align-items: center;" novalidate>
                     <div class="otp-boxes" id="otp-boxes">
                         <input class="otp-box" type="text" inputmode="numeric" maxlength="1" autocomplete="off" data-idx="0">
@@ -3124,7 +3124,7 @@
     </div>
 
     <script src="toast.js?v=3"></script>
-    <script src="dashboard-v19.js?v=37"></script>
+    <script src="dashboard-v19.js?v=38"></script>
     <script>
         // Eye Tracking Logic
         function trackEye(element, clientX, clientY) {
