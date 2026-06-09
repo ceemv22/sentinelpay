@@ -2276,10 +2276,46 @@ async function fetchProfile(token) {
                     const passwordError = document.getElementById('email-verify-password-error');
                     const passwordBtn = document.getElementById('email-verify-password-btn');
                     const codeForm = document.getElementById('email-verify-code-form');
-                    const codeInput = document.getElementById('email-verify-code');
+                    const otpBoxes = Array.from(document.querySelectorAll('.otp-box'));
                     const codeError = document.getElementById('email-verify-code-error');
                     const codeBtn = document.getElementById('email-verify-code-btn');
                     const resendBtn = document.getElementById('email-verify-resend-btn');
+
+                    const getOtpValue = () => otpBoxes.map(b => b.value).join('');
+                    const clearOtp = () => { otpBoxes.forEach(b => { b.value = ''; b.classList.remove('filled'); }); };
+
+                    const wireOtpBoxes = () => {
+                        otpBoxes.forEach((box, i) => {
+                            box.addEventListener('input', () => {
+                                const val = box.value.replace(/[^0-9]/g, '');
+                                box.value = val.slice(-1);
+                                box.classList.toggle('filled', Boolean(box.value));
+                                if (box.value && i < otpBoxes.length - 1) otpBoxes[i + 1].focus();
+                                if (getOtpValue().length === 6) codeForm.requestSubmit();
+                            });
+                            box.addEventListener('keydown', (e) => {
+                                if (e.key === 'Backspace' && !box.value && i > 0) {
+                                    otpBoxes[i - 1].value = '';
+                                    otpBoxes[i - 1].classList.remove('filled');
+                                    otpBoxes[i - 1].focus();
+                                }
+                                if (e.key === 'ArrowLeft' && i > 0) otpBoxes[i - 1].focus();
+                                if (e.key === 'ArrowRight' && i < otpBoxes.length - 1) otpBoxes[i + 1].focus();
+                            });
+                            box.addEventListener('paste', (e) => {
+                                e.preventDefault();
+                                const pasted = (e.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g, '');
+                                pasted.split('').slice(0, 6).forEach((ch, j) => {
+                                    if (otpBoxes[j]) { otpBoxes[j].value = ch; otpBoxes[j].classList.add('filled'); }
+                                });
+                                const next = otpBoxes[Math.min(pasted.length, 5)];
+                                if (next) next.focus();
+                                if (pasted.length >= 6) codeForm.requestSubmit();
+                            });
+                            box.addEventListener('focus', () => box.select());
+                        });
+                    };
+                    wireOtpBoxes();
 
                     if (!overlay || !stepPassword || !stepCode) { resolve(false); return; }
 
@@ -2313,12 +2349,12 @@ async function fetchProfile(token) {
                     const showCodeStep = async () => {
                         stepPassword.style.display = 'none';
                         stepCode.style.display = 'flex';
-                        codeInput.value = '';
+                        clearOtp();
                         hideError(codeError);
                         codeBtn.disabled = false;
                         codeBtn.textContent = 'verify';
                         await sendCode();
-                        setTimeout(() => codeInput.focus(), 100);
+                        setTimeout(() => otpBoxes[0].focus(), 100);
                     };
 
                     const onPasswordSubmit = async (e) => {
@@ -2370,9 +2406,9 @@ async function fetchProfile(token) {
 
                     const onCodeSubmit = async (e) => {
                         e.preventDefault();
-                        const code = codeInput.value.trim();
+                        const code = getOtpValue();
                         if (!/^[0-9]{6}$/.test(code)) {
-                            showError(codeError, 'error: enter the 6-digit code');
+                            showError(codeError, 'error: enter all 6 digits');
                             return;
                         }
                         hideError(codeError);
@@ -2416,7 +2452,7 @@ async function fetchProfile(token) {
                     hideError(passwordError);
                     hideError(codeError);
                     passwordInput.value = '';
-                    codeInput.value = '';
+                    clearOtp();
                     resendBtn.textContent = 'resend code';
                     passwordBtn.disabled = false;
                     passwordBtn.textContent = 'continue';
