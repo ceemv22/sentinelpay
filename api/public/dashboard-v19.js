@@ -2241,6 +2241,96 @@ async function fetchProfile(token) {
             prefUsernameInput.addEventListener('blur', refreshPrefix);
         }
 
+        document.querySelectorAll('.pw-eye-toggle').forEach(btn => {
+            if (btn.dataset.wired) return;
+            btn.dataset.wired = 'true';
+            btn.onclick = () => {
+                const input = document.getElementById(btn.getAttribute('data-target'));
+                if (!input) return;
+                const eyeOn = btn.querySelector('.eye-on');
+                const eyeOff = btn.querySelector('.eye-off');
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    eyeOn.style.display = 'inline';
+                    eyeOff.style.display = 'none';
+                } else {
+                    input.type = 'password';
+                    eyeOn.style.display = 'none';
+                    eyeOff.style.display = 'inline';
+                }
+            };
+        });
+
+        const dashForgotTrigger = document.getElementById('email-verify-forgot-pw-trigger');
+        const dashForgotModal = document.getElementById('dash-forgot-pw-modal');
+        if (dashForgotTrigger && dashForgotModal && !dashForgotTrigger.dataset.wired) {
+            dashForgotTrigger.dataset.wired = 'true';
+            let dashForgotEmail = '';
+
+            const openDashForgot = (e) => {
+                e.preventDefault();
+                const stateForm = document.getElementById('dash-forgot-pw-state-form');
+                const stateSuccess = document.getElementById('dash-forgot-pw-state-success');
+                stateForm.style.display = 'flex';
+                stateSuccess.style.display = 'none';
+                document.getElementById('dash-forgot-pw-error-msg').style.display = 'none';
+                document.getElementById('dash-forgot-pw-submit-btn').disabled = false;
+                document.getElementById('dash-forgot-pw-submit-btn').textContent = 'send reset link';
+                dashForgotModal.style.display = 'flex';
+                setTimeout(() => dashForgotModal.classList.add('active'), 10);
+                document.body.classList.add('modal-open');
+            };
+
+            const closeDashForgot = () => {
+                dashForgotModal.classList.remove('active');
+                setTimeout(() => { dashForgotModal.style.display = 'none'; }, 300);
+                document.body.classList.add('modal-open');
+            };
+
+            dashForgotTrigger.addEventListener('click', openDashForgot);
+            document.getElementById('dash-close-forgot-pw-btn').addEventListener('click', closeDashForgot);
+            dashForgotModal.addEventListener('click', (e) => { if (e.target === dashForgotModal) closeDashForgot(); });
+
+            document.getElementById('dash-forgot-pw-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const btn = document.getElementById('dash-forgot-pw-submit-btn');
+                const errorMsg = document.getElementById('dash-forgot-pw-error-msg');
+                const email = document.getElementById('dash-forgot-pw-email').value.trim();
+                if (!email) return;
+                btn.disabled = true;
+                btn.textContent = 'sending link...';
+                errorMsg.style.display = 'none';
+                try {
+                    const { error } = await sentinelAuth.auth.resetPasswordForEmail(email, {
+                        redirectTo: window.location.origin + '/reset'
+                    });
+                    if (error) {
+                        errorMsg.textContent = 'error: ' + error.message.toLowerCase();
+                        errorMsg.style.display = 'block';
+                        btn.disabled = false;
+                        btn.textContent = 'send reset link';
+                        return;
+                    }
+                    dashForgotEmail = email;
+                    document.getElementById('dash-forgot-pw-state-form').style.display = 'none';
+                    document.getElementById('dash-forgot-pw-state-success').style.display = 'flex';
+                } catch {
+                    errorMsg.textContent = 'error: something went wrong. try again.';
+                    errorMsg.style.display = 'block';
+                    btn.disabled = false;
+                    btn.textContent = 'send reset link';
+                }
+            });
+
+            document.getElementById('dash-forgot-resend-btn').addEventListener('click', async () => {
+                if (!dashForgotEmail) return;
+                await sentinelAuth.auth.resetPasswordForEmail(dashForgotEmail, {
+                    redirectTo: window.location.origin + '/reset'
+                });
+                if (window.SentinelToast) window.SentinelToast.show('reset link resent', 'info');
+            });
+        }
+
         const saveBtn = document.getElementById('btn-save-preferences');
         if (saveBtn && !saveBtn.dataset.bound) {
             saveBtn.dataset.bound = 'true';
