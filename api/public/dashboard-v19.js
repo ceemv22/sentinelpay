@@ -2262,8 +2262,9 @@ async function fetchProfile(token) {
         });
 
         const dashForgotTrigger = document.getElementById('email-verify-forgot-pw-trigger');
-        const dashForgotModal = document.getElementById('dash-forgot-pw-modal');
-        if (dashForgotTrigger && dashForgotModal && !dashForgotTrigger.dataset.wired) {
+        const dashForgotStep = document.getElementById('email-verify-step-forgot-pw');
+        const dashForgotBackBtn = document.getElementById('dash-forgot-pw-back-btn');
+        if (dashForgotTrigger && dashForgotStep && !dashForgotTrigger.dataset.wired) {
             dashForgotTrigger.dataset.wired = 'true';
             let dashForgotEmail = '';
 
@@ -2276,20 +2277,17 @@ async function fetchProfile(token) {
                 document.getElementById('dash-forgot-pw-error-msg').style.display = 'none';
                 document.getElementById('dash-forgot-pw-submit-btn').disabled = false;
                 document.getElementById('dash-forgot-pw-submit-btn').textContent = 'send reset link';
-                dashForgotModal.style.display = 'flex';
-                setTimeout(() => dashForgotModal.classList.add('active'), 10);
-                document.body.classList.add('modal-open');
+                document.getElementById('email-verify-step-password').style.display = 'none';
+                dashForgotStep.style.display = 'flex';
             };
 
             const closeDashForgot = () => {
-                dashForgotModal.classList.remove('active');
-                setTimeout(() => { dashForgotModal.style.display = 'none'; }, 300);
-                document.body.classList.add('modal-open');
+                dashForgotStep.style.display = 'none';
+                document.getElementById('email-verify-step-password').style.display = 'flex';
             };
 
             dashForgotTrigger.addEventListener('click', openDashForgot);
-            document.getElementById('dash-close-forgot-pw-btn').addEventListener('click', closeDashForgot);
-            dashForgotModal.addEventListener('click', (e) => { if (e.target === dashForgotModal) closeDashForgot(); });
+            if (dashForgotBackBtn) dashForgotBackBtn.addEventListener('click', closeDashForgot);
 
             document.getElementById('dash-forgot-pw-form').addEventListener('submit', async (e) => {
                 e.preventDefault();
@@ -2673,6 +2671,9 @@ async function fetchProfile(token) {
                     passwordBtn.disabled = false;
                     passwordBtn.textContent = 'continue';
                     stepNewCode.style.display = 'none';
+
+                    const stepForgotPw = document.getElementById('email-verify-step-forgot-pw');
+                    if (stepForgotPw) stepForgotPw.style.display = 'none';
 
                     overlay.classList.add('active');
                     document.body.classList.add('modal-open');
