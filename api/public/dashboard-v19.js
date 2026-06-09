@@ -2346,15 +2346,15 @@ async function fetchProfile(token) {
                         } catch {}
                     };
 
-                    const showCodeStep = async () => {
+                    const showCodeStep = () => {
                         stepPassword.style.display = 'none';
                         stepCode.style.display = 'flex';
                         clearOtp();
                         hideError(codeError);
                         codeBtn.disabled = false;
                         codeBtn.textContent = 'verify';
-                        await sendCode();
                         otpBoxes[0].focus();
+                        sendCode();
                     };
 
                     const onPasswordSubmit = async (e) => {
@@ -2373,7 +2373,7 @@ async function fetchProfile(token) {
                                 return;
                             }
                             passwordInput.value = '';
-                            await showCodeStep();
+                            showCodeStep();
                         } catch {
                             passwordBtn.disabled = false;
                             passwordBtn.textContent = 'continue';
