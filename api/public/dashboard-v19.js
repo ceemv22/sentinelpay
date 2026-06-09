@@ -2285,12 +2285,14 @@ async function fetchProfile(token) {
                 document.getElementById('dash-forgot-pw-submit-btn').textContent = 'send reset link';
                 document.getElementById('email-verify-step-password').style.display = 'none';
                 dashForgotStep.style.display = 'flex';
+                dashForgotBackBtn.style.display = 'flex';
                 fadeInStep(dashForgotStep);
                 setTimeout(() => document.getElementById('dash-forgot-pw-email').focus(), 100);
             };
 
             const closeDashForgot = () => {
                 dashForgotStep.style.display = 'none';
+                dashForgotBackBtn.style.display = 'none';
                 const pwStep = document.getElementById('email-verify-step-password');
                 pwStep.style.display = 'flex';
                 fadeInStep(pwStep);
@@ -2684,6 +2686,8 @@ async function fetchProfile(token) {
 
                     const stepForgotPw = document.getElementById('email-verify-step-forgot-pw');
                     if (stepForgotPw) stepForgotPw.style.display = 'none';
+                    const backBtn = document.getElementById('dash-forgot-pw-back-btn');
+                    if (backBtn) backBtn.style.display = 'none';
 
                     overlay.classList.add('active');
                     document.body.classList.add('modal-open');
