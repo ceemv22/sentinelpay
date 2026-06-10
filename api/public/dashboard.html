@@ -2544,6 +2544,37 @@
             background: linear-gradient(180deg, #fbfcfd 0%, #eef0f3 100%) fixed;
         }
 
+        html.theme-fade-transition,
+        html.theme-fade-transition body,
+        html.theme-fade-transition .sidebar,
+        html.theme-fade-transition .content-area,
+        html.theme-fade-transition .org-home-container,
+        html.theme-fade-transition .card,
+        html.theme-fade-transition .org-card-item,
+        html.theme-fade-transition .glass-panel,
+        html.theme-fade-transition .audit-panel,
+        html.theme-fade-transition .analytics-card,
+        html.theme-fade-transition .api-access-card,
+        html.theme-fade-transition .org-plan-card-summary,
+        html.theme-fade-transition .metric-card,
+        html.theme-fade-transition .settings-table,
+        html.theme-fade-transition .settings-table-label,
+        html.theme-fade-transition .settings-table-value,
+        html.theme-fade-transition .settings-input,
+        html.theme-fade-transition .settings-actions,
+        html.theme-fade-transition .theme-card,
+        html.theme-fade-transition .dropdown-menu,
+        html.theme-fade-transition .modal-overlay,
+        html.theme-fade-transition .modal-content,
+        html.theme-fade-transition .auth-card,
+        html.theme-fade-transition .sentinel-toast,
+        html.theme-fade-transition .btn-primary,
+        html.theme-fade-transition .btn-new-org,
+        html.theme-fade-transition .org-home-header,
+        html.theme-fade-transition * {
+            transition: background-color 0.4s ease, background 0.4s ease, border-color 0.4s ease, color 0.4s ease, box-shadow 0.4s ease, -webkit-text-fill-color 0.4s ease !important;
+        }
+
         html.theme-light ::-webkit-scrollbar-track { background: #f4f4f6; }
         html.theme-light ::-webkit-scrollbar-thumb {
             background: rgba(0, 0, 0, 0.12);
@@ -3848,7 +3879,7 @@
     </div>
 
     <script src="toast.js?v=3"></script>
-    <script src="dashboard-v19.js?v=69"></script>
+    <script src="dashboard-v19.js?v=70"></script>
     <script>
         // Eye Tracking Logic
         function trackEye(element, clientX, clientY) {

@@ -2468,7 +2468,10 @@ async function fetchProfile(token) {
             card.addEventListener('click', () => {
                 const theme = card.dataset.theme;
                 setThemeCookie(theme);
+                const html = document.documentElement;
+                html.classList.add('theme-fade-transition');
                 applyTheme(theme);
+                setTimeout(() => html.classList.remove('theme-fade-transition'), 450);
             });
         });
         applyTheme(getThemeCookie() === 'light' ? 'light' : 'dark');
