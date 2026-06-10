@@ -167,6 +167,7 @@ if (logoutBtn) {
     logoutBtn.onclick = async (e) => {
         e.preventDefault();
         localStorage.removeItem('sentinel-cached-orgs');
+        localStorage.removeItem('sentinel-cached-profile');
         if (sentinelAuth) await sentinelAuth.auth.signOut();
         window.location.href = 'https://sentinelpay.org';
     };
@@ -209,6 +210,23 @@ function renderDashboard(session) {
             }
         }
         if (avatarInitial === '?' && displayIdentifier) avatarInitial = displayIdentifier.charAt(0);
+
+        try {
+            const cachedRaw = localStorage.getItem('sentinel-cached-profile');
+            if (cachedRaw) {
+                const cached = JSON.parse(cachedRaw);
+                if (cached && cached.email && cached.email === user.email) {
+                    const cachedDisplayId = cached.username || cached.email;
+                    if (cachedDisplayId) {
+                        rawUsername = cachedDisplayId;
+                        displayIdentifier = cached.username ? `@${cached.username}` : cached.email;
+                        avatarInitial = cachedDisplayId.charAt(0);
+                    }
+                } else {
+                    localStorage.removeItem('sentinel-cached-profile');
+                }
+            }
+        } catch {}
 
         const avatarEl = document.getElementById('org-avatar-circle');
         if (avatarEl) avatarEl.textContent = avatarInitial.toUpperCase();
