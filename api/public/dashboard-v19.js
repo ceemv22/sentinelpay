@@ -2315,8 +2315,13 @@ async function fetchProfile(token) {
                 }
             };
 
-            const openDashForgot = (e) => {
-                e.preventDefault();
+            let forgotStandalone = false;
+            const openDashForgot = (e, standalone) => {
+                if (e) e.preventDefault();
+                forgotStandalone = Boolean(standalone);
+                const overlay = document.getElementById('email-verify-modal-overlay');
+                overlay.classList.add('active');
+                document.body.classList.add('modal-open');
                 const stateForm = document.getElementById('dash-forgot-pw-state-form');
                 const stateSuccess = document.getElementById('dash-forgot-pw-state-success');
                 stateForm.style.display = 'flex';
@@ -2325,16 +2330,24 @@ async function fetchProfile(token) {
                 document.getElementById('dash-forgot-pw-submit-btn').disabled = false;
                 document.getElementById('dash-forgot-pw-submit-btn').textContent = 'send reset link';
                 document.getElementById('email-verify-step-password').style.display = 'none';
+                document.getElementById('email-verify-step-code').style.display = 'none';
                 dashForgotStep.style.display = 'flex';
                 dashForgotBackBtn.style.display = 'flex';
                 fadeInStep(dashForgotStep);
                 resetDashForgotCaptcha();
                 setTimeout(() => document.getElementById('dash-forgot-pw-email').focus(), 100);
             };
+            window._sentinelOpenForgotPw = openDashForgot;
 
             const closeDashForgot = () => {
                 dashForgotStep.style.display = 'none';
                 dashForgotBackBtn.style.display = 'none';
+                if (forgotStandalone) {
+                    const overlay = document.getElementById('email-verify-modal-overlay');
+                    overlay.classList.remove('active');
+                    document.body.classList.remove('modal-open');
+                    return;
+                }
                 const pwStep = document.getElementById('email-verify-step-password');
                 pwStep.style.display = 'flex';
                 fadeInStep(pwStep);
@@ -2840,6 +2853,7 @@ async function fetchProfile(token) {
                     const codeError = document.getElementById('username-verify-code-error');
                     const codeBtn = document.getElementById('username-verify-code-btn');
                     const resendBtn = document.getElementById('username-verify-resend-btn');
+                    const forgotTrigger = document.getElementById('username-verify-forgot-pw-trigger');
 
                     if (!overlay || !stepPassword || !stepCode) { resolve(false); return; }
 
@@ -2858,6 +2872,11 @@ async function fetchProfile(token) {
 
                     const onClose = () => finish(false);
                     const onOverlayClick = (e) => { if (e.target === overlay) finish(false); };
+                    const onForgot = (e) => {
+                        e.preventDefault();
+                        finish(false);
+                        if (window._sentinelOpenForgotPw) window._sentinelOpenForgotPw(null, true);
+                    };
 
                     let cooldownInterval = null;
                     const applyCooldown = (btn, secs) => {
@@ -3004,6 +3023,7 @@ async function fetchProfile(token) {
                         passwordForm.removeEventListener('submit', onPasswordSubmit);
                         codeForm.removeEventListener('submit', onCodeSubmit);
                         resendBtn.removeEventListener('click', onResend);
+                        if (forgotTrigger) forgotTrigger.removeEventListener('click', onForgot);
                         if (cooldownInterval) { clearInterval(cooldownInterval); cooldownInterval = null; }
                         passwordInput.value = '';
                         hideError(passwordError);
@@ -3017,6 +3037,7 @@ async function fetchProfile(token) {
                     passwordForm.addEventListener('submit', onPasswordSubmit);
                     codeForm.addEventListener('submit', onCodeSubmit);
                     resendBtn.addEventListener('click', onResend);
+                    if (forgotTrigger) forgotTrigger.addEventListener('click', onForgot);
 
                     overlay.classList.add('active');
                     document.body.classList.add('modal-open');
