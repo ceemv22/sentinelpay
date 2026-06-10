@@ -2378,7 +2378,7 @@ async function fetchProfile(token) {
         if (prefEmailInput && !prefEmailInput.dataset.availabilityWired) {
             prefEmailInput.dataset.availabilityWired = 'true';
             const EMAIL_RE = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,}$/;
-            let checkSeq = 0;
+            prefEmailInput._checkSeq = 0;
 
             prefEmailInput.addEventListener('blur', async () => {
                 const emailRaw = prefEmailInput.value.trim();
@@ -2390,7 +2390,7 @@ async function fetchProfile(token) {
                 const currentEmail = cached.email || '';
                 if (emailRaw.toLowerCase() === currentEmail.toLowerCase()) return;
 
-                const seq = ++checkSeq;
+                const seq = ++prefEmailInput._checkSeq;
                 try {
                     const res = await fetch('/v1/user/check-email', {
                         method: 'POST',
@@ -2398,13 +2398,13 @@ async function fetchProfile(token) {
                         body: JSON.stringify({ email: emailRaw })
                     });
                     const data = await res.json();
-                    if (seq !== checkSeq) return;
+                    if (seq !== prefEmailInput._checkSeq) return;
                     if (!data.available) {
                         prefEmailInput.dataset.taken = 'true';
                         if (window.SentinelToast) window.SentinelToast.show('error: this email is already registered to another account', 'error');
                     }
                 } catch {
-                    if (seq !== checkSeq) return;
+                    if (seq !== prefEmailInput._checkSeq) return;
                 }
             });
 
@@ -2867,6 +2867,7 @@ async function fetchProfile(token) {
                 if (prefEmailInput && prefEmailInput.dataset.taken === 'true') {
                     return;
                 }
+                if (prefEmailInput) prefEmailInput._checkSeq = (prefEmailInput._checkSeq || 0) + 1;
 
                 try {
                     const cachedRawForEmail = localStorage.getItem('sentinel-cached-profile');
