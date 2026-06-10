@@ -2571,12 +2571,26 @@ async function fetchProfile(token) {
                         passwordBtn.disabled = true;
                         passwordBtn.textContent = 'verifying...';
                         try {
+                            const captchaToken = passwordBtn.getAttribute('data-captcha-token');
+                            if (!captchaToken) {
+                                passwordBtn.disabled = false;
+                                passwordBtn.textContent = 'continue';
+                                showError(passwordError, 'error: please complete the captcha');
+                                return;
+                            }
                             const { data: sessionData } = await sentinelAuth.auth.getSession();
                             const liveEmail = sessionData?.session?.user?.email || currentEmail;
-                            const { error } = await sentinelAuth.auth.signInWithPassword({ email: liveEmail, password: pwd });
+                            const { error } = await sentinelAuth.auth.signInWithPassword({ email: liveEmail, password: pwd, options: { captchaToken } });
                             passwordBtn.disabled = false;
                             passwordBtn.textContent = 'continue';
-                            if (error) { showError(passwordError, 'error: ' + (error.message || 'incorrect password').toLowerCase()); return; }
+                            if (error) {
+                                if (window.turnstile) {
+                                    const tContainer = document.getElementById('turnstile-confirm-identity');
+                                    if (tContainer) { tContainer.innerHTML = ''; passwordBtn.removeAttribute('data-captcha-token'); window.turnstile.render(tContainer, { sitekey: '0x4AAAAAADGpMozD1QOtWPkP', theme: 'dark', callback: (t) => passwordBtn.setAttribute('data-captcha-token', t) }); }
+                                }
+                                showError(passwordError, 'error: incorrect password');
+                                return;
+                            }
                             passwordInput.value = '';
                             showCodeStep();
                         } catch {
@@ -2697,6 +2711,18 @@ async function fetchProfile(token) {
                         stepPassword.style.display = 'flex';
                         stepCode.style.display = 'none';
                         setTimeout(() => passwordInput.focus(), 100);
+                        if (window.turnstile) {
+                            const tContainer = document.getElementById('turnstile-confirm-identity');
+                            if (tContainer) {
+                                tContainer.innerHTML = '';
+                                passwordBtn.removeAttribute('data-captcha-token');
+                                window.turnstile.render(tContainer, {
+                                    sitekey: '0x4AAAAAADGpMozD1QOtWPkP',
+                                    theme: 'dark',
+                                    callback: (token) => passwordBtn.setAttribute('data-captcha-token', token)
+                                });
+                            }
+                        }
                     } else if (mode === 'new-only') {
                         stepPassword.style.display = 'none';
                         stepCode.style.display = 'none';
