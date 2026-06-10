@@ -140,13 +140,43 @@ document.addEventListener('DOMContentLoaded', () => {
                 isBusy = true;
                 btn.disabled = true;
                 btn.textContent = 'logging in...';
-                const email = document.getElementById('login-email').value;
+                const identifier = document.getElementById('login-email').value.trim();
                 const password = document.getElementById('login-password').value;
 
-                const { error } = await s.auth.signInWithPassword({ 
-                    email, 
-                    password, 
-                    options: { captchaToken: token } 
+                let email = identifier;
+                if (!identifier.includes('@')) {
+                    try {
+                        const resolveRes = await fetch('/v1/auth/resolve-login', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ identifier })
+                        });
+                        const resolveData = await resolveRes.json();
+                        if (!resolveRes.ok || !resolveData.email) {
+                            document.getElementById('login-error-msg').textContent = 'error: wrong credentials';
+                            document.getElementById('login-error-msg').style.display = 'block';
+                            btn.disabled = false;
+                            btn.textContent = 'login';
+                            btn.removeAttribute('data-captcha-token');
+                            isBusy = false;
+                            return;
+                        }
+                        email = resolveData.email;
+                    } catch {
+                        document.getElementById('login-error-msg').textContent = 'error: something went wrong. try again';
+                        document.getElementById('login-error-msg').style.display = 'block';
+                        btn.disabled = false;
+                        btn.textContent = 'login';
+                        btn.removeAttribute('data-captcha-token');
+                        isBusy = false;
+                        return;
+                    }
+                }
+
+                const { error } = await s.auth.signInWithPassword({
+                    email,
+                    password,
+                    options: { captchaToken: token }
                 });
 
                 if (error) {

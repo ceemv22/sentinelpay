@@ -387,6 +387,17 @@ const userScoreLimiter = rateLimit({
     message: { error: 'score request limit exceeded. try again in 15 minutes.', code: 429 }
 });
 
+const usernameLoginLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 30,
+    standardHeaders: true,
+    legacyHeaders: false,
+    keyGenerator: (req) => `username_login:${req.realIp}`,
+    validate: false,
+    store: createStore('username_login:'),
+    message: { error: 'too many requests. try again in 15 minutes.', code: 429 }
+});
+
 const userKeyRollLimiter = rateLimit({
     windowMs: 60 * 60 * 1000,
     max: 5,
@@ -664,10 +675,41 @@ app.patch('/v1/user/profile', requireSupabaseAuth, async (req, res) => {
             }
             throw err;
         }
-        res.json({ ok: true, username: user.username, firstName: user.firstName || '', lastName: user.lastName || '' });
+        res.json({ ok: true, email: user.email, username: user.username, firstName: user.firstName || '', lastName: user.lastName || '' });
     } catch (err) {
         console.error('[profile patch error]', err);
         res.status(500).json({ error: 'failed to update profile' });
+    }
+});
+
+const USERNAME_LOGIN_RE = /^[a-zA-Z0-9]{2,16}$/;
+
+app.post('/v1/auth/resolve-login', requireRateLimitBackend, usernameLoginLimiter, async (req, res) => {
+    try {
+        const { identifier } = req.body;
+        if (typeof identifier !== 'string' || !identifier.trim()) {
+            return res.status(400).json({ error: 'identifier required' });
+        }
+        const value = identifier.trim();
+
+        if (value.includes('@')) {
+            return res.json({ email: value });
+        }
+
+        if (!USERNAME_LOGIN_RE.test(value)) {
+            return res.status(400).json({ error: 'invalid username or email' });
+        }
+
+        const user = await prisma.user.findFirst({
+            where: { username: { equals: value, mode: 'insensitive' } },
+            select: { email: true }
+        });
+
+        if (!user) return res.status(404).json({ error: 'no account found' });
+        res.json({ email: user.email });
+    } catch (err) {
+        console.error('[resolve-login error]', err);
+        res.status(500).json({ error: 'failed to resolve login' });
     }
 });
 
@@ -809,6 +851,7 @@ app.post('/v1/user/email-change/verify-code', requireSupabaseAuth, async (req, r
 });
 
 const emailOtpNewStore = new Map();
+const emailChangeVerifiedStore = new Map();
 
 const NEW_EMAIL_RE = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,}$/;
 
@@ -903,10 +946,62 @@ app.post('/v1/user/email-change/verify-code-new', requireSupabaseAuth, async (re
         }
 
         emailOtpNewStore.delete(req.user.id);
+        emailChangeVerifiedStore.set(req.user.id, { email: entry.email, expiresAt: Date.now() + 10 * 60 * 1000 });
         res.json({ ok: true });
     } catch (err) {
         console.error('[email-otp-new verify error]', err);
         res.status(500).json({ error: 'failed to verify code' });
+    }
+});
+
+app.post('/v1/user/email-change/finalize', requireSupabaseAuth, async (req, res) => {
+    try {
+        if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
+            return res.status(500).json({ error: 'email change is not configured on this server' });
+        }
+
+        const { email } = req.body;
+        if (typeof email !== 'string' || !NEW_EMAIL_RE.test(email.trim())) {
+            return res.status(400).json({ error: 'invalid email' });
+        }
+        const newEmail = email.trim();
+
+        const verified = emailChangeVerifiedStore.get(req.user.id);
+        if (!verified || verified.email.toLowerCase() !== newEmail.toLowerCase()) {
+            return res.status(400).json({ error: 'email not verified' });
+        }
+        if (Date.now() > verified.expiresAt) {
+            emailChangeVerifiedStore.delete(req.user.id);
+            return res.status(400).json({ error: 'verification expired. start the email change again' });
+        }
+
+        const adminRes = await fetch(`${process.env.SUPABASE_URL}/auth/v1/admin/users/${req.user.supabaseId}`, {
+            method: 'PUT',
+            headers: {
+                apikey: process.env.SUPABASE_SERVICE_ROLE_KEY,
+                Authorization: `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email: newEmail, email_confirm: true })
+        });
+
+        if (!adminRes.ok) {
+            const errBody = await adminRes.json().catch(() => ({}));
+            const m = (errBody.msg || errBody.message || '').toLowerCase();
+            if (m.includes('already') || m.includes('registered') || m.includes('exists')) {
+                return res.status(409).json({ error: 'this email is already in use' });
+            }
+            console.error('[email-change finalize] admin update failed', errBody);
+            return res.status(500).json({ error: 'failed to update email' });
+        }
+
+        await prisma.user.update({ where: { id: req.user.id }, data: { email: newEmail } });
+        emailChangeVerifiedStore.delete(req.user.id);
+
+        res.json({ ok: true });
+    } catch (err) {
+        console.error('[email-change finalize error]', err);
+        res.status(500).json({ error: 'failed to update email' });
     }
 });
 
