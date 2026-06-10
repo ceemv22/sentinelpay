@@ -2283,6 +2283,20 @@ async function fetchProfile(token) {
                 el.classList.add('ev-step-enter');
             };
 
+            const resetDashForgotCaptcha = () => {
+                const btn = document.getElementById('dash-forgot-pw-submit-btn');
+                const container = document.getElementById('turnstile-dash-forgot');
+                btn.removeAttribute('data-captcha-token');
+                if (window.turnstile && container) {
+                    container.innerHTML = '';
+                    window.turnstile.render(container, {
+                        sitekey: '0x4AAAAAADGpMozD1QOtWPkP',
+                        theme: 'dark',
+                        callback: (token) => btn.setAttribute('data-captcha-token', token)
+                    });
+                }
+            };
+
             const openDashForgot = (e) => {
                 e.preventDefault();
                 const stateForm = document.getElementById('dash-forgot-pw-state-form');
@@ -2296,6 +2310,7 @@ async function fetchProfile(token) {
                 dashForgotStep.style.display = 'flex';
                 dashForgotBackBtn.style.display = 'flex';
                 fadeInStep(dashForgotStep);
+                resetDashForgotCaptcha();
                 setTimeout(() => document.getElementById('dash-forgot-pw-email').focus(), 100);
             };
 
@@ -2316,18 +2331,26 @@ async function fetchProfile(token) {
                 const errorMsg = document.getElementById('dash-forgot-pw-error-msg');
                 const email = document.getElementById('dash-forgot-pw-email').value.trim();
                 if (!email) return;
+                const captchaToken = btn.getAttribute('data-captcha-token');
+                if (!captchaToken) {
+                    errorMsg.textContent = 'error: please complete the captcha';
+                    errorMsg.style.display = 'block';
+                    return;
+                }
                 btn.disabled = true;
                 btn.textContent = 'sending link...';
                 errorMsg.style.display = 'none';
                 try {
                     const { error } = await sentinelAuth.auth.resetPasswordForEmail(email, {
-                        redirectTo: window.location.origin + '/reset'
+                        redirectTo: window.location.origin + '/reset',
+                        captchaToken
                     });
                     if (error) {
                         errorMsg.textContent = 'error: ' + error.message.toLowerCase();
                         errorMsg.style.display = 'block';
                         btn.disabled = false;
                         btn.textContent = 'send reset link';
+                        resetDashForgotCaptcha();
                         return;
                     }
                     dashForgotEmail = email;
@@ -2338,6 +2361,7 @@ async function fetchProfile(token) {
                     errorMsg.style.display = 'block';
                     btn.disabled = false;
                     btn.textContent = 'send reset link';
+                    resetDashForgotCaptcha();
                 }
             });
 
