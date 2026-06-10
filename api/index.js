@@ -675,10 +675,30 @@ app.post('/v1/user/check-email', requireSupabaseAuth, async (req, res) => {
     try {
         const { email } = req.body;
         if (typeof email !== 'string' || !email.trim()) return res.status(400).json({ error: 'email required' });
+        const trimmedEmail = email.trim();
+
         const existing = await prisma.user.findFirst({
-            where: { email: { equals: email.trim(), mode: 'insensitive' }, NOT: { id: req.user.id } }
+            where: { email: { equals: trimmedEmail, mode: 'insensitive' }, NOT: { id: req.user.id } }
         });
-        res.json({ available: !existing });
+        if (existing) return res.json({ available: false });
+
+        if (process.env.SUPABASE_SERVICE_ROLE_KEY) {
+            const adminRes = await fetch(`${process.env.SUPABASE_URL}/auth/v1/admin/users?email=${encodeURIComponent(trimmedEmail)}`, {
+                headers: {
+                    apikey: process.env.SUPABASE_SERVICE_ROLE_KEY,
+                    Authorization: `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`
+                }
+            });
+            if (adminRes.ok) {
+                const adminData = await adminRes.json();
+                const users = adminData?.users || [];
+                if (users.some(u => u.email && u.email.toLowerCase() === trimmedEmail.toLowerCase() && u.id !== req.user.supabaseId)) {
+                    return res.json({ available: false });
+                }
+            }
+        }
+
+        res.json({ available: true });
     } catch (err) {
         console.error('[check-email error]', err);
         res.status(500).json({ error: 'failed to check email' });
