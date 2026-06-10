@@ -737,7 +737,7 @@ app.post('/v1/user/email-change/send-code', requireSupabaseAuth, async (req, res
                                 <p style="font-family: 'JetBrains Mono', monospace; font-size: 14px; line-height: 1.6; color: #777777; margin: 0 0 35px 0;">
                                     use this code to confirm the email change request on your sentinelpay account. it expires in 10 minutes.
                                 </p>
-                                <div style="font-family: 'JetBrains Mono', monospace; font-size: 36px; font-weight: 800; letter-spacing: 10px; color: #00f0ff; margin: 0 0 35px 0;">${code}</div>
+                                <div style="font-family: 'JetBrains Mono', monospace; font-size: 36px; font-weight: 800; letter-spacing: 10px; color: #ffffff; margin: 0 0 35px 0;">${code}</div>
                                 <p style="font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.6; color: #555555; margin: 0;">
                                     if you didn't request this, you can safely ignore this email.
                                 </p>
@@ -841,7 +841,7 @@ app.post('/v1/user/email-change/send-code-new', requireSupabaseAuth, async (req,
                             <td style="padding: 40px 0;">
                                 <h1 style="font-family: 'JetBrains Mono', monospace; font-size: 24px; font-weight: 800; letter-spacing: -1.5px; margin: 0 0 25px 0; color: #ffffff; text-transform: lowercase;">confirm new email</h1>
                                 <p style="font-family: 'JetBrains Mono', monospace; font-size: 14px; line-height: 1.6; color: #777777; margin: 0 0 35px 0;">someone requested to link this address to a sentinelpay account. use this code to confirm. expires in 10 minutes.</p>
-                                <div style="font-family: 'JetBrains Mono', monospace; font-size: 36px; font-weight: 800; letter-spacing: 10px; color: #00f0ff; margin: 0 0 35px 0;">${code}</div>
+                                <div style="font-family: 'JetBrains Mono', monospace; font-size: 36px; font-weight: 800; letter-spacing: 10px; color: #ffffff; margin: 0 0 35px 0;">${code}</div>
                                 <p style="font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.6; color: #555555; margin: 0;">if you didn't request this, you can safely ignore this email.</p>
                             </td>
                         </tr>
