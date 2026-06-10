@@ -2106,6 +2106,144 @@
             gap: 0.75rem;
         }
 
+        .theme-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 1rem;
+        }
+
+        .theme-card {
+            position: relative;
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 10px;
+            background: rgba(255,255,255,0.015);
+            padding: 0.75rem;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+        }
+
+        .theme-card:hover:not(.disabled) {
+            border-color: rgba(255,255,255,0.15);
+        }
+
+        .theme-card.active {
+            border-color: #fff;
+            background: rgba(0,255,157,0.04);
+        }
+
+        .theme-card.disabled {
+            cursor: default;
+            opacity: 0.45;
+        }
+
+        .theme-card-badge {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.6rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6rem;
+            text-transform: lowercase;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 5px;
+            padding: 0.15rem 0.4rem;
+            z-index: 1;
+        }
+
+        .theme-card-preview {
+            border-radius: 7px;
+            padding: 0.7rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+            margin-bottom: 0.75rem;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .theme-preview-dark, .theme-preview-system {
+            background: #0a0c0f;
+        }
+
+        .theme-preview-light {
+            background: #f4f4f5;
+        }
+
+        .theme-preview-bar {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .theme-preview-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.15);
+        }
+
+        .theme-preview-light .theme-preview-dot {
+            background: rgba(0,0,0,0.15);
+        }
+
+        .theme-preview-line {
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(255,255,255,0.08);
+            flex: 1;
+        }
+
+        .theme-preview-light .theme-preview-line {
+            background: rgba(0,0,0,0.08);
+        }
+
+        .theme-preview-line.short {
+            width: 60%;
+            flex: none;
+        }
+
+        .theme-preview-line-accent {
+            background: #fff !important;
+            opacity: 0.6;
+            flex: none;
+            width: 28px;
+        }
+
+        .theme-card-footer {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .theme-card-radio {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.2);
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .theme-card.active .theme-card-radio {
+            border-color: #fff;
+        }
+
+        .theme-card.active .theme-card-radio::after {
+            content: '';
+            position: absolute;
+            inset: 2px;
+            border-radius: 50%;
+            background: #fff;
+        }
+
+        .theme-card-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: #fff;
+            text-transform: lowercase;
+        }
+
         .settings-input {
             background: rgba(255,255,255,0.03);
             border: 1px solid rgba(255,255,255,0.08);
@@ -2923,6 +3061,47 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="settings-section">
+                    <h2 class="settings-section-title">appearance</h2>
+                    <div class="theme-options">
+                        <div class="theme-card active" data-theme="dark">
+                            <div class="theme-card-preview theme-preview-dark">
+                                <div class="theme-preview-bar"><span class="theme-preview-dot"></span><span class="theme-preview-line theme-preview-line-accent"></span></div>
+                                <div class="theme-preview-line"></div>
+                                <div class="theme-preview-line short"></div>
+                            </div>
+                            <div class="theme-card-footer">
+                                <span class="theme-card-radio"></span>
+                                <span class="theme-card-label">dark</span>
+                            </div>
+                        </div>
+                        <div class="theme-card disabled" data-theme="light">
+                            <div class="theme-card-badge">soon</div>
+                            <div class="theme-card-preview theme-preview-light">
+                                <div class="theme-preview-bar"><span class="theme-preview-dot"></span><span class="theme-preview-line theme-preview-line-accent"></span></div>
+                                <div class="theme-preview-line"></div>
+                                <div class="theme-preview-line short"></div>
+                            </div>
+                            <div class="theme-card-footer">
+                                <span class="theme-card-radio"></span>
+                                <span class="theme-card-label">light</span>
+                            </div>
+                        </div>
+                        <div class="theme-card disabled" data-theme="system">
+                            <div class="theme-card-badge">soon</div>
+                            <div class="theme-card-preview theme-preview-system">
+                                <div class="theme-preview-bar"><span class="theme-preview-dot"></span><span class="theme-preview-line theme-preview-line-accent"></span></div>
+                                <div class="theme-preview-line"></div>
+                                <div class="theme-preview-line short"></div>
+                            </div>
+                            <div class="theme-card-footer">
+                                <span class="theme-card-radio"></span>
+                                <span class="theme-card-label">system</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div id="account-tab-security" class="account-tab-panel" style="display:none;"></div>
@@ -3266,7 +3445,7 @@
     </div>
 
     <script src="toast.js?v=3"></script>
-    <script src="dashboard-v19.js?v=64"></script>
+    <script src="dashboard-v19.js?v=65"></script>
     <script>
         // Eye Tracking Logic
         function trackEye(element, clientX, clientY) {
