@@ -2669,6 +2669,178 @@
             color: var(--text-main);
         }
 
+        /* cards, tables, panels */
+        html.theme-light .card,
+        html.theme-light .org-card-item,
+        html.theme-light .glass-panel,
+        html.theme-light .audit-panel,
+        html.theme-light .analytics-card,
+        html.theme-light .api-access-card,
+        html.theme-light .org-plan-card-summary,
+        html.theme-light .metric-card {
+            background: rgba(255, 255, 255, 0.6) !important;
+            border-color: rgba(0, 0, 0, 0.08) !important;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05) !important;
+        }
+        html.theme-light .org-plan-card-summary.plan-featured {
+            background: rgba(0, 150, 170, 0.04) !important;
+            border-color: rgba(0, 150, 170, 0.25) !important;
+            box-shadow: 0 0 30px rgba(0, 150, 170, 0.06), inset 0 1px 0 rgba(0, 150, 170, 0.08) !important;
+        }
+        html.theme-light .history-item {
+            background: rgba(0, 0, 0, 0.02);
+            border-color: rgba(0, 0, 0, 0.07);
+        }
+        html.theme-light .history-item:hover {
+            background: rgba(0, 0, 0, 0.04);
+            border-color: rgba(0, 0, 0, 0.12);
+        }
+        html.theme-light .history-wallet,
+        html.theme-light .org-name,
+        html.theme-light .card-value,
+        html.theme-light .section-header h3,
+        html.theme-light .header-title h1 {
+            color: var(--text-main);
+        }
+        html.theme-light .api-key-wrapper,
+        html.theme-light .api-key-display-wrapper {
+            background: rgba(0, 0, 0, 0.03);
+            border-color: rgba(0, 0, 0, 0.08);
+            box-shadow: none;
+        }
+        html.theme-light .usage-chart {
+            border-bottom-color: rgba(0, 0, 0, 0.08);
+        }
+
+        /* inputs, search, selects */
+        html.theme-light .org-search-input,
+        html.theme-light .modal-select,
+        html.theme-light .sentinel-select-trigger,
+        html.theme-light input,
+        html.theme-light .auth-form input {
+            background: rgba(0, 0, 0, 0.03);
+            border-color: rgba(0, 0, 0, 0.12);
+            color: var(--text-main);
+            box-shadow: none;
+        }
+        html.theme-light .org-search-input::placeholder,
+        html.theme-light .auth-agreement,
+        html.theme-light .success-subtitle-new {
+            color: rgba(0, 0, 0, 0.35) !important;
+        }
+        html.theme-light .org-search-input:focus,
+        html.theme-light .modal-select:focus,
+        html.theme-light .auth-form input:focus {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        html.theme-light .modal-select option,
+        html.theme-light .sentinel-select-dropdown,
+        html.theme-light .sentinel-select-option {
+            background: #fff;
+            color: var(--text-main);
+        }
+        html.theme-light .sentinel-select-dropdown {
+            border-color: rgba(0, 0, 0, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+        }
+        html.theme-light .sentinel-select-option:hover {
+            background: rgba(0, 0, 0, 0.04);
+            color: var(--text-main);
+        }
+        html.theme-light .sentinel-select-option.selected {
+            background: rgba(0, 0, 0, 0.03);
+            color: var(--text-main);
+        }
+        html.theme-light .sentinel-select-trigger:hover,
+        html.theme-light .sentinel-select-trigger.active {
+            background: rgba(0, 0, 0, 0.05);
+            border-color: rgba(0, 0, 0, 0.18);
+        }
+
+        /* buttons */
+        html.theme-light .btn-new-org,
+        html.theme-light .submit-btn,
+        html.theme-light .auth-form .btn.primary {
+            background: #1a1a1c;
+            color: #fff;
+        }
+        html.theme-light .btn-new-org:hover {
+            background: #000;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+        }
+        html.theme-light .btn-manage-access,
+        html.theme-light .btn-roll,
+        html.theme-light .btn-cancel,
+        html.theme-light .org-switcher-trigger,
+        html.theme-light .social-btn {
+            background: rgba(0, 0, 0, 0.03);
+            border-color: rgba(0, 0, 0, 0.1);
+            color: var(--text-main);
+        }
+        html.theme-light .btn-manage-access:hover,
+        html.theme-light .btn-roll:hover,
+        html.theme-light .btn-cancel:hover,
+        html.theme-light .org-switcher-trigger:hover,
+        html.theme-light .social-btn:hover {
+            background: rgba(0, 0, 0, 0.06);
+            border-color: rgba(0, 0, 0, 0.15);
+        }
+        html.theme-light .btn-cancel:hover,
+        html.theme-light .btn-more-actions:hover,
+        html.theme-light .org-switcher-trigger:hover .selector-icon {
+            color: var(--text-main);
+        }
+
+        /* auth tabs */
+        html.theme-light .auth-tabs {
+            background: rgba(0, 0, 0, 0.04);
+            border-color: rgba(0, 0, 0, 0.06);
+        }
+        html.theme-light .auth-tab.active {
+            background: rgba(0, 0, 0, 0.08);
+            color: var(--text-main);
+        }
+        html.theme-light .auth-tab:hover:not(.active) {
+            color: var(--text-main);
+            background: rgba(0, 0, 0, 0.02);
+        }
+
+        /* toasts and tooltips */
+        html.theme-light .sentinel-toast {
+            background: rgba(255, 255, 255, 0.9);
+            border-color: rgba(0, 0, 0, 0.08);
+            color: var(--text-main);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        html.theme-light .pw-tooltip {
+            background: rgba(255, 255, 255, 0.97) !important;
+            border-color: rgba(0, 0, 0, 0.1) !important;
+            color: #555 !important;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12) !important;
+        }
+        html.theme-light .pw-toggle {
+            border-color: rgba(0, 0, 0, 0.15);
+        }
+        html.theme-light .pw-toggle:hover {
+            color: var(--text-main);
+        }
+
+        /* cyber grid + glow toned down for light */
+        html.theme-light .cyber-grid {
+            background-image:
+                linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+        }
+        html.theme-light .glow-orb {
+            background: radial-gradient(circle, rgba(0, 150, 170, 0.06) 0%, transparent 60%);
+        }
+
+        /* org avatar gradients stay subtle on light */
+        html.theme-light .org-avatar {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.06), rgba(0, 0, 0, 0.015));
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+
     </style>
     <style>
         #sp-loader {
@@ -3251,25 +3423,6 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="settings-section">
-                    <h2 class="settings-section-title">sidebar behavior</h2>
-                    <div class="settings-table">
-                        <div class="settings-table-row">
-                            <div class="settings-table-label">
-                                <span>sidebar</span>
-                                <small>choose how the sidebar expands</small>
-                            </div>
-                            <div class="settings-table-value">
-                                <select class="settings-input" id="pref-sidebar-behavior" style="cursor:pointer;">
-                                    <option value="hover">expand on hover</option>
-                                    <option value="expanded">always open</option>
-                                    <option value="collapsed">always closed</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
 
             <div id="account-tab-security" class="account-tab-panel" style="display:none;"></div>
@@ -3613,7 +3766,7 @@
     </div>
 
     <script src="toast.js?v=3"></script>
-    <script src="dashboard-v19.js?v=66"></script>
+    <script src="dashboard-v19.js?v=67"></script>
     <script>
         // Eye Tracking Logic
         function trackEye(element, clientX, clientY) {

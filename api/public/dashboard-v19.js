@@ -2466,23 +2466,6 @@ async function fetchProfile(token) {
         });
         applyTheme(localStorage.getItem('sentinel-theme') === 'light' ? 'light' : 'dark');
 
-        const sidebarBehaviorSelect = document.getElementById('pref-sidebar-behavior');
-        if (sidebarBehaviorSelect && !sidebarBehaviorSelect.dataset.wired) {
-            sidebarBehaviorSelect.dataset.wired = 'true';
-            sidebarBehaviorSelect.value = localStorage.getItem('sentinel-sidebar-state') || 'hover';
-            sidebarBehaviorSelect.addEventListener('change', () => {
-                const state = sidebarBehaviorSelect.value;
-                document.body.classList.remove('sidebar-expanded', 'sidebar-collapsed', 'sidebar-hover');
-                if (state === 'expanded') document.body.classList.add('sidebar-expanded');
-                else if (state === 'collapsed') document.body.classList.add('sidebar-collapsed');
-                else document.body.classList.add('sidebar-hover');
-                localStorage.setItem('sentinel-sidebar-state', state);
-                document.querySelectorAll('.state-option').forEach(o => {
-                    o.classList.toggle('active', o.dataset.state === state);
-                });
-            });
-        }
-
         const saveBtn = document.getElementById('btn-save-preferences');
         if (saveBtn && !saveBtn.dataset.bound) {
             saveBtn.dataset.bound = 'true';
