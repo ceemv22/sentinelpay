@@ -1022,12 +1022,12 @@ function setupCreateOrgModal(token) {
                 <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>back
             </button>
             <div style="padding-top:2.25rem;width:100%;">
-                <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:0.6rem 0.875rem;margin-bottom:0.875rem;">
+                <div class="co-org-row" style="display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:0.6rem 0.875rem;margin-bottom:0.875rem;">
                     <div style="display:flex;align-items:center;gap:0.6rem;">
                         <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
                         <span style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--text-muted);">organization</span>
                     </div>
-                    <span style="font-family:'JetBrains Mono',monospace;font-size:0.74rem;color:#e0e0e0;font-weight:500;">${name}</span>
+                    <span class="co-org-name" style="font-family:'JetBrains Mono',monospace;font-size:0.74rem;color:#e0e0e0;font-weight:500;">${name}</span>
                 </div>
                 <div class="org-plan-card-summary${p.featured ? ' plan-featured' : ''}">
                     ${p.featured ? '<div class="plan-accent-bar"></div>' : ''}
