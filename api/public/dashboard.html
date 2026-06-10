@@ -4,6 +4,7 @@
     <base href="/">
     <meta charset="UTF-8">
     <script>(function(){var q=window.location.search,h=window.location.hash;if(q.indexOf('code=')!==-1||h.indexOf('access_token=')!==-1)return;try{var s=localStorage.getItem('sb-aivqwkgjdpklxxuvkxpy-auth-token');if(!s){window.location.replace('/auth');return;}var d=JSON.parse(s);if(!d||!d.expires_at||Math.floor(Date.now()/1000)>=d.expires_at){window.location.replace('/auth');}}catch(e){window.location.replace('/auth');}})();</script>
+    <script>(function(){try{if(localStorage.getItem('sentinel-theme')==='light')document.documentElement.classList.add('theme-light');}catch(e){}})();</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>sentinelpay | dashboard</title>
     <script>(function(){if(/^\/dashboard\/account\/settings/.test(window.location.pathname))document.title='sentinelpay | account settings';})();</script>
@@ -2258,6 +2259,16 @@
             box-sizing: border-box;
         }
 
+        select.settings-input option {
+            background: #0a0c0f;
+            color: #fff;
+        }
+
+        html.theme-light select.settings-input option {
+            background: #fff;
+            color: #1a1a1c;
+        }
+
         .settings-input::placeholder {
             color: rgba(255,255,255,0.18);
         }
@@ -2517,6 +2528,145 @@
             box-shadow: none !important;
             transform: none !important;
             color: #fff;
+        }
+
+        html.theme-light {
+            --bg-dark: #f4f4f6;
+            --bg-panel: rgba(255, 255, 255, 0.7);
+            --border-glass: rgba(0, 0, 0, 0.08);
+            --text-main: #1a1a1c;
+            --text-muted: #74747c;
+            --accent-glow: rgba(0, 150, 170, 0.12);
+        }
+
+        html.theme-light ::-webkit-scrollbar-track { background: #f4f4f6; }
+        html.theme-light ::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.12);
+            border-color: rgba(0, 0, 0, 0.06);
+        }
+        html.theme-light ::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 0, 0, 0.25);
+            box-shadow: none;
+        }
+        html.theme-light * { scrollbar-color: rgba(0, 0, 0, 0.15) #f4f4f6; }
+
+        html.theme-light .sidebar {
+            background: rgba(255, 255, 255, 0.75);
+            border-right-color: rgba(0, 0, 0, 0.08);
+        }
+        html.theme-light .sidebar-item:hover {
+            color: #1a1a1c;
+            background: rgba(0, 0, 0, 0.04);
+        }
+        html.theme-light .sidebar-item.active {
+            background: rgba(0, 150, 170, 0.06);
+        }
+        html.theme-light .sidebar-popup {
+            background: rgba(255, 255, 255, 0.9);
+            border-color: rgba(0, 0, 0, 0.08);
+            box-shadow: 0 20px 50px -15px rgba(0, 0, 0, 0.18);
+        }
+        html.theme-light .radio-indicator {
+            border-color: rgba(0, 0, 0, 0.2);
+        }
+
+        html.theme-light .modal-overlay {
+            background: rgba(255, 255, 255, 0.85);
+        }
+        html.theme-light .auth-card,
+        html.theme-light .modal-content {
+            background: rgba(255, 255, 255, 0.85);
+            border-color: rgba(0, 0, 0, 0.08);
+        }
+        html.theme-light .dropdown-menu {
+            background: rgba(255, 255, 255, 0.9);
+            border-color: rgba(0, 0, 0, 0.08);
+            box-shadow: 0 40px 80px -15px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+        }
+        html.theme-light .dropdown-item { color: var(--text-main); }
+        html.theme-light .dropdown-item:hover {
+            background: rgba(0, 0, 0, 0.04);
+            border-color: rgba(0, 0, 0, 0.08);
+            box-shadow: none;
+        }
+        html.theme-light #user-dropdown {
+            background: rgba(255, 255, 255, 0.95) !important;
+        }
+
+        html.theme-light .org-home-header,
+        html.theme-light h1, html.theme-light h2, html.theme-light h3,
+        html.theme-light .settings-table-label span,
+        html.theme-light .theme-card-label,
+        html.theme-light .dropdown-header { color: var(--text-main); }
+
+        html.theme-light .settings-table {
+            border-color: rgba(0, 0, 0, 0.08);
+        }
+        html.theme-light .settings-table-row {
+            border-bottom-color: rgba(0, 0, 0, 0.06);
+        }
+        html.theme-light .settings-table-label {
+            background: rgba(0, 0, 0, 0.015);
+            border-right-color: rgba(0, 0, 0, 0.06);
+        }
+        html.theme-light .settings-table-value {
+            background: rgba(0, 0, 0, 0.012);
+        }
+        html.theme-light .settings-input,
+        html.theme-light .settings-input-prefix-wrap {
+            background: rgba(255, 255, 255, 0.7);
+            border-color: rgba(0, 0, 0, 0.12);
+            color: var(--text-main);
+        }
+        html.theme-light .settings-input::placeholder {
+            color: rgba(0, 0, 0, 0.3);
+        }
+        html.theme-light .settings-input-prefix {
+            color: rgba(0, 0, 0, 0.35);
+            border-right-color: rgba(0, 0, 0, 0.1);
+        }
+
+        html.theme-light .btn-icon {
+            background: rgba(0, 0, 0, 0.025);
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+        html.theme-light .btn-icon:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        html.theme-light .btn-primary {
+            background: #1a1a1c;
+            color: #fff;
+        }
+
+        html.theme-light .theme-card {
+            background: rgba(0, 0, 0, 0.012);
+            border-color: rgba(0, 0, 0, 0.08);
+        }
+        html.theme-light .theme-card:hover:not(.disabled) {
+            border-color: rgba(0, 0, 0, 0.18);
+        }
+        html.theme-light .theme-card.active {
+            border-color: #1a1a1c;
+            background: rgba(0, 0, 0, 0.02);
+        }
+        html.theme-light .theme-card-radio {
+            border-color: rgba(0, 0, 0, 0.25);
+        }
+        html.theme-light .theme-card.active .theme-card-radio {
+            border-color: #1a1a1c;
+        }
+        html.theme-light .theme-card.active .theme-card-radio::after {
+            background: #1a1a1c;
+        }
+        html.theme-light .theme-card-badge {
+            background: rgba(0, 0, 0, 0.05);
+            border-color: rgba(0, 0, 0, 0.1);
+            color: var(--text-muted);
+        }
+
+        html.theme-light .org-home-container,
+        html.theme-light .content-area {
+            color: var(--text-main);
         }
 
     </style>
@@ -3065,7 +3215,7 @@
                 <div class="settings-section">
                     <h2 class="settings-section-title">appearance</h2>
                     <div class="theme-options">
-                        <div class="theme-card active" data-theme="dark">
+                        <div class="theme-card" data-theme="dark">
                             <div class="theme-card-preview theme-preview-dark">
                                 <div class="theme-preview-bar"><span class="theme-preview-dot"></span><span class="theme-preview-line theme-preview-line-accent"></span></div>
                                 <div class="theme-preview-line"></div>
@@ -3076,8 +3226,7 @@
                                 <span class="theme-card-label">dark</span>
                             </div>
                         </div>
-                        <div class="theme-card disabled" data-theme="light">
-                            <div class="theme-card-badge">soon</div>
+                        <div class="theme-card" data-theme="light">
                             <div class="theme-card-preview theme-preview-light">
                                 <div class="theme-preview-bar"><span class="theme-preview-dot"></span><span class="theme-preview-line theme-preview-line-accent"></span></div>
                                 <div class="theme-preview-line"></div>
@@ -3098,6 +3247,25 @@
                             <div class="theme-card-footer">
                                 <span class="theme-card-radio"></span>
                                 <span class="theme-card-label">system</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h2 class="settings-section-title">sidebar behavior</h2>
+                    <div class="settings-table">
+                        <div class="settings-table-row">
+                            <div class="settings-table-label">
+                                <span>sidebar</span>
+                                <small>choose how the sidebar expands</small>
+                            </div>
+                            <div class="settings-table-value">
+                                <select class="settings-input" id="pref-sidebar-behavior" style="cursor:pointer;">
+                                    <option value="hover">expand on hover</option>
+                                    <option value="expanded">always open</option>
+                                    <option value="collapsed">always closed</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -3445,7 +3613,7 @@
     </div>
 
     <script src="toast.js?v=3"></script>
-    <script src="dashboard-v19.js?v=65"></script>
+    <script src="dashboard-v19.js?v=66"></script>
     <script>
         // Eye Tracking Logic
         function trackEye(element, clientX, clientY) {
