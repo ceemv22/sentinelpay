@@ -4,7 +4,7 @@
     <base href="/">
     <meta charset="UTF-8">
     <script>(function(){var q=window.location.search,h=window.location.hash;if(q.indexOf('code=')!==-1||h.indexOf('access_token=')!==-1)return;try{var s=localStorage.getItem('sb-aivqwkgjdpklxxuvkxpy-auth-token');if(!s){window.location.replace('/auth');return;}var d=JSON.parse(s);if(!d||!d.expires_at||Math.floor(Date.now()/1000)>=d.expires_at){window.location.replace('/auth');}}catch(e){window.location.replace('/auth');}})();</script>
-    <script>(function(){try{if(localStorage.getItem('sentinel-theme')==='light')document.documentElement.classList.add('theme-light');}catch(e){}})();</script>
+    <script>(function(){try{var m=document.cookie.match(/(?:^|; )sentinel-theme=([^;]*)/);if(m&&decodeURIComponent(m[1])==='light')document.documentElement.classList.add('theme-light');}catch(e){}})();</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>sentinelpay | dashboard</title>
     <script>(function(){if(/^\/dashboard\/account\/settings/.test(window.location.pathname))document.title='sentinelpay | account settings';})();</script>
@@ -2531,12 +2531,17 @@
         }
 
         html.theme-light {
-            --bg-dark: #f4f4f6;
-            --bg-panel: rgba(255, 255, 255, 0.7);
-            --border-glass: rgba(0, 0, 0, 0.08);
-            --text-main: #1a1a1c;
-            --text-muted: #74747c;
-            --accent-glow: rgba(0, 150, 170, 0.12);
+            --bg-dark: #f6f7f9;
+            --bg-panel: rgba(255, 255, 255, 0.75);
+            --border-glass: rgba(20, 20, 30, 0.08);
+            --text-main: #15161a;
+            --text-muted: #82828c;
+            --accent-glow: rgba(0, 145, 200, 0.12);
+            --accent-light: #0091c8;
+        }
+
+        html.theme-light body {
+            background: linear-gradient(180deg, #fbfcfd 0%, #eef0f3 100%) fixed;
         }
 
         html.theme-light ::-webkit-scrollbar-track { background: #f4f4f6; }
@@ -2646,17 +2651,18 @@
             border-color: rgba(0, 0, 0, 0.18);
         }
         html.theme-light .theme-card.active {
-            border-color: #1a1a1c;
-            background: rgba(0, 0, 0, 0.02);
+            border-color: var(--accent-light);
+            background: rgba(0, 145, 200, 0.05);
+            box-shadow: 0 0 0 1px var(--accent-light), 0 8px 20px -8px rgba(0, 145, 200, 0.35);
         }
         html.theme-light .theme-card-radio {
             border-color: rgba(0, 0, 0, 0.25);
         }
         html.theme-light .theme-card.active .theme-card-radio {
-            border-color: #1a1a1c;
+            border-color: var(--accent-light);
         }
         html.theme-light .theme-card.active .theme-card-radio::after {
-            background: #1a1a1c;
+            background: var(--accent-light);
         }
         html.theme-light .theme-card-badge {
             background: rgba(0, 0, 0, 0.05);
@@ -2667,6 +2673,64 @@
         html.theme-light .org-home-container,
         html.theme-light .content-area {
             color: var(--text-main);
+        }
+
+        html.theme-light .sidebar-item.active {
+            color: var(--accent-light);
+            background: rgba(0, 145, 200, 0.07);
+        }
+        html.theme-light .sidebar-item.active::before {
+            background: var(--accent-light) !important;
+            box-shadow: 0 0 8px rgba(0, 145, 200, 0.4);
+        }
+        html.theme-light .org-plan,
+        html.theme-light .org-rec-link,
+        html.theme-light .auth-form .forgot-pw-link:hover,
+        html.theme-light .dropdown-item:hover,
+        html.theme-light .dropdown-item:hover svg,
+        html.theme-light .dropdown-header {
+            color: var(--accent-light);
+        }
+        html.theme-light .dropdown-item:hover {
+            box-shadow: inset 0 0 10px rgba(0, 145, 200, 0.06);
+        }
+        html.theme-light .org-rec-link:hover {
+            filter: drop-shadow(0 0 5px var(--accent-light));
+        }
+        html.theme-light .bar {
+            background: linear-gradient(180deg, var(--accent-light), rgba(0, 145, 200, 0.05));
+        }
+        html.theme-light .bar:hover {
+            filter: drop-shadow(0 0 10px var(--accent-light));
+        }
+        html.theme-light .auth-form input:focus {
+            border-color: rgba(0, 145, 200, 0.45);
+            box-shadow: 0 0 15px rgba(0, 145, 200, 0.12);
+        }
+        html.theme-light .org-search-input:focus {
+            border-color: rgba(0, 145, 200, 0.4);
+            box-shadow: 0 0 0 3px rgba(0, 145, 200, 0.08);
+        }
+        html.theme-light .modal-select:focus {
+            border-color: var(--accent-light);
+            box-shadow: 0 0 20px rgba(0, 145, 200, 0.1);
+        }
+        html.theme-light ::-webkit-scrollbar-thumb {
+            background: rgba(0, 145, 200, 0.18);
+            border-color: rgba(0, 145, 200, 0.08);
+        }
+        html.theme-light ::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 145, 200, 0.4);
+        }
+        html.theme-light * {
+            scrollbar-color: rgba(0, 145, 200, 0.2) #f6f7f9;
+        }
+        html.theme-light .org-card-item {
+            border-left-color: rgba(0, 145, 200, 0.3) !important;
+        }
+        html.theme-light .org-card-avatar {
+            background: linear-gradient(135deg, rgba(0, 145, 200, 0.12), rgba(160, 32, 240, 0.06)) !important;
+            border-color: rgba(0, 145, 200, 0.2) !important;
         }
 
         /* cards, tables, panels */
@@ -3766,7 +3830,7 @@
     </div>
 
     <script src="toast.js?v=3"></script>
-    <script src="dashboard-v19.js?v=67"></script>
+    <script src="dashboard-v19.js?v=68"></script>
     <script>
         // Eye Tracking Logic
         function trackEye(element, clientX, clientY) {
