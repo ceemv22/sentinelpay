@@ -2297,6 +2297,7 @@
         .settings-input-prefix-wrap:focus-within {
             border-color: rgba(0, 240, 255, 0.35);
             box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.06);
+            transition: border-color 0.2s, box-shadow 0.2s, background-color 0.4s ease, color 0.4s ease;
         }
 
         .settings-input-prefix {
@@ -2561,6 +2562,8 @@
         html.theme-fade-transition .settings-table-label,
         html.theme-fade-transition .settings-table-value,
         html.theme-fade-transition .settings-input,
+        html.theme-fade-transition .settings-input-prefix-wrap,
+        html.theme-fade-transition .settings-input-prefix,
         html.theme-fade-transition .settings-actions,
         html.theme-fade-transition .theme-card,
         html.theme-fade-transition .dropdown-menu,
@@ -2654,12 +2657,15 @@
             border-color: rgba(0, 0, 0, 0.12);
             color: var(--text-main);
         }
+        html.theme-light .settings-input-prefix-wrap:focus-within {
+            border-color: rgba(0, 145, 200, 0.45);
+            box-shadow: 0 0 0 3px rgba(0, 145, 200, 0.08);
+        }
         html.theme-light .settings-input::placeholder {
             color: rgba(0, 0, 0, 0.3);
         }
         html.theme-light .settings-input-prefix {
             color: rgba(0, 0, 0, 0.35);
-            border-right-color: rgba(0, 0, 0, 0.1);
         }
 
         html.theme-light .btn-icon {
