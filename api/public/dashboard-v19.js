@@ -2865,7 +2865,6 @@ async function fetchProfile(token) {
                     return;
                 }
                 if (prefEmailInput && prefEmailInput.dataset.taken === 'true') {
-                    notify('error: this email is already registered to another account', 'error');
                     return;
                 }
 
