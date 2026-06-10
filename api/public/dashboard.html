@@ -2311,6 +2311,7 @@
             opacity: 1;
             max-width: 1.4rem;
             margin-left: 0.85rem;
+            flex-shrink: 0;
             transform: translateX(0);
             transition: opacity 0.18s ease, max-width 0.18s ease, margin-left 0.18s ease, transform 0.18s ease;
         }
@@ -2323,10 +2324,13 @@
         }
 
         .settings-input-prefixed {
-            background: transparent;
-            border: none;
+            background: transparent !important;
+            border: none !important;
             border-radius: 0;
             padding-left: 0.3rem;
+            flex: 1;
+            min-width: 0;
+            width: auto;
             transition: padding-left 0.18s ease;
         }
 
