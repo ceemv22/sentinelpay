@@ -32,6 +32,7 @@
     }
     </script>
 
+    <script>(function(){try{var m=document.cookie.match(/(?:^|; )sentinel-theme=([^;]*)/);if(m&&decodeURIComponent(m[1])==='light')document.documentElement.classList.add('theme-light');}catch(e){}})();</script>
     <script>(function(){try{var s=localStorage.getItem('sb-aivqwkgjdpklxxuvkxpy-auth-token');if(s){var d=JSON.parse(s);if(d&&d.expires_at&&Math.floor(Date.now()/1000)<d.expires_at){document.documentElement.classList.add('auth-session-present');}}}catch(e){}})();</script>
     <link rel="icon" type="image/svg+xml" href="logo.svg">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -50,6 +51,101 @@
         @keyframes splPulse{from{filter:drop-shadow(0 0 6px rgba(0,255,255,0.3)) drop-shadow(0 0 14px rgba(160,32,240,0.2));}to{filter:drop-shadow(0 0 14px rgba(0,255,255,0.65)) drop-shadow(0 0 28px rgba(160,32,240,0.4));}}
         .spl-eye-blink{transform-origin:60px 60px;animation:splBlink 3.5s ease-in-out infinite;}
         @keyframes splBlink{0%,35%,55%,88%,100%{transform:scaleY(1);}45%{transform:scaleY(0.05);}93%{transform:scaleY(0.05);}}
+
+        html.theme-light {
+            --bg-dark: #f6f7f9;
+            --bg-panel: rgba(255, 255, 255, 0.75);
+            --border-glass: rgba(20, 20, 30, 0.08);
+            --text-main: #15161a;
+            --text-muted: #82828c;
+            --accent-glow: rgba(0, 145, 200, 0.12);
+            --accent-light: #0091c8;
+            --neon-blue: #0091c8;
+        }
+        html.theme-light body.lp-body {
+            background: linear-gradient(180deg, #fbfcfd 0%, #eef0f3 100%) fixed;
+        }
+        html.theme-light #sp-loader {
+            background: #fbfcfd;
+        }
+        html.theme-light .lp-nav {
+            background: rgba(255, 255, 255, 0.85);
+            border-bottom-color: rgba(0, 0, 0, 0.06);
+        }
+        html.theme-light .lp-logo-text,
+        html.theme-light .lp-h1,
+        html.theme-light .lp-h2 {
+            background: linear-gradient(160deg, #15161a 0%, #5a5a66 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        html.theme-light .lp-nav-link:hover,
+        html.theme-light .lp-back-btn:hover,
+        html.theme-light .lp-btn-ghost.auth-nav-btn:hover,
+        html.theme-light .lp-nav-dd-item:hover {
+            background: rgba(0, 0, 0, 0.04) !important;
+        }
+        html.theme-light .lp-back-btn,
+        html.theme-light .lp-btn-ghost.auth-nav-btn {
+            border-color: rgba(0, 0, 0, 0.08) !important;
+        }
+        html.theme-light .lp-nav-dd {
+            background: #fff;
+            border-color: rgba(0, 0, 0, 0.08);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+        }
+        html.theme-light .lp-nav-dd-item {
+            border-bottom-color: rgba(0, 0, 0, 0.05);
+        }
+        html.theme-light .lp-nav-dd-item:hover,
+        html.theme-light .lp-nav-dd-item:hover svg {
+            color: var(--text-main) !important;
+        }
+        html.theme-light .lp-stat-value,
+        html.theme-light .lp-step-title,
+        html.theme-light .lp-plan-amount,
+        html.theme-light .lp-plan-amount-custom,
+        html.theme-light .lp-usecase-title,
+        html.theme-light .lp-how-title {
+            color: var(--text-main);
+        }
+        html.theme-light .lp-status-pill {
+            background: rgba(0, 0, 0, 0.03);
+            border-color: rgba(0, 0, 0, 0.08);
+        }
+        html.theme-light .lp-status-pill:hover {
+            background: rgba(0, 0, 0, 0.05);
+            border-color: rgba(0, 0, 0, 0.13);
+        }
+        html.theme-light .lp-glow-orb {
+            opacity: 0.35;
+        }
+        html.theme-light .lp-footer {
+            background: rgba(0, 0, 0, 0.02);
+            border-top-color: rgba(0, 0, 0, 0.06);
+        }
+        html.theme-light .lp-section-card,
+        html.theme-light [class$="-card"],
+        html.theme-light [class*="-card-"] {
+            background: rgba(255, 255, 255, 0.6);
+            border-color: rgba(0, 0, 0, 0.06);
+        }
+        html.theme-light #sp-chat-btn {
+            background: rgba(255, 255, 255, 0.85);
+            border-color: rgba(0, 145, 200, 0.25);
+            box-shadow: 0 0 20px rgba(0, 145, 200, 0.08), 0 8px 32px rgba(0, 0, 0, 0.08);
+            color: var(--accent-light);
+        }
+        html.theme-light #sp-chat-btn:hover {
+            border-color: rgba(0, 145, 200, 0.45);
+            box-shadow: 0 0 28px rgba(0, 145, 200, 0.16), 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        html.theme-light #sp-chat-badge {
+            background: var(--accent-light);
+            box-shadow: 0 0 8px rgba(0, 145, 200, 0.6);
+            border-color: rgba(255, 255, 255, 1);
+        }
     </style>
 </head>
 <body class="lp-body">
