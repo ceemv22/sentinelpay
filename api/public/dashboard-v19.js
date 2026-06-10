@@ -168,6 +168,7 @@ if (logoutBtn) {
         e.preventDefault();
         localStorage.removeItem('sentinel-cached-orgs');
         localStorage.removeItem('sentinel-cached-profile');
+        document.cookie = 'sentinel-theme=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax';
         if (sentinelAuth) await sentinelAuth.auth.signOut();
         window.location.href = 'https://sentinelpay.org';
     };
