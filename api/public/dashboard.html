@@ -2526,6 +2526,26 @@
             color: var(--neon-blue);
             opacity: 0.75;
         }
+        .crypto-dd-item {
+            padding: 0.5rem 0.8rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: background 0.13s, color 0.13s;
+        }
+        .crypto-dd-item + .crypto-dd-item {
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+        }
+        .crypto-dd-item:hover {
+            background: rgba(255, 255, 255, 0.04);
+            color: #fff;
+        }
+        .crypto-dd-sel-txt {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: #e0e0e0;
+        }
         #btn-step2-back {
             box-shadow: none !important;
             transform: none !important;
@@ -2535,6 +2555,14 @@
             box-shadow: none !important;
             transform: none !important;
             color: #fff;
+        }
+        html.theme-light #btn-step2-back:hover,
+        html.theme-light #btn-step2-back:focus,
+        html.theme-light #btn-step2-back:active,
+        html.theme-light #btn-step3-back:hover,
+        html.theme-light #btn-step3-back:focus,
+        html.theme-light #btn-step3-back:active {
+            color: var(--text-main) !important;
         }
 
         html.theme-light {
@@ -2844,6 +2872,50 @@
             border-color: rgba(0, 0, 0, 0.08) !important;
         }
         html.theme-light .co-org-name {
+            color: var(--text-main) !important;
+        }
+        html.theme-light #crypto-dd-trigger,
+        html.theme-light #network-dd-trigger {
+            background: rgba(255, 255, 255, 0.7) !important;
+            border-color: rgba(0, 0, 0, 0.12) !important;
+        }
+        html.theme-light #crypto-dd-chevron,
+        html.theme-light #network-dd-chevron {
+            stroke: rgba(0, 0, 0, 0.45);
+        }
+        html.theme-light #crypto-dd-panel,
+        html.theme-light #network-dd-panel {
+            background: #fff !important;
+            border-color: rgba(0, 0, 0, 0.1) !important;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.14) !important;
+        }
+        html.theme-light .crypto-dd-item + .crypto-dd-item {
+            border-top-color: rgba(0, 0, 0, 0.05);
+        }
+        html.theme-light .crypto-dd-item:hover {
+            background: rgba(0, 0, 0, 0.04);
+            color: var(--text-main);
+        }
+        html.theme-light .crypto-dd-sel-txt {
+            color: var(--text-main);
+        }
+        html.theme-light .crypto-pay-wrap {
+            border-top-color: rgba(0, 0, 0, 0.08) !important;
+        }
+        html.theme-light .crypto-amount {
+            color: var(--text-main) !important;
+        }
+        html.theme-light .crypto-amount-cur {
+            color: rgba(0, 0, 0, 0.45) !important;
+        }
+        html.theme-light .crypto-qr {
+            border-color: rgba(0, 0, 0, 0.12) !important;
+        }
+        html.theme-light .crypto-addr-box {
+            background: rgba(0, 0, 0, 0.03) !important;
+            border-color: rgba(0, 0, 0, 0.1) !important;
+        }
+        html.theme-light .crypto-addr-text {
             color: var(--text-main) !important;
         }
         html.theme-light .history-item {
@@ -3999,7 +4071,7 @@
     </div>
 
     <script src="toast.js?v=3"></script>
-    <script src="dashboard-v19.js?v=72"></script>
+    <script src="dashboard-v19.js?v=73"></script>
     <script>
         // Eye Tracking Logic
         function trackEye(element, clientX, clientY) {

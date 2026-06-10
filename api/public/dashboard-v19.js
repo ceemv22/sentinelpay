@@ -622,18 +622,24 @@ function setupCreateOrgModal(token) {
         let ddOpen = false;
         let netOpen = false;
 
+        const _ddBorder = (open) => {
+            const light = document.documentElement.classList.contains('theme-light');
+            if (light) return open ? 'rgba(0,0,0,0.25)' : 'rgba(0,0,0,0.12)';
+            return open ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.1)';
+        };
+
         const toggleDd = (force) => {
             ddOpen = typeof force === 'boolean' ? force : !ddOpen;
             ddPanel.style.display = ddOpen ? '' : 'none';
             ddChevron.style.transform = ddOpen ? 'rotate(180deg)' : '';
-            ddTrigger.style.borderColor = ddOpen ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.1)';
+            ddTrigger.style.borderColor = _ddBorder(ddOpen);
         };
 
         const toggleNetDd = (force) => {
             netOpen = typeof force === 'boolean' ? force : !netOpen;
             netPanel.style.display = netOpen ? '' : 'none';
             netChevron.style.transform = netOpen ? 'rotate(180deg)' : '';
-            netTrigger.style.borderColor = netOpen ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.1)';
+            netTrigger.style.borderColor = _ddBorder(netOpen);
         };
 
         ddTrigger.addEventListener('click', (e) => { e.stopPropagation(); if (netOpen) toggleNetDd(false); toggleDd(); });
@@ -659,7 +665,7 @@ function setupCreateOrgModal(token) {
             const _pt = _sm ? '0.5rem' : '0.75rem';
 
             statusArea.innerHTML = `
-                <div style="border-top:1px solid rgba(255,255,255,0.06);padding-top:${_pt};display:flex;flex-direction:column;gap:${_gap};">
+                <div class="crypto-pay-wrap" style="border-top:1px solid rgba(255,255,255,0.06);padding-top:${_pt};display:flex;flex-direction:column;gap:${_gap};">
                     <div style="display:flex;align-items:center;justify-content:space-between;gap:0.5rem;">
                         <div id="batch-id-copy" title="click to copy session id" style="display:flex;align-items:center;gap:0.3rem;cursor:pointer;min-width:0;flex:1;overflow:hidden;-webkit-tap-highlight-color:transparent;">
                             <span id="batch-id-text" style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;transition:color 0.2s;">${session.batchId}</span>
@@ -669,14 +675,14 @@ function setupCreateOrgModal(token) {
                     </div>
                     <div style="text-align:center;">
                         <div style="font-family:'JetBrains Mono',monospace;font-size:0.63rem;color:var(--text-muted);margin-bottom:0.2rem;">send exactly</div>
-                        <div style="font-family:'JetBrains Mono',monospace;font-size:1.3rem;font-weight:700;color:#ffffff;letter-spacing:-0.025em;">${session.amountCrypto} <span style="font-size:0.68rem;color:rgba(255,255,255,0.45);">${coin.currency}</span></div>
+                        <div class="crypto-amount" style="font-family:'JetBrains Mono',monospace;font-size:1.3rem;font-weight:700;color:#ffffff;letter-spacing:-0.025em;">${session.amountCrypto} <span class="crypto-amount-cur" style="font-size:0.68rem;color:rgba(255,255,255,0.45);">${coin.currency}</span></div>
                         <div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--text-muted);margin-top:0.15rem;">&asymp; $${session.amountUsd.toLocaleString('en-US')}</div>
                     </div>
                     <div style="display:flex;justify-content:center;">
-                        <img src="${session.qrDataUrl}" alt="qr" style="width:${_qr}px;height:${_qr}px;border-radius:8px;border:1px solid rgba(255,255,255,0.12);">
+                        <img class="crypto-qr" src="${session.qrDataUrl}" alt="qr" style="width:${_qr}px;height:${_qr}px;border-radius:8px;border:1px solid rgba(255,255,255,0.12);">
                     </div>
-                    <div style="background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:0.65rem 0.75rem;display:grid;grid-template-columns:1fr auto;align-items:center;gap:0.5rem;width:100%;box-sizing:border-box;">
-                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.68rem;color:#ffffff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${session.address}</div>
+                    <div class="crypto-addr-box" style="background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:0.65rem 0.75rem;display:grid;grid-template-columns:1fr auto;align-items:center;gap:0.5rem;width:100%;box-sizing:border-box;">
+                        <div class="crypto-addr-text" style="font-family:'JetBrains Mono',monospace;font-size:0.68rem;color:#ffffff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${session.address}</div>
                         <button id="btn-copy-address" style="background:transparent;border:none;cursor:pointer;color:var(--text-muted);padding:0.15rem;display:flex;align-items:center;transition:color 0.2s;-webkit-tap-highlight-color:transparent;transform:none !important;box-shadow:none !important;">
                             <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
                         </button>
@@ -861,7 +867,7 @@ function setupCreateOrgModal(token) {
             sImg.onerror = () => { sImg.style.display = 'none'; };
             sWrap.appendChild(sImg);
             const sTxt = document.createElement('span');
-            sTxt.style.cssText = "font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:#e0e0e0;";
+            sTxt.className = 'crypto-dd-sel-txt';
             sTxt.textContent = cur.name;
             ddSelected.appendChild(sWrap);
             ddSelected.appendChild(sTxt);
@@ -869,17 +875,16 @@ function setupCreateOrgModal(token) {
 
         const renderNetSelected = (net) => {
             netSelected.textContent = net.label;
-            netSelected.style.color = '#e0e0e0';
+            netSelected.style.color = '';
+            netSelected.classList.add('crypto-dd-sel-txt');
         };
 
         const populateNetworkDd = (cur) => {
             netPanel.innerHTML = '';
-            cur.networks.forEach((net, i) => {
+            cur.networks.forEach((net) => {
                 const item = document.createElement('div');
-                item.style.cssText = 'padding:0.5rem 0.8rem;font-family:\'JetBrains Mono\',monospace;font-size:0.7rem;color:var(--text-muted);cursor:pointer;transition:background 0.13s;' + (i < cur.networks.length - 1 ? 'border-bottom:1px solid rgba(255,255,255,0.04);' : '');
+                item.className = 'crypto-dd-item';
                 item.textContent = net.label;
-                item.addEventListener('mouseover', () => { item.style.background = 'rgba(255,255,255,0.04)'; item.style.color = '#fff'; });
-                item.addEventListener('mouseout', () => { item.style.background = 'transparent'; item.style.color = 'var(--text-muted)'; });
                 item.addEventListener('click', (e) => {
                     e.stopPropagation();
                     selectedNetwork = net;
@@ -915,12 +920,10 @@ function setupCreateOrgModal(token) {
             }
         };
 
-        CRYPTO_CURRENCIES.forEach((cur, i) => {
+        CRYPTO_CURRENCIES.forEach((cur) => {
             const item = document.createElement('div');
-            item.style.cssText = 'padding:0.5rem 0.8rem;font-family:\'JetBrains Mono\',monospace;font-size:0.7rem;color:var(--text-muted);cursor:pointer;transition:background 0.13s;' + (i < CRYPTO_CURRENCIES.length - 1 ? 'border-bottom:1px solid rgba(255,255,255,0.04);' : '');
+            item.className = 'crypto-dd-item';
             item.textContent = cur.name;
-            item.addEventListener('mouseover', () => { item.style.background = 'rgba(255,255,255,0.04)'; item.style.color = '#fff'; });
-            item.addEventListener('mouseout', () => { item.style.background = 'transparent'; item.style.color = 'var(--text-muted)'; });
             item.addEventListener('click', (e) => { e.stopPropagation(); onCurrencySelect(cur); });
             ddPanel.appendChild(item);
         });
