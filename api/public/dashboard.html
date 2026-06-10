@@ -2954,6 +2954,70 @@
             border-color: rgba(0, 0, 0, 0.1);
         }
 
+        html.theme-light #sp-chat-btn {
+            background: rgba(255, 255, 255, 0.85);
+            border-color: rgba(0, 145, 200, 0.25);
+            box-shadow: 0 0 20px rgba(0, 145, 200, 0.08), 0 8px 32px rgba(0, 0, 0, 0.08);
+            color: var(--accent-light);
+        }
+        html.theme-light #sp-chat-btn:hover {
+            border-color: rgba(0, 145, 200, 0.45);
+            box-shadow: 0 0 28px rgba(0, 145, 200, 0.16), 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        html.theme-light #sp-chat-badge {
+            background: var(--accent-light);
+            box-shadow: 0 0 8px rgba(0, 145, 200, 0.6);
+            border-color: rgba(255, 255, 255, 1);
+        }
+
+        html.theme-light #user-dropdown {
+            box-shadow: 0 30px 70px -15px rgba(20, 20, 30, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.04);
+        }
+        html.theme-light #dropdown-user-header {
+            background: rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        html.theme-light #dropdown-email {
+            color: var(--text-muted);
+        }
+        html.theme-light .org-avatar.small {
+            background: rgba(0, 0, 0, 0.06);
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+        html.theme-light .dropdown-item.text-red {
+            color: var(--color-red);
+        }
+        html.theme-light .dropdown-item.text-red:hover {
+            background: rgba(255, 60, 60, 0.06);
+            color: var(--color-red);
+        }
+        html.theme-light .dropdown-item.text-red:hover svg {
+            color: var(--color-red);
+        }
+        html.theme-light #notification-badge {
+            color: #fff;
+        }
+
+        html.theme-light #notif-panel-header {
+            background: rgba(0, 0, 0, 0.04);
+            border-color: rgba(0, 0, 0, 0.05);
+        }
+        html.theme-light #notif-panel-tab {
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--text-main);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+        }
+        html.theme-light #notif-panel-back {
+            color: var(--text-muted);
+        }
+        html.theme-light #notif-panel-back:active {
+            background: rgba(0, 0, 0, 0.06) !important;
+            color: var(--text-main) !important;
+        }
+        html.theme-light #notif-panel-body::-webkit-scrollbar-thumb {
+            background: rgba(0, 145, 200, 0.25);
+        }
+
     </style>
     <style>
         #sp-loader {
@@ -3879,7 +3943,7 @@
     </div>
 
     <script src="toast.js?v=3"></script>
-    <script src="dashboard-v19.js?v=70"></script>
+    <script src="dashboard-v19.js?v=71"></script>
     <script>
         // Eye Tracking Logic
         function trackEye(element, clientX, clientY) {
