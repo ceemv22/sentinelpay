@@ -2675,6 +2675,24 @@
             color: var(--text-main);
         }
 
+        html.theme-light .org-home-header,
+        html.theme-light .logo {
+            background: linear-gradient(160deg, #15161a 0%, #5a5a66 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        html.theme-light .settings-actions {
+            background: rgba(0, 0, 0, 0.02);
+            border-top-color: rgba(0, 0, 0, 0.06);
+        }
+        html.theme-light .org-home-intro {
+            border-bottom-color: rgba(0, 0, 0, 0.08);
+        }
+        html.theme-light #sp-loader {
+            background: #fbfcfd;
+        }
+
         html.theme-light .sidebar-item.active {
             color: var(--accent-light);
             background: rgba(0, 145, 200, 0.07);
@@ -3830,7 +3848,7 @@
     </div>
 
     <script src="toast.js?v=3"></script>
-    <script src="dashboard-v19.js?v=68"></script>
+    <script src="dashboard-v19.js?v=69"></script>
     <script>
         // Eye Tracking Logic
         function trackEye(element, clientX, clientY) {
