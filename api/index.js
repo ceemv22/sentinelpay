@@ -649,6 +649,14 @@ app.patch('/v1/user/profile', requireSupabaseAuth, async (req, res) => {
         }
         if (typeof username === 'string') {
             const u = username.trim();
+            const usernameChanged = u.toLowerCase() !== (req.user.username || '').toLowerCase();
+            if (usernameChanged && req.user.authProvider !== 'twitter') {
+                const verified = usernameChangeVerifiedStore.get(req.user.id);
+                if (!verified || Date.now() > verified.expiresAt) {
+                    return res.status(403).json({ error: 'identity verification required' });
+                }
+                usernameChangeVerifiedStore.delete(req.user.id);
+            }
             if (u.length === 0) {
                 data.username = null;
             } else if (/\s/.test(u)) {
@@ -950,6 +958,138 @@ app.post('/v1/user/email-change/verify-code-new', requireSupabaseAuth, async (re
         res.json({ ok: true });
     } catch (err) {
         console.error('[email-otp-new verify error]', err);
+        res.status(500).json({ error: 'failed to verify code' });
+    }
+});
+
+const usernameOtpStore = new Map();
+const usernameChangeVerifiedStore = new Map();
+
+app.post('/v1/user/username-change/verify-password', requireSupabaseAuth, async (req, res) => {
+    try {
+        const { password, captchaToken } = req.body;
+        if (typeof password !== 'string' || !password) {
+            return res.status(400).json({ error: 'password required' });
+        }
+        if (!req.user.email) {
+            return res.status(400).json({ error: 'no email on file for this account' });
+        }
+
+        const tokenRes = await fetch(`${process.env.SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+            method: 'POST',
+            headers: {
+                apikey: process.env.SUPABASE_ANON_KEY,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email: req.user.email,
+                password,
+                gotrue_meta_security: { captcha_token: captchaToken }
+            })
+        });
+
+        if (!tokenRes.ok) {
+            return res.status(401).json({ error: 'incorrect password' });
+        }
+
+        usernameChangeVerifiedStore.set(req.user.id, { expiresAt: Date.now() + 10 * 60 * 1000 });
+        res.json({ ok: true });
+    } catch (err) {
+        console.error('[username-change verify-password error]', err);
+        res.status(500).json({ error: 'verification failed' });
+    }
+});
+
+app.post('/v1/user/username-change/send-code', requireSupabaseAuth, async (req, res) => {
+    try {
+        if (!req.user.email) return res.status(400).json({ error: 'no email on file for this account' });
+
+        const existing = usernameOtpStore.get(req.user.id);
+        if (existing && Date.now() - existing.sentAt < 60 * 1000) {
+            const retryAfter = Math.ceil((60 * 1000 - (Date.now() - existing.sentAt)) / 1000);
+            return res.status(429).json({ error: 'please wait before requesting another code', retryAfter });
+        }
+
+        const code = crypto.randomInt(100000, 1000000).toString();
+        const codeHash = crypto.createHash('sha256').update(code).digest('hex');
+        usernameOtpStore.set(req.user.id, {
+            codeHash,
+            expiresAt: Date.now() + 10 * 60 * 1000,
+            attempts: 0,
+            sentAt: Date.now()
+        });
+
+        const { Resend } = require('resend');
+        const resend = new Resend(process.env.RESEND_API_KEY);
+        await resend.emails.send({
+            from: 'sentinelpay <noreply@sentinelpay.org>',
+            to: req.user.email,
+            subject: 'your sentinelpay verification code',
+            html: `
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="utf-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>verification code | SentinelPay</title>
+                <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
+            </head>
+            <body style="margin: 0; padding: 0; background-color: #050505; color: #ffffff; font-family: 'JetBrains Mono', 'Courier New', monospace; -webkit-font-smoothing: antialiased;">
+                <div style="background-color: #050505; padding: 100px 20px; text-align: center;">
+                    <table align="center" border="0" cellpadding="0" cellspacing="0" style="margin-bottom: 50px;">
+                        <tr><td align="center"><img src="https://sentinelpay.org/logo.png" alt="SentinelPay" width="64" height="64" style="display: block; border: 0;"></td></tr>
+                    </table>
+                    <table align="center" border="0" cellpadding="0" cellspacing="0" style="max-width: 420px; width: 100%; border-top: 1px solid rgba(255,255,255,0.05);">
+                        <tr>
+                            <td style="padding: 40px 0;">
+                                <h1 style="font-family: 'JetBrains Mono', monospace; font-size: 24px; font-weight: 800; letter-spacing: -1.5px; margin: 0 0 25px 0; color: #ffffff; text-transform: lowercase;">verify it's you</h1>
+                                <p style="font-family: 'JetBrains Mono', monospace; font-size: 14px; line-height: 1.6; color: #777777; margin: 0 0 35px 0;">use this code to confirm the username change request on your sentinelpay account. it expires in 10 minutes.</p>
+                                <div style="font-family: 'JetBrains Mono', monospace; font-size: 36px; font-weight: 800; letter-spacing: 10px; color: #ffffff; margin: 0 0 35px 0;">${code}</div>
+                                <p style="font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.6; color: #555555; margin: 0;">if you didn't request this, you can safely ignore this email.</p>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </body>
+            </html>`
+        });
+
+        res.json({ ok: true });
+    } catch (err) {
+        console.error('[username-change send-code error]', err);
+        res.status(500).json({ error: 'failed to send verification code' });
+    }
+});
+
+app.post('/v1/user/username-change/verify-code', requireSupabaseAuth, async (req, res) => {
+    try {
+        const { code } = req.body;
+        if (typeof code !== 'string' || !/^[0-9]{6}$/.test(code)) {
+            return res.status(400).json({ error: 'invalid code format' });
+        }
+
+        const entry = usernameOtpStore.get(req.user.id);
+        if (!entry) return res.status(400).json({ error: 'no verification code requested' });
+        if (Date.now() > entry.expiresAt) {
+            usernameOtpStore.delete(req.user.id);
+            return res.status(400).json({ error: 'code expired. request a new one' });
+        }
+        if (entry.attempts >= 5) {
+            usernameOtpStore.delete(req.user.id);
+            return res.status(429).json({ error: 'too many attempts. request a new code' });
+        }
+
+        const codeHash = crypto.createHash('sha256').update(code).digest('hex');
+        if (codeHash !== entry.codeHash) {
+            entry.attempts += 1;
+            return res.status(400).json({ error: 'incorrect code' });
+        }
+
+        usernameOtpStore.delete(req.user.id);
+        usernameChangeVerifiedStore.set(req.user.id, { expiresAt: Date.now() + 10 * 60 * 1000 });
+        res.json({ ok: true });
+    } catch (err) {
+        console.error('[username-change verify-code error]', err);
         res.status(500).json({ error: 'failed to verify code' });
     }
 });
