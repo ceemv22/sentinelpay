@@ -2375,18 +2375,14 @@ async function fetchProfile(token) {
         }
 
         const prefEmailInput = document.getElementById('pref-email');
-        const prefEmailError = document.getElementById('pref-email-error');
-        if (prefEmailInput && prefEmailError && !prefEmailInput.dataset.availabilityWired) {
+        if (prefEmailInput && !prefEmailInput.dataset.availabilityWired) {
             prefEmailInput.dataset.availabilityWired = 'true';
             const EMAIL_RE = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,}$/;
             let checkSeq = 0;
 
-            const hideEmailError = () => { prefEmailError.style.display = 'none'; prefEmailError.textContent = ''; };
-            const showEmailError = (msg) => { prefEmailError.textContent = msg; prefEmailError.style.display = 'block'; };
-
             prefEmailInput.addEventListener('blur', async () => {
                 const emailRaw = prefEmailInput.value.trim();
-                hideEmailError();
+                delete prefEmailInput.dataset.taken;
                 if (!emailRaw || !EMAIL_RE.test(emailRaw)) return;
 
                 const cachedRaw = localStorage.getItem('sentinel-cached-profile');
@@ -2403,13 +2399,16 @@ async function fetchProfile(token) {
                     });
                     const data = await res.json();
                     if (seq !== checkSeq) return;
-                    if (!data.available) showEmailError('error: this email is already registered to another account');
+                    if (!data.available) {
+                        prefEmailInput.dataset.taken = 'true';
+                        if (window.SentinelToast) window.SentinelToast.show('error: this email is already registered to another account', 'error');
+                    }
                 } catch {
                     if (seq !== checkSeq) return;
                 }
             });
 
-            prefEmailInput.addEventListener('input', hideEmailError);
+            prefEmailInput.addEventListener('input', () => { delete prefEmailInput.dataset.taken; });
         }
 
         const saveBtn = document.getElementById('btn-save-preferences');
@@ -2865,7 +2864,7 @@ async function fetchProfile(token) {
                     notify('error: invalid email format', 'error');
                     return;
                 }
-                if (prefEmailError && prefEmailError.style.display !== 'none' && prefEmailError.textContent) {
+                if (prefEmailInput && prefEmailInput.dataset.taken === 'true') {
                     notify('error: this email is already registered to another account', 'error');
                     return;
                 }
