@@ -2450,6 +2450,13 @@ async function fetchProfile(token) {
             });
         });
 
+        const getThemeCookie = () => {
+            const m = document.cookie.match(/(?:^|; )sentinel-theme=([^;]*)/);
+            return m ? decodeURIComponent(m[1]) : 'dark';
+        };
+        const setThemeCookie = (theme) => {
+            document.cookie = `sentinel-theme=${theme}; path=/; SameSite=Lax`;
+        };
         const themeCards = document.querySelectorAll('.theme-card[data-theme="dark"], .theme-card[data-theme="light"]');
         const applyTheme = (theme) => {
             document.documentElement.classList.toggle('theme-light', theme === 'light');
@@ -2460,11 +2467,11 @@ async function fetchProfile(token) {
             card.dataset.wired = 'true';
             card.addEventListener('click', () => {
                 const theme = card.dataset.theme;
-                localStorage.setItem('sentinel-theme', theme);
+                setThemeCookie(theme);
                 applyTheme(theme);
             });
         });
-        applyTheme(localStorage.getItem('sentinel-theme') === 'light' ? 'light' : 'dark');
+        applyTheme(getThemeCookie() === 'light' ? 'light' : 'dark');
 
         const saveBtn = document.getElementById('btn-save-preferences');
         if (saveBtn && !saveBtn.dataset.bound) {
