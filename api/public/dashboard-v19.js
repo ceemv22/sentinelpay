@@ -2374,6 +2374,44 @@ async function fetchProfile(token) {
             });
         }
 
+        const prefEmailInput = document.getElementById('pref-email');
+        const prefEmailError = document.getElementById('pref-email-error');
+        if (prefEmailInput && prefEmailError && !prefEmailInput.dataset.availabilityWired) {
+            prefEmailInput.dataset.availabilityWired = 'true';
+            const EMAIL_RE = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,}$/;
+            let checkSeq = 0;
+
+            const hideEmailError = () => { prefEmailError.style.display = 'none'; prefEmailError.textContent = ''; };
+            const showEmailError = (msg) => { prefEmailError.textContent = msg; prefEmailError.style.display = 'block'; };
+
+            prefEmailInput.addEventListener('blur', async () => {
+                const emailRaw = prefEmailInput.value.trim();
+                hideEmailError();
+                if (!emailRaw || !EMAIL_RE.test(emailRaw)) return;
+
+                const cachedRaw = localStorage.getItem('sentinel-cached-profile');
+                const cached = cachedRaw ? JSON.parse(cachedRaw) : {};
+                const currentEmail = cached.email || '';
+                if (emailRaw.toLowerCase() === currentEmail.toLowerCase()) return;
+
+                const seq = ++checkSeq;
+                try {
+                    const res = await fetch('/v1/user/check-email', {
+                        method: 'POST',
+                        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email: emailRaw })
+                    });
+                    const data = await res.json();
+                    if (seq !== checkSeq) return;
+                    if (!data.available) showEmailError('error: this email is already registered to another account');
+                } catch {
+                    if (seq !== checkSeq) return;
+                }
+            });
+
+            prefEmailInput.addEventListener('input', hideEmailError);
+        }
+
         const saveBtn = document.getElementById('btn-save-preferences');
         if (saveBtn && !saveBtn.dataset.bound) {
             saveBtn.dataset.bound = 'true';
@@ -2825,6 +2863,10 @@ async function fetchProfile(token) {
                 }
                 if (!EMAIL_RE.test(emailRaw)) {
                     notify('error: invalid email format', 'error');
+                    return;
+                }
+                if (prefEmailError && prefEmailError.style.display !== 'none' && prefEmailError.textContent) {
+                    notify('error: this email is already registered to another account', 'error');
                     return;
                 }
 
