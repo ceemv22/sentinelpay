@@ -2194,11 +2194,33 @@ function applyProfileToForm(profile) {
     if (prefLastName) prefLastName.value = profile.lastName || '';
 }
 
+function applyIdentityDisplay(profile) {
+    if (!profile) return;
+    const teamEmailEl = document.getElementById('current-user-email');
+    const displayId = profile.username || profile.email;
+    if (teamEmailEl && displayId) {
+        teamEmailEl.textContent = displayId;
+        const teamAvatarEl = document.getElementById('team-owner-avatar');
+        if (teamAvatarEl) teamAvatarEl.textContent = displayId.charAt(0).toUpperCase();
+    }
+
+    const dropdownEl = document.getElementById('dropdown-email');
+    if (dropdownEl) {
+        dropdownEl.textContent = profile.username ? `@${profile.username}` : (profile.email || '');
+    }
+    const topAvatarEl = document.getElementById('org-avatar-circle');
+    if (topAvatarEl && displayId) topAvatarEl.textContent = displayId.charAt(0).toUpperCase();
+}
+
 async function fetchProfile(token) {
     try {
         const cachedRaw = localStorage.getItem('sentinel-cached-profile');
         if (cachedRaw) {
-            try { applyProfileToForm(JSON.parse(cachedRaw)); } catch {}
+            try {
+                const cached = JSON.parse(cachedRaw);
+                applyProfileToForm(cached);
+                applyIdentityDisplay(cached);
+            } catch {}
         }
 
         const response = await fetch('/v1/user/profile', { headers: { 'Authorization': `Bearer ${token}` } });
@@ -2212,20 +2234,7 @@ async function fetchProfile(token) {
             authProvider: profile.authProvider || 'email'
         }));
 
-        const teamEmailEl = document.getElementById('current-user-email');
-        const displayId = profile.username || profile.email;
-        if (teamEmailEl && displayId) {
-            teamEmailEl.textContent = displayId;
-            const teamAvatarEl = document.getElementById('team-owner-avatar');
-            if (teamAvatarEl) teamAvatarEl.textContent = displayId.charAt(0).toUpperCase();
-        }
-
-        const dropdownEl = document.getElementById('dropdown-email');
-        if (dropdownEl) {
-            dropdownEl.textContent = profile.username ? `@${profile.username}` : (profile.email || '');
-        }
-        const topAvatarEl = document.getElementById('org-avatar-circle');
-        if (topAvatarEl && displayId) topAvatarEl.textContent = displayId.charAt(0).toUpperCase();
+        applyIdentityDisplay(profile);
 
         applyProfileToForm(profile);
 
