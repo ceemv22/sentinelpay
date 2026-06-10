@@ -2576,7 +2576,7 @@ async function fetchProfile(token) {
                             const { error } = await sentinelAuth.auth.signInWithPassword({ email: liveEmail, password: pwd });
                             passwordBtn.disabled = false;
                             passwordBtn.textContent = 'continue';
-                            if (error) { showError(passwordError, 'error: incorrect password'); return; }
+                            if (error) { showError(passwordError, 'error: ' + (error.message || 'incorrect password').toLowerCase()); return; }
                             passwordInput.value = '';
                             showCodeStep();
                         } catch {
