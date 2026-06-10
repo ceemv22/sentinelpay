@@ -2442,6 +2442,14 @@ async function fetchProfile(token) {
             prefEmailInput.addEventListener('input', () => { delete prefEmailInput.dataset.taken; });
         }
 
+        document.querySelectorAll('.theme-card.disabled').forEach(card => {
+            if (card.dataset.wired) return;
+            card.dataset.wired = 'true';
+            card.addEventListener('click', () => {
+                if (window.SentinelToast) window.SentinelToast.show('this theme is coming soon', 'info');
+            });
+        });
+
         const saveBtn = document.getElementById('btn-save-preferences');
         if (saveBtn && !saveBtn.dataset.bound) {
             saveBtn.dataset.bound = 'true';
