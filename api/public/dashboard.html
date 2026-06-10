@@ -3214,8 +3214,58 @@
         </div>
     </div>
 
+    <div id="username-verify-modal-overlay" class="modal-overlay">
+        <div class="auth-card modal-content" style="position: relative; z-index: 1000; display: flex; flex-direction: column;">
+            <button class="modal-close-btn" id="btn-close-username-verify">✕</button>
+
+            <div id="username-verify-step-password" style="display: none; flex-direction: column; width: 100%;">
+                <div class="auth-tabs" style="margin-bottom: 2rem;">
+                    <button class="auth-tab active" style="width: 100%; cursor: default; pointer-events: none;">confirm identity</button>
+                </div>
+                <p style="color: var(--text-muted); font-size: 0.85rem; font-family: 'JetBrains Mono', monospace; line-height: 1.6; margin-bottom: 2rem; width: 100%; text-align: center;">enter your current password to continue changing your username.</p>
+                <form id="username-verify-password-form" class="auth-form" style="width: 100%; display: flex; flex-direction: column;" novalidate>
+                    <div class="input-group">
+                        <label for="username-verify-password">password</label>
+                        <div class="password-field-wrap">
+                            <input type="password" id="username-verify-password" placeholder="••••••••" required autocomplete="current-password">
+                            <span class="pw-eye-toggle" role="button" data-target="username-verify-password">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="eye-off"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="eye-on" style="display:none;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                            </span>
+                        </div>
+                    </div>
+                    <div id="turnstile-username-verify" style="margin-top: 1rem; display: flex; justify-content: center;"></div>
+                    <p id="username-verify-password-error" class="error-msg" style="display: none;"></p>
+                    <button type="submit" class="submit-btn" id="username-verify-password-btn" style="margin-top: 1.5rem;">continue</button>
+                </form>
+            </div>
+
+            <div id="username-verify-step-code" style="display: none; flex-direction: column; width: 100%;">
+                <div class="auth-tabs" style="margin-bottom: 2rem;">
+                    <button class="auth-tab active" style="width: 100%; cursor: default; pointer-events: none;">verify identity</button>
+                </div>
+                <p style="color: var(--text-muted); font-size: 0.85rem; font-family: 'JetBrains Mono', monospace; line-height: 1.6; margin-bottom: 2rem; width: 100%; text-align: center;">we sent a 6-digit code to <span id="username-verify-code-target" style="color: #fff; font-weight: 700;"></span></p>
+                <form id="username-verify-code-form" class="auth-form" style="width: 100%; display: flex; flex-direction: column; align-items: center;" novalidate>
+                    <div class="otp-boxes" id="otp-boxes-username">
+                        <input class="otp-box" type="text" inputmode="numeric" maxlength="1" autocomplete="off" data-idx="0">
+                        <input class="otp-box" type="text" inputmode="numeric" maxlength="1" autocomplete="off" data-idx="1">
+                        <input class="otp-box" type="text" inputmode="numeric" maxlength="1" autocomplete="off" data-idx="2">
+                        <input class="otp-box" type="text" inputmode="numeric" maxlength="1" autocomplete="off" data-idx="3">
+                        <input class="otp-box" type="text" inputmode="numeric" maxlength="1" autocomplete="off" data-idx="4">
+                        <input class="otp-box" type="text" inputmode="numeric" maxlength="1" autocomplete="off" data-idx="5">
+                    </div>
+                    <p id="username-verify-code-error" class="error-msg" style="display: none; margin-top: 1rem;"></p>
+                    <button type="submit" class="submit-btn" id="username-verify-code-btn" style="margin-top: 1.5rem; width: 100%;">verify</button>
+                </form>
+                <div style="width: 100%; display: flex; flex-direction: column; align-items: center; padding-top: 1.5rem;">
+                    <button type="button" id="username-verify-resend-btn" style="background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.1); padding: 12px 24px; border-radius: 12px; font-size: 0.72rem; cursor: pointer; font-family: 'JetBrains Mono', monospace; transition: all 0.3s ease; display: inline-block; min-width: 180px;">resend code</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="toast.js?v=3"></script>
-    <script src="dashboard-v19.js?v=60"></script>
+    <script src="dashboard-v19.js?v=62"></script>
     <script>
         // Eye Tracking Logic
         function trackEye(element, clientX, clientY) {
