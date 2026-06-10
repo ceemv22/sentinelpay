@@ -2571,7 +2571,9 @@ async function fetchProfile(token) {
                         passwordBtn.disabled = true;
                         passwordBtn.textContent = 'verifying...';
                         try {
-                            const { error } = await sentinelAuth.auth.signInWithPassword({ email: currentEmail, password: pwd });
+                            const { data: sessionData } = await sentinelAuth.auth.getSession();
+                            const liveEmail = sessionData?.session?.user?.email || currentEmail;
+                            const { error } = await sentinelAuth.auth.signInWithPassword({ email: liveEmail, password: pwd });
                             passwordBtn.disabled = false;
                             passwordBtn.textContent = 'continue';
                             if (error) { showError(passwordError, 'error: incorrect password'); return; }
