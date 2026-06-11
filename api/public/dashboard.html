@@ -2109,8 +2109,14 @@
 
         .theme-options {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             gap: 1rem;
+            width: 100%;
+        }
+        @media (max-width: 560px) {
+            .theme-options {
+                grid-template-columns: 1fr;
+            }
         }
 
         .theme-card {
