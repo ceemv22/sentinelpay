@@ -168,6 +168,7 @@ if (logoutBtn) {
         e.preventDefault();
         localStorage.removeItem('sentinel-cached-orgs');
         localStorage.removeItem('sentinel-cached-profile');
+        document.cookie = 'sentinel-theme=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax';
         document.cookie = 'sentinel-theme=; path=/; domain=.sentinelpay.org; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax';
         if (sentinelAuth) await sentinelAuth.auth.signOut();
         window.location.href = 'https://sentinelpay.org';
@@ -2459,6 +2460,7 @@ async function fetchProfile(token) {
             return m ? decodeURIComponent(m[1]) : 'dark';
         };
         const setThemeCookie = (theme) => {
+            document.cookie = 'sentinel-theme=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax';
             document.cookie = `sentinel-theme=${theme}; path=/; domain=.sentinelpay.org; SameSite=Lax`;
         };
         const themeCards = document.querySelectorAll('.theme-card[data-theme="dark"], .theme-card[data-theme="light"]');
