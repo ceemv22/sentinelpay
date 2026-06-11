@@ -2471,7 +2471,6 @@ async function fetchProfile(token) {
             card.dataset.wired = 'true';
             card.addEventListener('click', () => {
                 const theme = card.dataset.theme;
-                setThemeCookie(theme);
                 const html = document.documentElement;
                 html.classList.add('theme-fade-transition');
                 applyTheme(theme);
@@ -2484,6 +2483,9 @@ async function fetchProfile(token) {
         if (saveAppearanceBtn && !saveAppearanceBtn.dataset.bound) {
             saveAppearanceBtn.dataset.bound = 'true';
             saveAppearanceBtn.addEventListener('click', () => {
+                const activeCard = document.querySelector('.theme-card.active[data-theme]');
+                const theme = activeCard ? activeCard.dataset.theme : 'dark';
+                setThemeCookie(theme);
                 if (window.SentinelToast) window.SentinelToast.show('appearance saved', 'success');
             });
         }
