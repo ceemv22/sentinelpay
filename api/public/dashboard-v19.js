@@ -2480,6 +2480,14 @@ async function fetchProfile(token) {
         });
         applyTheme(getThemeCookie() === 'light' ? 'light' : 'dark');
 
+        const saveAppearanceBtn = document.getElementById('btn-save-appearance');
+        if (saveAppearanceBtn && !saveAppearanceBtn.dataset.bound) {
+            saveAppearanceBtn.dataset.bound = 'true';
+            saveAppearanceBtn.addEventListener('click', () => {
+                if (window.SentinelToast) window.SentinelToast.show('appearance saved', 'success');
+            });
+        }
+
         const saveBtn = document.getElementById('btn-save-preferences');
         if (saveBtn && !saveBtn.dataset.bound) {
             saveBtn.dataset.bound = 'true';
