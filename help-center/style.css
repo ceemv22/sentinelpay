@@ -1361,8 +1361,14 @@ html.theme-light .lp-footer-email:hover {
 /* inline-styled field/param rows and callouts used inside articles */
 
 html.theme-light div[style*="rgba(5,5,5,0.6)"] {
-    background: rgba(255, 255, 255, 0.6) !important;
-    border-color: rgba(0, 0, 0, 0.07) !important;
+    background: rgba(255, 255, 255, 0.7) !important;
+    border-color: rgba(0, 0, 0, 0.06) !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03) !important;
+    align-items: center !important;
+}
+
+html.theme-light div[style*="rgba(5,5,5,0.6)"] > code {
+    white-space: nowrap !important;
 }
 
 html.theme-light div[style*="border-left: 3px solid rgba(0,240,255,0.4)"] {
