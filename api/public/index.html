@@ -165,6 +165,25 @@
         html.theme-light .lp-glow-orb {
             opacity: 0.35;
         }
+        html.theme-light .lp-snap-pip::after {
+            background: rgba(0, 0, 0, 0.18);
+        }
+        html.theme-light .lp-snap-pip:hover::after {
+            background: rgba(0, 0, 0, 0.35);
+        }
+        html.theme-light .lp-snap-pip.lp-pip-active::after,
+        html.theme-light .lp-snap-pip.lp-pip-active:hover::after {
+            background: var(--accent-light);
+            box-shadow:
+                0 0 10px rgba(0, 145, 200, 0.4),
+                0 0 24px rgba(0, 145, 200, 0.15);
+        }
+        html.theme-light .lp-snap-ind:hover .lp-snap-pip::before {
+            color: rgba(0, 0, 0, 0.35);
+        }
+        html.theme-light .lp-snap-ind:hover .lp-snap-pip.lp-pip-active::before {
+            color: var(--accent-light);
+        }
         html.theme-light .cyber-grid {
             background-image:
                 linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
