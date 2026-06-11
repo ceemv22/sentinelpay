@@ -2949,10 +2949,10 @@
         html.theme-light .sentinel-select-trigger,
         html.theme-light input,
         html.theme-light .auth-form input {
-            background: rgba(0, 0, 0, 0.03);
-            border-color: rgba(0, 0, 0, 0.12);
-            color: var(--text-main);
-            box-shadow: none;
+            background: rgba(0, 0, 0, 0.03) !important;
+            border-color: rgba(0, 0, 0, 0.12) !important;
+            color: var(--text-main) !important;
+            box-shadow: none !important;
         }
         html.theme-light .org-search-input::placeholder,
         html.theme-light .auth-agreement,
@@ -2962,7 +2962,11 @@
         html.theme-light .org-search-input:focus,
         html.theme-light .modal-select:focus,
         html.theme-light .auth-form input:focus {
-            background: rgba(0, 0, 0, 0.05);
+            background: rgba(0, 0, 0, 0.05) !important;
+        }
+        html.theme-light .org-card-name,
+        html.theme-light #org-page-name {
+            color: var(--text-main) !important;
         }
         html.theme-light .modal-select option,
         html.theme-light .sentinel-select-dropdown,
