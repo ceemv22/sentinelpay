@@ -3695,40 +3695,53 @@
 
                 <div class="settings-section">
                     <h2 class="settings-section-title">appearance</h2>
-                    <div class="theme-options">
-                        <div class="theme-card" data-theme="dark">
-                            <div class="theme-card-preview theme-preview-dark">
-                                <div class="theme-preview-bar"><span class="theme-preview-dot"></span><span class="theme-preview-line theme-preview-line-accent"></span></div>
-                                <div class="theme-preview-line"></div>
-                                <div class="theme-preview-line short"></div>
+                    <div class="settings-table">
+                        <div class="settings-table-row">
+                            <div class="settings-table-label">
+                                <span>theme</span>
+                                <small>customize how sentinelpay looks on your device</small>
                             </div>
-                            <div class="theme-card-footer">
-                                <span class="theme-card-radio"></span>
-                                <span class="theme-card-label">dark</span>
+                            <div class="settings-table-value">
+                                <div class="theme-options">
+                                    <div class="theme-card" data-theme="dark">
+                                        <div class="theme-card-preview theme-preview-dark">
+                                            <div class="theme-preview-bar"><span class="theme-preview-dot"></span><span class="theme-preview-line theme-preview-line-accent"></span></div>
+                                            <div class="theme-preview-line"></div>
+                                            <div class="theme-preview-line short"></div>
+                                        </div>
+                                        <div class="theme-card-footer">
+                                            <span class="theme-card-radio"></span>
+                                            <span class="theme-card-label">dark</span>
+                                        </div>
+                                    </div>
+                                    <div class="theme-card" data-theme="light">
+                                        <div class="theme-card-preview theme-preview-light">
+                                            <div class="theme-preview-bar"><span class="theme-preview-dot"></span><span class="theme-preview-line theme-preview-line-accent"></span></div>
+                                            <div class="theme-preview-line"></div>
+                                            <div class="theme-preview-line short"></div>
+                                        </div>
+                                        <div class="theme-card-footer">
+                                            <span class="theme-card-radio"></span>
+                                            <span class="theme-card-label">light</span>
+                                        </div>
+                                    </div>
+                                    <div class="theme-card disabled" data-theme="system">
+                                        <div class="theme-card-badge">soon</div>
+                                        <div class="theme-card-preview theme-preview-system">
+                                            <div class="theme-preview-bar"><span class="theme-preview-dot"></span><span class="theme-preview-line theme-preview-line-accent"></span></div>
+                                            <div class="theme-preview-line"></div>
+                                            <div class="theme-preview-line short"></div>
+                                        </div>
+                                        <div class="theme-card-footer">
+                                            <span class="theme-card-radio"></span>
+                                            <span class="theme-card-label">system</span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="theme-card" data-theme="light">
-                            <div class="theme-card-preview theme-preview-light">
-                                <div class="theme-preview-bar"><span class="theme-preview-dot"></span><span class="theme-preview-line theme-preview-line-accent"></span></div>
-                                <div class="theme-preview-line"></div>
-                                <div class="theme-preview-line short"></div>
-                            </div>
-                            <div class="theme-card-footer">
-                                <span class="theme-card-radio"></span>
-                                <span class="theme-card-label">light</span>
-                            </div>
-                        </div>
-                        <div class="theme-card disabled" data-theme="system">
-                            <div class="theme-card-badge">soon</div>
-                            <div class="theme-card-preview theme-preview-system">
-                                <div class="theme-preview-bar"><span class="theme-preview-dot"></span><span class="theme-preview-line theme-preview-line-accent"></span></div>
-                                <div class="theme-preview-line"></div>
-                                <div class="theme-preview-line short"></div>
-                            </div>
-                            <div class="theme-card-footer">
-                                <span class="theme-card-radio"></span>
-                                <span class="theme-card-label">system</span>
-                            </div>
+                        <div class="settings-actions">
+                            <button class="btn-primary" id="btn-save-appearance" style="padding:0.6rem 1.5rem;font-size:0.78rem;">save</button>
                         </div>
                     </div>
                 </div>
@@ -4075,7 +4088,7 @@
     </div>
 
     <script src="toast.js?v=3"></script>
-    <script src="dashboard-v19.js?v=74"></script>
+    <script src="dashboard-v19.js?v=75"></script>
     <script>
         // Eye Tracking Logic
         function trackEye(element, clientX, clientY) {
