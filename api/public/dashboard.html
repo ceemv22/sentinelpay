@@ -2707,6 +2707,14 @@
         html.theme-light .settings-input-prefix {
             color: rgba(0, 0, 0, 0.35);
         }
+        html.theme-light .settings-input:-webkit-autofill,
+        html.theme-light .settings-input:-webkit-autofill:hover,
+        html.theme-light .settings-input:-webkit-autofill:focus {
+            -webkit-text-fill-color: var(--text-main);
+            -webkit-box-shadow: 0 0 0 1000px rgba(255, 255, 255, 0.7) inset;
+            box-shadow: 0 0 0 1000px rgba(255, 255, 255, 0.7) inset;
+            transition: background-color 9999s ease-in-out 0s;
+        }
 
         html.theme-light .btn-icon {
             background: rgba(0, 0, 0, 0.025);
