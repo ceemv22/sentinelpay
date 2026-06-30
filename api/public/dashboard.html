@@ -2387,14 +2387,13 @@
         .tz-dd-trigger {
             display: flex;
             align-items: center;
-            gap: 0.6rem;
+            gap: 0.65rem;
             width: 100%;
-            padding: 0.7rem 2.4rem 0.7rem 2.6rem;
+            padding: 0.7rem 2.4rem 0.7rem 0.9rem;
             position: relative;
             text-align: left;
             cursor: pointer;
         }
-        .tz-dd-trigger .settings-select-icon { left: 0.85rem; }
         .tz-dd-sel {
             flex: 1;
             min-width: 0;
@@ -2407,33 +2406,39 @@
         }
         .tz-dd.open .tz-dd-chevron { transform: rotate(180deg); }
         .tz-dd-panel {
-            display: none;
             position: absolute;
-            top: calc(100% + 6px);
+            bottom: calc(100% + 6px);
             left: 0;
             right: 0;
             z-index: 50;
             background: #0d0f13;
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 9px;
-            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
+            box-shadow: 0 -16px 40px rgba(0, 0, 0, 0.55);
             overflow: hidden;
+            display: none;
+            flex-direction: column;
         }
-        .tz-dd.open .tz-dd-panel { display: block; }
+        .tz-dd.open .tz-dd-panel { display: flex; }
         .tz-dd-search-wrap {
-            position: sticky;
-            top: 0;
             display: flex;
             align-items: center;
-            padding: 0.6rem 0.7rem;
-            background: #0d0f13;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+            gap: 0.55rem;
+            margin: 0.6rem 0.6rem 0.5rem;
+            padding: 0.55rem 0.75rem;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            transition: border-color 0.15s ease, background 0.15s ease;
+        }
+        .tz-dd-search-wrap:focus-within {
+            border-color: rgba(0, 240, 255, 0.4);
+            background: rgba(255, 255, 255, 0.06);
         }
         .tz-dd-search-icon {
             width: 14px;
             height: 14px;
             color: var(--text-muted);
-            margin: 0 0.5rem 0 0.35rem;
             flex-shrink: 0;
         }
         .tz-dd-search {
@@ -2441,23 +2446,24 @@
             background: transparent !important;
             border: none !important;
             box-shadow: none !important;
-            padding: 0.15rem 0 !important;
+            padding: 0 !important;
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.74rem;
             color: #fff;
             outline: none;
             width: 100%;
         }
-        .tz-dd-search::placeholder { color: rgba(255,255,255,0.25); }
+        .tz-dd-search::placeholder { color: rgba(255,255,255,0.28); }
         .tz-dd-list {
-            max-height: 240px;
+            max-height: 230px;
             overflow-y: auto;
             overscroll-behavior: contain;
+            padding-bottom: 0.35rem;
         }
         .tz-dd-item {
             display: flex;
             align-items: center;
-            gap: 0.6rem;
+            gap: 0.65rem;
             padding: 0.5rem 0.9rem;
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.74rem;
@@ -2470,12 +2476,22 @@
             color: #fff;
         }
         .tz-dd-item.tz-selected { color: var(--neon-blue); }
-        .tz-dd-flag {
+        .tz-dd-flag, .tz-dd-trigger-flag {
+            flex-shrink: 0;
+            width: 20px;
+            height: 15px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             font-size: 0.95rem;
             line-height: 1;
-            flex-shrink: 0;
-            width: 1.2rem;
-            text-align: center;
+        }
+        .tz-dd-flag-img {
+            width: 20px;
+            height: 15px;
+            border-radius: 2px;
+            object-fit: cover;
+            display: block;
         }
         .tz-dd-empty {
             padding: 1.2rem 0.9rem;
@@ -2485,15 +2501,19 @@
             color: var(--text-muted);
         }
 
-        html.theme-light .tz-dd-panel,
-        html.theme-light .tz-dd-search-wrap {
-            background: #fff;
-        }
         html.theme-light .tz-dd-panel {
+            background: #fff;
             border-color: rgba(0, 0, 0, 0.1);
-            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.14);
+            box-shadow: 0 -16px 40px rgba(0, 0, 0, 0.14);
         }
-        html.theme-light .tz-dd-search-wrap { border-bottom-color: rgba(0, 0, 0, 0.07); }
+        html.theme-light .tz-dd-search-wrap {
+            background: rgba(0, 0, 0, 0.03);
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+        html.theme-light .tz-dd-search-wrap:focus-within {
+            border-color: rgba(0, 145, 200, 0.4);
+            background: rgba(0, 0, 0, 0.05);
+        }
         html.theme-light .tz-dd-search { color: var(--text-main); }
         html.theme-light .tz-dd-search::placeholder { color: rgba(0,0,0,0.3); }
         html.theme-light .tz-dd-item:hover,
@@ -4009,7 +4029,7 @@
                             <div class="settings-table-value">
                                 <div class="tz-dd" id="tz-dd">
                                     <button type="button" class="settings-input tz-dd-trigger" id="tz-dd-trigger">
-                                        <svg class="settings-select-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                                        <span class="tz-dd-trigger-flag" id="tz-dd-trigger-flag"></span>
                                         <span class="tz-dd-sel" id="tz-dd-sel">auto detect</span>
                                         <svg class="settings-select-chevron tz-dd-chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                                     </button>
@@ -4373,7 +4393,7 @@
     </div>
 
     <script src="toast.js?v=3"></script>
-    <script src="dashboard-v19.js?v=82"></script>
+    <script src="dashboard-v19.js?v=83"></script>
     <script>
         // Eye Tracking Logic
         function trackEye(element, clientX, clientY) {
