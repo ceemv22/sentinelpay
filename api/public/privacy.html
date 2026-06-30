@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <script>(function(){try{var s=localStorage.getItem('sb-aivqwkgjdpklxxuvkxpy-auth-token');if(s){var d=JSON.parse(s);if(d&&d.expires_at&&Math.floor(Date.now()/1000)<d.expires_at){document.documentElement.classList.add('auth-session-present');}}}catch(e){}})();</script>
-    <script>(function(){try{var m=document.cookie.match(/(?:^|; )sentinel-theme=([^;]*)/);if(m&&decodeURIComponent(m[1])==='light')document.documentElement.classList.add('theme-light');}catch(e){}})();</script>
+    <script>(function(){try{var m=document.cookie.match(/(?:^|; )sentinel-theme=([^;]*)/);var t=m?decodeURIComponent(m[1]):'dark';if(t==='system')t=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';if(t==='light')document.documentElement.classList.add('theme-light');}catch(e){}})();</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>sentinelpay | privacy policy</title>
     <meta name="theme-color" content="#040404">

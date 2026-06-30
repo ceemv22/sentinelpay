@@ -32,7 +32,7 @@
     }
     </script>
 
-    <script>(function(){try{var m=document.cookie.match(/(?:^|; )sentinel-theme=([^;]*)/);if(m&&decodeURIComponent(m[1])==='light')document.documentElement.classList.add('theme-light');}catch(e){}})();</script>
+    <script>(function(){try{var m=document.cookie.match(/(?:^|; )sentinel-theme=([^;]*)/);var t=m?decodeURIComponent(m[1]):'dark';if(t==='system')t=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';if(t==='light')document.documentElement.classList.add('theme-light');}catch(e){}})();</script>
     <script>(function(){try{var s=localStorage.getItem('sb-aivqwkgjdpklxxuvkxpy-auth-token');if(s){var d=JSON.parse(s);if(d&&d.expires_at&&Math.floor(Date.now()/1000)<d.expires_at){document.documentElement.classList.add('auth-session-present');}}}catch(e){}})();</script>
     <link rel="icon" type="image/svg+xml" href="logo.svg">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">

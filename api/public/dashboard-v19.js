@@ -2463,10 +2463,12 @@ async function fetchProfile(token) {
             document.cookie = 'sentinel-theme=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax';
             document.cookie = `sentinel-theme=${theme}; path=/; domain=.sentinelpay.org; SameSite=Lax`;
         };
-        const themeCards = document.querySelectorAll('.theme-card[data-theme="dark"], .theme-card[data-theme="light"]');
-        const applyTheme = (theme) => {
-            document.documentElement.classList.toggle('theme-light', theme === 'light');
-            themeCards.forEach(c => c.classList.toggle('active', c.dataset.theme === theme));
+        const systemPrefersLight = () => window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+        const resolveTheme = (pref) => pref === 'system' ? (systemPrefersLight() ? 'light' : 'dark') : pref;
+        const themeCards = document.querySelectorAll('.theme-card[data-theme]');
+        const applyTheme = (pref) => {
+            document.documentElement.classList.toggle('theme-light', resolveTheme(pref) === 'light');
+            themeCards.forEach(c => c.classList.toggle('active', c.dataset.theme === pref));
         };
         themeCards.forEach(card => {
             if (card.dataset.wired) return;
@@ -2479,7 +2481,15 @@ async function fetchProfile(token) {
                 setTimeout(() => html.classList.remove('theme-fade-transition'), 450);
             });
         });
-        applyTheme(getThemeCookie() === 'light' ? 'light' : 'dark');
+        const initialPref = getThemeCookie();
+        applyTheme(['light', 'dark', 'system'].includes(initialPref) ? initialPref : 'dark');
+
+        if (window.matchMedia && !window.__sentinelSystemThemeWired) {
+            window.__sentinelSystemThemeWired = true;
+            window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => {
+                if (getThemeCookie() === 'system') applyTheme('system');
+            });
+        }
 
         const saveAppearanceBtn = document.getElementById('btn-save-appearance');
         if (saveAppearanceBtn && !saveAppearanceBtn.dataset.bound) {
