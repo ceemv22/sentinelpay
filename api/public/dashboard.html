@@ -2178,7 +2178,43 @@
         }
 
         .theme-preview-system {
-            background: linear-gradient(120deg, #0a0c0f 0%, #0a0c0f 49.6%, rgba(255,255,255,0.15) 49.6%, rgba(255,255,255,0.15) 50.4%, #f4f4f5 50.4%, #f4f4f5 100%);
+            position: relative;
+            padding: 0;
+            overflow: hidden;
+            background: #0a0c0f;
+        }
+
+        .theme-sys-layer {
+            position: absolute;
+            inset: 0;
+            padding: 0.7rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .theme-sys-dark {
+            position: relative;
+            background: #0a0c0f;
+            clip-path: polygon(0 0, 55% 0, 45% 100%, 0 100%);
+        }
+
+        .theme-sys-light {
+            background: #f4f4f5;
+            clip-path: polygon(55% 0, 100% 0, 100% 100%, 45% 100%);
+        }
+
+        .theme-sys-light .theme-preview-dot {
+            background: rgba(0,0,0,0.15);
+        }
+
+        .theme-sys-light .theme-preview-line {
+            background: rgba(0,0,0,0.08);
+        }
+
+        .theme-sys-light .theme-preview-line-accent {
+            background: rgba(0,0,0,0.28) !important;
+            opacity: 1;
         }
 
         .theme-preview-bar {
@@ -2207,19 +2243,6 @@
 
         .theme-preview-light .theme-preview-line {
             background: rgba(0,0,0,0.08);
-        }
-
-        .theme-preview-system .theme-preview-line {
-            background: rgba(128,128,128,0.4);
-        }
-
-        .theme-preview-system .theme-preview-dot {
-            background: rgba(128,128,128,0.45);
-        }
-
-        .theme-preview-system .theme-preview-line-accent {
-            background: rgba(128,128,128,0.55) !important;
-            opacity: 1;
         }
 
         .theme-preview-line.short {
@@ -3758,9 +3781,16 @@
                                     </div>
                                     <div class="theme-card" data-theme="system">
                                         <div class="theme-card-preview theme-preview-system">
-                                            <div class="theme-preview-bar"><span class="theme-preview-dot"></span><span class="theme-preview-line theme-preview-line-accent"></span></div>
-                                            <div class="theme-preview-line"></div>
-                                            <div class="theme-preview-line short"></div>
+                                            <div class="theme-sys-layer theme-sys-dark">
+                                                <div class="theme-preview-bar"><span class="theme-preview-dot"></span><span class="theme-preview-line theme-preview-line-accent"></span></div>
+                                                <div class="theme-preview-line"></div>
+                                                <div class="theme-preview-line short"></div>
+                                            </div>
+                                            <div class="theme-sys-layer theme-sys-light">
+                                                <div class="theme-preview-bar"><span class="theme-preview-dot"></span><span class="theme-preview-line theme-preview-line-accent"></span></div>
+                                                <div class="theme-preview-line"></div>
+                                                <div class="theme-preview-line short"></div>
+                                            </div>
                                         </div>
                                         <div class="theme-card-footer">
                                             <span class="theme-card-radio"></span>
