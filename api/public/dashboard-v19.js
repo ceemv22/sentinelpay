@@ -70,6 +70,8 @@ window.getDisplayTimezone = function() {
     try {
         const tz = localStorage.getItem('sentinel-timezone');
         if (tz && tz !== 'auto') return tz;
+        const auto = localStorage.getItem('sentinel-tz-auto');
+        if (auto) return auto;
     } catch (e) {}
     try { return Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'; } catch (e) { return 'UTC'; }
 };
@@ -2575,7 +2577,6 @@ async function fetchProfile(token) {
             try { detectedZone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'; } catch (e) {}
 
             const note = document.getElementById('tz-detected-note');
-            if (note) note.textContent = `auto detected from your browser (${tzLabel(detectedZone)}).`;
 
             let zones = [];
             try {
@@ -2585,6 +2586,15 @@ async function fetchProfile(token) {
 
             const items = [{ value: 'auto', flagZone: detectedZone, label: `auto detect (${tzLabel(detectedZone)})`, search: ('auto detect ' + tzLabel(detectedZone)).toLowerCase() }];
             zones.forEach(z => items.push({ value: z, flagZone: z, label: tzLabel(z), search: tzLabel(z).toLowerCase() }));
+
+            const applyDetected = (zone, fromLocation) => {
+                detectedZone = zone;
+                items[0].flagZone = zone;
+                items[0].label = `auto detect (${tzLabel(zone)})`;
+                items[0].search = ('auto detect ' + tzLabel(zone)).toLowerCase();
+                if (note) note.innerHTML = `${tzFlagHtml(zone)}<span>auto detected from your ${fromLocation ? 'location' : 'browser'} (${tzLabel(zone)}).</span>`;
+                if (tzHidden.value === 'auto') setSelected('auto');
+            };
 
             const setSelected = (value) => {
                 const item = items.find(i => i.value === value) || items[0];
@@ -2653,6 +2663,27 @@ async function fetchProfile(token) {
 
             const savedTz = localStorage.getItem('sentinel-timezone') || 'auto';
             setSelected(items.some(i => i.value === savedTz) ? savedTz : 'auto');
+
+            const cachedAuto = localStorage.getItem('sentinel-tz-auto');
+            applyDetected(cachedAuto && zones.includes(cachedAuto) ? cachedAuto : detectedZone, Boolean(cachedAuto));
+
+            (async () => {
+                try {
+                    let token = window.supabaseAuthToken;
+                    for (let i = 0; i < 30 && !token; i++) {
+                        await new Promise(r => setTimeout(r, 200));
+                        token = window.supabaseAuthToken;
+                    }
+                    if (!token) return;
+                    const r = await fetch('/v1/geo/timezone', { headers: { 'Authorization': `Bearer ${token}` } });
+                    if (!r.ok) return;
+                    const d = await r.json();
+                    if (d && d.timezone && zones.includes(d.timezone)) {
+                        localStorage.setItem('sentinel-tz-auto', d.timezone);
+                        applyDetected(d.timezone, true);
+                    }
+                } catch (e) {}
+            })();
 
             const saveTzBtn = document.getElementById('btn-save-timezone');
             if (saveTzBtn && !saveTzBtn.dataset.bound) {

@@ -630,6 +630,29 @@ app.get('/v1/user/profile', requireSupabaseAuth, async (req, res) => {
     }
 });
 
+app.get('/v1/geo/timezone', requireSupabaseAuth, async (req, res) => {
+    try {
+        const ip = req.realIp || req.ip || '';
+        const isPrivate = !ip || /^(127\.|10\.|192\.168\.|::1|fc|fd|172\.(1[6-9]|2\d|3[01])\.)/i.test(ip);
+        const url = isPrivate ? 'https://ipwho.is/' : `https://ipwho.is/${encodeURIComponent(ip)}`;
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), 4000);
+        let data = null;
+        try {
+            const r = await fetch(url, { signal: controller.signal });
+            if (r.ok) data = await r.json();
+        } finally {
+            clearTimeout(timer);
+        }
+        if (data && data.success && data.timezone && data.timezone.id) {
+            return res.json({ timezone: data.timezone.id, country: data.country_code || null });
+        }
+        return res.json({ timezone: null, country: null });
+    } catch (err) {
+        return res.json({ timezone: null, country: null });
+    }
+});
+
 app.patch('/v1/user/profile', requireSupabaseAuth, async (req, res) => {
     try {
         const { firstName, lastName, username } = req.body;
