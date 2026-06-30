@@ -2390,6 +2390,14 @@
             box-shadow: none;
         }
 
+        .settings-input-prefixed:-webkit-autofill,
+        .settings-input-prefixed:-webkit-autofill:hover,
+        .settings-input-prefixed:-webkit-autofill:focus {
+            -webkit-box-shadow: none !important;
+            box-shadow: none !important;
+            transition: background-color 9999999s ease-in-out 0s !important;
+        }
+
         .settings-actions {
             display: flex;
             justify-content: flex-end;
@@ -2758,8 +2766,10 @@
         html.theme-light .settings-input-prefixed:-webkit-autofill,
         html.theme-light .settings-input-prefixed:-webkit-autofill:hover,
         html.theme-light .settings-input-prefixed:-webkit-autofill:focus {
-            -webkit-box-shadow: 0 0 0 1000px #fbfbfc inset !important;
-            box-shadow: 0 0 0 1000px #fbfbfc inset !important;
+            -webkit-text-fill-color: var(--text-main);
+            -webkit-box-shadow: none !important;
+            box-shadow: none !important;
+            transition: background-color 9999999s ease-in-out 0s !important;
         }
 
         html.theme-light .btn-icon {
