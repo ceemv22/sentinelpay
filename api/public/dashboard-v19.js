@@ -29,6 +29,25 @@ let isInitialized = false;
 let authStartTime = Date.now();
 const API_URL = window.location.origin;
 
+(function primeCachedProfile() {
+    try {
+        const raw = localStorage.getItem('sentinel-cached-profile');
+        if (!raw) return;
+        const cached = JSON.parse(raw);
+        const prime = () => {
+            try {
+                applyProfileToForm(cached);
+                applyIdentityDisplay(cached);
+            } catch (e) {}
+        };
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', prime);
+        } else {
+            prime();
+        }
+    } catch (e) {}
+})();
+
 let _touchLockHandler = null;
 let _touchLockStartY = 0;
 
