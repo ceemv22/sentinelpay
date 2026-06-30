@@ -2566,6 +2566,7 @@ async function fetchProfile(token) {
             const tzSelLabel = document.getElementById('tz-dd-sel');
             const tzTriggerFlag = document.getElementById('tz-dd-trigger-flag');
             const tzTrigger = document.getElementById('tz-dd-trigger');
+            const tzPanel = document.getElementById('tz-dd-panel');
             const tzList = document.getElementById('tz-dd-list');
             const tzSearch = document.getElementById('tz-dd-search');
             const tzEmpty = document.getElementById('tz-dd-empty');
@@ -2614,11 +2615,26 @@ async function fetchProfile(token) {
                 tzList.appendChild(frag);
             };
 
+            const positionPanel = () => {
+                const r = tzTrigger.getBoundingClientRect();
+                tzPanel.style.left = r.left + 'px';
+                tzPanel.style.width = r.width + 'px';
+                const panelH = tzPanel.offsetHeight || 300;
+                const spaceBelow = window.innerHeight - r.bottom;
+                if (r.top > panelH + 12 || r.top > spaceBelow) {
+                    tzPanel.style.top = 'auto';
+                    tzPanel.style.bottom = (window.innerHeight - r.top + 6) + 'px';
+                } else {
+                    tzPanel.style.bottom = 'auto';
+                    tzPanel.style.top = (r.bottom + 6) + 'px';
+                }
+            };
             const openDd = () => {
                 tzDd.classList.add('open');
                 renderList('');
                 tzSearch.value = '';
-                setTimeout(() => tzSearch.focus(), 0);
+                positionPanel();
+                setTimeout(() => { positionPanel(); tzSearch.focus(); }, 0);
             };
             const closeDd = () => tzDd.classList.remove('open');
 
@@ -2626,11 +2642,14 @@ async function fetchProfile(token) {
                 e.stopPropagation();
                 tzDd.classList.contains('open') ? closeDd() : openDd();
             });
-            tzSearch.addEventListener('input', () => renderList(tzSearch.value));
+            tzSearch.addEventListener('input', () => { renderList(tzSearch.value); positionPanel(); });
             tzSearch.addEventListener('click', (e) => e.stopPropagation());
+            tzPanel.addEventListener('click', (e) => e.stopPropagation());
             document.addEventListener('click', (e) => {
-                if (tzDd.classList.contains('open') && !tzDd.contains(e.target)) closeDd();
+                if (tzDd.classList.contains('open') && !tzDd.contains(e.target) && !tzPanel.contains(e.target)) closeDd();
             });
+            window.addEventListener('scroll', () => { if (tzDd.classList.contains('open')) positionPanel(); }, true);
+            window.addEventListener('resize', () => { if (tzDd.classList.contains('open')) positionPanel(); });
 
             const savedTz = localStorage.getItem('sentinel-timezone') || 'auto';
             setSelected(items.some(i => i.value === savedTz) ? savedTz : 'auto');

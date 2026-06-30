@@ -2406,15 +2406,12 @@
         }
         .tz-dd.open .tz-dd-chevron { transform: rotate(180deg); }
         .tz-dd-panel {
-            position: absolute;
-            bottom: calc(100% + 6px);
-            left: 0;
-            right: 0;
-            z-index: 50;
+            position: fixed;
+            z-index: 4000;
             background: #0d0f13;
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 9px;
-            box-shadow: 0 -16px 40px rgba(0, 0, 0, 0.55);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55);
             overflow: hidden;
             display: none;
             flex-direction: column;
@@ -4393,7 +4390,7 @@
     </div>
 
     <script src="toast.js?v=3"></script>
-    <script src="dashboard-v19.js?v=83"></script>
+    <script src="dashboard-v19.js?v=84"></script>
     <script>
         // Eye Tracking Logic
         function trackEye(element, clientX, clientY) {
