@@ -2331,6 +2331,55 @@
             opacity: 0.6;
         }
 
+        .settings-section-desc {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.74rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin: -0.75rem 0 1.25rem;
+            max-width: 560px;
+        }
+
+        .settings-select-wrap {
+            position: relative;
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+
+        .settings-select-icon {
+            position: absolute;
+            left: 0.85rem;
+            width: 15px;
+            height: 15px;
+            color: var(--text-muted);
+            pointer-events: none;
+            flex-shrink: 0;
+        }
+
+        .settings-select-chevron {
+            position: absolute;
+            right: 0.9rem;
+            width: 13px;
+            height: 13px;
+            color: var(--text-muted);
+            pointer-events: none;
+        }
+
+        select.settings-select-tz {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            padding: 0.7rem 2.4rem 0.7rem 2.6rem;
+            cursor: pointer;
+            text-overflow: ellipsis;
+        }
+
+        html.theme-light .settings-select-icon,
+        html.theme-light .settings-select-chevron {
+            color: rgba(0, 0, 0, 0.4);
+        }
+
         .settings-input-prefix-wrap {
             display: flex;
             align-items: center;
@@ -3825,6 +3874,31 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="settings-section">
+                    <h2 class="settings-section-title">timezone</h2>
+                    <p class="settings-section-desc">choose how dates and times in logs and other dashboard surfaces are displayed.</p>
+                    <div class="settings-table">
+                        <div class="settings-table-row">
+                            <div class="settings-table-label">
+                                <span>display timezone</span>
+                                <small id="tz-detected-note">auto detected from your browser.</small>
+                            </div>
+                            <div class="settings-table-value">
+                                <div class="settings-select-wrap">
+                                    <svg class="settings-select-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                                    <select class="settings-input settings-select-tz" id="pref-timezone">
+                                        <option value="auto">auto detect</option>
+                                    </select>
+                                    <svg class="settings-select-chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="settings-actions">
+                            <button class="btn-primary" id="btn-save-timezone" style="padding:0.6rem 1.5rem;font-size:0.78rem;">save</button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div id="account-tab-security" class="account-tab-panel" style="display:none;"></div>
@@ -4168,7 +4242,7 @@
     </div>
 
     <script src="toast.js?v=3"></script>
-    <script src="dashboard-v19.js?v=80"></script>
+    <script src="dashboard-v19.js?v=81"></script>
     <script>
         // Eye Tracking Logic
         function trackEye(element, clientX, clientY) {

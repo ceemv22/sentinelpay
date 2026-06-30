@@ -66,6 +66,14 @@ const API_URL = window.location.origin;
     } catch (e) {}
 })();
 
+window.getDisplayTimezone = function() {
+    try {
+        const tz = localStorage.getItem('sentinel-timezone');
+        if (tz && tz !== 'auto') return tz;
+    } catch (e) {}
+    try { return Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'; } catch (e) { return 'UTC'; }
+};
+
 let _touchLockHandler = null;
 let _touchLockStartY = 0;
 
@@ -2537,6 +2545,45 @@ async function fetchProfile(token) {
                 setThemeCookie(theme);
                 if (window.SentinelToast) window.SentinelToast.show('appearance saved', 'success');
             });
+        }
+
+        const tzSelect = document.getElementById('pref-timezone');
+        if (tzSelect && !tzSelect.dataset.bound) {
+            tzSelect.dataset.bound = 'true';
+            let detectedZone = 'UTC';
+            try { detectedZone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'; } catch (e) {}
+
+            const autoOpt = tzSelect.querySelector('option[value="auto"]');
+            if (autoOpt) autoOpt.textContent = `auto detect (${detectedZone})`;
+            const note = document.getElementById('tz-detected-note');
+            if (note) note.textContent = `auto detected from your browser (${detectedZone}).`;
+
+            try {
+                let zones = [];
+                if (typeof Intl.supportedValuesOf === 'function') zones = Intl.supportedValuesOf('timeZone');
+                if (zones && zones.length && tzSelect.options.length <= 1) {
+                    const frag = document.createDocumentFragment();
+                    zones.forEach(z => {
+                        const o = document.createElement('option');
+                        o.value = z;
+                        o.textContent = z;
+                        frag.appendChild(o);
+                    });
+                    tzSelect.appendChild(frag);
+                }
+            } catch (e) {}
+
+            const savedTz = localStorage.getItem('sentinel-timezone') || 'auto';
+            tzSelect.value = [...tzSelect.options].some(o => o.value === savedTz) ? savedTz : 'auto';
+
+            const saveTzBtn = document.getElementById('btn-save-timezone');
+            if (saveTzBtn && !saveTzBtn.dataset.bound) {
+                saveTzBtn.dataset.bound = 'true';
+                saveTzBtn.addEventListener('click', () => {
+                    localStorage.setItem('sentinel-timezone', tzSelect.value);
+                    if (window.SentinelToast) window.SentinelToast.show('timezone saved', 'success');
+                });
+            }
         }
 
         const saveBtn = document.getElementById('btn-save-preferences');
