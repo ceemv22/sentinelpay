@@ -4,7 +4,7 @@
     <base href="/">
     <meta charset="UTF-8">
     <script>(function(){var q=window.location.search,h=window.location.hash;if(q.indexOf('code=')!==-1||h.indexOf('access_token=')!==-1)return;try{var s=localStorage.getItem('sb-aivqwkgjdpklxxuvkxpy-auth-token');if(!s){window.location.replace('/auth');return;}var d=JSON.parse(s);if(!d||!d.expires_at||Math.floor(Date.now()/1000)>=d.expires_at){window.location.replace('/auth');}}catch(e){window.location.replace('/auth');}})();</script>
-    <script>(function(){try{var m=document.cookie.match(/(?:^|; )sentinel-theme=([^;]*)/);if(m&&decodeURIComponent(m[1])==='light')document.documentElement.classList.add('theme-light');}catch(e){}})();</script>
+    <script>(function(){try{var m=document.cookie.match(/(?:^|; )sentinel-theme=([^;]*)/);var t=m?decodeURIComponent(m[1]):'dark';if(t==='system')t=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';if(t==='light')document.documentElement.classList.add('theme-light');}catch(e){}})();</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>sentinelpay | dashboard</title>
     <script>(function(){if(/^\/dashboard\/account\/settings/.test(window.location.pathname))document.title='sentinelpay | account settings';})();</script>
@@ -2169,12 +2169,16 @@
             border: 1px solid rgba(255,255,255,0.05);
         }
 
-        .theme-preview-dark, .theme-preview-system {
+        .theme-preview-dark {
             background: #0a0c0f;
         }
 
         .theme-preview-light {
             background: #f4f4f5;
+        }
+
+        .theme-preview-system {
+            background: linear-gradient(110deg, #0a0c0f 0%, #0a0c0f 50%, #f4f4f5 50%, #f4f4f5 100%);
         }
 
         .theme-preview-bar {
@@ -2203,6 +2207,14 @@
 
         .theme-preview-light .theme-preview-line {
             background: rgba(0,0,0,0.08);
+        }
+
+        .theme-preview-system .theme-preview-line {
+            background: rgba(128,128,128,0.4);
+        }
+
+        .theme-preview-system .theme-preview-dot {
+            background: rgba(128,128,128,0.45);
         }
 
         .theme-preview-line.short {
@@ -3739,8 +3751,7 @@
                                             <span class="theme-card-label">light</span>
                                         </div>
                                     </div>
-                                    <div class="theme-card disabled" data-theme="system">
-                                        <div class="theme-card-badge">soon</div>
+                                    <div class="theme-card" data-theme="system">
                                         <div class="theme-card-preview theme-preview-system">
                                             <div class="theme-preview-bar"><span class="theme-preview-dot"></span><span class="theme-preview-line theme-preview-line-accent"></span></div>
                                             <div class="theme-preview-line"></div>
@@ -4102,7 +4113,7 @@
     </div>
 
     <script src="toast.js?v=3"></script>
-    <script src="dashboard-v19.js?v=77"></script>
+    <script src="dashboard-v19.js?v=78"></script>
     <script>
         // Eye Tracking Logic
         function trackEye(element, clientX, clientY) {
