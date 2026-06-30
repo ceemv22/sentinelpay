@@ -48,6 +48,24 @@ const API_URL = window.location.origin;
     } catch (e) {}
 })();
 
+(function primeThemeCard() {
+    try {
+        const m = document.cookie.match(/(?:^|; )sentinel-theme=([^;]*)/);
+        const pref = m ? decodeURIComponent(m[1]) : 'dark';
+        const valid = ['light', 'dark', 'system'].includes(pref) ? pref : 'dark';
+        const mark = () => {
+            document.querySelectorAll('.theme-card[data-theme]').forEach(c => {
+                c.classList.toggle('active', c.dataset.theme === valid);
+            });
+        };
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', mark);
+        } else {
+            mark();
+        }
+    } catch (e) {}
+})();
+
 let _touchLockHandler = null;
 let _touchLockStartY = 0;
 
