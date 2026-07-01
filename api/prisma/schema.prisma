@@ -17,6 +17,8 @@ model User {
   authProvider     String           @default("email")
   isEmailVerified  Boolean          @default(false)
   credits          Int              @default(5)
+  theme            String           @default("dark")
+  timezone         String           @default("auto")
   apiKeys          ApiKey[]
   scanHistory      ScanHistory[]
   organizations    Organization[]   @relation("OrgMembers")
