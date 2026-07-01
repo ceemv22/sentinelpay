@@ -2592,7 +2592,7 @@ async function fetchProfile(token) {
                 items[0].flagZone = zone;
                 items[0].label = `auto detect (${tzLabel(zone)})`;
                 items[0].search = ('auto detect ' + tzLabel(zone)).toLowerCase();
-                if (note) note.innerHTML = `${tzFlagHtml(zone)}<span>auto detected from your ${fromLocation ? 'location' : 'browser'} (${tzLabel(zone)}).</span>`;
+                if (note) note.textContent = `auto detected from your ${fromLocation ? 'location' : 'browser'} (${tzLabel(zone)}).`;
                 if (tzHidden.value === 'auto') setSelected('auto');
             };
 
