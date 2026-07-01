@@ -622,6 +622,8 @@ app.get('/v1/user/profile', requireSupabaseAuth, async (req, res) => {
             credits: user.credits,
             authProvider: user.authProvider,
             isEmailVerified: user.isEmailVerified,
+            theme: user.theme || 'dark',
+            timezone: user.timezone || 'auto',
             history: user.scanHistory
         });
     } catch (err) {
@@ -696,6 +698,19 @@ app.patch('/v1/user/profile', requireSupabaseAuth, async (req, res) => {
                 data.username = u;
             }
         }
+        if (typeof req.body.theme === 'string') {
+            const t = req.body.theme.trim().toLowerCase();
+            if (!['dark', 'light', 'system'].includes(t)) return res.status(400).json({ error: 'invalid theme' });
+            data.theme = t;
+        }
+        if (typeof req.body.timezone === 'string') {
+            const tz = req.body.timezone.trim();
+            if (tz.length > 64) return res.status(400).json({ error: 'invalid timezone' });
+            if (tz !== 'auto') {
+                try { new Intl.DateTimeFormat('en-US', { timeZone: tz }); } catch (e) { return res.status(400).json({ error: 'invalid timezone' }); }
+            }
+            data.timezone = tz;
+        }
         if (Object.keys(data).length === 0) return res.status(400).json({ error: 'nothing to update' });
         let user;
         try {
@@ -706,7 +721,7 @@ app.patch('/v1/user/profile', requireSupabaseAuth, async (req, res) => {
             }
             throw err;
         }
-        res.json({ ok: true, email: user.email, username: user.username, firstName: user.firstName || '', lastName: user.lastName || '' });
+        res.json({ ok: true, email: user.email, username: user.username, firstName: user.firstName || '', lastName: user.lastName || '', theme: user.theme || 'dark', timezone: user.timezone || 'auto' });
     } catch (err) {
         console.error('[profile patch error]', err);
         res.status(500).json({ error: 'failed to update profile' });
