@@ -2606,7 +2606,10 @@ async function fetchProfile(token) {
             const note = document.getElementById('tz-detected-note');
 
             const tzEntries = TIMEZONES
-                .map(([z, cc, city]) => ({ value: z, cc, label: city, search: (city + ' ' + z.replace(/_/g, ' ')).toLowerCase() }))
+                .map(([z, cc, city]) => {
+                    const label = z.split('/')[0].toLowerCase() + '/' + city;
+                    return { value: z, cc, label, search: (label + ' ' + z.replace(/_/g, ' ')).toLowerCase() };
+                })
                 .sort((a, b) => a.label.localeCompare(b.label));
             const items = [{ value: 'auto', cc: TZ_COUNTRY[detectedZone], label: `auto detect (${tzLabel(detectedZone)})`, search: ('auto detect ' + tzSearchText(detectedZone)) }, ...tzEntries];
 
