@@ -80,11 +80,30 @@ const TZ_COUNTRY = {"Africa/Abidjan":"CI","Africa/Accra":"GH","Africa/Addis_Abab
 
 Object.assign(TZ_COUNTRY, {"America/Atikokan":"CA","America/Blanc-Sablon":"CA","America/Coral_Harbour":"CA","America/Nipigon":"CA","America/Pangnirtung":"CA","America/Rainy_River":"CA","America/Thunder_Bay":"CA","America/Yellowknife":"CA","America/Fort_Nelson":"CA","America/Montreal":"CA","America/Ciudad_Juarez":"MX","America/Santa_Isabel":"MX","America/Ensenada":"MX","America/Rosario":"AR","America/Buenos_Aires":"AR","America/Catamarca":"AR","America/Cordoba":"AR","America/Jujuy":"AR","America/Mendoza":"AR","America/Argentina/ComodRivadavia":"AR","America/Indianapolis":"US","America/Louisville":"US","America/Knox_IN":"US","America/Shiprock":"US","America/Virgin":"VI","America/Argentina/Buenos_Aires":"AR","America/Kentucky/Louisville":"US","Asia/Calcutta":"IN","Asia/Katmandu":"NP","Asia/Rangoon":"MM","Asia/Saigon":"VN","Asia/Istanbul":"TR","Asia/Chungking":"CN","Asia/Chongqing":"CN","Asia/Harbin":"CN","Asia/Ashkhabad":"TM","Asia/Dacca":"BD","Asia/Macao":"MO","Asia/Ujung_Pandang":"ID","Asia/Ulan_Bator":"MN","Asia/Thimbu":"BT","Asia/Tel_Aviv":"IL","Africa/Asmera":"ER","Africa/Timbuktu":"ML","Atlantic/Faeroe":"FO","Atlantic/Jan_Mayen":"SJ","Arctic/Longyearbyen":"SJ","Europe/Uzhgorod":"UA","Europe/Zaporozhye":"UA","Europe/Tiraspol":"MD","Europe/Belfast":"GB","Europe/Nicosia":"CY","Pacific/Ponape":"FM","Pacific/Truk":"FM","Pacific/Yap":"FM","Pacific/Samoa":"AS","Pacific/Johnston":"UM","Pacific/Enderbury":"KI","Antarctica/South_Pole":"AQ"});
 
-function tzFlagHtml(zone) {
-    const cc = TZ_COUNTRY[zone];
+function flagImg(cc) {
     if (!cc) return '<span class="tz-dd-globe">🌐</span>';
     return `<img class="tz-dd-flag-img" loading="lazy" alt="" src="https://cdn.jsdelivr.net/gh/lipis/flag-icons/flags/4x3/${cc.toLowerCase()}.svg">`;
 }
+
+function tzFlagHtml(zone) {
+    return flagImg(TZ_COUNTRY[zone]);
+}
+
+const TIMEZONES = [
+    ['Africa/Abidjan','ci','yamoussoukro'],['Africa/Accra','gh','accra'],['Africa/Addis_Ababa','et','addis ababa'],['Africa/Algiers','dz','algiers'],['Africa/Asmara','er','asmara'],['Africa/Bamako','ml','bamako'],['Africa/Bangui','cf','bangui'],['Africa/Banjul','gm','banjul'],['Africa/Bissau','gw','bissau'],['Africa/Blantyre','mw','lilongwe'],['Africa/Brazzaville','cg','brazzaville'],['Africa/Bujumbura','bi','gitega'],['Africa/Cairo','eg','cairo'],['Africa/Casablanca','ma','rabat'],['Africa/Conakry','gn','conakry'],['Africa/Dakar','sn','dakar'],['Africa/Dar_es_Salaam','tz','dodoma'],['Africa/Djibouti','dj','djibouti'],['Africa/Douala','cm','yaounde'],['Africa/Freetown','sl','freetown'],['Africa/Gaborone','bw','gaborone'],['Africa/Harare','zw','harare'],['Africa/Johannesburg','za','pretoria'],['Africa/Juba','ss','juba'],['Africa/Kampala','ug','kampala'],['Africa/Khartoum','sd','khartoum'],['Africa/Kigali','rw','kigali'],['Africa/Kinshasa','cd','kinshasa'],['Africa/Lagos','ng','abuja'],['Africa/Libreville','ga','libreville'],['Africa/Lome','tg','lome'],['Africa/Luanda','ao','luanda'],['Africa/Lusaka','zm','lusaka'],['Africa/Malabo','gq','ciudad de la paz'],['Africa/Maputo','mz','maputo'],['Africa/Maseru','ls','maseru'],['Africa/Mbabane','sz','mbabane'],['Africa/Mogadishu','so','mogadishu'],['Africa/Monrovia','lr','monrovia'],['Africa/Nairobi','ke','nairobi'],['Africa/Ndjamena','td','ndjamena'],['Africa/Niamey','ne','niamey'],['Africa/Nouakchott','mr','nouakchott'],['Africa/Ouagadougou','bf','ouagadougou'],['Africa/Porto-Novo','bj','porto-novo'],['Africa/Sao_Tome','st','sao tome'],['Africa/Tripoli','ly','tripoli'],['Africa/Tunis','tn','tunis'],['Africa/Windhoek','na','windhoek'],
+    ['America/New_York','us','new york'],['America/Chicago','us','chicago'],['America/Denver','us','denver'],['America/Phoenix','us','phoenix'],['America/Los_Angeles','us','los angeles'],['America/Anchorage','us','anchorage'],['Pacific/Honolulu','us','honolulu'],
+    ['America/St_Johns','ca','st johns'],['America/Halifax','ca','halifax'],['America/Toronto','ca','toronto'],['America/Winnipeg','ca','winnipeg'],['America/Edmonton','ca','edmonton'],['America/Vancouver','ca','vancouver'],
+    ['America/Mexico_City','mx','mexico city'],['America/Cancun','mx','cancun'],['America/Hermosillo','mx','hermosillo'],['America/Tijuana','mx','tijuana'],
+    ['America/Sao_Paulo','br','sao paulo'],['America/Manaus','br','manaus'],['America/Rio_Branco','br','rio branco'],['America/Noronha','br','fernando de noronha'],
+    ['America/Argentina/Buenos_Aires','ar','buenos aires'],['America/Barbados','bb','bridgetown'],['America/Belize','bz','belmopan'],['America/Bogota','co','bogota'],['America/Caracas','ve','caracas'],['America/Costa_Rica','cr','san jose'],['America/Dominica','dm','roseau'],['America/El_Salvador','sv','san salvador'],['America/Grenada','gd','st georges'],['America/Guatemala','gt','guatemala city'],['America/Guayaquil','ec','quito'],['America/Guyana','gy','georgetown'],['America/Havana','cu','havana'],['America/Jamaica','jm','kingston'],['America/La_Paz','bo','la paz'],['America/Lima','pe','lima'],['America/Managua','ni','managua'],['America/Montevideo','uy','montevideo'],['America/Nassau','bs','nassau'],['America/Panama','pa','panama city'],['America/Paramaribo','sr','paramaribo'],['America/Port-au-Prince','ht','port-au-prince'],['America/Port_of_Spain','tt','port of spain'],['America/Punta_Arenas','cl','punta arenas'],['America/Santiago','cl','santiago'],['America/Santo_Domingo','do','santo domingo'],['America/St_Kitts','kn','basseterre'],['America/St_Lucia','lc','castries'],['America/St_Vincent','vc','kingstown'],['America/Tegucigalpa','hn','tegucigalpa'],
+    ['Asia/Aden','ye','sanaa'],['Asia/Almaty','kz','astana'],['Asia/Amman','jo','amman'],['Asia/Ashgabat','tm','ashgabat'],['Asia/Baghdad','iq','baghdad'],['Asia/Bahrain','bh','manama'],['Asia/Baku','az','baku'],['Asia/Bangkok','th','bangkok'],['Asia/Beirut','lb','beirut'],['Asia/Bishkek','kg','bishkek'],['Asia/Brunei','bn','bandar seri begawan'],['Asia/Kolkata','in','new delhi'],['Asia/Colombo','lk','colombo'],['Asia/Damascus','sy','damascus'],['Asia/Dhaka','bd','dhaka'],['Asia/Dili','tl','dili'],['Asia/Dubai','ae','abu dhabi'],['Asia/Dushanbe','tj','dushanbe'],['Asia/Hebron','ps','ramallah'],['Asia/Ho_Chi_Minh','vn','hanoi'],['Asia/Hovd','mn','khovd'],['Asia/Jakarta','id','jakarta'],['Asia/Makassar','id','makassar'],['Asia/Jayapura','id','jayapura'],['Asia/Jerusalem','il','jerusalem'],['Asia/Kabul','af','kabul'],['Asia/Karachi','pk','islamabad'],['Asia/Kathmandu','np','kathmandu'],['Asia/Kuala_Lumpur','my','kuala lumpur'],['Asia/Kuwait','kw','kuwait city'],['Asia/Manila','ph','manila'],['Asia/Muscat','om','muscat'],['Asia/Nicosia','cy','nicosia'],['Asia/Phnom_Penh','kh','phnom penh'],['Asia/Pyongyang','kp','pyongyang'],['Asia/Qatar','qa','doha'],['Asia/Riyadh','sa','riyadh'],['Asia/Yangon','mm','naypyidaw'],['Asia/Tashkent','uz','tashkent'],['Asia/Seoul','kr','seoul'],['Asia/Shanghai','cn','beijing'],['Asia/Singapore','sg','singapore'],['Asia/Taipei','tw','taipei'],['Asia/Tbilisi','ge','tbilisi'],['Asia/Tehran','ir','tehran'],['Asia/Thimphu','bt','thimphu'],['Asia/Tokyo','jp','tokyo'],['Asia/Ulaanbaatar','mn','ulaanbaatar'],['Asia/Vientiane','la','vientiane'],['Asia/Yerevan','am','yerevan'],
+    ['Europe/Kaliningrad','ru','kaliningrad'],['Europe/Moscow','ru','moscow'],['Europe/Samara','ru','samara'],['Asia/Yekaterinburg','ru','yekaterinburg'],['Asia/Omsk','ru','omsk'],['Asia/Krasnoyarsk','ru','krasnoyarsk'],['Asia/Irkutsk','ru','irkutsk'],['Asia/Yakutsk','ru','yakutsk'],['Asia/Vladivostok','ru','vladivostok'],['Asia/Magadan','ru','magadan'],['Asia/Kamchatka','ru','kamchatka'],
+    ['Europe/Amsterdam','nl','amsterdam'],['Europe/Andorra','ad','andorra la vella'],['Europe/Athens','gr','athens'],['Europe/Belgrade','rs','belgrade'],['Europe/Berlin','de','berlin'],['Europe/Bratislava','sk','bratislava'],['Europe/Brussels','be','brussels'],['Europe/Bucharest','ro','bucharest'],['Europe/Budapest','hu','budapest'],['Europe/Chisinau','md','chisinau'],['Europe/Copenhagen','dk','copenhagen'],['Europe/Dublin','ie','dublin'],['Europe/Helsinki','fi','helsinki'],['Europe/Istanbul','tr','ankara'],['Europe/Kyiv','ua','kyiv'],['Europe/Lisbon','pt','lisbon'],['Europe/Ljubljana','si','ljubljana'],['Europe/London','gb','london'],['Europe/Luxembourg','lu','luxembourg'],['Europe/Madrid','es','madrid'],['Europe/Malta','mt','valletta'],['Europe/Minsk','by','minsk'],['Europe/Monaco','mc','monaco'],['Europe/Oslo','no','oslo'],['Europe/Paris','fr','paris'],['Europe/Podgorica','me','podgorica'],['Europe/Prague','cz','prague'],['Europe/Riga','lv','riga'],['Europe/Rome','it','rome'],['Europe/San_Marino','sm','san marino'],['Europe/Sarajevo','ba','sarajevo'],['Europe/Skopje','mk','skopje'],['Europe/Sofia','bg','sofia'],['Europe/Stockholm','se','stockholm'],['Europe/Tallinn','ee','tallinn'],['Europe/Tirane','al','tirana'],['Europe/Vaduz','li','vaduz'],['Europe/Vatican','va','vatican city'],['Europe/Vienna','at','vienna'],['Europe/Vilnius','lt','vilnius'],['Europe/Warsaw','pl','warsaw'],['Europe/Zagreb','hr','zagreb'],['Europe/Zurich','ch','bern'],
+    ['Atlantic/Reykjavik','is','reykjavik'],['Atlantic/Cape_Verde','cv','praia'],
+    ['Indian/Antananarivo','mg','antananarivo'],['Indian/Comoro','km','moroni'],['Indian/Mahe','sc','victoria'],['Indian/Maldives','mv','male'],['Indian/Mauritius','mu','port louis'],
+    ['Australia/Sydney','au','canberra'],['Australia/Adelaide','au','adelaide'],['Australia/Perth','au','perth'],
+    ['Pacific/Apia','ws','apia'],['Pacific/Auckland','nz','wellington'],['Pacific/Efate','vu','port vila'],['Pacific/Tarawa','ki','tarawa'],['Pacific/Fiji','fj','suva'],['Pacific/Funafuti','tv','funafuti'],['Pacific/Pohnpei','fm','palikir'],['Pacific/Majuro','mh','majuro'],['Pacific/Nauru','nr','yaren'],['Pacific/Palau','pw','ngerulmud'],['Pacific/Port_Moresby','pg','port moresby'],['Pacific/Tongatapu','to','nukualofa'],['Pacific/Guadalcanal','sb','honiara']
+];
 
 function tzLabel(zone) {
     const parts = zone.split('/');
@@ -2586,18 +2605,14 @@ async function fetchProfile(token) {
 
             const note = document.getElementById('tz-detected-note');
 
-            let zones = [];
-            try {
-                if (typeof Intl.supportedValuesOf === 'function') zones = Intl.supportedValuesOf('timeZone');
-            } catch (e) {}
-            if (!zones.length) zones = Object.keys(TZ_COUNTRY);
-
-            const items = [{ value: 'auto', flagZone: detectedZone, label: `auto detect (${tzLabel(detectedZone)})`, search: ('auto detect ' + tzSearchText(detectedZone)) }];
-            zones.forEach(z => items.push({ value: z, flagZone: z, label: tzLabel(z), search: tzSearchText(z) }));
+            const tzEntries = TIMEZONES
+                .map(([z, cc, city]) => ({ value: z, cc, label: city, search: (city + ' ' + z.replace(/_/g, ' ')).toLowerCase() }))
+                .sort((a, b) => a.label.localeCompare(b.label));
+            const items = [{ value: 'auto', cc: TZ_COUNTRY[detectedZone], label: `auto detect (${tzLabel(detectedZone)})`, search: ('auto detect ' + tzSearchText(detectedZone)) }, ...tzEntries];
 
             const applyDetected = (zone, fromLocation) => {
                 detectedZone = zone;
-                items[0].flagZone = zone;
+                items[0].cc = TZ_COUNTRY[zone];
                 items[0].label = `auto detect (${tzLabel(zone)})`;
                 items[0].search = ('auto detect ' + tzSearchText(zone));
                 if (note) note.textContent = `auto detected from your ${fromLocation ? 'location' : 'browser'} (${tzLabel(zone)}).`;
@@ -2608,7 +2623,7 @@ async function fetchProfile(token) {
                 const item = items.find(i => i.value === value) || items[0];
                 tzHidden.value = item.value;
                 tzSelLabel.textContent = item.label;
-                if (tzTriggerFlag) tzTriggerFlag.innerHTML = tzFlagHtml(item.flagZone);
+                if (tzTriggerFlag) tzTriggerFlag.innerHTML = flagImg(item.cc);
             };
 
             const renderList = (filter) => {
@@ -2622,7 +2637,7 @@ async function fetchProfile(token) {
                     const el = document.createElement('div');
                     el.className = 'tz-dd-item' + (i.value === tzHidden.value ? ' tz-selected' : '');
                     el.dataset.value = i.value;
-                    el.innerHTML = `<span class="tz-dd-flag">${tzFlagHtml(i.flagZone)}</span><span class="tz-dd-name"></span>`;
+                    el.innerHTML = `<span class="tz-dd-flag">${flagImg(i.cc)}</span><span class="tz-dd-name"></span>`;
                     el.querySelector('.tz-dd-name').textContent = i.label;
                     el.addEventListener('click', () => {
                         setSelected(i.value);
@@ -2673,7 +2688,7 @@ async function fetchProfile(token) {
             setSelected(items.some(i => i.value === savedTz) ? savedTz : 'auto');
 
             const cachedAuto = localStorage.getItem('sentinel-tz-auto');
-            applyDetected(cachedAuto && zones.includes(cachedAuto) ? cachedAuto : detectedZone, Boolean(cachedAuto));
+            applyDetected(cachedAuto || detectedZone, Boolean(cachedAuto));
 
             (async () => {
                 try {
@@ -2686,7 +2701,7 @@ async function fetchProfile(token) {
                     const r = await fetch('/v1/geo/timezone', { headers: { 'Authorization': `Bearer ${token}` } });
                     if (!r.ok) return;
                     const d = await r.json();
-                    if (d && d.timezone && zones.includes(d.timezone)) {
+                    if (d && d.timezone) {
                         localStorage.setItem('sentinel-tz-auto', d.timezone);
                         applyDetected(d.timezone, true);
                     }
