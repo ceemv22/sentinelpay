@@ -87,6 +87,12 @@ function tzFlagHtml(zone) {
 }
 
 function tzLabel(zone) {
+    const parts = zone.split('/');
+    const simplified = parts.length > 2 ? parts[0] + '/' + parts[parts.length - 1] : zone;
+    return simplified.replace(/_/g, ' ').toLowerCase();
+}
+
+function tzSearchText(zone) {
     return zone.replace(/_/g, ' ').toLowerCase();
 }
 
@@ -2586,14 +2592,14 @@ async function fetchProfile(token) {
             } catch (e) {}
             if (!zones.length) zones = Object.keys(TZ_COUNTRY);
 
-            const items = [{ value: 'auto', flagZone: detectedZone, label: `auto detect (${tzLabel(detectedZone)})`, search: ('auto detect ' + tzLabel(detectedZone)).toLowerCase() }];
-            zones.forEach(z => items.push({ value: z, flagZone: z, label: tzLabel(z), search: tzLabel(z).toLowerCase() }));
+            const items = [{ value: 'auto', flagZone: detectedZone, label: `auto detect (${tzLabel(detectedZone)})`, search: ('auto detect ' + tzSearchText(detectedZone)) }];
+            zones.forEach(z => items.push({ value: z, flagZone: z, label: tzLabel(z), search: tzSearchText(z) }));
 
             const applyDetected = (zone, fromLocation) => {
                 detectedZone = zone;
                 items[0].flagZone = zone;
                 items[0].label = `auto detect (${tzLabel(zone)})`;
-                items[0].search = ('auto detect ' + tzLabel(zone)).toLowerCase();
+                items[0].search = ('auto detect ' + tzSearchText(zone));
                 if (note) note.textContent = `auto detected from your ${fromLocation ? 'location' : 'browser'} (${tzLabel(zone)}).`;
                 if (tzHidden.value === 'auto') setSelected('auto');
             };
