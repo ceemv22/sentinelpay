@@ -2113,11 +2113,6 @@
             gap: 1rem;
             width: 100%;
         }
-        @media (max-width: 560px) {
-            .theme-options {
-                grid-template-columns: 1fr;
-            }
-        }
 
         .theme-card {
             position: relative;
@@ -2592,6 +2587,89 @@
             padding: 1rem 1.25rem;
             background: rgba(10,12,15,0.4);
             border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        @media (max-width: 640px) {
+            #account-settings-view .settings-section {
+                padding-top: 1.75rem;
+            }
+            #account-settings-view .settings-section:first-child {
+                padding-top: 0.5rem;
+            }
+            .settings-section-title {
+                margin-bottom: 0.45rem;
+            }
+            .settings-section-desc {
+                margin: 0 0 1rem;
+                font-size: 0.72rem;
+            }
+            .settings-table {
+                border-radius: 12px;
+            }
+            .settings-table-row,
+            .settings-table-row.settings-row-pair {
+                grid-template-columns: 1fr;
+                min-height: 0;
+            }
+            .settings-table-label {
+                border-right: none;
+                border-bottom: 1px solid rgba(255,255,255,0.05);
+                padding: 0.8rem 1rem 0.65rem;
+                gap: 0.25rem;
+            }
+            html.theme-light .settings-table-label {
+                border-right: none;
+                border-bottom: 1px solid rgba(0,0,0,0.06);
+            }
+            .settings-table-value {
+                padding: 0.85rem 1rem;
+            }
+            .settings-table-row.settings-row-pair .settings-table-value {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.6rem;
+            }
+            .settings-actions {
+                padding: 0.85rem 1rem;
+            }
+            .settings-actions .btn-primary {
+                width: 100%;
+                justify-content: center;
+                text-align: center;
+            }
+            .theme-options {
+                gap: 0.5rem;
+            }
+            .theme-card {
+                padding: 0.5rem;
+            }
+            .theme-card-preview {
+                padding: 0.5rem;
+                gap: 0.3rem;
+                margin-bottom: 0.55rem;
+            }
+            .theme-card-preview .theme-preview-line { height: 5px; }
+            .theme-card-footer {
+                gap: 0.4rem;
+            }
+            .theme-card-label {
+                font-size: 0.68rem;
+            }
+            .tz-dd-trigger {
+                padding: 0.75rem 2.2rem 0.75rem 0.85rem;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .theme-card-preview {
+                padding: 0.4rem;
+            }
+            .theme-card-footer {
+                gap: 0.25rem;
+            }
+            .theme-card-label {
+                font-size: 0.6rem;
+            }
         }
 
         @keyframes identity-update-flash {
