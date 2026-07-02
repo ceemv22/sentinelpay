@@ -3983,6 +3983,7 @@ function setupSecurity() {
     const codeInput = document.getElementById('mfa-code');
     const verifyError = document.getElementById('mfa-verify-error');
     const verifyBtn = document.getElementById('btn-mfa-verify');
+    const cancelBtn = document.getElementById('btn-mfa-cancel');
     if (!modal || !closeBtn) return;
 
     let pendingFactorId = null;
@@ -4060,7 +4061,11 @@ function setupSecurity() {
         verifyError.style.display = 'none';
         codeInput.value = '';
         continueBtn.disabled = false;
-        continueBtn.textContent = 'continue';
+        continueBtn.textContent = 'generate qr';
+        continueBtn.style.display = '';
+        verifyBtn.style.display = 'none';
+        verifyBtn.disabled = false;
+        verifyBtn.textContent = 'verify & enable';
         setTimeout(() => nameInput.focus(), 50);
     };
 
@@ -4076,6 +4081,7 @@ function setupSecurity() {
 
         addBtn.addEventListener('click', openModal);
         closeBtn.addEventListener('click', closeModal);
+        if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
         modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 
         continueBtn.addEventListener('click', async () => {
@@ -4109,12 +4115,14 @@ function setupSecurity() {
                 }
                 stepName.style.display = 'none';
                 stepVerify.style.display = 'block';
+                continueBtn.style.display = 'none';
+                verifyBtn.style.display = '';
                 setTimeout(() => codeInput.focus(), 50);
             } catch (e) {
                 nameError.textContent = `error: ${(e.message || 'could not start enrollment').toLowerCase()}`;
                 nameError.style.display = 'block';
                 continueBtn.disabled = false;
-                continueBtn.textContent = 'continue';
+                continueBtn.textContent = 'generate qr';
             }
         });
 
