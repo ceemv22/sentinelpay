@@ -4018,8 +4018,8 @@ function setupSecurity() {
         } catch (e) { return window.supabaseAuthToken; }
     };
 
-    const setServerState = async (val) => {
-        const token = await getFreshToken();
+    const setServerState = async (val, providedToken) => {
+        const token = providedToken || await getFreshToken();
         if (token) window.supabaseAuthToken = token;
         try {
             const r = await fetch('/v1/user/mfa/state', {
@@ -4134,14 +4134,25 @@ function setupSecurity() {
             verifyBtn.disabled = true;
             verifyBtn.textContent = 'verifying...';
             try {
-                const { error } = await mfa.challengeAndVerify({ factorId: pendingFactorId, code });
+                const { data: vdata, error } = await mfa.challengeAndVerify({ factorId: pendingFactorId, code });
                 if (error) throw new Error(error.message);
+                const ok = await setServerState(true, vdata && vdata.access_token);
+                if (!ok) {
+                    const fid = pendingFactorId;
+                    pendingFactorId = null;
+                    enrollDone = false;
+                    try { await mfa.unenroll({ factorId: fid }); } catch (e2) {}
+                    enabled = false;
+                    setStatus();
+                    closeEnrollModal();
+                    if (window.SentinelToast) window.SentinelToast.show('could not enable mfa right now. please try again.', 'error');
+                    return;
+                }
                 enrollDone = true;
-                const ok = await setServerState(true);
                 enabled = true;
                 setStatus();
                 closeEnrollModal();
-                if (window.SentinelToast) window.SentinelToast.show(ok ? 'mfa enabled' : 'mfa enabled on this device', ok ? 'success' : 'info');
+                if (window.SentinelToast) window.SentinelToast.show('mfa enabled', 'success');
             } catch (e) {
                 console.error('[mfa enable verify]', e.message || e);
                 verifyBtn.disabled = false;
@@ -4160,9 +4171,16 @@ function setupSecurity() {
             try {
                 const f = await getVerifiedFactor();
                 if (!f) throw new Error('no authenticator found');
-                const { error } = await mfa.challengeAndVerify({ factorId: f.id, code });
+                const { data: vdata, error } = await mfa.challengeAndVerify({ factorId: f.id, code });
                 if (error) throw new Error(error.message);
-                await setServerState(false);
+                const stateOk = await setServerState(false, vdata && vdata.access_token);
+                if (!stateOk) {
+                    disableBtn.disabled = false;
+                    disableBtn.textContent = 'verify & disable';
+                    disableError.textContent = 'error: could not disable mfa right now. please try again.';
+                    disableError.style.display = 'block';
+                    return;
+                }
                 try { await mfa.unenroll({ factorId: f.id }); } catch (e) {}
                 const rest = await getVerifiedFactor();
                 if (rest) { try { await mfa.unenroll({ factorId: rest.id }); } catch (e) {} }
