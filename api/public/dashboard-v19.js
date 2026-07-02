@@ -3957,6 +3957,15 @@ function setupAccountDeletion() {
     });
 }
 
+function mfaFriendlyError(msg) {
+    const m = (msg || '').toLowerCase();
+    if (m.includes('rate') || m.includes('too many') || m.includes('limit')) return 'too many attempts. wait a moment and try again.';
+    if (m.includes('expired')) return 'the code expired. enter a fresh one from your authenticator app.';
+    if (m.includes('invalid') || m.includes('incorrect') || m.includes('totp') || m.includes('code') || m.includes('verif')) return 'incorrect code. check your authenticator app and try again.';
+    if (m.includes('network') || m.includes('fetch') || m.includes('failed to')) return 'network error. check your connection and try again.';
+    return 'could not verify the code. try again.';
+}
+
 function setupSecurity() {
     const toggle = document.getElementById('mfa-toggle');
     const sw = document.getElementById('mfa-switch');
@@ -4134,9 +4143,10 @@ function setupSecurity() {
                 closeEnrollModal();
                 if (window.SentinelToast) window.SentinelToast.show(ok ? 'mfa enabled' : 'mfa enabled on this device', ok ? 'success' : 'info');
             } catch (e) {
+                console.error('[mfa enable verify]', e.message || e);
                 verifyBtn.disabled = false;
                 verifyBtn.textContent = 'verify & enable';
-                verifyError.textContent = `error: ${(e.message || 'invalid code').toLowerCase()}`;
+                verifyError.textContent = `error: ${mfaFriendlyError(e.message)}`;
                 verifyError.style.display = 'block';
             }
         });
@@ -4161,9 +4171,10 @@ function setupSecurity() {
                 closeDisableModal();
                 if (window.SentinelToast) window.SentinelToast.show('mfa disabled', 'success');
             } catch (e) {
+                console.error('[mfa disable verify]', e.message || e);
                 disableBtn.disabled = false;
                 disableBtn.textContent = 'verify & disable';
-                disableError.textContent = `error: ${(e.message || 'invalid code').toLowerCase()}`;
+                disableError.textContent = `error: ${mfaFriendlyError(e.message)}`;
                 disableError.style.display = 'block';
             }
         });

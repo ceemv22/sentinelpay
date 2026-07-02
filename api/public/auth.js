@@ -236,10 +236,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (error) throw new Error(error.message);
                 window.location.href = returnTo || '/dashboard/organizations';
             } catch (e) {
+                console.error('[mfa login verify]', e.message || e);
+                const m = (e.message || '').toLowerCase();
+                let friendly = 'could not verify the code. try again.';
+                if (m.includes('rate') || m.includes('too many') || m.includes('limit')) friendly = 'too many attempts. wait a moment and try again.';
+                else if (m.includes('expired')) friendly = 'the code expired. enter a fresh one from your authenticator app.';
+                else if (m.includes('invalid') || m.includes('incorrect') || m.includes('totp') || m.includes('code') || m.includes('verif')) friendly = 'incorrect code. check your authenticator app and try again.';
+                else if (m.includes('network') || m.includes('fetch') || m.includes('failed to')) friendly = 'network error. check your connection and try again.';
                 verifyBtn.disabled = false;
                 verifyBtn.textContent = 'verify';
-                errEl.textContent = `error: ${(e.message || 'invalid code').toLowerCase()}`;
+                errEl.textContent = `error: ${friendly}`;
                 errEl.style.display = 'block';
+                if (codeInput) { codeInput.value = ''; codeInput.focus(); }
             }
         };
 
