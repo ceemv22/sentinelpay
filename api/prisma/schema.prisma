@@ -19,6 +19,7 @@ model User {
   credits          Int              @default(5)
   theme            String           @default("dark")
   timezone         String           @default("auto")
+  shortcuts        Json?
   apiKeys          ApiKey[]
   scanHistory      ScanHistory[]
   organizations    Organization[]   @relation("OrgMembers")
