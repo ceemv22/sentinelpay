@@ -3958,201 +3958,213 @@ function setupAccountDeletion() {
 }
 
 function setupSecurity() {
-    const addBtn = document.getElementById('btn-mfa-add');
-    const list = document.getElementById('mfa-factor-list');
-    const badge = document.getElementById('mfa-count-badge');
-    if (!addBtn || !list || !badge) return;
+    const toggle = document.getElementById('mfa-toggle');
+    const sw = document.getElementById('mfa-switch');
+    const statusEl = document.getElementById('mfa-status');
+    if (!toggle || !sw) return;
 
     const mfa = (sentinelAuth && sentinelAuth.auth && sentinelAuth.auth.mfa) ? sentinelAuth.auth.mfa : null;
     if (!mfa) {
-        addBtn.disabled = true;
-        badge.textContent = 'unavailable';
+        sw.classList.add('is-disabled');
+        if (statusEl) statusEl.textContent = 'not available in this browser.';
         return;
     }
 
-    const modal = document.getElementById('mfa-enroll-modal-overlay');
-    const closeBtn = document.getElementById('btn-close-mfa');
-    const stepName = document.getElementById('mfa-step-name');
-    const stepVerify = document.getElementById('mfa-step-verify');
-    const nameInput = document.getElementById('mfa-device-name');
-    const nameError = document.getElementById('mfa-name-error');
-    const continueBtn = document.getElementById('btn-mfa-continue');
+    const enrollModal = document.getElementById('mfa-enroll-modal-overlay');
+    const closeEnroll = document.getElementById('btn-close-mfa');
     const qrWrap = document.getElementById('mfa-qr-wrap');
     const secretRow = document.getElementById('mfa-secret-row');
     const secretEl = document.getElementById('mfa-secret');
     const codeInput = document.getElementById('mfa-code');
     const verifyError = document.getElementById('mfa-verify-error');
     const verifyBtn = document.getElementById('btn-mfa-verify');
-    if (!modal || !closeBtn) return;
 
+    const disableModal = document.getElementById('mfa-disable-modal-overlay');
+    const closeDisable = document.getElementById('btn-close-mfa-disable');
+    const disableCode = document.getElementById('mfa-disable-code');
+    const disableError = document.getElementById('mfa-disable-error');
+    const disableBtn = document.getElementById('btn-mfa-disable-confirm');
+
+    if (!enrollModal || !disableModal) return;
+
+    let enabled = false;
     let pendingFactorId = null;
-    let verified = false;
+    let enrollDone = false;
 
-    const fmtDate = (d) => { try { return new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }); } catch (e) { return ''; } };
+    const setStatus = () => {
+        sw.classList.remove('is-disabled');
+        toggle.checked = enabled;
+        if (statusEl) {
+            statusEl.classList.toggle('is-on', enabled);
+            statusEl.textContent = enabled
+                ? 'enabled — an authenticator code is required to sign in and to approve sensitive actions.'
+                : 'disabled — your account is protected by password only.';
+        }
+    };
 
-    const renderFactors = (factors) => {
-        const verifiedFactors = (factors || []).filter(f => f.status === 'verified');
-        badge.textContent = `${verifiedFactors.length} app${verifiedFactors.length === 1 ? '' : 's'} configured`;
-        list.innerHTML = '';
-        verifiedFactors.forEach(f => {
-            const row = document.createElement('div');
-            row.className = 'sp-mfa-factor';
-            const info = document.createElement('div');
-            info.className = 'sp-mfa-factor-info';
-            const name = document.createElement('div');
-            name.className = 'sp-mfa-factor-name';
-            name.textContent = f.friendly_name || 'authenticator app';
-            const meta = document.createElement('div');
-            meta.className = 'sp-mfa-factor-meta';
-            meta.textContent = `added ${fmtDate(f.created_at)}`;
-            info.appendChild(name);
-            info.appendChild(meta);
-            const rm = document.createElement('button');
-            rm.className = 'sp-mfa-remove';
-            rm.textContent = 'remove';
-            rm.addEventListener('click', () => removeFactor(f.id, rm));
-            row.appendChild(info);
-            row.appendChild(rm);
-            list.appendChild(row);
-        });
+    const getFreshToken = async () => {
+        try {
+            const { data } = await sentinelAuth.auth.getSession();
+            return (data && data.session && data.session.access_token) || window.supabaseAuthToken;
+        } catch (e) { return window.supabaseAuthToken; }
+    };
+
+    const setServerState = async (val) => {
+        const token = await getFreshToken();
+        if (token) window.supabaseAuthToken = token;
+        try {
+            const r = await fetch('/v1/user/mfa/state', {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ enabled: val })
+            });
+            return r.ok;
+        } catch (e) { return false; }
+    };
+
+    const getVerifiedFactor = async () => {
+        try {
+            const { data } = await mfa.listFactors();
+            const totp = (data && (data.totp || data.all)) || [];
+            return totp.find(f => f.status === 'verified') || null;
+        } catch (e) { return null; }
     };
 
     const refresh = async () => {
-        try {
-            const { data, error } = await mfa.listFactors();
-            if (error) return;
-            const totp = (data && (data.totp || data.all)) || [];
-            renderFactors(totp);
-        } catch (e) {}
+        enabled = !!(await getVerifiedFactor());
+        setStatus();
     };
 
-    const removeFactor = async (factorId, btn) => {
-        if (btn) { btn.disabled = true; btn.textContent = 'removing...'; }
-        try {
-            const { error } = await mfa.unenroll({ factorId });
-            if (error) throw new Error(error.message);
-            if (window.SentinelToast) window.SentinelToast.show('authenticator removed', 'success');
-            refresh();
-        } catch (e) {
-            if (btn) { btn.disabled = false; btn.textContent = 'remove'; }
-            if (window.SentinelToast) window.SentinelToast.show('could not remove authenticator', 'error');
-        }
-    };
-
-    const cleanupPending = async () => {
-        if (pendingFactorId && !verified) {
-            try { await mfa.unenroll({ factorId: pendingFactorId }); } catch (e) {}
-        }
-        pendingFactorId = null;
-        verified = false;
-    };
-
-    const openModal = () => {
-        modal.classList.add('active');
-        document.body.classList.add('modal-open');
-        lockBodyScroll();
-        pendingFactorId = null;
-        verified = false;
-        stepName.style.display = 'block';
-        stepVerify.style.display = 'none';
-        nameInput.value = '';
-        nameError.style.display = 'none';
-        verifyError.style.display = 'none';
-        codeInput.value = '';
-        continueBtn.disabled = false;
-        continueBtn.textContent = 'generate qr';
-        continueBtn.style.display = '';
-        verifyBtn.style.display = 'none';
-        verifyBtn.disabled = false;
-        verifyBtn.textContent = 'verify & enable';
-        setTimeout(() => nameInput.focus(), 50);
-    };
-
-    const closeModal = () => {
-        modal.classList.remove('active');
+    const closeEnrollModal = () => {
+        enrollModal.classList.remove('active');
         document.body.classList.remove('modal-open');
         unlockBodyScroll();
-        cleanupPending();
+        if (pendingFactorId && !enrollDone) {
+            mfa.unenroll({ factorId: pendingFactorId }).catch(() => {});
+        }
+        pendingFactorId = null;
     };
 
-    if (!addBtn.dataset.bound) {
-        addBtn.dataset.bound = 'true';
+    const cancelEnroll = () => { closeEnrollModal(); toggle.checked = enabled; };
 
-        addBtn.addEventListener('click', openModal);
-        closeBtn.addEventListener('click', closeModal);
-        modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
-
-        continueBtn.addEventListener('click', async () => {
-            nameError.style.display = 'none';
-            const friendlyBase = (nameInput.value || '').trim() || 'authenticator app';
-            continueBtn.disabled = true;
-            continueBtn.textContent = 'generating...';
-            try {
-                let friendlyName = friendlyBase;
-                let res = await mfa.enroll({ factorType: 'totp', friendlyName });
-                if (res.error && /already exists|friendly|name/i.test(res.error.message || '')) {
-                    friendlyName = `${friendlyBase} ${Date.now().toString(36).slice(-4)}`;
-                    res = await mfa.enroll({ factorType: 'totp', friendlyName });
-                }
-                if (res.error) throw new Error(res.error.message);
-                pendingFactorId = res.data.id;
-                const totp = res.data.totp || {};
-                qrWrap.innerHTML = '';
-                if (totp.qr_code) {
-                    const img = document.createElement('img');
-                    img.src = totp.qr_code;
-                    img.alt = 'mfa qr code';
-                    img.className = 'sp-mfa-qr';
-                    qrWrap.appendChild(img);
-                }
-                if (totp.secret) {
-                    secretEl.textContent = totp.secret;
-                    secretRow.style.display = 'flex';
-                } else {
-                    secretRow.style.display = 'none';
-                }
-                stepName.style.display = 'none';
-                stepVerify.style.display = 'block';
-                continueBtn.style.display = 'none';
-                verifyBtn.style.display = '';
-                setTimeout(() => codeInput.focus(), 50);
-            } catch (e) {
-                nameError.textContent = `error: ${(e.message || 'could not start enrollment').toLowerCase()}`;
-                nameError.style.display = 'block';
-                continueBtn.disabled = false;
-                continueBtn.textContent = 'generate qr';
+    const openEnroll = async () => {
+        enrollDone = false;
+        pendingFactorId = null;
+        qrWrap.innerHTML = '<p style="font-family:\'JetBrains Mono\',monospace;font-size:0.7rem;color:var(--text-muted);text-align:center;margin:1rem 0;">generating...</p>';
+        secretRow.style.display = 'none';
+        codeInput.value = '';
+        verifyError.style.display = 'none';
+        verifyBtn.disabled = false;
+        verifyBtn.textContent = 'verify & enable';
+        enrollModal.classList.add('active');
+        document.body.classList.add('modal-open');
+        lockBodyScroll();
+        try {
+            const res = await mfa.enroll({ factorType: 'totp', friendlyName: `sentinelpay ${Date.now().toString(36)}` });
+            if (res.error) throw new Error(res.error.message);
+            pendingFactorId = res.data.id;
+            const totp = res.data.totp || {};
+            qrWrap.innerHTML = '';
+            if (totp.qr_code) {
+                const img = document.createElement('img');
+                img.src = totp.qr_code;
+                img.alt = 'mfa qr code';
+                img.className = 'sp-mfa-qr';
+                qrWrap.appendChild(img);
             }
+            if (totp.secret) { secretEl.textContent = totp.secret; secretRow.style.display = 'flex'; }
+            setTimeout(() => codeInput.focus(), 50);
+        } catch (e) {
+            closeEnrollModal();
+            toggle.checked = false;
+            if (window.SentinelToast) window.SentinelToast.show(`could not start mfa setup: ${(e.message || '').toLowerCase()}`, 'error');
+        }
+    };
+
+    const closeDisableModal = () => {
+        disableModal.classList.remove('active');
+        document.body.classList.remove('modal-open');
+        unlockBodyScroll();
+    };
+
+    const cancelDisable = () => { closeDisableModal(); toggle.checked = enabled; };
+
+    const openDisable = () => {
+        disableCode.value = '';
+        disableError.style.display = 'none';
+        disableBtn.disabled = false;
+        disableBtn.textContent = 'verify & disable';
+        disableModal.classList.add('active');
+        document.body.classList.add('modal-open');
+        lockBodyScroll();
+        setTimeout(() => disableCode.focus(), 50);
+    };
+
+    if (!toggle.dataset.bound) {
+        toggle.dataset.bound = 'true';
+
+        toggle.addEventListener('change', () => {
+            if (toggle.checked && !enabled) openEnroll();
+            else if (!toggle.checked && enabled) openDisable();
         });
 
-        codeInput.addEventListener('input', () => {
-            codeInput.value = codeInput.value.replace(/[^0-9]/g, '').slice(0, 6);
+        closeEnroll.addEventListener('click', cancelEnroll);
+        enrollModal.addEventListener('click', (e) => { if (e.target === enrollModal) cancelEnroll(); });
+        closeDisable.addEventListener('click', cancelDisable);
+        disableModal.addEventListener('click', (e) => { if (e.target === disableModal) cancelDisable(); });
+
+        [codeInput, disableCode].forEach(inp => {
+            inp.addEventListener('input', () => { inp.value = inp.value.replace(/[^0-9]/g, '').slice(0, 6); });
         });
 
         verifyBtn.addEventListener('click', async () => {
             verifyError.style.display = 'none';
             const code = (codeInput.value || '').trim();
-            if (!/^[0-9]{6}$/.test(code)) {
-                verifyError.textContent = 'error: enter the 6-digit code';
-                verifyError.style.display = 'block';
-                return;
-            }
+            if (!/^[0-9]{6}$/.test(code)) { verifyError.textContent = 'error: enter the 6-digit code'; verifyError.style.display = 'block'; return; }
             if (!pendingFactorId) return;
             verifyBtn.disabled = true;
             verifyBtn.textContent = 'verifying...';
             try {
                 const { error } = await mfa.challengeAndVerify({ factorId: pendingFactorId, code });
                 if (error) throw new Error(error.message);
-                verified = true;
-                if (window.SentinelToast) window.SentinelToast.show('authenticator app added', 'success');
-                closeModal();
-                verifyBtn.disabled = false;
-                verifyBtn.textContent = 'verify & enable';
-                refresh();
+                enrollDone = true;
+                const ok = await setServerState(true);
+                enabled = true;
+                setStatus();
+                closeEnrollModal();
+                if (window.SentinelToast) window.SentinelToast.show(ok ? 'mfa enabled' : 'mfa enabled on this device', ok ? 'success' : 'info');
             } catch (e) {
                 verifyBtn.disabled = false;
                 verifyBtn.textContent = 'verify & enable';
                 verifyError.textContent = `error: ${(e.message || 'invalid code').toLowerCase()}`;
                 verifyError.style.display = 'block';
+            }
+        });
+
+        disableBtn.addEventListener('click', async () => {
+            disableError.style.display = 'none';
+            const code = (disableCode.value || '').trim();
+            if (!/^[0-9]{6}$/.test(code)) { disableError.textContent = 'error: enter the 6-digit code'; disableError.style.display = 'block'; return; }
+            disableBtn.disabled = true;
+            disableBtn.textContent = 'verifying...';
+            try {
+                const f = await getVerifiedFactor();
+                if (!f) throw new Error('no authenticator found');
+                const { error } = await mfa.challengeAndVerify({ factorId: f.id, code });
+                if (error) throw new Error(error.message);
+                await setServerState(false);
+                try { await mfa.unenroll({ factorId: f.id }); } catch (e) {}
+                const rest = await getVerifiedFactor();
+                if (rest) { try { await mfa.unenroll({ factorId: rest.id }); } catch (e) {} }
+                enabled = false;
+                setStatus();
+                closeDisableModal();
+                if (window.SentinelToast) window.SentinelToast.show('mfa disabled', 'success');
+            } catch (e) {
+                disableBtn.disabled = false;
+                disableBtn.textContent = 'verify & disable';
+                disableError.textContent = `error: ${(e.message || 'invalid code').toLowerCase()}`;
+                disableError.style.display = 'block';
             }
         });
     }

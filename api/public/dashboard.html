@@ -3825,6 +3825,18 @@
             margin: 0 0 1rem;
         }
 
+        .sp-mfa-status {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            text-transform: lowercase;
+        }
+
+        .sp-mfa-status.is-on {
+            color: var(--color-green);
+        }
+
         .sp-mfa-list {
             display: flex;
             flex-direction: column;
@@ -4842,12 +4854,14 @@
                                 </span>
                                 <span class="sp-mfa-title">multi-factor authentication (mfa)</span>
                             </div>
-                            <span class="sp-mfa-badge" id="mfa-count-badge">0 apps configured</span>
+                            <label class="sp-switch is-disabled" id="mfa-switch">
+                                <input type="checkbox" id="mfa-toggle" aria-label="enable multi-factor authentication">
+                                <span class="sp-switch-track"></span>
+                            </label>
                         </div>
                         <div class="sp-mfa-panel">
-                            <p class="sp-mfa-desc">use an authenticator app (like 1password or authy) to verify your identity at sign-in.</p>
-                            <div class="sp-mfa-list" id="mfa-factor-list"></div>
-                            <button class="sp-mfa-add" id="btn-mfa-add">add new app</button>
+                            <p class="sp-mfa-desc">require a 6-digit code from your authenticator app (like 1password or authy) to sign in and to approve sensitive actions — changing your email or username, and requesting account deletion.</p>
+                            <div class="sp-mfa-status" id="mfa-status">loading...</div>
                         </div>
                     </div>
                 </div>
@@ -5027,28 +5041,32 @@
             <button class="modal-close-btn" id="btn-close-mfa">✕</button>
             <div style="display: flex; flex-direction: column; width: 100%;">
                 <div class="auth-tabs" style="margin-bottom: 1.5rem; display: flex; justify-content: flex-start;">
-                    <button class="auth-tab active" style="width: auto; padding: 0.4rem 1rem; cursor: default; pointer-events: none; font-size: 0.7rem; border-radius: 6px;">add authenticator app</button>
+                    <button class="auth-tab active" style="width: auto; padding: 0.4rem 1rem; cursor: default; pointer-events: none; font-size: 0.7rem; border-radius: 6px;">enable authenticator</button>
                 </div>
+                <p class="sp-mfa-modal-desc">scan the qr code with your authenticator app, then enter the 6-digit code to turn on mfa.</p>
+                <div class="sp-mfa-qr-wrap" id="mfa-qr-wrap"></div>
+                <div class="sp-mfa-secret-row" id="mfa-secret-row" style="display:none;">
+                    <span class="sp-mfa-secret-label">or enter this key manually</span>
+                    <div class="sp-mfa-secret" id="mfa-secret"></div>
+                </div>
+                <input type="text" id="mfa-code" class="settings-input sp-mfa-code" placeholder="000000" inputmode="numeric" autocomplete="one-time-code" maxlength="6">
+                <p class="error-msg" id="mfa-verify-error" style="display:none; margin-top: 0.5rem;"></p>
+                <button class="submit-btn" id="btn-mfa-verify" style="margin-top: 1rem;">verify &amp; enable</button>
+            </div>
+        </div>
+    </div>
 
-                <div id="mfa-step-name">
-                    <label class="sp-mfa-form-label" for="mfa-device-name">provide a name to identify this app</label>
-                    <input type="text" id="mfa-device-name" class="settings-input" placeholder="authenticator app" maxlength="40" autocomplete="off" spellcheck="false" style="width: 100%; box-sizing: border-box;">
-                    <p class="sp-mfa-hint">a string will be randomly generated if a name is not provided</p>
-                    <p class="error-msg" id="mfa-name-error" style="display:none; margin-top: 0.75rem;"></p>
-                    <button class="submit-btn" id="btn-mfa-continue" style="margin-top: 1.25rem;">generate qr</button>
+    <div id="mfa-disable-modal-overlay" class="modal-overlay">
+        <div class="auth-card modal-content" style="position: relative; z-index: 1000; display: flex; flex-direction: column; max-width: 440px; width: 100%;">
+            <button class="modal-close-btn" id="btn-close-mfa-disable">✕</button>
+            <div style="display: flex; flex-direction: column; width: 100%;">
+                <div class="auth-tabs" style="margin-bottom: 1.5rem; display: flex; justify-content: flex-start;">
+                    <button class="auth-tab active" style="width: auto; padding: 0.4rem 1rem; cursor: default; pointer-events: none; font-size: 0.7rem; border-radius: 6px;">disable mfa</button>
                 </div>
-
-                <div id="mfa-step-verify" style="display:none;">
-                    <p class="sp-mfa-modal-desc">scan the qr code with your authenticator app, then enter the 6-digit code to confirm.</p>
-                    <div class="sp-mfa-qr-wrap" id="mfa-qr-wrap"></div>
-                    <div class="sp-mfa-secret-row" id="mfa-secret-row" style="display:none;">
-                        <span class="sp-mfa-secret-label">or enter this key manually</span>
-                        <div class="sp-mfa-secret" id="mfa-secret"></div>
-                    </div>
-                    <input type="text" id="mfa-code" class="settings-input sp-mfa-code" placeholder="000000" inputmode="numeric" autocomplete="one-time-code" maxlength="6">
-                    <p class="error-msg" id="mfa-verify-error" style="display:none; margin-top: 0.5rem;"></p>
-                    <button class="submit-btn" id="btn-mfa-verify" style="margin-top: 1rem;">verify &amp; enable</button>
-                </div>
+                <p class="sp-mfa-modal-desc">enter a current code from your authenticator app to turn off mfa. this removes the authenticator from your account.</p>
+                <input type="text" id="mfa-disable-code" class="settings-input sp-mfa-code" placeholder="000000" inputmode="numeric" autocomplete="one-time-code" maxlength="6">
+                <p class="error-msg" id="mfa-disable-error" style="display:none; margin-top: 0.5rem;"></p>
+                <button class="submit-btn" id="btn-mfa-disable-confirm" style="margin-top: 1rem;">verify &amp; disable</button>
             </div>
         </div>
     </div>
@@ -5223,7 +5241,7 @@
     </div>
 
     <script src="toast.js?v=3"></script>
-    <script src="dashboard-v19.js?v=101"></script>
+    <script src="dashboard-v19.js?v=102"></script>
     <script>
         // Eye Tracking Logic
         function trackEye(element, clientX, clientY) {
