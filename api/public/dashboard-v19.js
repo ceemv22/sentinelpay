@@ -3386,7 +3386,7 @@ async function fetchProfile(token) {
             }
 
             saveBtn.addEventListener('click', async () => {
-                const tok = token;
+                let tok = token;
                 if (!tok) return;
 
                 const usernameInput = document.getElementById('pref-username');
@@ -3498,6 +3498,14 @@ async function fetchProfile(token) {
 
                         const verified = await verifyEmailChangeFlow(currentEmail, verificationMode, emailRaw);
                         if (!verified) return;
+                    }
+
+                    const _mfaSensitive = (usernameProvided && usernameRaw.toLowerCase() !== currentUsername.toLowerCase())
+                        || (emailRaw.toLowerCase() !== currentEmail.toLowerCase() && sentinelAuth);
+                    if (_mfaSensitive) {
+                        const okMfa = await ensureMfaForAction();
+                        if (!okMfa) return;
+                        tok = window.supabaseAuthToken || tok;
                     }
 
                     setSaveBtnBusy();
@@ -3920,6 +3928,8 @@ function setupAccountDeletion() {
             errEl.style.display = 'block';
             return;
         }
+        const okMfa = await ensureMfaForAction();
+        if (!okMfa) return;
         confirmBtn.disabled = true;
         confirmBtn.textContent = 'submitting...';
         try {
@@ -3955,6 +3965,12 @@ function setupAccountDeletion() {
             confirmBtn.textContent = 'confirm deletion request';
         }
     });
+}
+
+async function ensureMfaForAction() {
+    if (!window.__mfaOn) return true;
+    if (!window.__mfaStepUp) return true;
+    return await window.__mfaStepUp();
 }
 
 async function mfaAwareFetch(url, options) {
@@ -4018,6 +4034,7 @@ function setupSecurity() {
     let enrollDone = false;
 
     const setStatus = () => {
+        window.__mfaOn = enabled;
         sw.classList.remove('is-disabled');
         toggle.checked = enabled;
         if (statusEl) {
