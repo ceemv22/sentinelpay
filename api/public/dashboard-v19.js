@@ -3862,6 +3862,7 @@ function setupAccountDeletion() {
 
     const renderState = () => {
         if (phraseEl) phraseEl.textContent = expectedPhrase;
+        if (confirmInput) confirmInput.placeholder = expectedPhrase;
         if (requested) {
             initBtn.style.display = 'none';
             confirmZone.style.display = 'none';
