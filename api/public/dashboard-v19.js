@@ -2359,29 +2359,29 @@ async function fetchProfile(token) {
         }
 
         const response = await fetch('/v1/user/profile', { headers: { 'Authorization': `Bearer ${token}` } });
-        if (!response.ok) return;
-        const profile = await response.json();
-        localStorage.setItem('sentinel-cached-profile', JSON.stringify({
-            email: profile.email || '',
-            username: profile.username || '',
-            firstName: profile.firstName || '',
-            lastName: profile.lastName || '',
-            authProvider: profile.authProvider || 'email',
-            theme: profile.theme || 'dark',
-            timezone: profile.timezone || 'auto'
-        }));
+        if (response.ok) {
+            const profile = await response.json();
+            localStorage.setItem('sentinel-cached-profile', JSON.stringify({
+                email: profile.email || '',
+                username: profile.username || '',
+                firstName: profile.firstName || '',
+                lastName: profile.lastName || '',
+                authProvider: profile.authProvider || 'email',
+                theme: profile.theme || 'dark',
+                timezone: profile.timezone || 'auto'
+            }));
 
-        if (profile.theme) {
-            window.applyThemePreference(profile.theme, true);
+            if (profile.theme) {
+                window.applyThemePreference(profile.theme, true);
+            }
+            if (profile.timezone) {
+                localStorage.setItem('sentinel-timezone', profile.timezone);
+                if (window.__tzSetSelected) window.__tzSetSelected(profile.timezone);
+            }
+
+            applyIdentityDisplay(profile);
+            applyProfileToForm(profile);
         }
-        if (profile.timezone) {
-            localStorage.setItem('sentinel-timezone', profile.timezone);
-            if (window.__tzSetSelected) window.__tzSetSelected(profile.timezone);
-        }
-
-        applyIdentityDisplay(profile);
-
-        applyProfileToForm(profile);
 
         const prefUsernameInput = document.getElementById('pref-username');
         if (prefUsernameInput && !prefUsernameInput.dataset.prefixBound) {
