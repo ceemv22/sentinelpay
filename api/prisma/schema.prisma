@@ -27,6 +27,7 @@ model User {
   organizations    Organization[]   @relation("OrgMembers")
   ownedOrgs        Organization[]   @relation("OrgOwner")
   paymentSessions  PaymentSession[]
+  deletionRequests AccountDeletionRequest[]
   createdAt        DateTime         @default(now())
   updatedAt        DateTime         @updatedAt
 }
@@ -136,4 +137,23 @@ model PaymentSession {
 model AddressCounter {
   id      String @id
   current Int    @default(0)
+}
+
+model AccountDeletionRequest {
+  id          String    @id @default(uuid())
+  user        User      @relation(fields: [userId], references: [id])
+  userId      String
+  email       String?
+  username    String?
+  status      String    @default("pending")
+  ip          String?
+  userAgent   String?
+  note        String?
+  processedBy String?
+  requestedAt DateTime  @default(now())
+  processedAt DateTime?
+  cancelledAt DateTime?
+
+  @@index([status])
+  @@index([userId])
 }
