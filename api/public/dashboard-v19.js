@@ -416,6 +416,7 @@ function renderDashboard(session) {
         setupShortcuts();
         setupTelemetry();
         setupAccountDeletion();
+        setupSecurity();
     } catch (e) {
         console.error('[sentinel-render] Critical failure:', e);
         showStatus('Render Error', 'error');
@@ -3954,6 +3955,203 @@ function setupAccountDeletion() {
             confirmBtn.textContent = 'confirm deletion request';
         }
     });
+}
+
+function setupSecurity() {
+    const addBtn = document.getElementById('btn-mfa-add');
+    const list = document.getElementById('mfa-factor-list');
+    const badge = document.getElementById('mfa-count-badge');
+    if (!addBtn || !list || !badge) return;
+
+    const mfa = (sentinelAuth && sentinelAuth.auth && sentinelAuth.auth.mfa) ? sentinelAuth.auth.mfa : null;
+    if (!mfa) {
+        addBtn.disabled = true;
+        badge.textContent = 'unavailable';
+        return;
+    }
+
+    const modal = document.getElementById('mfa-enroll-modal-overlay');
+    const closeBtn = document.getElementById('btn-close-mfa');
+    const stepName = document.getElementById('mfa-step-name');
+    const stepVerify = document.getElementById('mfa-step-verify');
+    const nameInput = document.getElementById('mfa-device-name');
+    const nameError = document.getElementById('mfa-name-error');
+    const continueBtn = document.getElementById('btn-mfa-continue');
+    const qrWrap = document.getElementById('mfa-qr-wrap');
+    const secretRow = document.getElementById('mfa-secret-row');
+    const secretEl = document.getElementById('mfa-secret');
+    const codeInput = document.getElementById('mfa-code');
+    const verifyError = document.getElementById('mfa-verify-error');
+    const verifyBtn = document.getElementById('btn-mfa-verify');
+    if (!modal || !closeBtn) return;
+
+    let pendingFactorId = null;
+    let verified = false;
+
+    const fmtDate = (d) => { try { return new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }); } catch (e) { return ''; } };
+
+    const renderFactors = (factors) => {
+        const verifiedFactors = (factors || []).filter(f => f.status === 'verified');
+        badge.textContent = `${verifiedFactors.length} app${verifiedFactors.length === 1 ? '' : 's'} configured`;
+        list.innerHTML = '';
+        verifiedFactors.forEach(f => {
+            const row = document.createElement('div');
+            row.className = 'sp-mfa-factor';
+            const info = document.createElement('div');
+            info.className = 'sp-mfa-factor-info';
+            const name = document.createElement('div');
+            name.className = 'sp-mfa-factor-name';
+            name.textContent = f.friendly_name || 'authenticator app';
+            const meta = document.createElement('div');
+            meta.className = 'sp-mfa-factor-meta';
+            meta.textContent = `added ${fmtDate(f.created_at)}`;
+            info.appendChild(name);
+            info.appendChild(meta);
+            const rm = document.createElement('button');
+            rm.className = 'sp-mfa-remove';
+            rm.textContent = 'remove';
+            rm.addEventListener('click', () => removeFactor(f.id, rm));
+            row.appendChild(info);
+            row.appendChild(rm);
+            list.appendChild(row);
+        });
+    };
+
+    const refresh = async () => {
+        try {
+            const { data, error } = await mfa.listFactors();
+            if (error) return;
+            const totp = (data && (data.totp || data.all)) || [];
+            renderFactors(totp);
+        } catch (e) {}
+    };
+
+    const removeFactor = async (factorId, btn) => {
+        if (btn) { btn.disabled = true; btn.textContent = 'removing...'; }
+        try {
+            const { error } = await mfa.unenroll({ factorId });
+            if (error) throw new Error(error.message);
+            if (window.SentinelToast) window.SentinelToast.show('authenticator removed', 'success');
+            refresh();
+        } catch (e) {
+            if (btn) { btn.disabled = false; btn.textContent = 'remove'; }
+            if (window.SentinelToast) window.SentinelToast.show('could not remove authenticator', 'error');
+        }
+    };
+
+    const cleanupPending = async () => {
+        if (pendingFactorId && !verified) {
+            try { await mfa.unenroll({ factorId: pendingFactorId }); } catch (e) {}
+        }
+        pendingFactorId = null;
+        verified = false;
+    };
+
+    const openModal = () => {
+        modal.classList.add('active');
+        document.body.classList.add('modal-open');
+        lockBodyScroll();
+        pendingFactorId = null;
+        verified = false;
+        stepName.style.display = 'block';
+        stepVerify.style.display = 'none';
+        nameInput.value = '';
+        nameError.style.display = 'none';
+        verifyError.style.display = 'none';
+        codeInput.value = '';
+        continueBtn.disabled = false;
+        continueBtn.textContent = 'continue';
+        setTimeout(() => nameInput.focus(), 50);
+    };
+
+    const closeModal = () => {
+        modal.classList.remove('active');
+        document.body.classList.remove('modal-open');
+        unlockBodyScroll();
+        cleanupPending();
+    };
+
+    if (!addBtn.dataset.bound) {
+        addBtn.dataset.bound = 'true';
+
+        addBtn.addEventListener('click', openModal);
+        closeBtn.addEventListener('click', closeModal);
+        modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+
+        continueBtn.addEventListener('click', async () => {
+            nameError.style.display = 'none';
+            const friendlyBase = (nameInput.value || '').trim() || 'authenticator app';
+            continueBtn.disabled = true;
+            continueBtn.textContent = 'generating...';
+            try {
+                let friendlyName = friendlyBase;
+                let res = await mfa.enroll({ factorType: 'totp', friendlyName });
+                if (res.error && /already exists|friendly|name/i.test(res.error.message || '')) {
+                    friendlyName = `${friendlyBase} ${Date.now().toString(36).slice(-4)}`;
+                    res = await mfa.enroll({ factorType: 'totp', friendlyName });
+                }
+                if (res.error) throw new Error(res.error.message);
+                pendingFactorId = res.data.id;
+                const totp = res.data.totp || {};
+                qrWrap.innerHTML = '';
+                if (totp.qr_code) {
+                    const img = document.createElement('img');
+                    img.src = totp.qr_code;
+                    img.alt = 'mfa qr code';
+                    img.className = 'sp-mfa-qr';
+                    qrWrap.appendChild(img);
+                }
+                if (totp.secret) {
+                    secretEl.textContent = totp.secret;
+                    secretRow.style.display = 'flex';
+                } else {
+                    secretRow.style.display = 'none';
+                }
+                stepName.style.display = 'none';
+                stepVerify.style.display = 'block';
+                setTimeout(() => codeInput.focus(), 50);
+            } catch (e) {
+                nameError.textContent = `error: ${(e.message || 'could not start enrollment').toLowerCase()}`;
+                nameError.style.display = 'block';
+                continueBtn.disabled = false;
+                continueBtn.textContent = 'continue';
+            }
+        });
+
+        codeInput.addEventListener('input', () => {
+            codeInput.value = codeInput.value.replace(/[^0-9]/g, '').slice(0, 6);
+        });
+
+        verifyBtn.addEventListener('click', async () => {
+            verifyError.style.display = 'none';
+            const code = (codeInput.value || '').trim();
+            if (!/^[0-9]{6}$/.test(code)) {
+                verifyError.textContent = 'error: enter the 6-digit code';
+                verifyError.style.display = 'block';
+                return;
+            }
+            if (!pendingFactorId) return;
+            verifyBtn.disabled = true;
+            verifyBtn.textContent = 'verifying...';
+            try {
+                const { error } = await mfa.challengeAndVerify({ factorId: pendingFactorId, code });
+                if (error) throw new Error(error.message);
+                verified = true;
+                if (window.SentinelToast) window.SentinelToast.show('authenticator app added', 'success');
+                closeModal();
+                verifyBtn.disabled = false;
+                verifyBtn.textContent = 'verify & enable';
+                refresh();
+            } catch (e) {
+                verifyBtn.disabled = false;
+                verifyBtn.textContent = 'verify & enable';
+                verifyError.textContent = `error: ${(e.message || 'invalid code').toLowerCase()}`;
+                verifyError.style.display = 'block';
+            }
+        });
+    }
+
+    refresh();
 }
 
 function setupSidebar() {
