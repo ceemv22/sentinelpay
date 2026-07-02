@@ -2379,6 +2379,10 @@ async function fetchProfile(token) {
                 localStorage.setItem('sentinel-timezone', profile.timezone);
                 if (window.__tzSetSelected) window.__tzSetSelected(profile.timezone);
             }
+            if (profile.shortcuts && typeof profile.shortcuts === 'object') {
+                try { localStorage.setItem('sentinel-shortcuts', JSON.stringify(profile.shortcuts)); } catch (e) {}
+                if (window.__applyShortcutPrefs) window.__applyShortcutPrefs(profile.shortcuts);
+            }
 
             applyIdentityDisplay(profile);
             applyProfileToForm(profile);
@@ -3733,6 +3737,7 @@ function setupShortcuts() {
         sw.className = 'sp-switch';
         const input = document.createElement('input');
         input.type = 'checkbox';
+        input.dataset.scId = sc.id;
         input.checked = enabled[sc.id] !== false;
         input.setAttribute('aria-label', sc.label);
         const track = document.createElement('span');
@@ -3743,6 +3748,7 @@ function setupShortcuts() {
         input.addEventListener('change', () => {
             enabled[sc.id] = input.checked;
             try { localStorage.setItem('sentinel-shortcuts', JSON.stringify(enabled)); } catch (e) {}
+            saveProfilePrefs({ shortcuts: enabled });
         });
 
         value.appendChild(keys);
@@ -3751,6 +3757,15 @@ function setupShortcuts() {
         row.appendChild(value);
         table.appendChild(row);
     });
+
+    window.__applyShortcutPrefs = (map) => {
+        if (!map || typeof map !== 'object') return;
+        enabled = map;
+        try { localStorage.setItem('sentinel-shortcuts', JSON.stringify(enabled)); } catch (e) {}
+        table.querySelectorAll('input[data-sc-id]').forEach((inp) => {
+            inp.checked = enabled[inp.dataset.scId] !== false;
+        });
+    };
 
     if (window.__sentinelShortcutsBound) return;
     window.__sentinelShortcutsBound = true;

@@ -624,6 +624,7 @@ app.get('/v1/user/profile', requireSupabaseAuth, async (req, res) => {
             isEmailVerified: user.isEmailVerified,
             theme: user.theme || 'dark',
             timezone: user.timezone || 'auto',
+            shortcuts: user.shortcuts ?? null,
             history: user.scanHistory
         });
     } catch (err) {
@@ -711,6 +712,23 @@ app.patch('/v1/user/profile', requireSupabaseAuth, async (req, res) => {
             }
             data.timezone = tz;
         }
+        if (req.body.shortcuts !== undefined) {
+            const sc = req.body.shortcuts;
+            if (sc === null) {
+                data.shortcuts = null;
+            } else if (typeof sc === 'object' && !Array.isArray(sc)) {
+                const keys = Object.keys(sc);
+                if (keys.length > 50) return res.status(400).json({ error: 'invalid shortcuts' });
+                for (const k of keys) {
+                    if (typeof k !== 'string' || k.length > 40 || typeof sc[k] !== 'boolean') {
+                        return res.status(400).json({ error: 'invalid shortcuts' });
+                    }
+                }
+                data.shortcuts = sc;
+            } else {
+                return res.status(400).json({ error: 'invalid shortcuts' });
+            }
+        }
         if (Object.keys(data).length === 0) return res.status(400).json({ error: 'nothing to update' });
         let user;
         try {
@@ -721,7 +739,7 @@ app.patch('/v1/user/profile', requireSupabaseAuth, async (req, res) => {
             }
             throw err;
         }
-        res.json({ ok: true, email: user.email, username: user.username, firstName: user.firstName || '', lastName: user.lastName || '', theme: user.theme || 'dark', timezone: user.timezone || 'auto' });
+        res.json({ ok: true, email: user.email, username: user.username, firstName: user.firstName || '', lastName: user.lastName || '', theme: user.theme || 'dark', timezone: user.timezone || 'auto', shortcuts: user.shortcuts ?? null });
     } catch (err) {
         console.error('[profile patch error]', err);
         res.status(500).json({ error: 'failed to update profile' });
