@@ -3983,7 +3983,6 @@ function setupSecurity() {
     const codeInput = document.getElementById('mfa-code');
     const verifyError = document.getElementById('mfa-verify-error');
     const verifyBtn = document.getElementById('btn-mfa-verify');
-    const cancelBtn = document.getElementById('btn-mfa-cancel');
     if (!modal || !closeBtn) return;
 
     let pendingFactorId = null;
@@ -4081,7 +4080,6 @@ function setupSecurity() {
 
         addBtn.addEventListener('click', openModal);
         closeBtn.addEventListener('click', closeModal);
-        if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
         modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 
         continueBtn.addEventListener('click', async () => {
