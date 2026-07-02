@@ -1282,16 +1282,36 @@ app.post('/v1/user/account/deletion-request', requireSupabaseAuth, async (req, r
             });
         }
 
-        const existing = req.user.deletionRequestedAt;
-        const requestedAt = existing || new Date();
+        const pending = await prisma.accountDeletionRequest.findFirst({
+            where: { userId: req.user.id, status: 'pending' },
+            orderBy: { requestedAt: 'desc' }
+        });
+        if (pending) {
+            return res.json({ ok: true, requestedAt: pending.requestedAt });
+        }
 
-        if (!existing) {
-            await prisma.user.update({
+        const requestedAt = new Date();
+        const userAgent = typeof req.headers['user-agent'] === 'string' ? req.headers['user-agent'].slice(0, 400) : null;
+
+        await prisma.$transaction(async (tx) => {
+            await tx.accountDeletionRequest.create({
+                data: {
+                    userId: req.user.id,
+                    email: req.user.email || null,
+                    username: req.user.username || null,
+                    status: 'pending',
+                    ip: req.realIp || null,
+                    userAgent,
+                    requestedAt
+                }
+            });
+            await tx.user.update({
                 where: { id: req.user.id },
                 data: { deletionRequestedAt: requestedAt }
             });
+        });
 
-            if (process.env.RESEND_API_KEY && req.user.email) {
+        if (process.env.RESEND_API_KEY && req.user.email) {
                 try {
                     const { Resend } = require('resend');
                     const resend = new Resend(process.env.RESEND_API_KEY);
@@ -1320,12 +1340,78 @@ app.post('/v1/user/account/deletion-request', requireSupabaseAuth, async (req, r
                     console.error('[deletion-request mail error]', mailErr.message);
                 }
             }
-        }
 
         res.json({ ok: true, requestedAt });
     } catch (err) {
         console.error('[deletion-request error]', err);
         res.status(500).json({ error: 'failed to submit deletion request' });
+    }
+});
+
+function requireAdmin(req, res, next) {
+    const adminKey = process.env.ADMIN_API_KEY;
+    if (!adminKey) return res.status(503).json({ error: 'admin api not configured', code: 503 });
+    const provided = req.headers['x-admin-key'];
+    if (typeof provided !== 'string' || provided.length === 0) {
+        return res.status(401).json({ error: 'unauthorized', code: 401 });
+    }
+    const a = crypto.createHash('sha256').update(provided).digest();
+    const b = crypto.createHash('sha256').update(adminKey).digest();
+    if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) {
+        return res.status(401).json({ error: 'unauthorized', code: 401 });
+    }
+    next();
+}
+
+app.get('/v1/admin/deletion-requests', requireAdmin, async (req, res) => {
+    try {
+        const status = typeof req.query.status === 'string' ? req.query.status : undefined;
+        const ALLOWED = ['pending', 'processing', 'processed', 'cancelled'];
+        const where = status && ALLOWED.includes(status) ? { status } : {};
+        const rows = await prisma.accountDeletionRequest.findMany({
+            where,
+            orderBy: [{ status: 'asc' }, { requestedAt: 'asc' }],
+            take: 500
+        });
+        res.json(rows);
+    } catch (err) {
+        console.error('[admin deletion-requests list]', err);
+        res.status(500).json({ error: 'failed to fetch deletion requests', code: 500 });
+    }
+});
+
+app.patch('/v1/admin/deletion-requests/:id', requireAdmin, async (req, res) => {
+    const { id } = req.params;
+    if (!id || id.length > 64 || !/^[a-zA-Z0-9-]+$/.test(id)) {
+        return res.status(400).json({ error: 'invalid id', code: 400 });
+    }
+    const { status, note, processedBy } = req.body || {};
+    const ALLOWED = ['pending', 'processing', 'processed', 'cancelled'];
+    if (!ALLOWED.includes(status)) {
+        return res.status(400).json({ error: 'invalid status', code: 400 });
+    }
+    try {
+        const existing = await prisma.accountDeletionRequest.findUnique({ where: { id } });
+        if (!existing) return res.status(404).json({ error: 'deletion request not found', code: 404 });
+
+        const data = { status };
+        if (typeof note === 'string') data.note = note.slice(0, 500);
+        if (typeof processedBy === 'string') data.processedBy = processedBy.slice(0, 120);
+        if (status === 'processed') data.processedAt = new Date();
+        if (status === 'cancelled') data.cancelledAt = new Date();
+
+        const updated = await prisma.$transaction(async (tx) => {
+            const row = await tx.accountDeletionRequest.update({ where: { id }, data });
+            if (status === 'cancelled') {
+                await tx.user.update({ where: { id: existing.userId }, data: { deletionRequestedAt: null } }).catch(() => {});
+            }
+            return row;
+        });
+
+        res.json(updated);
+    } catch (err) {
+        console.error('[admin deletion-request update]', err);
+        res.status(500).json({ error: 'failed to update deletion request', code: 500 });
     }
 });
 
