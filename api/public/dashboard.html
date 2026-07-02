@@ -5071,6 +5071,21 @@
         </div>
     </div>
 
+    <div id="mfa-stepup-modal-overlay" class="modal-overlay">
+        <div class="auth-card modal-content" style="position: relative; z-index: 1000; display: flex; flex-direction: column; max-width: 440px; width: 100%;">
+            <button class="modal-close-btn" id="btn-close-mfa-stepup">✕</button>
+            <div style="display: flex; flex-direction: column; width: 100%;">
+                <div class="auth-tabs" style="margin-bottom: 1.5rem; display: flex; justify-content: flex-start;">
+                    <button class="auth-tab active" style="width: auto; padding: 0.4rem 1rem; cursor: default; pointer-events: none; font-size: 0.7rem; border-radius: 6px;">verify it's you</button>
+                </div>
+                <p class="sp-mfa-modal-desc">this action needs a fresh code from your authenticator app to continue.</p>
+                <input type="text" id="mfa-stepup-code" class="settings-input sp-mfa-code" placeholder="000000" inputmode="numeric" autocomplete="one-time-code" maxlength="6">
+                <p class="error-msg" id="mfa-stepup-error" style="display: none; margin-top: 0.5rem;"></p>
+                <button class="submit-btn" id="btn-mfa-stepup-verify" style="margin-top: 1rem;">verify</button>
+            </div>
+        </div>
+    </div>
+
     <div id="email-verify-modal-overlay" class="modal-overlay">
         <div class="auth-card modal-content" style="position: relative; z-index: 1000; display: flex; flex-direction: column;">
             <button class="modal-close-btn" id="btn-close-email-verify">✕</button>
@@ -5241,7 +5256,7 @@
     </div>
 
     <script src="toast.js?v=3"></script>
-    <script src="dashboard-v19.js?v=104"></script>
+    <script src="dashboard-v19.js?v=105"></script>
     <script>
         // Eye Tracking Logic
         function trackEye(element, clientX, clientY) {

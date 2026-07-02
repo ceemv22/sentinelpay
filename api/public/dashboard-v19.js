@@ -3503,7 +3503,7 @@ async function fetchProfile(token) {
                     setSaveBtnBusy();
 
                     if (emailRaw.toLowerCase() !== currentEmail.toLowerCase() && sentinelAuth) {
-                        const finalizeRes = await fetch('/v1/user/email-change/finalize', {
+                        const finalizeRes = await mfaAwareFetch('/v1/user/email-change/finalize', {
                             method: 'POST',
                             headers: { 'Authorization': `Bearer ${tok}`, 'Content-Type': 'application/json' },
                             body: JSON.stringify({ email: emailRaw })
@@ -3524,7 +3524,7 @@ async function fetchProfile(token) {
                     if (usernameProvided) {
                         payload.username = usernameRaw;
                     }
-                    const r = await fetch('/v1/user/profile', {
+                    const r = await mfaAwareFetch('/v1/user/profile', {
                         method: 'PATCH',
                         headers: { 'Authorization': `Bearer ${tok}`, 'Content-Type': 'application/json' },
                         body: JSON.stringify(payload)
@@ -3924,7 +3924,7 @@ function setupAccountDeletion() {
         confirmBtn.textContent = 'submitting...';
         try {
             const token = window.supabaseAuthToken;
-            const r = await fetch('/v1/user/account/deletion-request', {
+            const r = await mfaAwareFetch('/v1/user/account/deletion-request', {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -3955,6 +3955,23 @@ function setupAccountDeletion() {
             confirmBtn.textContent = 'confirm deletion request';
         }
     });
+}
+
+async function mfaAwareFetch(url, options) {
+    let res = await fetch(url, options);
+    if (res.status === 403 && window.__mfaStepUp) {
+        let body = {};
+        try { body = await res.clone().json(); } catch (e) {}
+        if (body && body.code === 'mfa_required') {
+            const ok = await window.__mfaStepUp();
+            if (ok) {
+                const headers = Object.assign({}, (options && options.headers) || {});
+                headers['Authorization'] = `Bearer ${window.supabaseAuthToken}`;
+                res = await fetch(url, Object.assign({}, options, { headers }));
+            }
+        }
+    }
+    return res;
 }
 
 function mfaFriendlyError(msg) {
@@ -4108,6 +4125,61 @@ function setupSecurity() {
         lockBodyScroll();
         setTimeout(() => disableCode.focus(), 50);
     };
+
+    window.__mfaStepUp = () => new Promise((resolve) => {
+        const modalEl = document.getElementById('mfa-stepup-modal-overlay');
+        const codeEl = document.getElementById('mfa-stepup-code');
+        const errEl = document.getElementById('mfa-stepup-error');
+        const vBtn = document.getElementById('btn-mfa-stepup-verify');
+        const cBtn = document.getElementById('btn-close-mfa-stepup');
+        if (!modalEl || !codeEl || !vBtn) { resolve(false); return; }
+
+        let settled = false;
+        const close = () => {
+            modalEl.classList.remove('active');
+            document.body.classList.remove('modal-open');
+            unlockBodyScroll();
+        };
+        const finish = (val) => { if (settled) return; settled = true; close(); resolve(val); };
+
+        codeEl.value = '';
+        errEl.style.display = 'none';
+        vBtn.disabled = false;
+        vBtn.textContent = 'verify';
+        modalEl.classList.add('active');
+        document.body.classList.add('modal-open');
+        lockBodyScroll();
+        setTimeout(() => codeEl.focus(), 50);
+
+        codeEl.oninput = () => { codeEl.value = codeEl.value.replace(/[^0-9]/g, '').slice(0, 6); };
+
+        const submit = async () => {
+            errEl.style.display = 'none';
+            const code = (codeEl.value || '').trim();
+            if (!/^[0-9]{6}$/.test(code)) { errEl.textContent = 'error: enter the 6-digit code'; errEl.style.display = 'block'; return; }
+            vBtn.disabled = true;
+            vBtn.textContent = 'verifying...';
+            try {
+                const f = await getVerifiedFactor();
+                if (!f) throw new Error('no authenticator found');
+                const { data: vdata, error } = await mfa.challengeAndVerify({ factorId: f.id, code });
+                if (error) throw new Error(error.message);
+                if (vdata && vdata.access_token) window.supabaseAuthToken = vdata.access_token;
+                finish(true);
+            } catch (e) {
+                console.error('[mfa stepup]', e.message || e);
+                vBtn.disabled = false;
+                vBtn.textContent = 'verify';
+                errEl.textContent = `error: ${mfaFriendlyError(e.message)}`;
+                errEl.style.display = 'block';
+            }
+        };
+
+        vBtn.onclick = submit;
+        codeEl.onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); submit(); } };
+        cBtn.onclick = () => finish(false);
+        modalEl.onclick = (e) => { if (e.target === modalEl) finish(false); };
+    });
 
     if (!toggle.dataset.bound) {
         toggle.dataset.bound = 'true';
