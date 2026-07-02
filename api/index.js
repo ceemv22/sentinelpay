@@ -435,6 +435,17 @@ const userOrgLimiter = rateLimit({
     message: { error: 'organization creation limit exceeded. try again in 1 hour.', code: 429 }
 });
 
+const userSensitiveLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 20,
+    standardHeaders: true,
+    legacyHeaders: false,
+    keyGenerator: (req) => `user_sensitive:${req.user?.id || req.realIp}`,
+    validate: false,
+    store: createStore('user_sensitive:'),
+    message: { error: 'too many requests. try again in a few minutes.', code: 429 }
+});
+
 async function logAudit(req, wallet, result, apiKeyId = null) {
     const ip = req.realIp || req.ip;
     try {
@@ -805,7 +816,7 @@ app.post('/v1/auth/resolve-login', requireRateLimitBackend, usernameLoginLimiter
     }
 });
 
-app.post('/v1/user/check-email', requireSupabaseAuth, async (req, res) => {
+app.post('/v1/user/check-email', requireRateLimitBackend, requireSupabaseAuth, userSensitiveLimiter, async (req, res) => {
     try {
         const { email } = req.body;
         if (typeof email !== 'string' || !email.trim()) return res.status(400).json({ error: 'email required' });
@@ -1290,7 +1301,7 @@ app.post('/v1/user/api-key/roll', requireRateLimitBackend, requireSupabaseAuth, 
     }
 });
 
-app.post('/v1/user/account/deletion-request', requireSupabaseAuth, enforceMfa, async (req, res) => {
+app.post('/v1/user/account/deletion-request', requireRateLimitBackend, requireSupabaseAuth, userSensitiveLimiter, enforceMfa, async (req, res) => {
     try {
         const ownedCount = await prisma.organization.count({ where: { ownerId: req.user.id } });
         if (ownedCount > 0) {
@@ -1367,7 +1378,7 @@ app.post('/v1/user/account/deletion-request', requireSupabaseAuth, enforceMfa, a
     }
 });
 
-app.post('/v1/user/mfa/state', requireSupabaseAuth, async (req, res) => {
+app.post('/v1/user/mfa/state', requireRateLimitBackend, requireSupabaseAuth, userSensitiveLimiter, async (req, res) => {
     const { enabled } = req.body || {};
     if (typeof enabled !== 'boolean') {
         return res.status(400).json({ error: 'invalid state', code: 400 });
