@@ -3643,8 +3643,9 @@
         }
 
         .sp-switch input:checked + .sp-switch-track {
-            background: rgba(0, 255, 136, 0.85);
-            border-color: rgba(0, 255, 136, 0.85);
+            background: linear-gradient(135deg, #00f0ff 0%, #0aa9c2 100%);
+            border-color: rgba(0, 240, 255, 0.6);
+            box-shadow: 0 0 12px rgba(0, 240, 255, 0.35), inset 0 0 4px rgba(0, 240, 255, 0.2);
         }
 
         .sp-switch input:checked + .sp-switch-track::after {
@@ -3673,8 +3674,9 @@
         }
 
         html.theme-light .sp-switch input:checked + .sp-switch-track {
-            background: #16a34a;
-            border-color: #16a34a;
+            background: linear-gradient(135deg, #0091c8 0%, #00b4d8 100%);
+            border-color: rgba(0, 145, 200, 0.6);
+            box-shadow: 0 0 10px rgba(0, 145, 200, 0.28);
         }
 
         html.theme-light .sp-switch input:checked + .sp-switch-track::after {
@@ -4667,7 +4669,7 @@
     </div>
 
     <script src="toast.js?v=3"></script>
-    <script src="dashboard-v19.js?v=93"></script>
+    <script src="dashboard-v19.js?v=94"></script>
     <script>
         // Eye Tracking Logic
         function trackEye(element, clientX, clientY) {
