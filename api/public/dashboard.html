@@ -3599,6 +3599,167 @@
             pointer-events: none;
         }
 
+        .sp-danger-card {
+            background: rgba(12, 4, 4, 0.7);
+            border: 1px solid rgba(255, 51, 51, 0.14);
+            border-radius: 12px;
+            padding: 1.25rem 1.5rem;
+        }
+
+        .sp-danger-head {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+
+        .sp-danger-icon {
+            flex-shrink: 0;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: rgba(255, 51, 51, 0.12);
+            border: 1px solid rgba(255, 51, 51, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ff5555;
+        }
+
+        .sp-danger-body {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .sp-danger-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #fff;
+            text-transform: lowercase;
+            margin-bottom: 0.4rem;
+        }
+
+        .sp-danger-desc {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            max-width: 560px;
+            text-transform: lowercase;
+        }
+
+        .sp-danger-note {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            color: #ffb84d;
+            line-height: 1.6;
+            margin-top: 0.75rem;
+            max-width: 560px;
+            text-transform: lowercase;
+        }
+
+        .sp-danger-btn {
+            margin-top: 1rem;
+            background: transparent;
+            border: 1px solid rgba(255, 51, 51, 0.3);
+            color: rgba(255, 80, 80, 0.9);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.74rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            text-transform: lowercase;
+            transition: background 0.2s ease, border-color 0.2s ease;
+        }
+
+        .sp-danger-btn:hover:not(:disabled) {
+            background: rgba(255, 51, 51, 0.1);
+            border-color: rgba(255, 51, 51, 0.45);
+        }
+
+        .sp-danger-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .sp-danger-confirm-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            margin: 1rem 0 0.6rem;
+            text-transform: lowercase;
+        }
+
+        .sp-danger-confirm-label span {
+            color: #e0e0e0;
+        }
+
+        .sp-danger-confirm-row {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .sp-danger-input {
+            flex: 1;
+            min-width: 180px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 51, 51, 0.2);
+            border-radius: 8px;
+            padding: 0.55rem 0.875rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: #e0e0e0;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        .sp-danger-input:focus {
+            border-color: rgba(255, 51, 51, 0.45);
+        }
+
+        .sp-danger-confirm-btn {
+            background: rgba(255, 51, 51, 0.12);
+            border: 1px solid rgba(255, 51, 51, 0.3);
+            color: rgba(255, 80, 80, 0.95);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.74rem;
+            padding: 0.55rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            white-space: nowrap;
+            text-transform: lowercase;
+        }
+
+        .sp-danger-confirm-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .sp-danger-pending {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.74rem;
+            color: #ffb84d;
+            margin-top: 1rem;
+            line-height: 1.6;
+            text-transform: lowercase;
+        }
+
+        html.theme-light .sp-danger-card {
+            background: rgba(255, 241, 241, 0.55);
+            border-color: rgba(200, 30, 30, 0.2);
+        }
+
+        html.theme-light .sp-danger-title {
+            color: var(--text-main);
+        }
+
+        html.theme-light .sp-danger-input {
+            background: #fbfbfc;
+            color: var(--text-main);
+        }
+
         .sp-shortcut-keys {
             display: flex;
             align-items: center;
@@ -4364,6 +4525,33 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="settings-section">
+                    <h2 class="settings-section-title">danger zone</h2>
+                    <p class="settings-section-desc">permanently delete your sentinelpay account and data.</p>
+                    <div class="sp-danger-card">
+                        <div class="sp-danger-head">
+                            <div class="sp-danger-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12" y2="17"></line></svg>
+                            </div>
+                            <div class="sp-danger-body">
+                                <div class="sp-danger-title">request for account deletion</div>
+                                <div class="sp-danger-desc">deleting your account is permanent and cannot be undone. your data will be deleted within 30 days, but we may retain some metadata and logs for longer where required or permitted by law.</div>
+                                <div class="sp-danger-note" id="account-delete-note" style="display:none;"></div>
+                                <button class="sp-danger-btn" id="btn-account-delete-init">request to delete account</button>
+                                <div id="account-delete-confirm" style="display:none;">
+                                    <div class="sp-danger-confirm-label">type <span id="account-delete-phrase">delete my account</span> to confirm:</div>
+                                    <div class="sp-danger-confirm-row">
+                                        <input class="sp-danger-input" id="account-delete-input" type="text" autocomplete="off" spellcheck="false" placeholder="confirm">
+                                        <button class="sp-danger-confirm-btn" id="btn-account-delete-confirm">confirm deletion request</button>
+                                    </div>
+                                    <p class="error-msg" id="account-delete-error" style="display:none;margin-top:0.75rem;"></p>
+                                </div>
+                                <div class="sp-danger-pending" id="account-delete-pending" style="display:none;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div id="account-tab-security" class="account-tab-panel" style="display:none;"></div>
@@ -4707,7 +4895,7 @@
     </div>
 
     <script src="toast.js?v=3"></script>
-    <script src="dashboard-v19.js?v=96"></script>
+    <script src="dashboard-v19.js?v=97"></script>
     <script>
         // Eye Tracking Logic
         function trackEye(element, clientX, clientY) {

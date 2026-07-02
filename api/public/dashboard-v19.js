@@ -415,6 +415,7 @@ function renderDashboard(session) {
         initOrgSearch();
         setupShortcuts();
         setupTelemetry();
+        setupAccountDeletion();
     } catch (e) {
         console.error('[sentinel-render] Critical failure:', e);
         showStatus('Render Error', 'error');
@@ -2371,7 +2372,8 @@ async function fetchProfile(token) {
                 authProvider: profile.authProvider || 'email',
                 theme: profile.theme || 'dark',
                 timezone: profile.timezone || 'auto',
-                telemetry: profile.telemetry === true
+                telemetry: profile.telemetry === true,
+                deletionRequestedAt: profile.deletionRequestedAt || null
             }));
 
             if (profile.theme) {
@@ -3595,6 +3597,17 @@ async function fetchProfile(token) {
         localStorage.setItem('sentinel-cached-orgs', JSON.stringify(orgs));
         updateOrgGrid(orgs);
         updateDropdownOrgList(orgs, currentOrgSlug);
+        if (window.__applyAccountDeletionState) {
+            let phrase = 'delete my account';
+            let requestedAt = null;
+            try {
+                const c = JSON.parse(localStorage.getItem('sentinel-cached-profile') || '{}');
+                phrase = c.email || c.username || phrase;
+                requestedAt = c.deletionRequestedAt || null;
+            } catch (e) {}
+            const owned = Array.isArray(orgs) ? orgs.filter(o => o.role === 'Owner').length : 0;
+            window.__applyAccountDeletionState(owned, requestedAt, phrase);
+        }
         const _sq = new URLSearchParams(window.location.search).get('q') || '';
         if (_sq) filterOrgGrid(_sq);
     } catch (err) {}
@@ -3828,6 +3841,118 @@ function setupTelemetry() {
         input.checked = telemetry === true;
         applyDisabled(hasEmail);
     };
+}
+
+function setupAccountDeletion() {
+    const initBtn = document.getElementById('btn-account-delete-init');
+    const confirmZone = document.getElementById('account-delete-confirm');
+    const confirmInput = document.getElementById('account-delete-input');
+    const confirmBtn = document.getElementById('btn-account-delete-confirm');
+    const phraseEl = document.getElementById('account-delete-phrase');
+    const noteEl = document.getElementById('account-delete-note');
+    const pendingEl = document.getElementById('account-delete-pending');
+    const errEl = document.getElementById('account-delete-error');
+    if (!initBtn || !confirmZone || !confirmBtn) return;
+
+    let expectedPhrase = 'delete my account';
+    let ownedCount = 0;
+    let requested = null;
+
+    const fmtDate = (d) => { try { return new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }); } catch (e) { return ''; } };
+
+    const renderState = () => {
+        if (phraseEl) phraseEl.textContent = expectedPhrase;
+        if (requested) {
+            initBtn.style.display = 'none';
+            confirmZone.style.display = 'none';
+            if (noteEl) noteEl.style.display = 'none';
+            pendingEl.style.display = 'block';
+            pendingEl.textContent = `account deletion requested on ${fmtDate(requested)}. your data will be removed within 30 days. contact support@sentinelpay.org to cancel.`;
+            return;
+        }
+        pendingEl.style.display = 'none';
+        if (ownedCount > 0) {
+            initBtn.disabled = true;
+            confirmZone.style.display = 'none';
+            initBtn.style.display = '';
+            noteEl.style.display = 'block';
+            noteEl.textContent = `you still own ${ownedCount} organization${ownedCount > 1 ? 's' : ''}. transfer ownership or delete ${ownedCount > 1 ? 'them' : 'it'} before you can delete your account.`;
+        } else {
+            initBtn.disabled = false;
+            noteEl.style.display = 'none';
+        }
+    };
+
+    window.__applyAccountDeletionState = (owned, requestedAt, phrase) => {
+        ownedCount = owned || 0;
+        requested = requestedAt || null;
+        if (phrase) expectedPhrase = phrase;
+        renderState();
+    };
+
+    try {
+        const co = JSON.parse(localStorage.getItem('sentinel-cached-orgs') || '[]');
+        ownedCount = Array.isArray(co) ? co.filter(o => o.role === 'Owner').length : 0;
+        const cp = JSON.parse(localStorage.getItem('sentinel-cached-profile') || '{}');
+        requested = cp.deletionRequestedAt || null;
+        expectedPhrase = cp.email || cp.username || expectedPhrase;
+    } catch (e) {}
+    renderState();
+
+    if (initBtn.dataset.bound) return;
+    initBtn.dataset.bound = 'true';
+
+    initBtn.addEventListener('click', () => {
+        if (ownedCount > 0) { renderState(); return; }
+        confirmZone.style.display = 'block';
+        initBtn.style.display = 'none';
+        if (errEl) errEl.style.display = 'none';
+        if (confirmInput) { confirmInput.value = ''; setTimeout(() => confirmInput.focus(), 0); }
+    });
+
+    confirmBtn.addEventListener('click', async () => {
+        if (errEl) errEl.style.display = 'none';
+        const val = (confirmInput.value || '').trim();
+        if (val.toLowerCase() !== expectedPhrase.toLowerCase()) {
+            errEl.textContent = 'error: confirmation text does not match.';
+            errEl.style.display = 'block';
+            return;
+        }
+        confirmBtn.disabled = true;
+        confirmBtn.textContent = 'submitting...';
+        try {
+            const token = window.supabaseAuthToken;
+            const r = await fetch('/v1/user/account/deletion-request', {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const data = await r.json();
+            if (!r.ok) {
+                if (r.status === 409) {
+                    ownedCount = data.ownedCount || 1;
+                    confirmBtn.disabled = false;
+                    confirmBtn.textContent = 'confirm deletion request';
+                    renderState();
+                    return;
+                }
+                throw new Error(data.error || 'failed to submit request');
+            }
+            requested = data.requestedAt || new Date().toISOString();
+            try {
+                const cachedRaw = localStorage.getItem('sentinel-cached-profile');
+                const cached = cachedRaw ? JSON.parse(cachedRaw) : {};
+                cached.deletionRequestedAt = requested;
+                localStorage.setItem('sentinel-cached-profile', JSON.stringify(cached));
+            } catch (e) {}
+            renderState();
+            if (window.SentinelToast) window.SentinelToast.show('account deletion requested.', 'success');
+        } catch (err) {
+            errEl.textContent = `error: ${err.message.toLowerCase()}`;
+            errEl.style.display = 'block';
+            confirmBtn.disabled = false;
+            confirmBtn.textContent = 'confirm deletion request';
+        }
+    });
 }
 
 function setupSidebar() {

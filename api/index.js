@@ -626,6 +626,7 @@ app.get('/v1/user/profile', requireSupabaseAuth, async (req, res) => {
             timezone: user.timezone || 'auto',
             shortcuts: user.shortcuts ?? null,
             telemetry: user.telemetry === true,
+            deletionRequestedAt: user.deletionRequestedAt || null,
             history: user.scanHistory
         });
     } catch (err) {
@@ -1267,6 +1268,64 @@ app.post('/v1/user/api-key/roll', requireRateLimitBackend, requireSupabaseAuth, 
     } catch (err) {
         console.error('[api key roll error]', err);
         res.status(500).json({ error: 'failed to roll api key' });
+    }
+});
+
+app.post('/v1/user/account/deletion-request', requireSupabaseAuth, async (req, res) => {
+    try {
+        const ownedCount = await prisma.organization.count({ where: { ownerId: req.user.id } });
+        if (ownedCount > 0) {
+            return res.status(409).json({
+                error: 'transfer ownership or delete your organizations before deleting your account',
+                ownedCount,
+                code: 'owns_organizations'
+            });
+        }
+
+        const existing = req.user.deletionRequestedAt;
+        const requestedAt = existing || new Date();
+
+        if (!existing) {
+            await prisma.user.update({
+                where: { id: req.user.id },
+                data: { deletionRequestedAt: requestedAt }
+            });
+
+            if (process.env.RESEND_API_KEY && req.user.email) {
+                try {
+                    const { Resend } = require('resend');
+                    const resend = new Resend(process.env.RESEND_API_KEY);
+                    await resend.emails.send({
+                        from: 'sentinelpay <noreply@sentinelpay.org>',
+                        to: req.user.email,
+                        subject: 'account deletion requested',
+                        html: `
+                        <!DOCTYPE html>
+                        <html lang="en">
+                        <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
+                        <body style="margin:0;padding:0;background-color:#050505;color:#ffffff;font-family:'JetBrains Mono','Courier New',monospace;-webkit-font-smoothing:antialiased;">
+                            <div style="background-color:#050505;padding:100px 20px;text-align:center;">
+                                <img src="https://sentinelpay.org/logo.png" alt="SentinelPay" width="64" height="64" style="display:block;margin:0 auto 40px;border:0;">
+                                <table align="center" border="0" cellpadding="0" cellspacing="0" style="max-width:420px;width:100%;border-top:1px solid rgba(255,255,255,0.05);">
+                                    <tr><td style="padding:40px 0;">
+                                        <h1 style="font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:800;letter-spacing:-1px;margin:0 0 20px;color:#ffffff;text-transform:lowercase;">account deletion requested</h1>
+                                        <p style="font-family:'JetBrains Mono',monospace;font-size:14px;line-height:1.7;color:#777777;margin:0;">we received a request to delete your sentinelpay account. your data will be removed within 30 days. if you didn't request this, contact support@sentinelpay.org immediately.</p>
+                                    </td></tr>
+                                </table>
+                            </div>
+                        </body>
+                        </html>`
+                    });
+                } catch (mailErr) {
+                    console.error('[deletion-request mail error]', mailErr.message);
+                }
+            }
+        }
+
+        res.json({ ok: true, requestedAt });
+    } catch (err) {
+        console.error('[deletion-request error]', err);
+        res.status(500).json({ error: 'failed to submit deletion request' });
     }
 });
 
