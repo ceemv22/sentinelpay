@@ -34,8 +34,12 @@ function tokenAal(token) {
     }
 }
 
+function userHasMfa(req) {
+    return req.user && (req.user.mfaEnabled === true || req.hasMfa === true);
+}
+
 function enforceMfa(req, res, next) {
-    if (!req.user || req.user.mfaEnabled !== true) return next();
+    if (!userHasMfa(req)) return next();
     if (tokenAal(req.accessToken) === 'aal2') return next();
     return res.status(403).json({ error: 'mfa verification required', code: 'mfa_required' });
 }
@@ -705,7 +709,7 @@ app.patch('/v1/user/profile', requireSupabaseAuth, async (req, res) => {
         if (typeof username === 'string') {
             const u = username.trim();
             const usernameChanged = u.toLowerCase() !== (req.user.username || '').toLowerCase();
-            if (usernameChanged && req.user.mfaEnabled === true && tokenAal(req.accessToken) !== 'aal2') {
+            if (usernameChanged && userHasMfa(req) && tokenAal(req.accessToken) !== 'aal2') {
                 return res.status(403).json({ error: 'mfa verification required', code: 'mfa_required' });
             }
             if (usernameChanged && req.user.authProvider !== 'twitter') {

@@ -114,6 +114,7 @@ async function requireSupabaseAuth(req, res, next) {
 
         req.user = dbUser;
         req.accessToken = token;
+        req.hasMfa = Array.isArray(user.factors) && user.factors.some(f => f && f.status === 'verified');
         next();
     } catch (error) {
         console.error('[sentinel-auth-middleware] critical error:', error.message);
