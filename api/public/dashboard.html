@@ -3760,6 +3760,260 @@
             color: var(--text-main);
         }
 
+        .sp-mfa-card {
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.015);
+        }
+
+        .sp-mfa-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .sp-mfa-head-left {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            min-width: 0;
+        }
+
+        .sp-mfa-lock {
+            display: flex;
+            flex-shrink: 0;
+            color: var(--text-muted);
+        }
+
+        .sp-mfa-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #fff;
+            text-transform: lowercase;
+        }
+
+        .sp-mfa-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.58rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            padding: 0.25rem 0.7rem;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .sp-mfa-panel {
+            padding: 1.25rem 1.5rem;
+        }
+
+        .sp-mfa-desc {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            text-transform: lowercase;
+            margin: 0 0 1rem;
+        }
+
+        .sp-mfa-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .sp-mfa-list:not(:empty) {
+            margin-bottom: 1rem;
+        }
+
+        .sp-mfa-factor {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 8px;
+            padding: 0.7rem 0.9rem;
+        }
+
+        .sp-mfa-factor-name {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.76rem;
+            color: #e0e0e0;
+        }
+
+        .sp-mfa-factor-meta {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            margin-top: 0.2rem;
+            text-transform: lowercase;
+        }
+
+        .sp-mfa-remove {
+            background: transparent;
+            border: 1px solid rgba(255, 51, 51, 0.25);
+            color: rgba(255, 80, 80, 0.85);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.68rem;
+            padding: 0.35rem 0.75rem;
+            border-radius: 6px;
+            cursor: pointer;
+            text-transform: lowercase;
+            white-space: nowrap;
+            transition: background 0.2s ease, border-color 0.2s ease;
+        }
+
+        .sp-mfa-remove:hover:not(:disabled) {
+            background: rgba(255, 51, 51, 0.1);
+            border-color: rgba(255, 51, 51, 0.4);
+        }
+
+        .sp-mfa-remove:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .sp-mfa-add {
+            background: rgba(0, 240, 255, 0.1);
+            border: 1px solid rgba(0, 240, 255, 0.25);
+            color: var(--neon-blue);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.74rem;
+            font-weight: 600;
+            padding: 0.55rem 1.1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            text-transform: lowercase;
+            transition: background 0.2s ease, border-color 0.2s ease;
+        }
+
+        .sp-mfa-add:hover:not(:disabled) {
+            background: rgba(0, 240, 255, 0.16);
+            border-color: rgba(0, 240, 255, 0.4);
+        }
+
+        .sp-mfa-add:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .sp-mfa-form-label {
+            display: block;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            text-transform: lowercase;
+            margin-bottom: 0.5rem;
+        }
+
+        .sp-mfa-modal-desc {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.73rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            text-transform: lowercase;
+            margin: 0 0 1.25rem;
+        }
+
+        .sp-mfa-qr-wrap {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .sp-mfa-qr {
+            width: 180px;
+            height: 180px;
+            border-radius: 10px;
+            background: #fff;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+
+        .sp-mfa-secret-row {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.35rem;
+            margin-bottom: 1rem;
+        }
+
+        .sp-mfa-secret-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.62rem;
+            color: var(--text-muted);
+            text-transform: lowercase;
+            letter-spacing: 0.05em;
+        }
+
+        .sp-mfa-secret {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.74rem;
+            color: #e0e0e0;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 6px;
+            padding: 0.4rem 0.7rem;
+            letter-spacing: 0.15em;
+            word-break: break-all;
+            text-align: center;
+            user-select: all;
+        }
+
+        .sp-mfa-code.settings-input {
+            width: 100%;
+            box-sizing: border-box;
+            text-align: center;
+            letter-spacing: 0.5em;
+            font-size: 1.1rem;
+            padding: 0.75rem;
+        }
+
+        html.theme-light .sp-mfa-card {
+            background: rgba(0, 0, 0, 0.012);
+            border-color: rgba(0, 0, 0, 0.08);
+        }
+
+        html.theme-light .sp-mfa-head {
+            background: rgba(0, 0, 0, 0.02);
+            border-bottom-color: rgba(0, 0, 0, 0.06);
+        }
+
+        html.theme-light .sp-mfa-title {
+            color: var(--text-main);
+        }
+
+        html.theme-light .sp-mfa-badge {
+            background: rgba(0, 0, 0, 0.04);
+            border-color: rgba(0, 0, 0, 0.12);
+        }
+
+        html.theme-light .sp-mfa-factor {
+            background: rgba(0, 0, 0, 0.015);
+            border-color: rgba(0, 0, 0, 0.07);
+        }
+
+        html.theme-light .sp-mfa-factor-name {
+            color: var(--text-main);
+        }
+
+        html.theme-light .sp-mfa-secret {
+            background: rgba(0, 0, 0, 0.03);
+            border-color: rgba(0, 0, 0, 0.1);
+            color: var(--text-main);
+        }
+
         .sp-shortcut-keys {
             display: flex;
             align-items: center;
@@ -4554,7 +4808,28 @@
                 </div>
             </div>
 
-            <div id="account-tab-security" class="account-tab-panel" style="display:none;"></div>
+            <div id="account-tab-security" class="account-tab-panel" style="display:none;">
+                <div class="settings-section">
+                    <h2 class="settings-section-title">multi-factor authentication</h2>
+                    <p class="settings-section-desc">add a second layer of protection to your account at sign-in.</p>
+                    <div class="sp-mfa-card">
+                        <div class="sp-mfa-head">
+                            <div class="sp-mfa-head-left">
+                                <span class="sp-mfa-lock">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                                </span>
+                                <span class="sp-mfa-title">multi-factor authentication (mfa)</span>
+                            </div>
+                            <span class="sp-mfa-badge" id="mfa-count-badge">0 apps configured</span>
+                        </div>
+                        <div class="sp-mfa-panel">
+                            <p class="sp-mfa-desc">use an authenticator app (like 1password or authy) to verify your identity at sign-in.</p>
+                            <div class="sp-mfa-list" id="mfa-factor-list"></div>
+                            <button class="sp-mfa-add" id="btn-mfa-add">add new app</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div id="account-tab-access-tokens" class="account-tab-panel" style="display:none;"></div>
         </div>
     </main>
@@ -4721,6 +4996,36 @@
                         send invitation
                     </button>
                 </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="mfa-enroll-modal-overlay" class="modal-overlay">
+        <div class="auth-card modal-content" style="position: relative; z-index: 1000; display: flex; flex-direction: column; max-width: 440px; width: 100%;">
+            <button class="modal-close-btn" id="btn-close-mfa">✕</button>
+            <div style="display: flex; flex-direction: column; width: 100%;">
+                <div class="auth-tabs" style="margin-bottom: 1.5rem; display: flex; justify-content: flex-start;">
+                    <button class="auth-tab active" style="width: auto; padding: 0.4rem 1rem; cursor: default; pointer-events: none; font-size: 0.7rem; border-radius: 6px;">add authenticator app</button>
+                </div>
+
+                <div id="mfa-step-name">
+                    <label class="sp-mfa-form-label" for="mfa-device-name">device name</label>
+                    <input type="text" id="mfa-device-name" class="settings-input" placeholder="authenticator app" maxlength="40" autocomplete="off" spellcheck="false" style="width: 100%; box-sizing: border-box;">
+                    <p class="error-msg" id="mfa-name-error" style="display:none; margin-top: 0.75rem;"></p>
+                    <button class="submit-btn" id="btn-mfa-continue" style="margin-top: 1.25rem;">continue</button>
+                </div>
+
+                <div id="mfa-step-verify" style="display:none;">
+                    <p class="sp-mfa-modal-desc">scan the qr code with your authenticator app, then enter the 6-digit code to confirm.</p>
+                    <div class="sp-mfa-qr-wrap" id="mfa-qr-wrap"></div>
+                    <div class="sp-mfa-secret-row" id="mfa-secret-row" style="display:none;">
+                        <span class="sp-mfa-secret-label">or enter this key manually</span>
+                        <div class="sp-mfa-secret" id="mfa-secret"></div>
+                    </div>
+                    <input type="text" id="mfa-code" class="settings-input sp-mfa-code" placeholder="000000" inputmode="numeric" autocomplete="one-time-code" maxlength="6">
+                    <p class="error-msg" id="mfa-verify-error" style="display:none; margin-top: 0.5rem;"></p>
+                    <button class="submit-btn" id="btn-mfa-verify" style="margin-top: 1rem;">verify &amp; enable</button>
+                </div>
             </div>
         </div>
     </div>
@@ -4895,7 +5200,7 @@
     </div>
 
     <script src="toast.js?v=3"></script>
-    <script src="dashboard-v19.js?v=98"></script>
+    <script src="dashboard-v19.js?v=99"></script>
     <script>
         // Eye Tracking Logic
         function trackEye(element, clientX, clientY) {
