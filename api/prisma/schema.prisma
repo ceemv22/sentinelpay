@@ -21,6 +21,7 @@ model User {
   timezone         String           @default("auto")
   shortcuts        Json?
   telemetry        Boolean          @default(false)
+  deletionRequestedAt DateTime?
   apiKeys          ApiKey[]
   scanHistory      ScanHistory[]
   organizations    Organization[]   @relation("OrgMembers")
