@@ -625,6 +625,7 @@ app.get('/v1/user/profile', requireSupabaseAuth, async (req, res) => {
             theme: user.theme || 'dark',
             timezone: user.timezone || 'auto',
             shortcuts: user.shortcuts ?? null,
+            telemetry: user.telemetry === true,
             history: user.scanHistory
         });
     } catch (err) {
@@ -729,6 +730,13 @@ app.patch('/v1/user/profile', requireSupabaseAuth, async (req, res) => {
                 return res.status(400).json({ error: 'invalid shortcuts' });
             }
         }
+        if (req.body.telemetry !== undefined) {
+            if (typeof req.body.telemetry !== 'boolean') return res.status(400).json({ error: 'invalid telemetry value' });
+            if (req.body.telemetry === true && !req.user.email) {
+                return res.status(400).json({ error: 'a primary email is required to enable telemetry' });
+            }
+            data.telemetry = req.body.telemetry;
+        }
         if (Object.keys(data).length === 0) return res.status(400).json({ error: 'nothing to update' });
         let user;
         try {
@@ -739,7 +747,7 @@ app.patch('/v1/user/profile', requireSupabaseAuth, async (req, res) => {
             }
             throw err;
         }
-        res.json({ ok: true, email: user.email, username: user.username, firstName: user.firstName || '', lastName: user.lastName || '', theme: user.theme || 'dark', timezone: user.timezone || 'auto', shortcuts: user.shortcuts ?? null });
+        res.json({ ok: true, email: user.email, username: user.username, firstName: user.firstName || '', lastName: user.lastName || '', theme: user.theme || 'dark', timezone: user.timezone || 'auto', shortcuts: user.shortcuts ?? null, telemetry: user.telemetry === true });
     } catch (err) {
         console.error('[profile patch error]', err);
         res.status(500).json({ error: 'failed to update profile' });

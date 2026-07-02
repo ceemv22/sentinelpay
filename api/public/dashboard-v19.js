@@ -414,6 +414,7 @@ function renderDashboard(session) {
         setupMobileNav();
         initOrgSearch();
         setupShortcuts();
+        setupTelemetry();
     } catch (e) {
         console.error('[sentinel-render] Critical failure:', e);
         showStatus('Render Error', 'error');
@@ -2369,7 +2370,8 @@ async function fetchProfile(token) {
                 lastName: profile.lastName || '',
                 authProvider: profile.authProvider || 'email',
                 theme: profile.theme || 'dark',
-                timezone: profile.timezone || 'auto'
+                timezone: profile.timezone || 'auto',
+                telemetry: profile.telemetry === true
             }));
 
             if (profile.theme) {
@@ -2383,6 +2385,7 @@ async function fetchProfile(token) {
                 try { localStorage.setItem('sentinel-shortcuts', JSON.stringify(profile.shortcuts)); } catch (e) {}
                 if (window.__applyShortcutPrefs) window.__applyShortcutPrefs(profile.shortcuts);
             }
+            if (window.__applyTelemetryPref) window.__applyTelemetryPref(profile.telemetry === true, Boolean(profile.email));
 
             applyIdentityDisplay(profile);
             applyProfileToForm(profile);
@@ -3786,6 +3789,45 @@ function setupShortcuts() {
             }
         }
     });
+}
+
+function setupTelemetry() {
+    const sw = document.getElementById('telemetry-switch');
+    const input = document.getElementById('telemetry-toggle');
+    if (!sw || !input) return;
+
+    const applyDisabled = (hasEmail) => {
+        input.disabled = !hasEmail;
+        sw.classList.toggle('is-disabled', !hasEmail);
+    };
+
+    if (!input.dataset.bound) {
+        input.dataset.bound = 'true';
+        try {
+            const cachedRaw = localStorage.getItem('sentinel-cached-profile');
+            if (cachedRaw) {
+                const cached = JSON.parse(cachedRaw);
+                input.checked = cached.telemetry === true;
+                applyDisabled(Boolean(cached.email));
+            }
+        } catch (e) {}
+
+        input.addEventListener('change', () => {
+            try {
+                const cachedRaw = localStorage.getItem('sentinel-cached-profile');
+                const cached = cachedRaw ? JSON.parse(cachedRaw) : {};
+                cached.telemetry = input.checked;
+                localStorage.setItem('sentinel-cached-profile', JSON.stringify(cached));
+            } catch (e) {}
+            saveProfilePrefs({ telemetry: input.checked });
+            if (window.SentinelToast) window.SentinelToast.show(input.checked ? 'telemetry sharing enabled' : 'telemetry sharing disabled', 'info');
+        });
+    }
+
+    window.__applyTelemetryPref = (telemetry, hasEmail) => {
+        input.checked = telemetry === true;
+        applyDisabled(hasEmail);
+    };
 }
 
 function setupSidebar() {
