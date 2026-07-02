@@ -4059,6 +4059,7 @@ function setupSecurity() {
     const refresh = async () => {
         enabled = !!(await getVerifiedFactor());
         setStatus();
+        if (enabled) { setServerState(true).catch(() => {}); }
     };
 
     const closeEnrollModal = () => {
