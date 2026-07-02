@@ -413,6 +413,7 @@ function renderDashboard(session) {
         setupSidebar();
         setupMobileNav();
         initOrgSearch();
+        setupShortcuts();
     } catch (e) {
         console.error('[sentinel-render] Critical failure:', e);
         showStatus('Render Error', 'error');
@@ -3642,6 +3643,133 @@ function updateDropdownOrgList(orgs, activeSlug) {
         };
 
         orgList.appendChild(item);
+    });
+}
+
+async function copyApiKeyToClipboard() {
+    const token = window.supabaseAuthToken;
+    if (!token) return;
+    try {
+        const res = await fetch('/v1/user/api-key/reveal', { headers: { 'Authorization': `Bearer ${token}` } });
+        const data = await res.json();
+        if (!res.ok || !data.apiKey) throw new Error('no key');
+        const done = () => { if (window.SentinelToast) window.SentinelToast.show('api key copied to clipboard', 'success'); };
+        if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(data.apiKey);
+            done();
+        } else {
+            const ta = document.createElement('textarea');
+            ta.value = data.apiKey;
+            ta.style.cssText = 'position:fixed;left:-9999px;top:-9999px;opacity:0;';
+            document.body.appendChild(ta);
+            ta.focus();
+            ta.select();
+            try { document.execCommand('copy'); done(); } catch (e) {}
+            document.body.removeChild(ta);
+        }
+    } catch (e) {
+        if (window.SentinelToast) window.SentinelToast.show('could not copy api key', 'error');
+    }
+}
+
+function toggleThemeQuick() {
+    const m = document.cookie.match(/(?:^|; )sentinel-theme=([^;]*)/);
+    const cur = m ? decodeURIComponent(m[1]) : 'dark';
+    const resolved = cur === 'system'
+        ? ((window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) ? 'light' : 'dark')
+        : cur;
+    const next = resolved === 'light' ? 'dark' : 'light';
+    window.applyThemePreference(next, true);
+    saveProfilePrefs({ theme: next });
+    if (window.SentinelToast) window.SentinelToast.show(`${next} theme enabled`, 'info');
+}
+
+function setupShortcuts() {
+    const table = document.getElementById('shortcuts-table');
+    if (!table || table.dataset.bound) return;
+    table.dataset.bound = 'true';
+
+    const clickIf = (id) => { const el = document.getElementById(id); if (el) { el.click(); return true; } return false; };
+    const navigate = (path, fn) => { history.pushState({}, '', path); fn(); };
+
+    const SHORTCUTS = [
+        { id: 'new-org', label: 'new organization', keys: ['⇧', 'n'], match: (e) => e.key.toLowerCase() === 'n', run: () => { if (!clickIf('mock-new-org-btn')) clickIf('dropdown-create-org'); } },
+        { id: 'invite', label: 'invite members', keys: ['⇧', 'i'], match: (e) => e.key.toLowerCase() === 'i', run: () => clickIf('btn-invite-member') },
+        { id: 'goto-orgs', label: 'go to organizations', keys: ['⇧', 'h'], match: (e) => e.key.toLowerCase() === 'h', run: () => navigate('/dashboard/organizations', switchToHomeView) },
+        { id: 'goto-prefs', label: 'account preferences', keys: ['⇧', 'p'], match: (e) => e.key.toLowerCase() === 'p', run: () => navigate('/dashboard/account/settings/preferences', () => switchToAccountSettings('preferences')) },
+        { id: 'copy-key', label: 'copy api key', keys: ['⇧', 'k'], match: (e) => e.key.toLowerCase() === 'k', run: copyApiKeyToClipboard },
+        { id: 'toggle-theme', label: 'toggle light / dark theme', keys: ['⇧', 't'], match: (e) => e.key.toLowerCase() === 't', run: toggleThemeQuick },
+        { id: 'search-orgs', label: 'search organizations', keys: ['⇧', 'f'], match: (e) => e.key.toLowerCase() === 'f', run: () => { const s = document.querySelector('.org-search-input'); navigate('/dashboard/organizations', switchToHomeView); if (s) setTimeout(() => s.focus(), 0); } },
+        { id: 'live-chat', label: 'open live chat', keys: ['⇧', 'c'], match: (e) => e.key.toLowerCase() === 'c', run: () => { if (window.Intercom) window.Intercom('show'); } },
+        { id: 'help', label: 'open help center', keys: ['⇧', '/'], match: (e) => e.key === '?', run: () => window.open('https://help.sentinelpay.org', '_blank', 'noopener') },
+    ];
+
+    let enabled = {};
+    try { enabled = JSON.parse(localStorage.getItem('sentinel-shortcuts') || '{}'); } catch (e) { enabled = {}; }
+
+    SHORTCUTS.forEach((sc) => {
+        const row = document.createElement('div');
+        row.className = 'settings-table-row sp-shortcut-row';
+
+        const label = document.createElement('div');
+        label.className = 'settings-table-label';
+        const span = document.createElement('span');
+        span.textContent = sc.label;
+        label.appendChild(span);
+
+        const value = document.createElement('div');
+        value.className = 'settings-table-value';
+
+        const keys = document.createElement('div');
+        keys.className = 'sp-shortcut-keys';
+        sc.keys.forEach((k) => {
+            const kb = document.createElement('span');
+            kb.className = 'sp-kbd';
+            kb.textContent = k;
+            keys.appendChild(kb);
+        });
+
+        const sw = document.createElement('label');
+        sw.className = 'sp-switch';
+        const input = document.createElement('input');
+        input.type = 'checkbox';
+        input.checked = enabled[sc.id] !== false;
+        input.setAttribute('aria-label', sc.label);
+        const track = document.createElement('span');
+        track.className = 'sp-switch-track';
+        sw.appendChild(input);
+        sw.appendChild(track);
+
+        input.addEventListener('change', () => {
+            enabled[sc.id] = input.checked;
+            try { localStorage.setItem('sentinel-shortcuts', JSON.stringify(enabled)); } catch (e) {}
+        });
+
+        value.appendChild(keys);
+        value.appendChild(sw);
+        row.appendChild(label);
+        row.appendChild(value);
+        table.appendChild(row);
+    });
+
+    if (window.__sentinelShortcutsBound) return;
+    window.__sentinelShortcutsBound = true;
+    document.addEventListener('keydown', (e) => {
+        if (!e.shiftKey || e.ctrlKey || e.metaKey || e.altKey) return;
+        const t = e.target;
+        const tag = t && t.tagName ? t.tagName.toUpperCase() : '';
+        if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || (t && t.isContentEditable)) return;
+        if (document.body.classList.contains('modal-open')) return;
+        let map = {};
+        try { map = JSON.parse(localStorage.getItem('sentinel-shortcuts') || '{}'); } catch (e2) { map = {}; }
+        for (const sc of SHORTCUTS) {
+            if (map[sc.id] === false) continue;
+            if (sc.match(e)) {
+                e.preventDefault();
+                sc.run();
+                break;
+            }
+        }
     });
 }
 
