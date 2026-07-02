@@ -187,10 +187,65 @@ document.addEventListener('DOMContentLoaded', () => {
                     btn.removeAttribute('data-captcha-token');
                     isBusy = false;
                 } else {
+                    let needsMfa = false;
+                    try {
+                        if (s.auth.mfa && s.auth.mfa.getAuthenticatorAssuranceLevel) {
+                            const { data: aal } = await s.auth.mfa.getAuthenticatorAssuranceLevel();
+                            needsMfa = !!(aal && aal.nextLevel === 'aal2' && aal.nextLevel !== aal.currentLevel);
+                        }
+                    } catch (mfaErr) { needsMfa = false; }
+                    if (needsMfa) {
+                        isBusy = false;
+                        showMfaStep();
+                        return;
+                    }
                     window.location.href = returnTo || '/dashboard/organizations';
                 }
             } catch (err) { console.error(err); isBusy = false; btn.disabled = false; }
         };
+    }
+
+    function showMfaStep() {
+        const panel = document.getElementById('auth-panel');
+        const mfaState = document.getElementById('auth-mfa-state');
+        const codeInput = document.getElementById('auth-mfa-code');
+        const verifyBtn = document.getElementById('auth-mfa-verify-btn');
+        const errEl = document.getElementById('auth-mfa-error');
+        const cancelBtn = document.getElementById('auth-mfa-cancel');
+        if (!panel || !mfaState) { window.location.href = returnTo || '/dashboard/organizations'; return; }
+
+        panel.style.display = 'none';
+        mfaState.style.display = 'flex';
+        setTimeout(() => { if (codeInput) codeInput.focus(); }, 60);
+
+        if (codeInput) codeInput.oninput = () => { codeInput.value = codeInput.value.replace(/[^0-9]/g, '').slice(0, 6); };
+
+        const submit = async () => {
+            if (!errEl) return;
+            errEl.style.display = 'none';
+            const code = (codeInput.value || '').trim();
+            if (!/^[0-9]{6}$/.test(code)) { errEl.textContent = 'error: enter the 6-digit code'; errEl.style.display = 'block'; return; }
+            verifyBtn.disabled = true;
+            verifyBtn.textContent = 'verifying...';
+            try {
+                const { data: factorData } = await s.auth.mfa.listFactors();
+                const factors = (factorData && (factorData.totp || factorData.all)) || [];
+                const f = factors.find(x => x.status === 'verified') || factors[0];
+                if (!f) throw new Error('no authenticator found');
+                const { error } = await s.auth.mfa.challengeAndVerify({ factorId: f.id, code });
+                if (error) throw new Error(error.message);
+                window.location.href = returnTo || '/dashboard/organizations';
+            } catch (e) {
+                verifyBtn.disabled = false;
+                verifyBtn.textContent = 'verify';
+                errEl.textContent = `error: ${(e.message || 'invalid code').toLowerCase()}`;
+                errEl.style.display = 'block';
+            }
+        };
+
+        if (verifyBtn) verifyBtn.onclick = submit;
+        if (codeInput) codeInput.onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); submit(); } };
+        if (cancelBtn) cancelBtn.onclick = async () => { try { await s.auth.signOut(); } catch (e) {} window.location.reload(); };
     }
 
     const regForm = document.getElementById('register-form');

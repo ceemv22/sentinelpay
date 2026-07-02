@@ -113,6 +113,7 @@ async function requireSupabaseAuth(req, res, next) {
         }
 
         req.user = dbUser;
+        req.accessToken = token;
         next();
     } catch (error) {
         console.error('[sentinel-auth-middleware] critical error:', error.message);

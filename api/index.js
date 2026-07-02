@@ -25,6 +25,21 @@ function escapeHtml(str) {
         .replace(/'/g, '&#x27;');
 }
 
+function tokenAal(token) {
+    try {
+        const payload = jwt.decode(token);
+        return (payload && payload.aal) ? payload.aal : 'aal1';
+    } catch (e) {
+        return 'aal1';
+    }
+}
+
+function enforceMfa(req, res, next) {
+    if (!req.user || req.user.mfaEnabled !== true) return next();
+    if (tokenAal(req.accessToken) === 'aal2') return next();
+    return res.status(403).json({ error: 'mfa verification required', code: 'mfa_required' });
+}
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 const isProduction = process.env.NODE_ENV === 'production';
@@ -627,6 +642,7 @@ app.get('/v1/user/profile', requireSupabaseAuth, async (req, res) => {
             shortcuts: user.shortcuts ?? null,
             telemetry: user.telemetry === true,
             deletionRequestedAt: user.deletionRequestedAt || null,
+            mfaEnabled: user.mfaEnabled === true,
             history: user.scanHistory
         });
     } catch (err) {
@@ -678,6 +694,9 @@ app.patch('/v1/user/profile', requireSupabaseAuth, async (req, res) => {
         if (typeof username === 'string') {
             const u = username.trim();
             const usernameChanged = u.toLowerCase() !== (req.user.username || '').toLowerCase();
+            if (usernameChanged && req.user.mfaEnabled === true && tokenAal(req.accessToken) !== 'aal2') {
+                return res.status(403).json({ error: 'mfa verification required', code: 'mfa_required' });
+            }
             if (usernameChanged && req.user.authProvider !== 'twitter') {
                 const verified = usernameChangeVerifiedStore.get(req.user.id);
                 if (!verified || Date.now() > verified.expiresAt) {
@@ -1159,7 +1178,7 @@ app.post('/v1/user/username-change/verify-code', requireSupabaseAuth, async (req
     }
 });
 
-app.post('/v1/user/email-change/finalize', requireSupabaseAuth, async (req, res) => {
+app.post('/v1/user/email-change/finalize', requireSupabaseAuth, enforceMfa, async (req, res) => {
     try {
         if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
             return res.status(500).json({ error: 'email change is not configured on this server' });
@@ -1271,7 +1290,7 @@ app.post('/v1/user/api-key/roll', requireRateLimitBackend, requireSupabaseAuth, 
     }
 });
 
-app.post('/v1/user/account/deletion-request', requireSupabaseAuth, async (req, res) => {
+app.post('/v1/user/account/deletion-request', requireSupabaseAuth, enforceMfa, async (req, res) => {
     try {
         const ownedCount = await prisma.organization.count({ where: { ownerId: req.user.id } });
         if (ownedCount > 0) {
@@ -1345,6 +1364,26 @@ app.post('/v1/user/account/deletion-request', requireSupabaseAuth, async (req, r
     } catch (err) {
         console.error('[deletion-request error]', err);
         res.status(500).json({ error: 'failed to submit deletion request' });
+    }
+});
+
+app.post('/v1/user/mfa/state', requireSupabaseAuth, async (req, res) => {
+    const { enabled } = req.body || {};
+    if (typeof enabled !== 'boolean') {
+        return res.status(400).json({ error: 'invalid state', code: 400 });
+    }
+    if (tokenAal(req.accessToken) !== 'aal2') {
+        return res.status(403).json({ error: 'mfa verification required', code: 'mfa_required' });
+    }
+    try {
+        const user = await prisma.user.update({
+            where: { id: req.user.id },
+            data: { mfaEnabled: enabled }
+        });
+        res.json({ ok: true, mfaEnabled: user.mfaEnabled === true });
+    } catch (err) {
+        console.error('[mfa state error]', err);
+        res.status(500).json({ error: 'failed to update mfa state', code: 500 });
     }
 });
 
