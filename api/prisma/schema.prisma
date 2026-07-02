@@ -20,6 +20,7 @@ model User {
   theme            String           @default("dark")
   timezone         String           @default("auto")
   shortcuts        Json?
+  telemetry        Boolean          @default(false)
   apiKeys          ApiKey[]
   scanHistory      ScanHistory[]
   organizations    Organization[]   @relation("OrgMembers")

@@ -3580,6 +3580,25 @@
             gap: 1rem;
         }
 
+        .sp-analytics-row {
+            grid-template-columns: 1fr auto;
+        }
+
+        .sp-analytics-row .settings-table-value {
+            justify-content: flex-end;
+        }
+
+        .sp-analytics-row .settings-table-label small {
+            max-width: 46ch;
+            line-height: 1.55;
+        }
+
+        .sp-switch.is-disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
         .sp-shortcut-keys {
             display: flex;
             align-items: center;
@@ -4326,6 +4345,25 @@
                     <p class="settings-section-desc">choose which shortcuts stay active while working in the dashboard.</p>
                     <div class="settings-table" id="shortcuts-table"></div>
                 </div>
+
+                <div class="settings-section">
+                    <h2 class="settings-section-title">analytics and marketing</h2>
+                    <p class="settings-section-desc">control whether telemetry and marketing data is sent from sentinelpay.</p>
+                    <div class="settings-table">
+                        <div class="settings-table-row sp-analytics-row" id="telemetry-row">
+                            <div class="settings-table-label">
+                                <span>send telemetry data from sentinelpay</span>
+                                <small>by opting in to sharing telemetry data, sentinelpay can analyze usage patterns to improve the product and reach out with relevant updates. requires a primary email on your account.</small>
+                            </div>
+                            <div class="settings-table-value">
+                                <label class="sp-switch" id="telemetry-switch">
+                                    <input type="checkbox" id="telemetry-toggle" aria-label="send telemetry data">
+                                    <span class="sp-switch-track"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div id="account-tab-security" class="account-tab-panel" style="display:none;"></div>
@@ -4669,7 +4707,7 @@
     </div>
 
     <script src="toast.js?v=3"></script>
-    <script src="dashboard-v19.js?v=95"></script>
+    <script src="dashboard-v19.js?v=96"></script>
     <script>
         // Eye Tracking Logic
         function trackEye(element, clientX, clientY) {
