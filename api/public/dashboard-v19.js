@@ -4104,6 +4104,16 @@ function setupSecurity() {
         document.body.classList.add('modal-open');
         lockBodyScroll();
         try {
+            try {
+                const { data: existing } = await mfa.listFactors();
+                const all = (existing && (existing.all || existing.totp)) || [];
+                for (const f of all) {
+                    if (f && f.status !== 'verified') {
+                        try { await mfa.unenroll({ factorId: f.id }); } catch (e2) {}
+                    }
+                }
+            } catch (e3) {}
+
             const res = await mfa.enroll({ factorType: 'totp', friendlyName: `sentinelpay ${Date.now().toString(36)}` });
             if (res.error) throw new Error(res.error.message);
             pendingFactorId = res.data.id;
@@ -4115,13 +4125,17 @@ function setupSecurity() {
                 img.alt = 'mfa qr code';
                 img.className = 'sp-mfa-qr';
                 qrWrap.appendChild(img);
+            } else {
+                qrWrap.innerHTML = '<p style="font-family:\'JetBrains Mono\',monospace;font-size:0.7rem;color:var(--text-muted);text-align:center;margin:1rem 0;">qr unavailable — use the key below</p>';
             }
             if (totp.secret) { secretEl.textContent = totp.secret; secretRow.style.display = 'flex'; }
             setTimeout(() => codeInput.focus(), 50);
         } catch (e) {
-            closeEnrollModal();
-            toggle.checked = false;
-            if (window.SentinelToast) window.SentinelToast.show(`could not start mfa setup: ${(e.message || '').toLowerCase()}`, 'error');
+            console.error('[mfa enroll]', e.message || e);
+            pendingFactorId = null;
+            verifyBtn.disabled = true;
+            secretRow.style.display = 'none';
+            qrWrap.innerHTML = `<p style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:#ff6b6b;text-align:center;line-height:1.6;margin:1rem 0;">could not start mfa setup:<br>${(e.message || 'please try again').toLowerCase()}</p>`;
         }
     };
 
