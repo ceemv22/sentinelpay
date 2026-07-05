@@ -4114,7 +4114,7 @@ function setupSecurity() {
                 }
             } catch (e3) {}
 
-            const res = await mfa.enroll({ factorType: 'totp', friendlyName: `sentinelpay ${Date.now().toString(36)}` });
+            const res = await mfa.enroll({ factorType: 'totp', issuer: 'sentinelpay.org', friendlyName: `sentinelpay-${Date.now().toString(36)}` });
             if (res.error) throw new Error(res.error.message);
             pendingFactorId = res.data.id;
             const totp = res.data.totp || {};
