@@ -4114,8 +4114,14 @@ function setupSecurity() {
                 }
             } catch (e3) {}
 
-            const res = await mfa.enroll({ factorType: 'totp', issuer: 'sentinelpay.org', friendlyName: `sentinelpay-${Date.now().toString(36)}` });
-            if (res.error) throw new Error(res.error.message);
+            let res = await mfa.enroll({ factorType: 'totp', friendlyName: `sentinelpay ${Date.now().toString(36).slice(-4)}` });
+            if (res.error && /already exists|friendly|name/i.test(res.error.message || '')) {
+                res = await mfa.enroll({ factorType: 'totp', friendlyName: `sentinelpay ${Date.now().toString(36)}` });
+            }
+            if (res.error) {
+                console.error('[mfa enroll] supabase error:', res.error, 'status:', res.error && res.error.status, 'name:', res.error && res.error.name);
+                throw new Error(res.error.message);
+            }
             pendingFactorId = res.data.id;
             const totp = res.data.totp || {};
             qrWrap.innerHTML = '';
