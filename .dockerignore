@@ -1,0 +1,23 @@
+# Build artifacts
+node_modules/
+npm-debug.log*
+
+# Environment & secrets
+.env
+.env.*
+.secure/
+api/.env
+
+# IDE & OS
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Branding assets (not needed in container)
+*.png

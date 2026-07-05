@@ -1,0 +1,5 @@
+[build]
+builder = "dockerfile"
+
+[deploy]
+startCommand = "sh -c 'cd api && npx prisma db push --skip-generate && node index.js'"
