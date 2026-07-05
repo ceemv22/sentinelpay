@@ -4119,20 +4119,31 @@ function setupSecurity() {
                 res = await mfa.enroll({ factorType: 'totp', friendlyName: `sentinelpay ${Date.now().toString(36)}` });
             }
             if (res.error) {
+                const st = res.error && res.error.status ? ` (${res.error.status})` : '';
                 console.error('[mfa enroll] supabase error:', res.error, 'status:', res.error && res.error.status, 'name:', res.error && res.error.name);
-                throw new Error(res.error.message);
+                throw new Error(`${res.error.message || 'enrollment failed'}${st}`);
             }
             pendingFactorId = res.data.id;
             const totp = res.data.totp || {};
             qrWrap.innerHTML = '';
-            if (totp.qr_code) {
+            let qrSrc = totp.qr_code || '';
+            const svgMarker = 'data:image/svg+xml;utf-8,';
+            if (qrSrc.startsWith(svgMarker)) {
+                qrSrc = 'data:image/svg+xml,' + encodeURIComponent(qrSrc.slice(svgMarker.length));
+            } else if (/^<svg/i.test(qrSrc)) {
+                qrSrc = 'data:image/svg+xml,' + encodeURIComponent(qrSrc);
+            }
+            if (qrSrc) {
                 const img = document.createElement('img');
-                img.src = totp.qr_code;
+                img.src = qrSrc;
                 img.alt = 'mfa qr code';
                 img.className = 'sp-mfa-qr';
+                img.onerror = () => {
+                    qrWrap.innerHTML = '<p style="font-family:\'JetBrains Mono\',monospace;font-size:0.7rem;color:var(--text-muted);text-align:center;margin:1rem 0;">scan unavailable — enter the key below in your app</p>';
+                };
                 qrWrap.appendChild(img);
             } else {
-                qrWrap.innerHTML = '<p style="font-family:\'JetBrains Mono\',monospace;font-size:0.7rem;color:var(--text-muted);text-align:center;margin:1rem 0;">qr unavailable — use the key below</p>';
+                qrWrap.innerHTML = '<p style="font-family:\'JetBrains Mono\',monospace;font-size:0.7rem;color:var(--text-muted);text-align:center;margin:1rem 0;">enter the key below in your authenticator app</p>';
             }
             if (totp.secret) { secretEl.textContent = totp.secret; secretRow.style.display = 'flex'; }
             setTimeout(() => codeInput.focus(), 50);
