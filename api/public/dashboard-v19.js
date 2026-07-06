@@ -318,7 +318,7 @@ function showEmailGate(session) {
                         <button class="auth-tab active" style="${tabStyle}">add your email</button>
                     </div>
                     <p style="${descStyle} margin-bottom: 1.75rem;">your account signed in without an email address. add and confirm one to secure your account and enable two-factor authentication.</p>
-                    <input id="sp-eg-input" class="settings-input" type="email" placeholder="you@example.com" autocomplete="email" spellcheck="false" inputmode="email" style="text-align: center; padding: 0.75rem 0.85rem; font-size: 0.85rem;" />
+                    <input id="sp-eg-input" class="settings-input" type="email" placeholder="john.doe@example.com" autocomplete="email" spellcheck="false" inputmode="email" style="text-align: center; padding: 0.75rem 0.85rem; font-size: 0.85rem;" />
                     <p class="error-msg" id="sp-eg-error" style="display:none; margin-top: 1rem;"></p>
                     <button id="sp-eg-submit" class="submit-btn" style="margin-top: 1.5rem; width: 100%;">send code</button>
                 </div>
