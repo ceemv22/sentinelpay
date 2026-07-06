@@ -1712,7 +1712,7 @@ app.post('/v1/organizations/:slug/team/invite', requireSupabaseAuth, async (req,
                 <head>
                     <meta charset="utf-8">
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <title>S-Tier Handshake | sentinelpay</title>
+                    <title>you're invited | sentinelpay</title>
                     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
                 </head>
                 <body style="margin: 0; padding: 0; background-color: #050505; color: #ffffff; font-family: 'JetBrains Mono', 'Courier New', monospace; -webkit-font-smoothing: antialiased;">
@@ -1729,7 +1729,7 @@ app.post('/v1/organizations/:slug/team/invite', requireSupabaseAuth, async (req,
                                 <td style="padding: 40px 0;">
                                     <h1 style="font-family: 'JetBrains Mono', monospace; font-size: 24px; font-weight: 800; letter-spacing: -1.5px; margin: 0 0 25px 0; color: #ffffff; text-transform: lowercase;">you've been invited</h1>
                                     <p style="font-family: 'JetBrains Mono', monospace; font-size: 14px; line-height: 1.6; color: #777777; margin: 0 0 45px 0;">
-                                        <strong>${escapeHtml(inviterName)}</strong> invited you to join the <strong>${escapeHtml(org.name)}</strong> organization on sentinelpay. Complete the signature check to bridge your account to the scanning core.
+                                        <strong>${escapeHtml(inviterName)}</strong> invited you to join <strong>${escapeHtml(org.name)}</strong> on sentinelpay. accept the invitation below to join the team.
                                     </p>
                                     <div style="margin-bottom: 45px;">
                                         <a href="${joinUrl}" style="background-color: #ffffff; color: #000000; padding: 20px 40px; text-decoration: none; font-weight: 800; font-size: 13px; font-family: 'JetBrains Mono', monospace; text-transform: lowercase; display: inline-block; box-shadow: 0 8px 24px rgba(0, 240, 255, 0.15);">
@@ -1740,8 +1740,8 @@ app.post('/v1/organizations/:slug/team/invite', requireSupabaseAuth, async (req,
                             </tr>
                         </table>
                         <div style="max-width: 420px; margin: 0 auto; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.03); text-align: left;">
-                            <div style="font-size: 10px; font-family: 'JetBrains Mono', monospace; color: #222; text-transform: uppercase; letter-spacing: 1px; line-height: 1.8;">
-                                if you did not request this, ignore.
+                            <div style="font-size: 11px; font-family: 'JetBrains Mono', monospace; color: #555555; text-transform: lowercase; line-height: 1.7;">
+                                if you didn't request this, you can ignore this email.
                             </div>
                         </div>
                     </div>
