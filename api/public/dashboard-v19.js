@@ -300,8 +300,10 @@ function showEmailGate(session) {
     const redirectTo = window.location.origin + '/dashboard/organizations';
 
     const cardStyle = 'position: relative; z-index: 1000; display: flex; flex-direction: column; max-width: 440px; width: 100%;';
-    const tabStyle = 'width: auto; padding: 0.4rem 1rem; cursor: default; pointer-events: none; font-size: 0.7rem; border-radius: 6px;';
-    const inputStyle = 'margin-top: 1.1rem; padding: 0.7rem 0.85rem; font-size: 0.85rem;';
+    const tabStyle = 'width: 100%; cursor: default; pointer-events: none;';
+    const descStyle = "color: var(--text-muted); font-size: 0.85rem; font-family: 'JetBrains Mono', monospace; line-height: 1.6; width: 100%; text-align: center;";
+    const pillStyle = "background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.1); padding: 12px 24px; border-radius: 12px; font-size: 0.72rem; cursor: pointer; font-family: 'JetBrains Mono', monospace; transition: all 0.3s ease; min-width: 180px;";
+    const textLinkStyle = "background: none; border: none; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; cursor: pointer; padding: 0.35rem;";
 
     let pendingEmail = '';
 
@@ -309,33 +311,28 @@ function showEmailGate(session) {
     wrap.id = 'sp-email-gate';
     wrap.className = 'modal-overlay';
     wrap.innerHTML = `
-        <style>
-            #sp-email-gate .sp-eg-otp { display: flex; gap: 0.5rem; margin-top: 1.1rem; }
-            #sp-email-gate .sp-eg-otp input { flex: 1 1 0; min-width: 0; aspect-ratio: 1 / 1; text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 1.4rem; font-weight: 700; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 9px; color: #fff; outline: none; -webkit-appearance: none; appearance: none; transition: border-color 0.15s, box-shadow 0.15s; }
-            #sp-email-gate .sp-eg-otp input.filled { border-color: rgba(255,255,255,0.28); }
-            #sp-email-gate .sp-eg-otp input:focus { border-color: var(--neon-blue); box-shadow: 0 0 0 3px rgba(0,240,255,0.12); }
-            #sp-email-gate .sp-eg-otp input:disabled { opacity: 0.55; }
-            #sp-email-gate .btn-cancel:disabled { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
-            html.theme-light #sp-email-gate .sp-eg-otp input { background: rgba(0,0,0,0.02); border-color: rgba(20,24,34,0.15); color: #15161a; }
-            html.theme-light #sp-email-gate .sp-eg-otp input.filled { border-color: rgba(20,24,34,0.3); }
-        </style>
         <div class="auth-card modal-content" style="${cardStyle}">
             <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; width: 100%;">
-                <div class="auth-tabs" style="margin-bottom: 1.5rem; display: flex; justify-content: flex-start;">
-                    <button class="auth-tab active" id="sp-eg-tab" style="${tabStyle}">add your email</button>
+                <div class="sp-eg-form" style="display: flex; flex-direction: column; width: 100%;">
+                    <div class="auth-tabs" style="margin-bottom: 2rem;">
+                        <button class="auth-tab active" style="${tabStyle}">add your email</button>
+                    </div>
+                    <p style="${descStyle} margin-bottom: 1.75rem;">your account signed in without an email address. add and confirm one to secure your account and enable two-factor authentication.</p>
+                    <input id="sp-eg-input" class="settings-input" type="email" placeholder="you@example.com" autocomplete="email" spellcheck="false" inputmode="email" style="text-align: center; padding: 0.75rem 0.85rem; font-size: 0.85rem;" />
+                    <p class="error-msg" id="sp-eg-error" style="display:none; margin-top: 1rem;"></p>
+                    <button id="sp-eg-submit" class="submit-btn" style="margin-top: 1.5rem; width: 100%;">send code</button>
                 </div>
-                <div class="sp-eg-form">
-                    <p class="sp-mfa-modal-desc">your account signed in without an email address. add and confirm one to secure your account, receive security alerts, and enable two-factor authentication.</p>
-                    <input id="sp-eg-input" class="settings-input" type="email" placeholder="you@example.com" autocomplete="email" spellcheck="false" inputmode="email" style="${inputStyle}" />
-                    <p class="error-msg" id="sp-eg-error" style="display:none; margin-top: 0.5rem; text-align: left;"></p>
-                    <button id="sp-eg-submit" class="submit-btn" style="margin-top: 1rem;">send code</button>
-                </div>
-                <div class="sp-eg-code" style="display:none;">
-                    <p class="sp-mfa-modal-desc">we sent a 6-digit code to <span id="sp-eg-target" style="color:var(--text-main);font-weight:600;word-break:break-all;"></span>. enter it below to confirm.</p>
-                    <div id="sp-eg-otp" class="sp-eg-otp"></div>
-                    <p class="error-msg" id="sp-eg-code-error" style="display:none; margin-top: 0.85rem; text-align: center;"></p>
-                    <button id="sp-eg-resend" class="btn-cancel" style="width: 100%; margin-top: 1.25rem;">resend code</button>
-                    <button id="sp-eg-change" class="btn-cancel" style="width: 100%; margin-top: 0.7rem;">use a different email</button>
+                <div class="sp-eg-code" style="display:none; flex-direction: column; align-items: center; width: 100%;">
+                    <div class="auth-tabs" style="margin-bottom: 2rem; width: 100%;">
+                        <button class="auth-tab active" style="${tabStyle}">verify email</button>
+                    </div>
+                    <p style="${descStyle} margin-bottom: 2rem;">we sent a 6-digit code to <span id="sp-eg-target" style="color: #fff; font-weight: 700; word-break: break-all;"></span></p>
+                    <div class="otp-boxes" id="sp-eg-otp"></div>
+                    <p class="error-msg" id="sp-eg-code-error" style="display:none; margin-top: 1rem;"></p>
+                    <div style="width: 100%; display: flex; flex-direction: column; align-items: center; padding-top: 1.5rem; gap: 0.75rem;">
+                        <button id="sp-eg-resend" type="button" style="${pillStyle}">resend code</button>
+                        <button id="sp-eg-change" type="button" style="${textLinkStyle}">use a different email</button>
+                    </div>
                 </div>
             </div>
             <button id="sp-eg-logout" class="btn-cancel" style="width: 100%; margin-top: 1.5rem;">log out</button>
@@ -345,7 +342,6 @@ function showEmailGate(session) {
 
     const formView = wrap.querySelector('.sp-eg-form');
     const codeView = wrap.querySelector('.sp-eg-code');
-    const tabEl = wrap.querySelector('#sp-eg-tab');
     const input = wrap.querySelector('#sp-eg-input');
     const errEl = wrap.querySelector('#sp-eg-error');
     const submitBtn = wrap.querySelector('#sp-eg-submit');
@@ -361,6 +357,7 @@ function showEmailGate(session) {
     for (let i = 0; i < OTP_LEN; i++) {
         const c = document.createElement('input');
         c.type = 'text';
+        c.className = 'otp-box';
         c.inputMode = 'numeric';
         c.autocomplete = i === 0 ? 'one-time-code' : 'off';
         c.maxLength = 1;
@@ -453,9 +450,15 @@ function showEmailGate(session) {
     };
 
     let resendTimer = null;
+    const setResendDisabled = (off) => {
+        resendBtn.disabled = off;
+        resendBtn.style.opacity = off ? '0.4' : '';
+        resendBtn.style.cursor = off ? 'not-allowed' : 'pointer';
+        resendBtn.style.pointerEvents = off ? 'none' : '';
+    };
     const startResendCooldown = (secs) => {
         let remaining = secs;
-        resendBtn.disabled = true;
+        setResendDisabled(true);
         resendBtn.textContent = `resend in ${remaining}s`;
         if (resendTimer) clearInterval(resendTimer);
         resendTimer = setInterval(() => {
@@ -463,7 +466,7 @@ function showEmailGate(session) {
             if (remaining <= 0) {
                 clearInterval(resendTimer);
                 resendTimer = null;
-                resendBtn.disabled = false;
+                setResendDisabled(false);
                 resendBtn.textContent = 'resend code';
             } else {
                 resendBtn.textContent = `resend in ${remaining}s`;
@@ -474,9 +477,8 @@ function showEmailGate(session) {
     const goCodeStep = (email) => {
         pendingEmail = email;
         targetEl.textContent = email;
-        tabEl.textContent = 'enter the code';
         formView.style.display = 'none';
-        codeView.style.display = 'block';
+        codeView.style.display = 'flex';
         showError('');
         clearOtp();
         startResendCooldown(60);
@@ -541,9 +543,8 @@ function showEmailGate(session) {
 
     changeBtn.addEventListener('click', () => {
         if (resendTimer) { clearInterval(resendTimer); resendTimer = null; }
-        tabEl.textContent = 'add your email';
         codeView.style.display = 'none';
-        formView.style.display = 'block';
+        formView.style.display = 'flex';
         showError('');
         input.focus();
     });
