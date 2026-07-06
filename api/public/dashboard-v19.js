@@ -296,57 +296,44 @@ let emailGatePoll = null;
 function showEmailGate(session) {
     if (document.getElementById('sp-email-gate')) return;
     document.body.classList.remove('state-org-home');
-    document.body.style.overflow = 'hidden';
+    document.body.classList.add('modal-open');
 
     const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const redirectTo = window.location.origin + '/dashboard/organizations';
 
+    const cardStyle = 'position: relative; z-index: 1000; display: flex; flex-direction: column; max-width: 440px; width: 100%;';
+    const tabStyle = 'width: auto; padding: 0.4rem 1rem; cursor: default; pointer-events: none; font-size: 0.7rem; border-radius: 6px;';
+    const linkStyle = "display:block;width:100%;margin-top:0.9rem;padding:0.35rem 0;background:none;border:none;color:var(--text-muted);font-family:'JetBrains Mono',monospace;font-size:0.72rem;cursor:pointer;text-align:center;transition:color 0.15s;-webkit-tap-highlight-color:transparent;";
+
     const wrap = document.createElement('div');
     wrap.id = 'sp-email-gate';
+    wrap.className = 'modal-overlay';
     wrap.innerHTML = `
-        <style>
-            #sp-email-gate{position:fixed;inset:0;z-index:100000;display:flex;align-items:center;justify-content:center;padding:1.25rem;background:rgba(3,3,3,0.86);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);font-family:'JetBrains Mono',monospace;}
-            #sp-email-gate .sp-eg-card{width:100%;max-width:440px;background:var(--bg-panel);border:1px solid var(--border-glass);border-radius:16px;padding:2rem 1.75rem 1.5rem;box-shadow:0 24px 60px rgba(0,0,0,0.5);}
-            #sp-email-gate .sp-eg-badge{width:44px;height:44px;border-radius:12px;border:1px solid var(--border-glass);display:flex;align-items:center;justify-content:center;margin-bottom:1.1rem;color:var(--neon-blue);}
-            #sp-email-gate .sp-eg-title{font-size:1.05rem;color:var(--text-main);letter-spacing:0.01em;margin-bottom:0.55rem;}
-            #sp-email-gate .sp-eg-sub{font-size:0.76rem;line-height:1.7;color:var(--text-muted);margin-bottom:1.35rem;}
-            #sp-email-gate .sp-eg-target{color:var(--neon-blue);word-break:break-all;}
-            #sp-email-gate .sp-eg-input{width:100%;box-sizing:border-box;background:rgba(255,255,255,0.03);border:1px solid var(--border-glass);border-radius:10px;padding:0.8rem 0.9rem;color:var(--text-main);font-family:'JetBrains Mono',monospace;font-size:0.82rem;outline:none;transition:border-color 0.15s;}
-            #sp-email-gate .sp-eg-input:focus{border-color:var(--neon-blue);}
-            #sp-email-gate .sp-eg-error{min-height:1rem;font-size:0.72rem;line-height:1.5;color:#ff6b6b;margin:0.5rem 0 0.15rem;}
-            #sp-email-gate .sp-eg-btn{width:100%;margin-top:0.85rem;padding:0.82rem 1rem;border-radius:10px;border:1px solid var(--neon-blue);background:var(--neon-blue);color:#04141a;font-family:'JetBrains Mono',monospace;font-size:0.8rem;cursor:pointer;transition:opacity 0.15s,transform 0.05s;}
-            #sp-email-gate .sp-eg-btn:hover{opacity:0.9;}
-            #sp-email-gate .sp-eg-btn:active{transform:translateY(1px);}
-            #sp-email-gate .sp-eg-btn:disabled{opacity:0.45;cursor:not-allowed;}
-            #sp-email-gate .sp-eg-btn-ghost{background:transparent;color:var(--neon-blue);}
-            #sp-email-gate .sp-eg-link{display:block;width:100%;margin-top:0.9rem;padding:0;background:none;border:none;color:var(--text-muted);font-family:'JetBrains Mono',monospace;font-size:0.72rem;cursor:pointer;text-align:center;transition:color 0.15s;}
-            #sp-email-gate .sp-eg-link:hover{color:var(--text-main);}
-            #sp-email-gate .sp-eg-logout{margin-top:1.4rem;border-top:1px solid var(--border-glass);padding-top:1.1rem;}
-            @media (max-width:520px){#sp-email-gate .sp-eg-card{padding:1.6rem 1.25rem 1.25rem;border-radius:14px;}#sp-email-gate .sp-eg-title{font-size:0.98rem;}}
-        </style>
-        <div class="sp-eg-card">
-            <div class="sp-eg-badge">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
+        <div class="auth-card modal-content" style="${cardStyle}">
+            <div style="display: flex; flex-direction: column; width: 100%;">
+                <div class="auth-tabs" style="margin-bottom: 1.5rem; display: flex; justify-content: flex-start;">
+                    <button class="auth-tab active" id="sp-eg-tab" style="${tabStyle}">add your email</button>
+                </div>
+                <div class="sp-eg-form">
+                    <p class="sp-mfa-modal-desc">your account signed in without an email address. add and confirm one to secure your account, receive security alerts, and enable two-factor authentication.</p>
+                    <input id="sp-eg-input" class="settings-input" type="email" placeholder="you@example.com" autocomplete="email" spellcheck="false" inputmode="email" style="margin-top: 1.1rem;" />
+                    <p class="error-msg" id="sp-eg-error" style="display:none; margin-top: 0.5rem;"></p>
+                    <button id="sp-eg-submit" class="submit-btn" style="margin-top: 1rem;">send confirmation link</button>
+                </div>
+                <div class="sp-eg-sent" style="display:none;">
+                    <p class="sp-mfa-modal-desc">we sent a confirmation link to <span id="sp-eg-target" style="color:var(--neon-blue);word-break:break-all;"></span>. open it to confirm — this page continues automatically once you do.</p>
+                    <button id="sp-eg-resend" class="submit-btn" style="margin-top: 1.1rem;">resend link</button>
+                    <button id="sp-eg-change" style="${linkStyle}">use a different email</button>
+                </div>
+                <button id="sp-eg-logout" style="${linkStyle}margin-top:1.3rem;">log out</button>
             </div>
-            <div class="sp-eg-form">
-                <div class="sp-eg-title">one more step</div>
-                <p class="sp-eg-sub">your account signed in without an email address. add and confirm one to secure your account, receive security alerts, and enable two-factor authentication.</p>
-                <input id="sp-eg-input" class="sp-eg-input" type="email" placeholder="you@example.com" autocomplete="email" spellcheck="false" inputmode="email" />
-                <div id="sp-eg-error" class="sp-eg-error"></div>
-                <button id="sp-eg-submit" class="sp-eg-btn">send confirmation link</button>
-            </div>
-            <div class="sp-eg-sent" style="display:none;">
-                <div class="sp-eg-title">check your inbox</div>
-                <p class="sp-eg-sub">we sent a confirmation link to <span id="sp-eg-target" class="sp-eg-target"></span>. open it to confirm — this page continues automatically once you do.</p>
-                <button id="sp-eg-resend" class="sp-eg-btn sp-eg-btn-ghost">resend link</button>
-                <button id="sp-eg-change" class="sp-eg-link">use a different email</button>
-            </div>
-            <button id="sp-eg-logout" class="sp-eg-link sp-eg-logout">log out</button>
         </div>`;
     document.body.appendChild(wrap);
+    requestAnimationFrame(() => wrap.classList.add('active'));
 
     const formView = wrap.querySelector('.sp-eg-form');
     const sentView = wrap.querySelector('.sp-eg-sent');
+    const tabEl = wrap.querySelector('#sp-eg-tab');
     const input = wrap.querySelector('#sp-eg-input');
     const errEl = wrap.querySelector('#sp-eg-error');
     const submitBtn = wrap.querySelector('#sp-eg-submit');
@@ -355,7 +342,11 @@ function showEmailGate(session) {
     const logoutBtn = wrap.querySelector('#sp-eg-logout');
     const targetEl = wrap.querySelector('#sp-eg-target');
 
-    const showError = (msg) => { errEl.textContent = (msg || '').toLowerCase(); };
+    const showError = (msg) => {
+        if (!msg) { errEl.style.display = 'none'; errEl.textContent = ''; return; }
+        errEl.textContent = msg.toLowerCase();
+        errEl.style.display = 'block';
+    };
 
     const sendLink = async (email) => {
         showError('');
@@ -408,6 +399,7 @@ function showEmailGate(session) {
 
     const goSent = (email) => {
         targetEl.textContent = email;
+        tabEl.textContent = 'check your inbox';
         formView.style.display = 'none';
         sentView.style.display = 'block';
         startResendCooldown(60);
@@ -450,6 +442,7 @@ function showEmailGate(session) {
     changeBtn.addEventListener('click', () => {
         if (emailGatePoll) { clearInterval(emailGatePoll); emailGatePoll = null; }
         if (resendTimer) { clearInterval(resendTimer); resendTimer = null; }
+        tabEl.textContent = 'add your email';
         sentView.style.display = 'none';
         formView.style.display = 'block';
         showError('');
@@ -461,6 +454,11 @@ function showEmailGate(session) {
         try { localStorage.removeItem('sentinel-cached-orgs'); localStorage.removeItem('sentinel-cached-profile'); } catch (e) {}
         if (sentinelAuth) { try { await sentinelAuth.auth.signOut(); } catch (e) {} }
         window.location.href = 'https://sentinelpay.org';
+    });
+
+    [changeBtn, logoutBtn].forEach((el) => {
+        el.addEventListener('mouseenter', () => { el.style.color = 'var(--text-main)'; });
+        el.addEventListener('mouseleave', () => { el.style.color = 'var(--text-muted)'; });
     });
 
     setTimeout(() => input.focus(), 60);
