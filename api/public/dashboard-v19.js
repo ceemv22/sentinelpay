@@ -291,8 +291,6 @@ function hasConfirmedEmail(user) {
     return !!(user && user.email && (user.email_confirmed_at || user.confirmed_at));
 }
 
-let emailGatePoll = null;
-
 function showEmailGate(session) {
     if (document.getElementById('sp-email-gate')) return;
     document.body.classList.remove('state-org-home');
@@ -304,6 +302,8 @@ function showEmailGate(session) {
     const cardStyle = 'position: relative; z-index: 1000; display: flex; flex-direction: column; max-width: 440px; width: 100%;';
     const tabStyle = 'width: auto; padding: 0.4rem 1rem; cursor: default; pointer-events: none; font-size: 0.7rem; border-radius: 6px;';
     const inputStyle = 'margin-top: 1.1rem; padding: 0.7rem 0.85rem; font-size: 0.85rem;';
+
+    let pendingEmail = '';
 
     const wrap = document.createElement('div');
     wrap.id = 'sp-email-gate';
@@ -318,11 +318,14 @@ function showEmailGate(session) {
                     <p class="sp-mfa-modal-desc">your account signed in without an email address. add and confirm one to secure your account, receive security alerts, and enable two-factor authentication.</p>
                     <input id="sp-eg-input" class="settings-input" type="email" placeholder="you@example.com" autocomplete="email" spellcheck="false" inputmode="email" style="${inputStyle}" />
                     <p class="error-msg" id="sp-eg-error" style="display:none; margin-top: 0.5rem; text-align: left;"></p>
-                    <button id="sp-eg-submit" class="submit-btn" style="margin-top: 1rem;">send confirmation link</button>
+                    <button id="sp-eg-submit" class="submit-btn" style="margin-top: 1rem;">send code</button>
                 </div>
-                <div class="sp-eg-sent" style="display:none;">
-                    <p class="sp-mfa-modal-desc">we sent a confirmation link to <span id="sp-eg-target" style="color:var(--text-main);font-weight:600;word-break:break-all;"></span>. open it to confirm — this page continues automatically once you do.</p>
-                    <button id="sp-eg-resend" class="submit-btn" style="margin-top: 1.1rem;">resend link</button>
+                <div class="sp-eg-code" style="display:none;">
+                    <p class="sp-mfa-modal-desc">we sent a 6-digit code to <span id="sp-eg-target" style="color:var(--text-main);font-weight:600;word-break:break-all;"></span>. enter it below to confirm.</p>
+                    <input id="sp-eg-code-input" class="settings-input sp-mfa-code" type="text" placeholder="000000" inputmode="numeric" autocomplete="one-time-code" maxlength="6" />
+                    <p class="error-msg" id="sp-eg-code-error" style="display:none; margin-top: 0.5rem; text-align: left;"></p>
+                    <button id="sp-eg-confirm" class="submit-btn" style="margin-top: 1rem;">confirm email</button>
+                    <button id="sp-eg-resend" class="btn-cancel" style="width: 100%; margin-top: 0.7rem;">resend code</button>
                     <button id="sp-eg-change" class="btn-cancel" style="width: 100%; margin-top: 0.7rem;">use a different email</button>
                 </div>
             </div>
@@ -332,50 +335,63 @@ function showEmailGate(session) {
     requestAnimationFrame(() => wrap.classList.add('active'));
 
     const formView = wrap.querySelector('.sp-eg-form');
-    const sentView = wrap.querySelector('.sp-eg-sent');
+    const codeView = wrap.querySelector('.sp-eg-code');
     const tabEl = wrap.querySelector('#sp-eg-tab');
     const input = wrap.querySelector('#sp-eg-input');
     const errEl = wrap.querySelector('#sp-eg-error');
     const submitBtn = wrap.querySelector('#sp-eg-submit');
+    const codeInput = wrap.querySelector('#sp-eg-code-input');
+    const codeErrEl = wrap.querySelector('#sp-eg-code-error');
+    const confirmBtn = wrap.querySelector('#sp-eg-confirm');
     const resendBtn = wrap.querySelector('#sp-eg-resend');
     const changeBtn = wrap.querySelector('#sp-eg-change');
     const logoutBtn = wrap.querySelector('#sp-eg-logout');
     const targetEl = wrap.querySelector('#sp-eg-target');
 
     const showError = (msg) => {
-        if (!msg) { errEl.style.display = 'none'; errEl.textContent = ''; return; }
-        errEl.textContent = 'error: ' + msg.toLowerCase();
-        errEl.style.display = 'block';
+        [errEl, codeErrEl].forEach((el) => {
+            if (!msg) { el.style.display = 'none'; el.textContent = ''; }
+            else { el.textContent = 'error: ' + msg.toLowerCase(); el.style.display = 'block'; }
+        });
     };
 
-    const sendLink = async (email) => {
+    const getToken = async () => {
+        try {
+            const { data } = await sentinelAuth.auth.getSession();
+            if (data && data.session && data.session.access_token) return data.session.access_token;
+        } catch (e) {}
+        return (session && session.access_token) || '';
+    };
+
+    const post = async (path, body) => {
+        const token = await getToken();
+        const r = await fetch(path, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+            body: JSON.stringify(body || {})
+        });
+        let data = {};
+        try { data = await r.json(); } catch (e) {}
+        return { ok: r.ok, status: r.status, data };
+    };
+
+    const sendCode = async (email) => {
         showError('');
-        const { error } = await sentinelAuth.auth.updateUser({ email }, { emailRedirectTo: redirectTo });
-        if (error) {
-            const m = (error.message || '').toLowerCase();
-            if (m.includes('already') || m.includes('registered') || m.includes('exists')) {
-                throw new Error('that email is already linked to another account.');
-            }
-            if (error.status === 429 || m.includes('rate') || m.includes('too many')) {
-                throw new Error('too many attempts — wait a minute and try again.');
-            }
-            throw new Error(error.message || 'could not send the link.');
+        const { ok, status, data } = await post('/v1/user/email-change/send-code-new', { newEmail: email });
+        if (!ok) {
+            if (status === 429) throw new Error(data.retryAfter ? `wait ${data.retryAfter}s and try again` : 'too many attempts, wait a minute');
+            throw new Error(data.error || 'could not send the code');
         }
     };
 
-    const startPolling = () => {
-        if (emailGatePoll) clearInterval(emailGatePoll);
-        emailGatePoll = setInterval(async () => {
-            try {
-                const { data } = await sentinelAuth.auth.refreshSession();
-                const u = (data && data.user) || (data && data.session && data.session.user) || null;
-                if (hasConfirmedEmail(u)) {
-                    clearInterval(emailGatePoll);
-                    emailGatePoll = null;
-                    window.location.href = redirectTo;
-                }
-            } catch (e) {}
-        }, 5000);
+    const confirmCode = async (email, code) => {
+        let r = await post('/v1/user/email-change/verify-code-new', { code });
+        if (!r.ok) throw new Error(r.data.error || 'incorrect code');
+        r = await post('/v1/user/email-change/finalize', { email });
+        if (!r.ok) {
+            if (r.status === 409) throw new Error('this email is already in use');
+            throw new Error(r.data.error || 'could not confirm your email');
+        }
     };
 
     let resendTimer = null;
@@ -390,67 +406,89 @@ function showEmailGate(session) {
                 clearInterval(resendTimer);
                 resendTimer = null;
                 resendBtn.disabled = false;
-                resendBtn.textContent = 'resend link';
+                resendBtn.textContent = 'resend code';
             } else {
                 resendBtn.textContent = `resend in ${remaining}s`;
             }
         }, 1000);
     };
 
-    const goSent = (email) => {
+    const goCodeStep = (email) => {
+        pendingEmail = email;
         targetEl.textContent = email;
-        tabEl.textContent = 'check your inbox';
+        tabEl.textContent = 'enter the code';
         formView.style.display = 'none';
-        sentView.style.display = 'block';
+        codeView.style.display = 'block';
+        showError('');
+        codeInput.value = '';
         startResendCooldown(60);
-        startPolling();
+        setTimeout(() => codeInput.focus(), 50);
     };
 
     submitBtn.addEventListener('click', async () => {
         const email = (input.value || '').trim().toLowerCase();
-        if (!EMAIL_RE.test(email)) { showError('enter a valid email address.'); input.focus(); return; }
+        if (!EMAIL_RE.test(email)) { showError('enter a valid email address'); input.focus(); return; }
         submitBtn.disabled = true;
         submitBtn.textContent = 'sending...';
         try {
-            await sendLink(email);
-            goSent(email);
+            await sendCode(email);
+            goCodeStep(email);
         } catch (e) {
             showError(e.message);
         } finally {
             submitBtn.disabled = false;
-            submitBtn.textContent = 'send confirmation link';
+            submitBtn.textContent = 'send code';
         }
     });
 
     input.addEventListener('keydown', (e) => { if (e.key === 'Enter') submitBtn.click(); });
 
+    codeInput.addEventListener('input', () => { codeInput.value = codeInput.value.replace(/[^0-9]/g, '').slice(0, 6); });
+
+    confirmBtn.addEventListener('click', async () => {
+        const code = (codeInput.value || '').trim();
+        if (!/^[0-9]{6}$/.test(code)) { showError('enter the 6-digit code'); codeInput.focus(); return; }
+        confirmBtn.disabled = true;
+        confirmBtn.textContent = 'confirming...';
+        try {
+            await confirmCode(pendingEmail, code);
+            confirmBtn.textContent = 'confirmed';
+            if (resendTimer) { clearInterval(resendTimer); resendTimer = null; }
+            try { await sentinelAuth.auth.refreshSession(); } catch (e) {}
+            window.location.href = redirectTo;
+        } catch (e) {
+            showError(e.message);
+            confirmBtn.disabled = false;
+            confirmBtn.textContent = 'confirm email';
+        }
+    });
+
+    codeInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') confirmBtn.click(); });
+
     resendBtn.addEventListener('click', async () => {
         if (resendBtn.disabled) return;
-        const email = targetEl.textContent;
         resendBtn.disabled = true;
         resendBtn.textContent = 'sending...';
         try {
-            await sendLink(email);
+            await sendCode(pendingEmail);
             startResendCooldown(60);
         } catch (e) {
             showError(e.message);
             resendBtn.disabled = false;
-            resendBtn.textContent = 'resend link';
+            resendBtn.textContent = 'resend code';
         }
     });
 
     changeBtn.addEventListener('click', () => {
-        if (emailGatePoll) { clearInterval(emailGatePoll); emailGatePoll = null; }
         if (resendTimer) { clearInterval(resendTimer); resendTimer = null; }
         tabEl.textContent = 'add your email';
-        sentView.style.display = 'none';
+        codeView.style.display = 'none';
         formView.style.display = 'block';
         showError('');
         input.focus();
     });
 
     logoutBtn.addEventListener('click', async () => {
-        if (emailGatePoll) { clearInterval(emailGatePoll); emailGatePoll = null; }
         try { localStorage.removeItem('sentinel-cached-orgs'); localStorage.removeItem('sentinel-cached-profile'); } catch (e) {}
         if (sentinelAuth) { try { await sentinelAuth.auth.signOut(); } catch (e) {} }
         window.location.href = 'https://sentinelpay.org';
