@@ -4104,6 +4104,20 @@ function setupSecurity() {
         document.body.classList.add('modal-open');
         lockBodyScroll();
         try {
+            let accountEmail = '';
+            try {
+                const { data: uData } = await sentinelAuth.auth.getUser();
+                accountEmail = (uData && uData.user && uData.user.email) ? uData.user.email : '';
+                console.log('[mfa enroll] account email present:', Boolean(accountEmail), accountEmail ? `(${accountEmail})` : '(none)');
+            } catch (eu) {}
+            if (!accountEmail) {
+                pendingFactorId = null;
+                verifyBtn.disabled = true;
+                secretRow.style.display = 'none';
+                qrWrap.innerHTML = `<p style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:#ff6b6b;text-align:center;line-height:1.6;margin:1rem 0;">this account has no email address.<br>authenticator setup needs one — add an email under account settings first.</p>`;
+                return;
+            }
+
             try {
                 const { data: existing } = await mfa.listFactors();
                 const all = (existing && (existing.all || existing.totp)) || [];
