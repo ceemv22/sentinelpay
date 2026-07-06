@@ -4305,9 +4305,9 @@ function setupSecurity() {
                 }
             } catch (e3) {}
 
-            let res = await mfa.enroll({ factorType: 'totp', issuer: 'SentinelPay', friendlyName: `sentinelpay ${Date.now().toString(36).slice(-4)}` });
+            let res = await mfa.enroll({ factorType: 'totp', issuer: 'sentinelpay', friendlyName: `sentinelpay ${Date.now().toString(36).slice(-4)}` });
             if (res.error && /already exists|friendly|name/i.test(res.error.message || '')) {
-                res = await mfa.enroll({ factorType: 'totp', issuer: 'SentinelPay', friendlyName: `sentinelpay ${Date.now().toString(36)}` });
+                res = await mfa.enroll({ factorType: 'totp', issuer: 'sentinelpay', friendlyName: `sentinelpay ${Date.now().toString(36)}` });
             }
             if (res.error) {
                 const st = res.error && res.error.status ? ` (${res.error.status})` : '';

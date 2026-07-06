@@ -63,7 +63,7 @@ def fetch_addresses():
     return sorted(list(valid_addresses))
 
 def main():
-    print("=== SentinelPay Mixer Database Updater ===")
+    print("=== sentinelpay Mixer Database Updater ===")
 
     DATA_DIR.mkdir(parents=True, exist_ok=True)
 

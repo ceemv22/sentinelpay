@@ -648,13 +648,13 @@
             }
             document.getElementById('download-priv').onclick = function() {
                 var body = document.getElementById('privacy-content-body');
-                var text = 'SENTINELPAY - PRIVACY POLICY\nLast Updated: May 03, 2026\n\n';
+                var text = 'sentinelpay - PRIVACY POLICY\nLast Updated: May 03, 2026\n\n';
                 body.querySelectorAll('.tos-section').forEach(function(s) {
                     var title = s.querySelector('h2').innerText;
                     var content = s.innerText.replace(title, '').trim();
                     text += title.toUpperCase() + '\n' + content + '\n\n';
                 });
-                text += '\n© 2026 SentinelPay. All rights reserved.';
+                text += '\n© 2026 sentinelpay. All rights reserved.';
                 var blob = new Blob([text], { type: 'text/plain' });
                 var url = URL.createObjectURL(blob);
                 var a = document.createElement('a');

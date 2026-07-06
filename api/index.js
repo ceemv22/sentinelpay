@@ -918,7 +918,7 @@ app.post('/v1/user/email-change/send-code', requireSupabaseAuth, async (req, res
             <head>
                 <meta charset="utf-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>verification code | SentinelPay</title>
+                <title>verification code | sentinelpay</title>
                 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
             </head>
             <body style="margin: 0; padding: 0; background-color: #050505; color: #ffffff; font-family: 'JetBrains Mono', 'Courier New', monospace; -webkit-font-smoothing: antialiased;">
@@ -926,7 +926,7 @@ app.post('/v1/user/email-change/send-code', requireSupabaseAuth, async (req, res
                     <table align="center" border="0" cellpadding="0" cellspacing="0" style="margin-bottom: 50px;">
                         <tr>
                             <td align="center">
-                                <img src="https://sentinelpay.org/logo.png" alt="SentinelPay" width="64" height="64" style="display: block; border: 0;">
+                                <img src="https://sentinelpay.org/logo.png" alt="sentinelpay" width="64" height="64" style="display: block; border: 0;">
                             </td>
                         </tr>
                     </table>
@@ -1029,13 +1029,13 @@ app.post('/v1/user/email-change/send-code-new', requireSupabaseAuth, async (req,
             <head>
                 <meta charset="utf-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>confirm new email | SentinelPay</title>
+                <title>confirm new email | sentinelpay</title>
                 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
             </head>
             <body style="margin: 0; padding: 0; background-color: #050505; color: #ffffff; font-family: 'JetBrains Mono', 'Courier New', monospace; -webkit-font-smoothing: antialiased;">
                 <div style="background-color: #050505; padding: 100px 20px; text-align: center;">
                     <table align="center" border="0" cellpadding="0" cellspacing="0" style="margin-bottom: 50px;">
-                        <tr><td align="center"><img src="https://sentinelpay.org/logo.png" alt="SentinelPay" width="64" height="64" style="display: block; border: 0;"></td></tr>
+                        <tr><td align="center"><img src="https://sentinelpay.org/logo.png" alt="sentinelpay" width="64" height="64" style="display: block; border: 0;"></td></tr>
                     </table>
                     <table align="center" border="0" cellpadding="0" cellspacing="0" style="max-width: 420px; width: 100%; border-top: 1px solid rgba(255,255,255,0.05);">
                         <tr>
@@ -1161,13 +1161,13 @@ app.post('/v1/user/username-change/send-code', requireSupabaseAuth, async (req, 
             <head>
                 <meta charset="utf-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>verification code | SentinelPay</title>
+                <title>verification code | sentinelpay</title>
                 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
             </head>
             <body style="margin: 0; padding: 0; background-color: #050505; color: #ffffff; font-family: 'JetBrains Mono', 'Courier New', monospace; -webkit-font-smoothing: antialiased;">
                 <div style="background-color: #050505; padding: 100px 20px; text-align: center;">
                     <table align="center" border="0" cellpadding="0" cellspacing="0" style="margin-bottom: 50px;">
-                        <tr><td align="center"><img src="https://sentinelpay.org/logo.png" alt="SentinelPay" width="64" height="64" style="display: block; border: 0;"></td></tr>
+                        <tr><td align="center"><img src="https://sentinelpay.org/logo.png" alt="sentinelpay" width="64" height="64" style="display: block; border: 0;"></td></tr>
                     </table>
                     <table align="center" border="0" cellpadding="0" cellspacing="0" style="max-width: 420px; width: 100%; border-top: 1px solid rgba(255,255,255,0.05);">
                         <tr>
@@ -1390,7 +1390,7 @@ app.post('/v1/user/account/deletion-request', requireRateLimitBackend, requireSu
                         <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
                         <body style="margin:0;padding:0;background-color:#050505;color:#ffffff;font-family:'JetBrains Mono','Courier New',monospace;-webkit-font-smoothing:antialiased;">
                             <div style="background-color:#050505;padding:100px 20px;text-align:center;">
-                                <img src="https://sentinelpay.org/logo.png" alt="SentinelPay" width="64" height="64" style="display:block;margin:0 auto 40px;border:0;">
+                                <img src="https://sentinelpay.org/logo.png" alt="sentinelpay" width="64" height="64" style="display:block;margin:0 auto 40px;border:0;">
                                 <table align="center" border="0" cellpadding="0" cellspacing="0" style="max-width:420px;width:100%;border-top:1px solid rgba(255,255,255,0.05);">
                                     <tr><td style="padding:40px 0;">
                                         <h1 style="font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:800;letter-spacing:-1px;margin:0 0 20px;color:#ffffff;text-transform:lowercase;">account deletion requested</h1>
@@ -1712,7 +1712,7 @@ app.post('/v1/organizations/:slug/team/invite', requireSupabaseAuth, async (req,
                 <head>
                     <meta charset="utf-8">
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <title>S-Tier Handshake | SentinelPay</title>
+                    <title>S-Tier Handshake | sentinelpay</title>
                     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
                 </head>
                 <body style="margin: 0; padding: 0; background-color: #050505; color: #ffffff; font-family: 'JetBrains Mono', 'Courier New', monospace; -webkit-font-smoothing: antialiased;">
@@ -1720,7 +1720,7 @@ app.post('/v1/organizations/:slug/team/invite', requireSupabaseAuth, async (req,
                         <table align="center" border="0" cellpadding="0" cellspacing="0" style="margin-bottom: 50px;">
                             <tr>
                                 <td align="center">
-                                    <img src="https://sentinelpay.org/logo.png" alt="SentinelPay" width="64" height="64" style="display: block; border: 0;">
+                                    <img src="https://sentinelpay.org/logo.png" alt="sentinelpay" width="64" height="64" style="display: block; border: 0;">
                                 </td>
                             </tr>
                         </table>
