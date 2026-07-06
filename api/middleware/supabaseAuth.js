@@ -64,30 +64,39 @@ async function requireSupabaseAuth(req, res, next) {
             const rawKeyInitial = generateApiKey();
             const keyHashInitial = crypto.createHash('sha256').update(rawKeyInitial).digest('hex');
 
-            dbUser = await prisma.user.upsert({
-                where: { supabaseId: user.id },
-                update: {
-                    email: userEmail,
-                    authProvider,
-                    isEmailVerified
-                },
-                create: {
-                    supabaseId: user.id,
-                    email: userEmail,
-                    username: oauthUsername,
-                    authProvider,
-                    isEmailVerified,
-                    credits: 10,
-                    apiKeys: {
-                        create: {
-                            keyHash: keyHashInitial,
-                            rawKey: encrypt(rawKeyInitial),
-                            plan: 'starter',
-                            active: true
-                        }
+            const buildCreate = (uname) => ({
+                supabaseId: user.id,
+                email: userEmail,
+                username: uname,
+                authProvider,
+                isEmailVerified,
+                credits: 10,
+                apiKeys: {
+                    create: {
+                        keyHash: keyHashInitial,
+                        rawKey: encrypt(rawKeyInitial),
+                        plan: 'starter',
+                        active: true
                     }
                 }
             });
+
+            try {
+                dbUser = await prisma.user.upsert({
+                    where: { supabaseId: user.id },
+                    update: { email: userEmail, authProvider, isEmailVerified },
+                    create: buildCreate(oauthUsername)
+                });
+            } catch (syncErr) {
+                if (syncErr && syncErr.code === 'P2002') {
+                    dbUser = await prisma.user.findUnique({ where: { supabaseId: user.id } });
+                    if (!dbUser) {
+                        dbUser = await prisma.user.create({ data: buildCreate(null) });
+                    }
+                } else {
+                    throw syncErr;
+                }
+            }
         }
 
         if (!dbUser) {
@@ -117,7 +126,7 @@ async function requireSupabaseAuth(req, res, next) {
         req.hasMfa = Array.isArray(user.factors) && user.factors.some(f => f && f.status === 'verified');
         next();
     } catch (error) {
-        console.error('[sentinel-auth-middleware] critical error:', error.message);
+        console.error('[sentinel-auth-middleware] critical error:', error.code || '', error.message, error.meta || '');
         return res.status(500).json({ error: 'authentication_sync_failed', code: 500 });
     }
 }
