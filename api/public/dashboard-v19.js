@@ -304,13 +304,14 @@ function showEmailGate(session) {
     const cardStyle = 'position: relative; z-index: 1000; display: flex; flex-direction: column; max-width: 440px; width: 100%;';
     const tabStyle = 'width: auto; padding: 0.4rem 1rem; cursor: default; pointer-events: none; font-size: 0.7rem; border-radius: 6px;';
     const linkStyle = "display:block;width:100%;margin-top:0.9rem;padding:0.35rem 0;background:none;border:none;color:var(--text-muted);font-family:'JetBrains Mono',monospace;font-size:0.72rem;cursor:pointer;text-align:center;transition:color 0.15s;-webkit-tap-highlight-color:transparent;";
+    const logoutStyle = "display:block;width:100%;margin-top:1.5rem;padding:1.1rem 0 0;background:none;border:none;border-top:1px solid var(--border-glass);color:var(--text-muted);font-family:'JetBrains Mono',monospace;font-size:0.72rem;cursor:pointer;text-align:center;transition:color 0.15s;-webkit-tap-highlight-color:transparent;";
 
     const wrap = document.createElement('div');
     wrap.id = 'sp-email-gate';
     wrap.className = 'modal-overlay';
     wrap.innerHTML = `
         <div class="auth-card modal-content" style="${cardStyle}">
-            <div style="display: flex; flex-direction: column; width: 100%;">
+            <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; width: 100%;">
                 <div class="auth-tabs" style="margin-bottom: 1.5rem; display: flex; justify-content: flex-start;">
                     <button class="auth-tab active" id="sp-eg-tab" style="${tabStyle}">add your email</button>
                 </div>
@@ -321,12 +322,12 @@ function showEmailGate(session) {
                     <button id="sp-eg-submit" class="submit-btn" style="margin-top: 1rem;">send confirmation link</button>
                 </div>
                 <div class="sp-eg-sent" style="display:none;">
-                    <p class="sp-mfa-modal-desc">we sent a confirmation link to <span id="sp-eg-target" style="color:var(--neon-blue);word-break:break-all;"></span>. open it to confirm — this page continues automatically once you do.</p>
+                    <p class="sp-mfa-modal-desc">we sent a confirmation link to <span id="sp-eg-target" style="color:var(--text-main);font-weight:600;word-break:break-all;"></span>. open it to confirm — this page continues automatically once you do.</p>
                     <button id="sp-eg-resend" class="submit-btn" style="margin-top: 1.1rem;">resend link</button>
                     <button id="sp-eg-change" style="${linkStyle}">use a different email</button>
                 </div>
-                <button id="sp-eg-logout" style="${linkStyle}margin-top:1.3rem;">log out</button>
             </div>
+            <button id="sp-eg-logout" style="${logoutStyle}">log out</button>
         </div>`;
     document.body.appendChild(wrap);
     requestAnimationFrame(() => wrap.classList.add('active'));
