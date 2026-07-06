@@ -309,6 +309,14 @@ function showEmailGate(session) {
     wrap.id = 'sp-email-gate';
     wrap.className = 'modal-overlay';
     wrap.innerHTML = `
+        <style>
+            #sp-email-gate .sp-eg-otp { display: flex; gap: 0.5rem; margin-top: 1.1rem; }
+            #sp-email-gate .sp-eg-otp input { flex: 1 1 0; min-width: 0; aspect-ratio: 1 / 1; text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 1.4rem; font-weight: 700; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 9px; color: #fff; outline: none; -webkit-appearance: none; appearance: none; transition: border-color 0.15s, box-shadow 0.15s; }
+            #sp-email-gate .sp-eg-otp input.filled { border-color: rgba(255,255,255,0.28); }
+            #sp-email-gate .sp-eg-otp input:focus { border-color: var(--neon-blue); box-shadow: 0 0 0 3px rgba(0,240,255,0.12); }
+            html.theme-light #sp-email-gate .sp-eg-otp input { background: rgba(0,0,0,0.02); border-color: rgba(20,24,34,0.15); color: #15161a; }
+            html.theme-light #sp-email-gate .sp-eg-otp input.filled { border-color: rgba(20,24,34,0.3); }
+        </style>
         <div class="auth-card modal-content" style="${cardStyle}">
             <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; width: 100%;">
                 <div class="auth-tabs" style="margin-bottom: 1.5rem; display: flex; justify-content: flex-start;">
@@ -322,7 +330,7 @@ function showEmailGate(session) {
                 </div>
                 <div class="sp-eg-code" style="display:none;">
                     <p class="sp-mfa-modal-desc">we sent a 6-digit code to <span id="sp-eg-target" style="color:var(--text-main);font-weight:600;word-break:break-all;"></span>. enter it below to confirm.</p>
-                    <input id="sp-eg-code-input" class="settings-input sp-mfa-code" type="text" placeholder="000000" inputmode="numeric" autocomplete="one-time-code" maxlength="6" />
+                    <div id="sp-eg-otp" class="sp-eg-otp"></div>
                     <p class="error-msg" id="sp-eg-code-error" style="display:none; margin-top: 0.5rem; text-align: left;"></p>
                     <button id="sp-eg-confirm" class="submit-btn" style="margin-top: 1rem;">confirm email</button>
                     <button id="sp-eg-resend" class="btn-cancel" style="width: 100%; margin-top: 0.7rem;">resend code</button>
@@ -340,13 +348,55 @@ function showEmailGate(session) {
     const input = wrap.querySelector('#sp-eg-input');
     const errEl = wrap.querySelector('#sp-eg-error');
     const submitBtn = wrap.querySelector('#sp-eg-submit');
-    const codeInput = wrap.querySelector('#sp-eg-code-input');
     const codeErrEl = wrap.querySelector('#sp-eg-code-error');
     const confirmBtn = wrap.querySelector('#sp-eg-confirm');
     const resendBtn = wrap.querySelector('#sp-eg-resend');
     const changeBtn = wrap.querySelector('#sp-eg-change');
     const logoutBtn = wrap.querySelector('#sp-eg-logout');
     const targetEl = wrap.querySelector('#sp-eg-target');
+
+    const OTP_LEN = 6;
+    const otpWrap = wrap.querySelector('#sp-eg-otp');
+    const cells = [];
+    for (let i = 0; i < OTP_LEN; i++) {
+        const c = document.createElement('input');
+        c.type = 'text';
+        c.inputMode = 'numeric';
+        c.autocomplete = i === 0 ? 'one-time-code' : 'off';
+        c.maxLength = 1;
+        c.setAttribute('aria-label', 'digit ' + (i + 1));
+        cells.push(c);
+        otpWrap.appendChild(c);
+    }
+    const otpValue = () => cells.map((c) => c.value).join('');
+    const setFilled = () => cells.forEach((c) => c.classList.toggle('filled', !!c.value));
+    const clearOtp = () => { cells.forEach((c) => { c.value = ''; }); setFilled(); };
+    const focusFirstEmpty = () => { (cells.find((c) => !c.value) || cells[0]).focus(); };
+    const maybeAutoConfirm = () => { if (otpValue().length === OTP_LEN && !confirmBtn.disabled) confirmBtn.click(); };
+    cells.forEach((c, idx) => {
+        c.addEventListener('input', () => {
+            c.value = c.value.replace(/[^0-9]/g, '').slice(0, 1);
+            setFilled();
+            if (c.value && idx < OTP_LEN - 1) cells[idx + 1].focus();
+            maybeAutoConfirm();
+        });
+        c.addEventListener('keydown', (e) => {
+            if (e.key === 'Backspace' && !c.value && idx > 0) { cells[idx - 1].focus(); cells[idx - 1].value = ''; setFilled(); e.preventDefault(); }
+            else if (e.key === 'ArrowLeft' && idx > 0) { cells[idx - 1].focus(); e.preventDefault(); }
+            else if (e.key === 'ArrowRight' && idx < OTP_LEN - 1) { cells[idx + 1].focus(); e.preventDefault(); }
+            else if (e.key === 'Enter') confirmBtn.click();
+        });
+        c.addEventListener('paste', (e) => {
+            e.preventDefault();
+            const src = (e.clipboardData || window.clipboardData);
+            const digits = (src ? src.getData('text') : '').replace(/[^0-9]/g, '').slice(0, OTP_LEN);
+            if (!digits) return;
+            for (let j = 0; j < OTP_LEN; j++) cells[j].value = digits[j] || '';
+            setFilled();
+            cells[Math.min(digits.length, OTP_LEN - 1)].focus();
+            maybeAutoConfirm();
+        });
+    });
 
     const showError = (msg) => {
         [errEl, codeErrEl].forEach((el) => {
@@ -394,6 +444,14 @@ function showEmailGate(session) {
         }
     };
 
+    const isEmailTaken = async (email) => {
+        try {
+            const { ok, data } = await post('/v1/user/check-email', { email });
+            if (ok && data && data.available === false) return true;
+        } catch (e) {}
+        return false;
+    };
+
     let resendTimer = null;
     const startResendCooldown = (secs) => {
         let remaining = secs;
@@ -420,17 +478,19 @@ function showEmailGate(session) {
         formView.style.display = 'none';
         codeView.style.display = 'block';
         showError('');
-        codeInput.value = '';
+        clearOtp();
         startResendCooldown(60);
-        setTimeout(() => codeInput.focus(), 50);
+        setTimeout(() => cells[0].focus(), 50);
     };
 
     submitBtn.addEventListener('click', async () => {
         const email = (input.value || '').trim().toLowerCase();
         if (!EMAIL_RE.test(email)) { showError('enter a valid email address'); input.focus(); return; }
         submitBtn.disabled = true;
-        submitBtn.textContent = 'sending...';
+        submitBtn.textContent = 'checking...';
         try {
+            if (await isEmailTaken(email)) { showError('that email is already registered'); input.focus(); return; }
+            submitBtn.textContent = 'sending...';
             await sendCode(email);
             goCodeStep(email);
         } catch (e) {
@@ -443,11 +503,9 @@ function showEmailGate(session) {
 
     input.addEventListener('keydown', (e) => { if (e.key === 'Enter') submitBtn.click(); });
 
-    codeInput.addEventListener('input', () => { codeInput.value = codeInput.value.replace(/[^0-9]/g, '').slice(0, 6); });
-
     confirmBtn.addEventListener('click', async () => {
-        const code = (codeInput.value || '').trim();
-        if (!/^[0-9]{6}$/.test(code)) { showError('enter the 6-digit code'); codeInput.focus(); return; }
+        const code = otpValue();
+        if (!/^[0-9]{6}$/.test(code)) { showError('enter the 6-digit code'); focusFirstEmpty(); return; }
         confirmBtn.disabled = true;
         confirmBtn.textContent = 'confirming...';
         try {
@@ -458,12 +516,12 @@ function showEmailGate(session) {
             window.location.href = redirectTo;
         } catch (e) {
             showError(e.message);
+            clearOtp();
+            cells[0].focus();
             confirmBtn.disabled = false;
             confirmBtn.textContent = 'confirm email';
         }
     });
-
-    codeInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') confirmBtn.click(); });
 
     resendBtn.addEventListener('click', async () => {
         if (resendBtn.disabled) return;
