@@ -314,6 +314,8 @@ function showEmailGate(session) {
             #sp-email-gate .sp-eg-otp input { flex: 1 1 0; min-width: 0; aspect-ratio: 1 / 1; text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 1.4rem; font-weight: 700; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 9px; color: #fff; outline: none; -webkit-appearance: none; appearance: none; transition: border-color 0.15s, box-shadow 0.15s; }
             #sp-email-gate .sp-eg-otp input.filled { border-color: rgba(255,255,255,0.28); }
             #sp-email-gate .sp-eg-otp input:focus { border-color: var(--neon-blue); box-shadow: 0 0 0 3px rgba(0,240,255,0.12); }
+            #sp-email-gate .sp-eg-otp input:disabled { opacity: 0.55; }
+            #sp-email-gate .btn-cancel:disabled { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
             html.theme-light #sp-email-gate .sp-eg-otp input { background: rgba(0,0,0,0.02); border-color: rgba(20,24,34,0.15); color: #15161a; }
             html.theme-light #sp-email-gate .sp-eg-otp input.filled { border-color: rgba(20,24,34,0.3); }
         </style>
@@ -331,9 +333,9 @@ function showEmailGate(session) {
                 <div class="sp-eg-code" style="display:none;">
                     <p class="sp-mfa-modal-desc">we sent a 6-digit code to <span id="sp-eg-target" style="color:var(--text-main);font-weight:600;word-break:break-all;"></span>. enter it below to confirm.</p>
                     <div id="sp-eg-otp" class="sp-eg-otp"></div>
-                    <p class="error-msg" id="sp-eg-code-error" style="display:none; margin-top: 0.5rem; text-align: left;"></p>
-                    <button id="sp-eg-confirm" class="submit-btn" style="margin-top: 1rem;">confirm email</button>
-                    <button id="sp-eg-resend" class="btn-cancel" style="width: 100%; margin-top: 0.7rem;">resend code</button>
+                    <p class="error-msg" id="sp-eg-code-error" style="display:none; margin-top: 0.85rem; text-align: center;"></p>
+                    <p id="sp-eg-code-status" style="display:none; margin-top: 0.85rem; text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--text-muted);">confirming...</p>
+                    <button id="sp-eg-resend" class="btn-cancel" style="width: 100%; margin-top: 1.25rem;">resend code</button>
                     <button id="sp-eg-change" class="btn-cancel" style="width: 100%; margin-top: 0.7rem;">use a different email</button>
                 </div>
             </div>
@@ -349,7 +351,7 @@ function showEmailGate(session) {
     const errEl = wrap.querySelector('#sp-eg-error');
     const submitBtn = wrap.querySelector('#sp-eg-submit');
     const codeErrEl = wrap.querySelector('#sp-eg-code-error');
-    const confirmBtn = wrap.querySelector('#sp-eg-confirm');
+    const statusEl = wrap.querySelector('#sp-eg-code-status');
     const resendBtn = wrap.querySelector('#sp-eg-resend');
     const changeBtn = wrap.querySelector('#sp-eg-change');
     const logoutBtn = wrap.querySelector('#sp-eg-logout');
@@ -372,7 +374,7 @@ function showEmailGate(session) {
     const setFilled = () => cells.forEach((c) => c.classList.toggle('filled', !!c.value));
     const clearOtp = () => { cells.forEach((c) => { c.value = ''; }); setFilled(); };
     const focusFirstEmpty = () => { (cells.find((c) => !c.value) || cells[0]).focus(); };
-    const maybeAutoConfirm = () => { if (otpValue().length === OTP_LEN && !confirmBtn.disabled) confirmBtn.click(); };
+    const maybeAutoConfirm = () => { if (otpValue().length === OTP_LEN) doConfirm(); };
     cells.forEach((c, idx) => {
         c.addEventListener('input', () => {
             c.value = c.value.replace(/[^0-9]/g, '').slice(0, 1);
@@ -384,7 +386,7 @@ function showEmailGate(session) {
             if (e.key === 'Backspace' && !c.value && idx > 0) { cells[idx - 1].focus(); cells[idx - 1].value = ''; setFilled(); e.preventDefault(); }
             else if (e.key === 'ArrowLeft' && idx > 0) { cells[idx - 1].focus(); e.preventDefault(); }
             else if (e.key === 'ArrowRight' && idx < OTP_LEN - 1) { cells[idx + 1].focus(); e.preventDefault(); }
-            else if (e.key === 'Enter') confirmBtn.click();
+            else if (e.key === 'Enter') doConfirm();
         });
         c.addEventListener('paste', (e) => {
             e.preventDefault();
@@ -503,25 +505,31 @@ function showEmailGate(session) {
 
     input.addEventListener('keydown', (e) => { if (e.key === 'Enter') submitBtn.click(); });
 
-    confirmBtn.addEventListener('click', async () => {
+    let busy = false;
+    const doConfirm = async () => {
+        if (busy) return;
         const code = otpValue();
         if (!/^[0-9]{6}$/.test(code)) { showError('enter the 6-digit code'); focusFirstEmpty(); return; }
-        confirmBtn.disabled = true;
-        confirmBtn.textContent = 'confirming...';
+        busy = true;
+        showError('');
+        cells.forEach((c) => { c.disabled = true; });
+        statusEl.textContent = 'confirming...';
+        statusEl.style.display = 'block';
         try {
             await confirmCode(pendingEmail, code);
-            confirmBtn.textContent = 'confirmed';
+            statusEl.textContent = 'confirmed';
             if (resendTimer) { clearInterval(resendTimer); resendTimer = null; }
             try { await sentinelAuth.auth.refreshSession(); } catch (e) {}
             window.location.href = redirectTo;
         } catch (e) {
-            showError(e.message);
+            busy = false;
+            statusEl.style.display = 'none';
+            cells.forEach((c) => { c.disabled = false; });
             clearOtp();
             cells[0].focus();
-            confirmBtn.disabled = false;
-            confirmBtn.textContent = 'confirm email';
+            showError(e.message);
         }
-    });
+    };
 
     resendBtn.addEventListener('click', async () => {
         if (resendBtn.disabled) return;
