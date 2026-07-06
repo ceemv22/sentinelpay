@@ -334,7 +334,6 @@ function showEmailGate(session) {
                     <p class="sp-mfa-modal-desc">we sent a 6-digit code to <span id="sp-eg-target" style="color:var(--text-main);font-weight:600;word-break:break-all;"></span>. enter it below to confirm.</p>
                     <div id="sp-eg-otp" class="sp-eg-otp"></div>
                     <p class="error-msg" id="sp-eg-code-error" style="display:none; margin-top: 0.85rem; text-align: center;"></p>
-                    <p id="sp-eg-code-status" style="display:none; margin-top: 0.85rem; text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--text-muted);">confirming...</p>
                     <button id="sp-eg-resend" class="btn-cancel" style="width: 100%; margin-top: 1.25rem;">resend code</button>
                     <button id="sp-eg-change" class="btn-cancel" style="width: 100%; margin-top: 0.7rem;">use a different email</button>
                 </div>
@@ -351,7 +350,6 @@ function showEmailGate(session) {
     const errEl = wrap.querySelector('#sp-eg-error');
     const submitBtn = wrap.querySelector('#sp-eg-submit');
     const codeErrEl = wrap.querySelector('#sp-eg-code-error');
-    const statusEl = wrap.querySelector('#sp-eg-code-status');
     const resendBtn = wrap.querySelector('#sp-eg-resend');
     const changeBtn = wrap.querySelector('#sp-eg-change');
     const logoutBtn = wrap.querySelector('#sp-eg-logout');
@@ -513,17 +511,13 @@ function showEmailGate(session) {
         busy = true;
         showError('');
         cells.forEach((c) => { c.disabled = true; });
-        statusEl.textContent = 'confirming...';
-        statusEl.style.display = 'block';
         try {
             await confirmCode(pendingEmail, code);
-            statusEl.textContent = 'confirmed';
             if (resendTimer) { clearInterval(resendTimer); resendTimer = null; }
             try { await sentinelAuth.auth.refreshSession(); } catch (e) {}
             window.location.href = redirectTo;
         } catch (e) {
             busy = false;
-            statusEl.style.display = 'none';
             cells.forEach((c) => { c.disabled = false; });
             clearOtp();
             cells[0].focus();
