@@ -303,8 +303,7 @@ function showEmailGate(session) {
 
     const cardStyle = 'position: relative; z-index: 1000; display: flex; flex-direction: column; max-width: 440px; width: 100%;';
     const tabStyle = 'width: auto; padding: 0.4rem 1rem; cursor: default; pointer-events: none; font-size: 0.7rem; border-radius: 6px;';
-    const linkStyle = "display:block;width:100%;margin-top:0.9rem;padding:0.35rem 0;background:none;border:none;color:var(--text-muted);font-family:'JetBrains Mono',monospace;font-size:0.72rem;cursor:pointer;text-align:center;transition:color 0.15s;-webkit-tap-highlight-color:transparent;";
-    const logoutStyle = "display:block;width:100%;margin-top:1.5rem;padding:1.1rem 0 0;background:none;border:none;border-top:1px solid var(--border-glass);color:var(--text-muted);font-family:'JetBrains Mono',monospace;font-size:0.72rem;cursor:pointer;text-align:center;transition:color 0.15s;-webkit-tap-highlight-color:transparent;";
+    const inputStyle = 'margin-top: 1.1rem; padding: 0.7rem 0.85rem; font-size: 0.85rem;';
 
     const wrap = document.createElement('div');
     wrap.id = 'sp-email-gate';
@@ -317,17 +316,17 @@ function showEmailGate(session) {
                 </div>
                 <div class="sp-eg-form">
                     <p class="sp-mfa-modal-desc">your account signed in without an email address. add and confirm one to secure your account, receive security alerts, and enable two-factor authentication.</p>
-                    <input id="sp-eg-input" class="settings-input" type="email" placeholder="you@example.com" autocomplete="email" spellcheck="false" inputmode="email" style="margin-top: 1.1rem;" />
-                    <p class="error-msg" id="sp-eg-error" style="display:none; margin-top: 0.5rem;"></p>
+                    <input id="sp-eg-input" class="settings-input" type="email" placeholder="you@example.com" autocomplete="email" spellcheck="false" inputmode="email" style="${inputStyle}" />
+                    <p class="error-msg" id="sp-eg-error" style="display:none; margin-top: 0.5rem; text-align: left;"></p>
                     <button id="sp-eg-submit" class="submit-btn" style="margin-top: 1rem;">send confirmation link</button>
                 </div>
                 <div class="sp-eg-sent" style="display:none;">
                     <p class="sp-mfa-modal-desc">we sent a confirmation link to <span id="sp-eg-target" style="color:var(--text-main);font-weight:600;word-break:break-all;"></span>. open it to confirm — this page continues automatically once you do.</p>
                     <button id="sp-eg-resend" class="submit-btn" style="margin-top: 1.1rem;">resend link</button>
-                    <button id="sp-eg-change" style="${linkStyle}">use a different email</button>
+                    <button id="sp-eg-change" class="btn-cancel" style="width: 100%; margin-top: 0.7rem;">use a different email</button>
                 </div>
             </div>
-            <button id="sp-eg-logout" style="${logoutStyle}">log out</button>
+            <button id="sp-eg-logout" class="btn-cancel" style="width: 100%; margin-top: 1.5rem;">log out</button>
         </div>`;
     document.body.appendChild(wrap);
     requestAnimationFrame(() => wrap.classList.add('active'));
@@ -345,7 +344,7 @@ function showEmailGate(session) {
 
     const showError = (msg) => {
         if (!msg) { errEl.style.display = 'none'; errEl.textContent = ''; return; }
-        errEl.textContent = msg.toLowerCase();
+        errEl.textContent = 'error: ' + msg.toLowerCase();
         errEl.style.display = 'block';
     };
 
@@ -455,11 +454,6 @@ function showEmailGate(session) {
         try { localStorage.removeItem('sentinel-cached-orgs'); localStorage.removeItem('sentinel-cached-profile'); } catch (e) {}
         if (sentinelAuth) { try { await sentinelAuth.auth.signOut(); } catch (e) {} }
         window.location.href = 'https://sentinelpay.org';
-    });
-
-    [changeBtn, logoutBtn].forEach((el) => {
-        el.addEventListener('mouseenter', () => { el.style.color = 'var(--text-main)'; });
-        el.addEventListener('mouseleave', () => { el.style.color = 'var(--text-muted)'; });
     });
 
     setTimeout(() => input.focus(), 60);
