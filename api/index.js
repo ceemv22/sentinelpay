@@ -71,10 +71,41 @@ app.set('trust proxy', trustProxySetting === undefined ? 1 : trustProxySetting);
 app.use((req, res, next) => {
     const cfIp = req.headers['cf-connecting-ip'];
     const forwardedFor = req.headers['x-forwarded-for'];
-    
+
     req.realIp = cfIp || (forwardedFor ? forwardedFor.split(',')[0].trim() : req.ip);
     next();
 });
+
+const cfOriginSecret = process.env.CF_ORIGIN_SECRET;
+const cfOriginHeader = (process.env.CF_ORIGIN_HEADER || 'x-sentinel-origin').trim().toLowerCase();
+const enforceCloudflare = String(process.env.ENFORCE_CLOUDFLARE || '').trim().toLowerCase() === 'true';
+
+if (enforceCloudflare && cfOriginSecret) {
+    const expectedOriginHash = crypto.createHash('sha256').update(cfOriginSecret).digest();
+    const originExempt = new Set(['/health']);
+    app.use((req, res, next) => {
+        if (originExempt.has(req.path)) return next();
+        const provided = req.headers[cfOriginHeader];
+        let ok = false;
+        if (typeof provided === 'string' && provided.length > 0) {
+            try {
+                const providedHash = crypto.createHash('sha256').update(provided).digest();
+                ok = crypto.timingSafeEqual(providedHash, expectedOriginHash);
+            } catch (e) {
+                ok = false;
+            }
+        }
+        if (!ok) {
+            return res.status(403).json({ error: 'direct origin access is blocked', code: 403 });
+        }
+        next();
+    });
+    console.log('[sentinel-security] cloudflare origin lockdown: ENABLED');
+} else if (enforceCloudflare && !cfOriginSecret) {
+    console.warn('[sentinel-security] ENFORCE_CLOUDFLARE is set but CF_ORIGIN_SECRET is missing; origin lockdown NOT enforced');
+} else {
+    console.log('[sentinel-security] cloudflare origin lockdown: disabled (set ENFORCE_CLOUDFLARE=true + CF_ORIGIN_SECRET to enable)');
+}
 
 app.use((req, res, next) => {
     const start = Date.now();
