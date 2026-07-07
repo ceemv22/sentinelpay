@@ -4010,20 +4010,16 @@
             flex-shrink: 0;
             display: flex;
             align-items: center;
-            justify-content: center;
-            width: 26px;
-            height: 26px;
-            padding: 0;
+            padding: 0.15rem;
             background: transparent;
             border: none;
-            border-radius: 5px;
             color: var(--text-muted);
             cursor: pointer;
-            transition: color 0.15s ease, background 0.15s ease;
+            transition: color 0.2s;
             -webkit-tap-highlight-color: transparent;
+            transform: none !important;
+            box-shadow: none !important;
         }
-        .sp-mfa-secret-copy:hover { color: var(--text-main); background: rgba(255, 255, 255, 0.06); }
-        .sp-mfa-secret-copy:active { background: rgba(255, 255, 255, 0.1); }
 
         .sp-mfa-code.settings-input {
             width: 100%;
@@ -5304,7 +5300,7 @@
     </div>
 
     <script src="toast.js?v=3"></script>
-    <script src="dashboard-v19.js?v=131"></script>
+    <script src="dashboard-v19.js?v=132"></script>
     <script>
         // Eye Tracking Logic
         function trackEye(element, clientX, clientY) {
