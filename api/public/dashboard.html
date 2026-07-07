@@ -2730,9 +2730,13 @@
             justify-content: center;
         }
         .otp-box {
+            flex: 0 0 auto;
+            box-sizing: border-box;
             width: 44px;
             height: 52px;
+            padding: 0;
             text-align: center;
+            line-height: 1;
             font-family: 'JetBrains Mono', monospace;
             font-size: 1.4rem;
             font-weight: 700;
@@ -2741,6 +2745,7 @@
             border: 1px solid rgba(255,255,255,0.12);
             border-radius: 10px;
             outline: none;
+            box-shadow: none;
             caret-color: transparent;
             transition: border-color 0.15s, box-shadow 0.15s;
             -moz-appearance: textfield;
