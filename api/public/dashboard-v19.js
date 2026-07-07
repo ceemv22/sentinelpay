@@ -4293,6 +4293,7 @@ function setupSecurity() {
     const qrWrap = document.getElementById('mfa-qr-wrap');
     const secretRow = document.getElementById('mfa-secret-row');
     const secretEl = document.getElementById('mfa-secret');
+    const secretCopyBtn = document.getElementById('mfa-secret-copy');
     const codeSection = document.getElementById('mfa-code-section');
     const otpWrap = document.getElementById('mfa-otp');
     const verifyError = document.getElementById('mfa-verify-error');
@@ -4621,6 +4622,42 @@ function setupSecurity() {
         disableModal.addEventListener('click', (e) => { if (e.target === disableModal) cancelDisable(); });
 
         disableCode.addEventListener('input', () => { disableCode.value = disableCode.value.replace(/[^0-9]/g, '').slice(0, 6); });
+
+        if (secretCopyBtn) {
+            const COPY_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
+            const CHECK_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+            let secretCopied = false;
+            const showSecretCopied = () => {
+                secretCopied = true;
+                secretCopyBtn.style.color = '#00ff88';
+                secretCopyBtn.innerHTML = CHECK_SVG;
+                setTimeout(() => {
+                    secretCopyBtn.style.color = '';
+                    secretCopyBtn.innerHTML = COPY_SVG;
+                    secretCopied = false;
+                }, 3000);
+            };
+            const fallbackCopySecret = (text) => {
+                const ta = document.createElement('textarea');
+                ta.value = text;
+                ta.style.cssText = 'position:fixed;left:-9999px;top:-9999px;opacity:0;';
+                document.body.appendChild(ta);
+                ta.focus();
+                ta.select();
+                try { document.execCommand('copy'); showSecretCopied(); } catch (e) {}
+                document.body.removeChild(ta);
+            };
+            secretCopyBtn.addEventListener('click', () => {
+                if (secretCopied) return;
+                const text = (secretEl.textContent || '').trim();
+                if (!text) return;
+                if (navigator.clipboard && window.isSecureContext) {
+                    navigator.clipboard.writeText(text).then(showSecretCopied).catch(() => fallbackCopySecret(text));
+                } else {
+                    fallbackCopySecret(text);
+                }
+            });
+        }
 
         disableBtn.addEventListener('click', async () => {
             disableError.style.display = 'none';
