@@ -4293,9 +4293,9 @@ function setupSecurity() {
     const qrWrap = document.getElementById('mfa-qr-wrap');
     const secretRow = document.getElementById('mfa-secret-row');
     const secretEl = document.getElementById('mfa-secret');
-    const codeInput = document.getElementById('mfa-code');
+    const codeSection = document.getElementById('mfa-code-section');
+    const otpWrap = document.getElementById('mfa-otp');
     const verifyError = document.getElementById('mfa-verify-error');
-    const verifyBtn = document.getElementById('btn-mfa-verify');
 
     const disableModal = document.getElementById('mfa-disable-modal-overlay');
     const closeDisable = document.getElementById('btn-close-mfa-disable');
@@ -4367,15 +4367,99 @@ function setupSecurity() {
 
     const cancelEnroll = () => { closeEnrollModal(); toggle.checked = enabled; };
 
+    let otpCells = [];
+    let verifyBusy = false;
+    const otpValue = () => otpCells.map((c) => c.value).join('');
+    const setOtpFilled = () => otpCells.forEach((c) => c.classList.toggle('filled', !!c.value));
+    const clearOtp = () => { otpCells.forEach((c) => { c.value = ''; c.disabled = false; }); setOtpFilled(); };
+    const focusFirstOtp = () => { const t = otpCells.find((c) => !c.value) || otpCells[0]; if (t) t.focus(); };
+
+    const doVerify = async () => {
+        if (verifyBusy) return;
+        const code = otpValue();
+        if (!/^[0-9]{6}$/.test(code)) { verifyError.textContent = 'error: enter the 6-digit code'; verifyError.style.display = 'block'; focusFirstOtp(); return; }
+        if (!pendingFactorId) return;
+        verifyBusy = true;
+        verifyError.style.display = 'none';
+        otpCells.forEach((c) => { c.disabled = true; });
+        try {
+            const { data: vdata, error } = await mfa.challengeAndVerify({ factorId: pendingFactorId, code });
+            if (error) throw new Error(error.message);
+            const ok = await setServerState(true, vdata && vdata.access_token);
+            if (!ok) {
+                const fid = pendingFactorId;
+                pendingFactorId = null;
+                enrollDone = false;
+                try { await mfa.unenroll({ factorId: fid }); } catch (e2) {}
+                enabled = false;
+                setStatus();
+                closeEnrollModal();
+                if (window.SentinelToast) window.SentinelToast.show('could not enable mfa right now. please try again.', 'error');
+                return;
+            }
+            enrollDone = true;
+            enabled = true;
+            setStatus();
+            closeEnrollModal();
+            if (window.SentinelToast) window.SentinelToast.show('mfa enabled', 'success');
+        } catch (e) {
+            console.error('[mfa enable verify]', e.message || e);
+            verifyBusy = false;
+            clearOtp();
+            focusFirstOtp();
+            verifyError.textContent = `error: ${mfaFriendlyError(e.message)}`;
+            verifyError.style.display = 'block';
+        }
+    };
+
+    const buildOtp = () => {
+        otpWrap.innerHTML = '';
+        otpCells = [];
+        for (let i = 0; i < 6; i++) {
+            const c = document.createElement('input');
+            c.type = 'text';
+            c.className = 'otp-box';
+            c.inputMode = 'numeric';
+            c.autocomplete = i === 0 ? 'one-time-code' : 'off';
+            c.maxLength = 1;
+            c.setAttribute('aria-label', 'digit ' + (i + 1));
+            otpCells.push(c);
+            otpWrap.appendChild(c);
+        }
+        otpCells.forEach((c, idx) => {
+            c.addEventListener('input', () => {
+                c.value = c.value.replace(/[^0-9]/g, '').slice(0, 1);
+                setOtpFilled();
+                if (c.value && idx < 5) otpCells[idx + 1].focus();
+                if (otpValue().length === 6) doVerify();
+            });
+            c.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && !c.value && idx > 0) { otpCells[idx - 1].focus(); otpCells[idx - 1].value = ''; setOtpFilled(); e.preventDefault(); }
+                else if (e.key === 'ArrowLeft' && idx > 0) { otpCells[idx - 1].focus(); e.preventDefault(); }
+                else if (e.key === 'ArrowRight' && idx < 5) { otpCells[idx + 1].focus(); e.preventDefault(); }
+                else if (e.key === 'Enter') doVerify();
+            });
+            c.addEventListener('paste', (e) => {
+                e.preventDefault();
+                const src = (e.clipboardData || window.clipboardData);
+                const digits = (src ? src.getData('text') : '').replace(/[^0-9]/g, '').slice(0, 6);
+                if (!digits) return;
+                for (let j = 0; j < 6; j++) otpCells[j].value = digits[j] || '';
+                setOtpFilled();
+                otpCells[Math.min(digits.length, 5)].focus();
+                if (otpValue().length === 6) doVerify();
+            });
+        });
+    };
+
     const openEnroll = async () => {
         enrollDone = false;
         pendingFactorId = null;
         qrWrap.innerHTML = '<p style="font-family:\'JetBrains Mono\',monospace;font-size:0.7rem;color:var(--text-muted);text-align:center;margin:1rem 0;">generating...</p>';
         secretRow.style.display = 'none';
-        codeInput.value = '';
+        codeSection.style.display = 'none';
+        verifyBusy = false;
         verifyError.style.display = 'none';
-        verifyBtn.disabled = false;
-        verifyBtn.textContent = 'verify & enable';
         enrollModal.classList.add('active');
         document.body.classList.add('modal-open');
         lockBodyScroll();
@@ -4388,7 +4472,7 @@ function setupSecurity() {
             } catch (eu) {}
             if (!accountEmail) {
                 pendingFactorId = null;
-                verifyBtn.disabled = true;
+                codeSection.style.display = 'none';
                 secretRow.style.display = 'none';
                 qrWrap.innerHTML = `<p style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:#ff6b6b;text-align:center;line-height:1.6;margin:1rem 0;">this account has no email address.<br>authenticator setup needs one — add an email under account settings first.</p>`;
                 return;
@@ -4436,11 +4520,14 @@ function setupSecurity() {
                 qrWrap.innerHTML = '<p style="font-family:\'JetBrains Mono\',monospace;font-size:0.7rem;color:var(--text-muted);text-align:center;margin:1rem 0;">enter the key below in your authenticator app</p>';
             }
             if (totp.secret) { secretEl.textContent = totp.secret; secretRow.style.display = 'flex'; }
-            setTimeout(() => codeInput.focus(), 50);
+            buildOtp();
+            clearOtp();
+            codeSection.style.display = 'flex';
+            setTimeout(() => focusFirstOtp(), 50);
         } catch (e) {
             console.error('[mfa enroll]', e.message || e);
             pendingFactorId = null;
-            verifyBtn.disabled = true;
+            codeSection.style.display = 'none';
             secretRow.style.display = 'none';
             qrWrap.innerHTML = `<p style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:#ff6b6b;text-align:center;line-height:1.6;margin:1rem 0;">could not start mfa setup:<br>${(e.message || 'please try again').toLowerCase()}</p>`;
         }
@@ -4533,45 +4620,7 @@ function setupSecurity() {
         closeDisable.addEventListener('click', cancelDisable);
         disableModal.addEventListener('click', (e) => { if (e.target === disableModal) cancelDisable(); });
 
-        [codeInput, disableCode].forEach(inp => {
-            inp.addEventListener('input', () => { inp.value = inp.value.replace(/[^0-9]/g, '').slice(0, 6); });
-        });
-
-        verifyBtn.addEventListener('click', async () => {
-            verifyError.style.display = 'none';
-            const code = (codeInput.value || '').trim();
-            if (!/^[0-9]{6}$/.test(code)) { verifyError.textContent = 'error: enter the 6-digit code'; verifyError.style.display = 'block'; return; }
-            if (!pendingFactorId) return;
-            verifyBtn.disabled = true;
-            verifyBtn.textContent = 'verifying...';
-            try {
-                const { data: vdata, error } = await mfa.challengeAndVerify({ factorId: pendingFactorId, code });
-                if (error) throw new Error(error.message);
-                const ok = await setServerState(true, vdata && vdata.access_token);
-                if (!ok) {
-                    const fid = pendingFactorId;
-                    pendingFactorId = null;
-                    enrollDone = false;
-                    try { await mfa.unenroll({ factorId: fid }); } catch (e2) {}
-                    enabled = false;
-                    setStatus();
-                    closeEnrollModal();
-                    if (window.SentinelToast) window.SentinelToast.show('could not enable mfa right now. please try again.', 'error');
-                    return;
-                }
-                enrollDone = true;
-                enabled = true;
-                setStatus();
-                closeEnrollModal();
-                if (window.SentinelToast) window.SentinelToast.show('mfa enabled', 'success');
-            } catch (e) {
-                console.error('[mfa enable verify]', e.message || e);
-                verifyBtn.disabled = false;
-                verifyBtn.textContent = 'verify & enable';
-                verifyError.textContent = `error: ${mfaFriendlyError(e.message)}`;
-                verifyError.style.display = 'block';
-            }
-        });
+        disableCode.addEventListener('input', () => { disableCode.value = disableCode.value.replace(/[^0-9]/g, '').slice(0, 6); });
 
         disableBtn.addEventListener('click', async () => {
             disableError.style.display = 'none';
