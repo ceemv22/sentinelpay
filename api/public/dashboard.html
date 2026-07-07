@@ -3980,19 +3980,45 @@
             letter-spacing: 0.05em;
         }
 
+        .sp-mfa-secret-box {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            max-width: 100%;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 6px;
+            padding: 0.4rem 0.45rem 0.4rem 0.7rem;
+        }
+
         .sp-mfa-secret {
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.74rem;
             color: #e0e0e0;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 6px;
-            padding: 0.4rem 0.7rem;
             letter-spacing: 0.15em;
             word-break: break-all;
             text-align: center;
             user-select: all;
         }
+
+        .sp-mfa-secret-copy {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            padding: 0;
+            background: transparent;
+            border: none;
+            border-radius: 5px;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: color 0.15s ease, background 0.15s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .sp-mfa-secret-copy:hover { color: var(--text-main); background: rgba(255, 255, 255, 0.06); }
+        .sp-mfa-secret-copy:active { background: rgba(255, 255, 255, 0.1); }
 
         .sp-mfa-code.settings-input {
             width: 100%;
@@ -5058,7 +5084,12 @@
                 <div class="sp-mfa-qr-wrap" id="mfa-qr-wrap"></div>
                 <div class="sp-mfa-secret-row" id="mfa-secret-row" style="display:none;">
                     <span class="sp-mfa-secret-label">or enter this key manually</span>
-                    <div class="sp-mfa-secret" id="mfa-secret"></div>
+                    <div class="sp-mfa-secret-box">
+                        <span class="sp-mfa-secret" id="mfa-secret"></span>
+                        <button type="button" class="sp-mfa-secret-copy" id="mfa-secret-copy" aria-label="copy key">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                        </button>
+                    </div>
                 </div>
                 <div id="mfa-code-section" style="display:none; flex-direction: column; align-items: center; width: 100%; margin-top: 1.25rem;">
                     <div class="otp-boxes" id="mfa-otp"></div>
@@ -5268,7 +5299,7 @@
     </div>
 
     <script src="toast.js?v=3"></script>
-    <script src="dashboard-v19.js?v=129"></script>
+    <script src="dashboard-v19.js?v=130"></script>
     <script>
         // Eye Tracking Logic
         function trackEye(element, clientX, clientY) {
