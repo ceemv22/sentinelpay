@@ -3985,6 +3985,7 @@
             align-items: center;
             gap: 0.5rem;
             max-width: 100%;
+            overflow-x: auto;
             background: rgba(255, 255, 255, 0.04);
             border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 6px;
@@ -3996,9 +3997,13 @@
             font-size: 0.74rem;
             color: #e0e0e0;
             letter-spacing: 0.15em;
-            word-break: break-all;
+            white-space: nowrap;
             text-align: center;
             user-select: all;
+        }
+
+        @media screen and (max-width: 600px) {
+            .sp-mfa-secret { font-size: 0.64rem; letter-spacing: 0.02em; }
         }
 
         .sp-mfa-secret-copy {
@@ -5299,7 +5304,7 @@
     </div>
 
     <script src="toast.js?v=3"></script>
-    <script src="dashboard-v19.js?v=130"></script>
+    <script src="dashboard-v19.js?v=131"></script>
     <script>
         // Eye Tracking Logic
         function trackEye(element, clientX, clientY) {
