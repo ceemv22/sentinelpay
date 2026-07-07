@@ -2732,12 +2732,14 @@
             width: 100%;
             max-width: 100%;
         }
-        .otp-box {
+        .otp-boxes .otp-box {
             flex: 0 0 auto;
             box-sizing: border-box;
             width: 44px;
             height: 52px;
+            min-width: 0;
             padding: 0;
+            margin: 0;
             text-align: center;
             line-height: 1;
             font-family: 'JetBrains Mono', monospace;
@@ -2753,13 +2755,13 @@
             transition: border-color 0.15s, box-shadow 0.15s;
             -moz-appearance: textfield;
         }
-        .otp-box::-webkit-outer-spin-button,
-        .otp-box::-webkit-inner-spin-button { -webkit-appearance: none; }
-        .otp-box:focus {
+        .otp-boxes .otp-box::-webkit-outer-spin-button,
+        .otp-boxes .otp-box::-webkit-inner-spin-button { -webkit-appearance: none; }
+        .otp-boxes .otp-box:focus {
             border-color: rgba(0,240,255,0.55);
             box-shadow: 0 0 0 3px rgba(0,240,255,0.08);
         }
-        .otp-box.filled {
+        .otp-boxes .otp-box.filled {
             border-color: rgba(0,240,255,0.3);
         }
 
@@ -5265,7 +5267,7 @@
     </div>
 
     <script src="toast.js?v=3"></script>
-    <script src="dashboard-v19.js?v=126"></script>
+    <script src="dashboard-v19.js?v=127"></script>
     <script>
         // Eye Tracking Logic
         function trackEye(element, clientX, clientY) {
