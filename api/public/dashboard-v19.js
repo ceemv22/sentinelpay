@@ -2116,6 +2116,7 @@ function hideAllViews() {
 function switchToHomeView() {
     currentOrgSlug = null;
     document.body.classList.remove('state-in-org');
+    document.body.classList.remove('state-account');
     document.body.classList.add('state-org-home');
     hideAllViews();
     document.getElementById('org-home-view').classList.remove('hidden');
@@ -2133,6 +2134,7 @@ function switchToAccountSettings(tab) {
     currentOrgSlug = null;
     document.body.classList.remove('state-in-org');
     document.body.classList.add('state-org-home');
+    document.body.classList.add('state-account');
     hideAllViews();
     document.getElementById('account-settings-view').classList.remove('hidden');
     document.title = 'sentinelpay | account settings';
@@ -2179,6 +2181,7 @@ function switchToAccountSettings(tab) {
 function switchToOrgView(slug, view = 'projects') {
     currentOrgSlug = slug;
     document.body.classList.remove('state-org-home');
+    document.body.classList.remove('state-account');
     document.body.classList.add('state-in-org');
     document.getElementById('org-home-view').classList.add('hidden');
     document.getElementById('dashboard-view').classList.add('hidden');
