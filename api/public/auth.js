@@ -221,19 +221,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function showMfaStep() {
-        const panel = document.getElementById('auth-panel');
+        const overlay = document.getElementById('auth-mfa-modal-overlay');
         const mfaState = document.getElementById('auth-mfa-state');
         const otpWrap = document.getElementById('auth-mfa-otp');
         const codeInput = document.getElementById('auth-mfa-code');
         const verifyBtn = document.getElementById('auth-mfa-verify-btn');
         const errEl = document.getElementById('auth-mfa-error');
         const cancelBtn = document.getElementById('auth-mfa-cancel');
+        const closeBtn = document.getElementById('auth-mfa-close');
         const descEl = document.getElementById('auth-mfa-desc');
         const toggleBtn = document.getElementById('auth-mfa-recovery-toggle');
-        if (!panel || !mfaState) { window.location.href = returnTo || '/dashboard/organizations'; return; }
+        if (!overlay || !mfaState) { window.location.href = returnTo || '/dashboard/organizations'; return; }
 
-        panel.style.display = 'none';
-        mfaState.style.display = 'flex';
+        overlay.classList.add('active');
+        document.body.classList.add('modal-open');
 
         let mode = 'totp';
         let cells = [];
@@ -371,10 +372,14 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
 
+        const cancel = async () => { try { await s.auth.signOut(); } catch (e) {} window.location.reload(); };
+
         if (verifyBtn) verifyBtn.onclick = submit;
         if (codeInput) codeInput.onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); submit(); } };
         if (toggleBtn) toggleBtn.onclick = () => setMode(mode === 'totp' ? 'recovery' : 'totp');
-        if (cancelBtn) cancelBtn.onclick = async () => { try { await s.auth.signOut(); } catch (e) {} window.location.reload(); };
+        if (cancelBtn) cancelBtn.onclick = cancel;
+        if (closeBtn) closeBtn.onclick = cancel;
+        if (overlay) overlay.onclick = (e) => { if (e.target === overlay) cancel(); };
 
         setMode('totp');
     }
