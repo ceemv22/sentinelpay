@@ -1560,6 +1560,51 @@ app.post('/v1/user/mfa/recovery-codes/recover', requireRateLimitBackend, require
     }
 });
 
+app.post('/v1/user/mfa/reconcile', requireRateLimitBackend, requireSupabaseAuth, async (req, res) => {
+    try {
+        if (req.user && req.user.mfaEnabled === true) {
+            return res.json({ mfaEnabled: true });
+        }
+        if (req.hasMfa === true && process.env.SUPABASE_SERVICE_ROLE_KEY && req.user.supabaseId) {
+            try {
+                const adminRes = await fetch(`${process.env.SUPABASE_URL}/auth/v1/admin/users/${req.user.supabaseId}`, {
+                    headers: {
+                        apikey: process.env.SUPABASE_SERVICE_ROLE_KEY,
+                        Authorization: `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`
+                    }
+                });
+                if (adminRes.ok) {
+                    const adminData = await adminRes.json();
+                    const factors = (adminData && adminData.factors) || [];
+                    for (const f of factors) {
+                        if (f && f.id) {
+                            await fetch(`${process.env.SUPABASE_URL}/auth/v1/admin/users/${req.user.supabaseId}/factors/${f.id}`, {
+                                method: 'DELETE',
+                                headers: {
+                                    apikey: process.env.SUPABASE_SERVICE_ROLE_KEY,
+                                    Authorization: `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`
+                                }
+                            }).catch(() => {});
+                        }
+                    }
+                }
+            } catch (e) {
+                console.error('[mfa reconcile cleanup]', e.message);
+            }
+        }
+        if (req.user.recoverySeedHash || req.user.recoverySeedEnc) {
+            await prisma.user.update({
+                where: { id: req.user.id },
+                data: { recoverySeedEnc: null, recoverySeedHash: null, recoverySeedGeneratedAt: null }
+            });
+        }
+        res.json({ mfaEnabled: false });
+    } catch (err) {
+        console.error('[mfa reconcile]', err);
+        res.status(500).json({ error: 'failed to reconcile mfa', code: 500 });
+    }
+});
+
 function requireAdmin(req, res, next) {
     const adminKey = process.env.ADMIN_API_KEY;
     if (!adminKey) return res.status(503).json({ error: 'admin api not configured', code: 503 });
