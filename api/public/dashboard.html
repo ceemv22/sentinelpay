@@ -4905,17 +4905,17 @@
                 </div>
 
                 <div class="settings-section" id="recovery-section">
-                    <h2 class="settings-section-title">recovery codes</h2>
-                    <p class="settings-section-desc">one-time backup codes to sign in if you ever lose access to your authenticator.</p>
+                    <h2 class="settings-section-title">recovery seed</h2>
+                    <p class="settings-section-desc">a master seed to regain access if you ever lose your authenticator. keep it offline and private — anyone with it can disable two-factor on your account.</p>
                     <div class="sp-mfa-card">
                         <div class="sp-mfa-head">
                             <div class="sp-mfa-head-left">
                                 <span class="sp-mfa-lock">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="9" y1="15" x2="15" y2="15"></line><line x1="9" y1="11" x2="15" y2="11"></line></svg>
                                 </span>
-                                <span class="sp-mfa-title">backup recovery codes</span>
+                                <span class="sp-mfa-title">master recovery seed</span>
                             </div>
-                            <button class="btn-primary" id="btn-generate-recovery" style="width:auto;padding:0.5rem 1rem;font-size:0.72rem;white-space:nowrap;">generate codes</button>
+                            <button class="btn-primary" id="btn-generate-recovery" style="width:auto;padding:0.5rem 1rem;font-size:0.72rem;white-space:nowrap;">view seed</button>
                         </div>
                         <div class="sp-mfa-panel">
                             <p class="sp-mfa-desc" id="recovery-status">loading...</p>
@@ -5154,15 +5154,19 @@
             <button class="modal-close-btn" id="btn-close-recovery">✕</button>
             <div style="display: flex; flex-direction: column; width: 100%;">
                 <div class="auth-tabs" style="margin-bottom: 1.5rem; display: flex; justify-content: flex-start;">
-                    <button class="auth-tab active" style="width: auto; padding: 0.4rem 1rem; cursor: default; pointer-events: none; font-size: 0.7rem; border-radius: 6px;">recovery codes</button>
+                    <button class="auth-tab active" style="width: auto; padding: 0.4rem 1rem; cursor: default; pointer-events: none; font-size: 0.7rem; border-radius: 6px;">recovery seed</button>
                 </div>
-                <p class="sp-mfa-modal-desc">save these somewhere safe. each code works once, and this is the only time they're shown — generating a new set replaces these.</p>
-                <div id="recovery-codes-list" style="background:rgba(255,255,255,0.03);border:1px solid var(--border-glass);border-radius:8px;padding:0.85rem 0.5rem;margin-bottom:1rem;"></div>
+                <p class="sp-mfa-modal-desc" id="recovery-modal-desc">write this down and keep it offline. it's the master key to recovering your account if you lose your authenticator — treat it like a wallet seed. you can view it again later after verifying with two-factor.</p>
+                <div id="recovery-codes-list" style="position:relative;background:rgba(255,255,255,0.03);border:1px solid var(--border-glass);border-radius:8px;padding:0.95rem 0.85rem;margin-bottom:1rem;"></div>
                 <div style="display:flex;gap:0.6rem;">
-                    <button class="btn-cancel" type="button" id="btn-recovery-copy" style="flex:1;">copy all</button>
+                    <button class="btn-cancel" type="button" id="btn-recovery-copy" style="flex:1;">copy</button>
                     <button class="btn-cancel" type="button" id="btn-recovery-download" style="flex:1;">download</button>
                 </div>
-                <button class="submit-btn" id="btn-recovery-done" style="margin-top: 1rem;">i've saved them</button>
+                <label id="recovery-confirm-row" style="display:flex;align-items:flex-start;gap:0.6rem;margin-top:1.1rem;cursor:pointer;user-select:none;">
+                    <input type="checkbox" id="recovery-confirm-check" style="flex:0 0 auto;width:16px;height:16px;margin:0;margin-top:0.1rem;accent-color:var(--neon-blue);cursor:pointer;">
+                    <span style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--text-muted);line-height:1.5;">i've saved my recovery seed somewhere safe and offline.</span>
+                </label>
+                <button class="submit-btn" id="btn-recovery-done" style="margin-top: 1rem;" disabled>done</button>
             </div>
         </div>
     </div>
@@ -5337,7 +5341,7 @@
     </div>
 
     <script src="toast.js?v=3"></script>
-    <script src="dashboard-v19.js?v=136"></script>
+    <script src="dashboard-v19.js?v=137"></script>
     <script>
         // Eye Tracking Logic
         function trackEye(element, clientX, clientY) {

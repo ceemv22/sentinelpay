@@ -22,8 +22,9 @@ model User {
   shortcuts        Json?
   telemetry        Boolean          @default(false)
   mfaEnabled       Boolean          @default(false)
-  recoveryCodes    String[]         @default([])
-  recoveryCodesGeneratedAt DateTime?
+  recoverySeedEnc  String?
+  recoverySeedHash String?
+  recoverySeedGeneratedAt DateTime?
   deletionRequestedAt DateTime?
   apiKeys          ApiKey[]
   scanHistory      ScanHistory[]

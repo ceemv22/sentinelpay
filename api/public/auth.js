@@ -227,10 +227,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (m === 'totp') {
                 if (descEl) descEl.textContent = 'enter the 6-digit code from your authenticator app to finish signing in.';
                 if (codeInput) { codeInput.placeholder = '000000'; codeInput.maxLength = 6; codeInput.style.letterSpacing = '0.5em'; codeInput.setAttribute('inputmode', 'numeric'); }
-                if (toggleBtn) toggleBtn.textContent = 'use a recovery code instead';
+                if (toggleBtn) toggleBtn.textContent = 'use a recovery seed instead';
             } else {
-                if (descEl) descEl.textContent = 'enter one of your backup recovery codes. this signs you in and turns off two-factor authentication so you can set it up again.';
-                if (codeInput) { codeInput.placeholder = 'xxxxx-xxxxx'; codeInput.maxLength = 20; codeInput.style.letterSpacing = '0.15em'; codeInput.removeAttribute('inputmode'); }
+                if (descEl) descEl.textContent = 'enter your master recovery seed. this signs you in and turns off two-factor authentication so you can set it up again.';
+                if (codeInput) { codeInput.placeholder = 'xxxxx-xxxxx-xxxxx-...'; codeInput.maxLength = 50; codeInput.style.letterSpacing = '0.1em'; codeInput.removeAttribute('inputmode'); }
                 if (toggleBtn) toggleBtn.textContent = 'use your authenticator app instead';
             }
             setTimeout(() => { if (codeInput) codeInput.focus(); }, 40);
@@ -238,7 +238,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (codeInput) codeInput.oninput = () => {
             if (mode === 'totp') codeInput.value = codeInput.value.replace(/[^0-9]/g, '').slice(0, 6);
-            else codeInput.value = codeInput.value.replace(/[^0-9a-zA-Z-]/g, '').toLowerCase().slice(0, 20);
+            else codeInput.value = codeInput.value.replace(/[^0-9a-zA-Z-]/g, '').toLowerCase().slice(0, 50);
         };
 
         const fail = (msg) => {
@@ -277,7 +277,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     fail(friendly);
                 }
             } else {
-                if (raw.length < 6) { fail('enter a valid recovery code'); return; }
+                if (raw.replace(/[^0-9a-z]/gi, '').length < 20) { fail('enter your full recovery seed'); return; }
                 try {
                     const { data: sess } = await s.auth.getSession();
                     const token = sess && sess.session && sess.session.access_token;
@@ -288,13 +288,13 @@ document.addEventListener('DOMContentLoaded', () => {
                         body: JSON.stringify({ code: raw })
                     });
                     const d = await r.json().catch(() => ({}));
-                    if (!r.ok) throw new Error(d.error || 'invalid recovery code');
+                    if (!r.ok) throw new Error(d.error || 'invalid recovery seed');
                     window.location.href = returnTo || '/dashboard/organizations';
                 } catch (e) {
                     console.error('[mfa recovery login]', e.message || e);
                     const m = (e.message || '').toLowerCase();
-                    let friendly = 'could not use that recovery code. try again.';
-                    if (m.includes('invalid')) friendly = 'that recovery code is not valid.';
+                    let friendly = 'could not use that recovery seed. try again.';
+                    if (m.includes('invalid')) friendly = 'that recovery seed is not valid.';
                     else if (m.includes('session') || m.includes('expired') || m.includes('token')) friendly = 'your session expired. sign in again.';
                     else if (m.includes('rate') || m.includes('too many')) friendly = 'too many attempts. wait a moment and try again.';
                     fail(friendly);
