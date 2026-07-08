@@ -4301,9 +4301,13 @@ function setupRecoveryCodes() {
     const listEl = document.getElementById('recovery-codes-list');
     const copyBtn = document.getElementById('btn-recovery-copy');
     const dlBtn = document.getElementById('btn-recovery-download');
+    const descEl = document.getElementById('recovery-modal-desc');
+    const confirmRow = document.getElementById('recovery-confirm-row');
+    const confirmCheck = document.getElementById('recovery-confirm-check');
     if (!modal || !listEl) return;
 
-    let currentCodes = [];
+    let currentSeed = '';
+    let hasSeed = false;
 
     const loadStatus = async () => {
         const mfaOn = !!window.__mfaOn;
@@ -4311,36 +4315,46 @@ function setupRecoveryCodes() {
         genBtn.style.opacity = mfaOn ? '' : '0.45';
         genBtn.style.cursor = mfaOn ? '' : 'not-allowed';
         if (!mfaOn) {
-            if (statusEl) statusEl.textContent = 'enable two-factor authentication first to create recovery codes.';
-            genBtn.textContent = 'generate codes';
+            if (statusEl) statusEl.textContent = 'enable two-factor authentication first to create a recovery seed.';
+            genBtn.textContent = 'view seed';
+            hasSeed = false;
             return;
         }
         try {
             const r = await fetch('/v1/user/mfa/recovery-codes/status', { headers: { 'Authorization': `Bearer ${window.supabaseAuthToken}` } });
             const d = await r.json().catch(() => ({}));
-            const count = (r.ok && typeof d.count === 'number') ? d.count : 0;
-            if (statusEl) statusEl.textContent = count > 0
-                ? `${count} recovery code${count === 1 ? '' : 's'} remaining. store them somewhere safe.`
-                : "no recovery codes yet — generate a set so you're never locked out.";
-            genBtn.textContent = count > 0 ? 'regenerate' : 'generate codes';
+            hasSeed = !!(r.ok && d.hasSeed);
+            if (statusEl) statusEl.textContent = hasSeed
+                ? 'your recovery seed is set. view it any time — you\'ll be asked for a two-factor code first.'
+                : 'no recovery seed yet — create one so you can never be locked out.';
+            genBtn.textContent = hasSeed ? 'view seed' : 'create seed';
         } catch (e) {}
     };
     window.__recoveryRefresh = loadStatus;
 
-    const closeModal = () => { modal.classList.remove('active'); document.body.classList.remove('modal-open'); unlockBodyScroll(); };
-    const showCodes = (codes) => {
-        currentCodes = codes || [];
+    const closeModal = () => { modal.classList.remove('active'); document.body.classList.remove('modal-open'); unlockBodyScroll(); currentSeed = ''; };
+
+    const showSeed = (seed, requireConfirm) => {
+        currentSeed = seed || '';
         listEl.innerHTML = '';
-        currentCodes.forEach((c) => {
-            const d = document.createElement('div');
-            d.textContent = c;
-            d.style.cssText = "font-family:'JetBrains Mono',monospace;font-size:0.85rem;color:var(--text-main);letter-spacing:0.08em;padding:0.3rem 0;text-align:center;";
-            listEl.appendChild(d);
-        });
+        const d = document.createElement('div');
+        d.textContent = currentSeed;
+        d.style.cssText = "font-family:'JetBrains Mono',monospace;font-size:0.9rem;color:var(--text-main);letter-spacing:0.06em;line-height:1.7;text-align:center;word-break:break-all;";
+        listEl.appendChild(d);
+        if (descEl) descEl.textContent = requireConfirm
+            ? "write this down and keep it offline. it's the master key to recovering your account if you lose your authenticator — treat it like a wallet seed. you can view it again later after verifying with two-factor."
+            : "your master recovery seed. keep it offline and private — anyone with it can disable two-factor on your account.";
+        if (confirmRow) confirmRow.style.display = requireConfirm ? 'flex' : 'none';
+        if (confirmCheck) confirmCheck.checked = false;
+        if (doneBtn) {
+            doneBtn.textContent = requireConfirm ? 'done' : 'close';
+            doneBtn.disabled = !!requireConfirm;
+        }
         modal.classList.add('active');
         document.body.classList.add('modal-open');
         lockBodyScroll();
     };
+    window.__recoveryShowNew = (seed) => { loadStatus(); showSeed(seed, true); };
 
     genBtn.addEventListener('click', async () => {
         if (genBtn.disabled) return;
@@ -4351,39 +4365,43 @@ function setupRecoveryCodes() {
         }
         const orig = genBtn.textContent;
         genBtn.disabled = true;
-        genBtn.textContent = 'generating...';
+        genBtn.textContent = hasSeed ? 'opening...' : 'creating...';
         try {
-            const r = await fetch('/v1/user/mfa/recovery-codes/generate', {
+            const endpoint = hasSeed ? '/v1/user/mfa/recovery-codes/reveal' : '/v1/user/mfa/recovery-codes/generate';
+            const r = await fetch(endpoint, {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${window.supabaseAuthToken}`, 'Content-Type': 'application/json' }
             });
             const d = await r.json().catch(() => ({}));
-            if (!r.ok) throw new Error(d.error || 'could not generate codes');
-            showCodes(d.codes || []);
+            if (!r.ok) throw new Error(d.error || 'could not open recovery seed');
+            showSeed(d.seed || '', !hasSeed);
             loadStatus();
         } catch (e) {
-            if (window.SentinelToast) window.SentinelToast.show((e.message || 'could not generate codes').toLowerCase(), 'error');
+            if (window.SentinelToast) window.SentinelToast.show((e.message || 'could not open recovery seed').toLowerCase(), 'error');
         } finally {
             genBtn.disabled = false;
             genBtn.textContent = orig;
         }
     });
 
+    if (confirmCheck) confirmCheck.addEventListener('change', () => {
+        if (doneBtn && confirmRow && confirmRow.style.display !== 'none') doneBtn.disabled = !confirmCheck.checked;
+    });
+
     if (closeBtn) closeBtn.addEventListener('click', closeModal);
-    if (doneBtn) doneBtn.addEventListener('click', closeModal);
-    modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+    if (doneBtn) doneBtn.addEventListener('click', () => { if (!doneBtn.disabled) closeModal(); });
+    modal.addEventListener('click', (e) => { if (e.target === modal) { if (confirmRow && confirmRow.style.display !== 'none' && confirmCheck && !confirmCheck.checked) return; closeModal(); } });
     if (copyBtn) copyBtn.addEventListener('click', () => {
-        const text = currentCodes.join('\n');
-        const done = () => { copyBtn.textContent = 'copied'; setTimeout(() => { copyBtn.textContent = 'copy all'; }, 2000); };
-        if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(done).catch(done);
+        const done = () => { copyBtn.textContent = 'copied'; setTimeout(() => { copyBtn.textContent = 'copy'; }, 2000); };
+        if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(currentSeed).then(done).catch(done);
         else done();
     });
     if (dlBtn) dlBtn.addEventListener('click', () => {
-        const blob = new Blob(['sentinelpay recovery codes\n\n' + currentCodes.join('\n') + '\n\nkeep these somewhere safe. each code works once.\n'], { type: 'text/plain' });
+        const blob = new Blob(['sentinelpay master recovery seed\n\n' + currentSeed + '\n\nkeep this offline and private. anyone with it can disable two-factor on your account. use it at sign-in if you ever lose your authenticator.\n'], { type: 'text/plain' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'sentinelpay-recovery-codes.txt';
+        a.download = 'sentinelpay-recovery-seed.txt';
         a.click();
         URL.revokeObjectURL(url);
     });
@@ -4520,6 +4538,14 @@ function setupSecurity() {
             setStatus();
             closeEnrollModal();
             if (window.SentinelToast) window.SentinelToast.show('mfa enabled', 'success');
+            try {
+                const rr = await fetch('/v1/user/mfa/recovery-codes/generate', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${window.supabaseAuthToken}`, 'Content-Type': 'application/json' }
+                });
+                const rd = await rr.json().catch(() => ({}));
+                if (rr.ok && rd.seed && typeof window.__recoveryShowNew === 'function') window.__recoveryShowNew(rd.seed);
+            } catch (e2) {}
         } catch (e) {
             console.error('[mfa enable verify]', e.message || e);
             verifyBusy = false;
