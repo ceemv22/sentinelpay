@@ -4289,6 +4289,10 @@ function mfaFriendlyError(msg) {
     return 'could not verify the code. try again.';
 }
 
+const SEC_CACHE_KEY = 'sp_sec_state';
+function readSecCache() { try { return JSON.parse(localStorage.getItem(SEC_CACHE_KEY)) || {}; } catch (e) { return {}; } }
+function writeSecCache(patch) { try { localStorage.setItem(SEC_CACHE_KEY, JSON.stringify(Object.assign(readSecCache(), patch))); } catch (e) {} }
+
 function setupRecoveryCodes() {
     const genBtn = document.getElementById('btn-generate-recovery');
     if (!genBtn || genBtn.dataset.bound) return;
@@ -4309,25 +4313,33 @@ function setupRecoveryCodes() {
     let currentSeed = '';
     let hasSeed = false;
 
-    const loadStatus = async () => {
-        const mfaOn = !!window.__mfaOn;
-        genBtn.disabled = !mfaOn;
-        genBtn.style.opacity = mfaOn ? '' : '0.45';
-        genBtn.style.cursor = mfaOn ? '' : 'not-allowed';
-        if (!mfaOn) {
+    const paintStatus = (on, seedSet) => {
+        genBtn.disabled = !on;
+        genBtn.style.opacity = on ? '' : '0.45';
+        genBtn.style.cursor = on ? '' : 'not-allowed';
+        if (!on) {
             if (statusEl) statusEl.textContent = 'enable two-factor authentication first to create a recovery seed.';
             genBtn.textContent = 'view seed';
-            hasSeed = false;
             return;
         }
+        if (statusEl) statusEl.textContent = seedSet
+            ? 'your recovery seed is set. view it any time — you\'ll be asked for a two-factor code first.'
+            : 'no recovery seed yet — create one so you can never be locked out.';
+        genBtn.textContent = seedSet ? 'view seed' : 'create seed';
+    };
+
+    const loadStatus = async () => {
+        const mfaOn = !!window.__mfaOn;
+        const cached = readSecCache();
+        hasSeed = cached.hasSeed === true;
+        paintStatus(mfaOn, hasSeed);
+        if (!mfaOn) return;
         try {
             const r = await fetch('/v1/user/mfa/recovery-codes/status', { headers: { 'Authorization': `Bearer ${window.supabaseAuthToken}` } });
             const d = await r.json().catch(() => ({}));
             hasSeed = !!(r.ok && d.hasSeed);
-            if (statusEl) statusEl.textContent = hasSeed
-                ? 'your recovery seed is set. view it any time — you\'ll be asked for a two-factor code first.'
-                : 'no recovery seed yet — create one so you can never be locked out.';
-            genBtn.textContent = hasSeed ? 'view seed' : 'create seed';
+            writeSecCache({ hasSeed });
+            paintStatus(mfaOn, hasSeed);
         } catch (e) {}
     };
     window.__recoveryRefresh = loadStatus;
@@ -4440,12 +4452,17 @@ function setupSecurity() {
 
     if (!enrollModal || !disableModal) return;
 
-    let enabled = false;
+    let enabled = readSecCache().mfaOn === true;
     let pendingFactorId = null;
     let enrollDone = false;
 
+    window.__mfaOn = enabled;
+    sw.classList.remove('is-disabled');
+    toggle.checked = enabled;
+
     const setStatus = () => {
         window.__mfaOn = enabled;
+        writeSecCache({ mfaOn: enabled });
         sw.classList.remove('is-disabled');
         toggle.checked = enabled;
         if (statusEl) {
