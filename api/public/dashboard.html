@@ -4910,6 +4910,23 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="settings-section" id="password-section">
+                    <h2 class="settings-section-title">password</h2>
+                    <p class="settings-section-desc">change the password you use to sign in.</p>
+                    <div class="sp-mfa-card">
+                        <div class="sp-mfa-head" style="border-bottom:none;">
+                            <div class="sp-mfa-head-left">
+                                <span class="sp-mfa-lock">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path></svg>
+                                </span>
+                                <span class="sp-mfa-title">password</span>
+                            </div>
+                            <button class="btn-primary" id="btn-change-password" style="width:auto;padding:0.5rem 1rem;font-size:0.72rem;white-space:nowrap;">change password</button>
+                            <span id="password-oauth-note" style="display:none;font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--text-muted);white-space:nowrap;"></span>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div id="account-tab-access-tokens" class="account-tab-panel" style="display:none;"></div>
         </div>
@@ -5159,6 +5176,24 @@
         </div>
     </div>
 
+    <div id="change-password-modal-overlay" class="modal-overlay">
+        <div class="auth-card modal-content" style="position: relative; z-index: 1000; display: flex; flex-direction: column; max-width: 440px; width: 100%;">
+            <button class="modal-close-btn" id="btn-close-change-password">✕</button>
+            <div style="display: flex; flex-direction: column; width: 100%;">
+                <div class="auth-tabs" style="margin-bottom: 1.5rem; display: flex; justify-content: flex-start;">
+                    <button class="auth-tab active" style="width: auto; padding: 0.4rem 1rem; cursor: default; pointer-events: none; font-size: 0.7rem; border-radius: 6px;">change password</button>
+                </div>
+                <p class="sp-mfa-modal-desc">confirm your current password, then set a new one.</p>
+                <input type="password" id="cp-current" class="settings-input" placeholder="current password" autocomplete="current-password">
+                <input type="password" id="cp-new" class="settings-input" placeholder="new password" autocomplete="new-password" style="margin-top:0.6rem;">
+                <input type="password" id="cp-confirm" class="settings-input" placeholder="confirm new password" autocomplete="new-password" style="margin-top:0.6rem;">
+                <div id="turnstile-change-password" style="margin-top:0.85rem;"></div>
+                <p class="error-msg" id="cp-error" style="display:none; margin-top: 0.5rem;"></p>
+                <button class="submit-btn" id="btn-cp-submit" style="margin-top: 1rem;">update password</button>
+            </div>
+        </div>
+    </div>
+
     <div id="email-verify-modal-overlay" class="modal-overlay">
         <div class="auth-card modal-content" style="position: relative; z-index: 1000; display: flex; flex-direction: column;">
             <button class="modal-close-btn" id="btn-close-email-verify">✕</button>
@@ -5329,7 +5364,7 @@
     </div>
 
     <script src="toast.js?v=3"></script>
-    <script src="dashboard-v19.js?v=141"></script>
+    <script src="dashboard-v19.js?v=142"></script>
     <script>
         // Eye Tracking Logic
         function trackEye(element, clientX, clientY) {
