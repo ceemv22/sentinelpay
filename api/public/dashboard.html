@@ -5127,7 +5127,7 @@
                     <button class="auth-tab active" style="width: auto; padding: 0.4rem 1rem; cursor: default; pointer-events: none; font-size: 0.7rem; border-radius: 6px;">disable mfa</button>
                 </div>
                 <p class="sp-mfa-modal-desc">enter a current code from your authenticator app to turn off mfa. this removes the authenticator from your account.</p>
-                <input type="text" id="mfa-disable-code" class="settings-input sp-mfa-code" placeholder="000000" inputmode="numeric" autocomplete="one-time-code" maxlength="6">
+                <div class="otp-boxes" id="mfa-disable-otp" style="justify-content:center;"></div>
                 <p class="error-msg" id="mfa-disable-error" style="display:none; margin-top: 0.5rem;"></p>
                 <button class="submit-btn" id="btn-mfa-disable-confirm" style="margin-top: 1rem;">verify &amp; disable</button>
             </div>
@@ -5341,7 +5341,7 @@
     </div>
 
     <script src="toast.js?v=3"></script>
-    <script src="dashboard-v19.js?v=138"></script>
+    <script src="dashboard-v19.js?v=139"></script>
     <script>
         // Eye Tracking Logic
         function trackEye(element, clientX, clientY) {
