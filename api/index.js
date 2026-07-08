@@ -1424,7 +1424,9 @@ app.post('/v1/user/mfa/state', requireRateLimitBackend, requireSupabaseAuth, use
     try {
         const user = await prisma.user.update({
             where: { id: req.user.id },
-            data: { mfaEnabled: enabled }
+            data: enabled
+                ? { mfaEnabled: true }
+                : { mfaEnabled: false, recoverySeedEnc: null, recoverySeedHash: null, recoverySeedGeneratedAt: null }
         });
         res.json({ ok: true, mfaEnabled: user.mfaEnabled === true });
     } catch (err) {
@@ -1433,49 +1435,73 @@ app.post('/v1/user/mfa/state', requireRateLimitBackend, requireSupabaseAuth, use
     }
 });
 
-const RECOVERY_CODE_COUNT = 10;
-function genRecoveryCode() {
-    const raw = crypto.randomBytes(5).toString('hex');
-    return `${raw.slice(0, 5)}-${raw.slice(5, 10)}`;
+function genRecoverySeed() {
+    const raw = crypto.randomBytes(20).toString('hex');
+    return raw.match(/.{1,5}/g).join('-');
 }
-function hashRecoveryCode(code) {
-    return crypto.createHash('sha256').update(String(code).trim().toLowerCase()).digest('hex');
+function hashRecoverySeed(seed) {
+    return crypto.createHash('sha256').update(String(seed).trim().toLowerCase().replace(/[^a-z0-9]/g, '')).digest('hex');
 }
 
 app.get('/v1/user/mfa/recovery-codes/status', requireRateLimitBackend, requireSupabaseAuth, async (req, res) => {
     try {
         const u = await prisma.user.findUnique({
             where: { id: req.user.id },
-            select: { recoveryCodes: true, recoveryCodesGeneratedAt: true }
+            select: { recoverySeedHash: true, recoverySeedGeneratedAt: true }
         });
         res.json({
-            count: (u && Array.isArray(u.recoveryCodes)) ? u.recoveryCodes.length : 0,
-            generatedAt: u ? u.recoveryCodesGeneratedAt : null
+            hasSeed: !!(u && u.recoverySeedHash),
+            generatedAt: u ? u.recoverySeedGeneratedAt : null
         });
     } catch (err) {
         console.error('[recovery status]', err);
-        res.status(500).json({ error: 'failed to load recovery codes', code: 500 });
+        res.status(500).json({ error: 'failed to load recovery seed', code: 500 });
     }
 });
 
 app.post('/v1/user/mfa/recovery-codes/generate', requireRateLimitBackend, requireSupabaseAuth, userSensitiveLimiter, async (req, res) => {
     if (!userHasMfa(req)) {
-        return res.status(400).json({ error: 'enable mfa before generating recovery codes', code: 400 });
+        return res.status(400).json({ error: 'enable mfa before generating a recovery seed', code: 400 });
     }
     if (tokenAal(req.accessToken) !== 'aal2') {
         return res.status(403).json({ error: 'mfa verification required', code: 'mfa_required' });
     }
     try {
-        const codes = Array.from({ length: RECOVERY_CODE_COUNT }, () => genRecoveryCode());
-        const hashes = codes.map(hashRecoveryCode);
+        const seed = genRecoverySeed();
         await prisma.user.update({
             where: { id: req.user.id },
-            data: { recoveryCodes: hashes, recoveryCodesGeneratedAt: new Date() }
+            data: {
+                recoverySeedEnc: encrypt(seed),
+                recoverySeedHash: hashRecoverySeed(seed),
+                recoverySeedGeneratedAt: new Date()
+            }
         });
-        res.json({ codes });
+        res.json({ seed });
     } catch (err) {
         console.error('[recovery generate]', err);
-        res.status(500).json({ error: 'failed to generate recovery codes', code: 500 });
+        res.status(500).json({ error: 'failed to generate recovery seed', code: 500 });
+    }
+});
+
+app.post('/v1/user/mfa/recovery-codes/reveal', requireRateLimitBackend, requireSupabaseAuth, userSensitiveLimiter, async (req, res) => {
+    if (!userHasMfa(req)) {
+        return res.status(400).json({ error: 'enable mfa first', code: 400 });
+    }
+    if (tokenAal(req.accessToken) !== 'aal2') {
+        return res.status(403).json({ error: 'mfa verification required', code: 'mfa_required' });
+    }
+    try {
+        const u = await prisma.user.findUnique({ where: { id: req.user.id }, select: { recoverySeedEnc: true } });
+        if (!u || !u.recoverySeedEnc) {
+            return res.status(404).json({ error: 'no recovery seed yet', code: 404 });
+        }
+        let seed;
+        try { seed = decrypt(u.recoverySeedEnc); }
+        catch (e) { return res.status(500).json({ error: 'could not read recovery seed', code: 500 }); }
+        res.json({ seed });
+    } catch (err) {
+        console.error('[recovery reveal]', err);
+        res.status(500).json({ error: 'failed to read recovery seed', code: 500 });
     }
 });
 
@@ -1483,19 +1509,16 @@ app.post('/v1/user/mfa/recovery-codes/recover', requireRateLimitBackend, require
     try {
         const { code } = req.body || {};
         if (typeof code !== 'string' || !code.trim()) {
-            return res.status(400).json({ error: 'recovery code required', code: 400 });
+            return res.status(400).json({ error: 'recovery seed required', code: 400 });
         }
-        const u = await prisma.user.findUnique({ where: { id: req.user.id }, select: { recoveryCodes: true } });
-        const hashes = (u && Array.isArray(u.recoveryCodes)) ? u.recoveryCodes : [];
-        const target = hashRecoveryCode(code);
+        const u = await prisma.user.findUnique({ where: { id: req.user.id }, select: { recoverySeedHash: true } });
+        const stored = (u && u.recoverySeedHash) ? u.recoverySeedHash : '';
+        const target = hashRecoverySeed(code);
         const targetBuf = Buffer.from(target);
-        let matched = false;
-        for (const h of hashes) {
-            const hb = Buffer.from(h);
-            if (hb.length === targetBuf.length && crypto.timingSafeEqual(hb, targetBuf)) { matched = true; break; }
-        }
+        const storedBuf = Buffer.from(stored);
+        const matched = !!stored && storedBuf.length === targetBuf.length && crypto.timingSafeEqual(storedBuf, targetBuf);
         if (!matched) {
-            return res.status(400).json({ error: 'invalid recovery code', code: 400 });
+            return res.status(400).json({ error: 'invalid recovery seed', code: 400 });
         }
 
         if (process.env.SUPABASE_SERVICE_ROLE_KEY && req.user.supabaseId) {
@@ -1528,12 +1551,12 @@ app.post('/v1/user/mfa/recovery-codes/recover', requireRateLimitBackend, require
 
         await prisma.user.update({
             where: { id: req.user.id },
-            data: { mfaEnabled: false, recoveryCodes: [], recoveryCodesGeneratedAt: null }
+            data: { mfaEnabled: false, recoverySeedEnc: null, recoverySeedHash: null, recoverySeedGeneratedAt: null }
         });
         res.json({ ok: true });
     } catch (err) {
         console.error('[recovery recover]', err);
-        res.status(500).json({ error: 'failed to use recovery code', code: 500 });
+        res.status(500).json({ error: 'failed to use recovery seed', code: 500 });
     }
 });
 
