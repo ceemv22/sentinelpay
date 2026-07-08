@@ -28,11 +28,10 @@
         #auth-mfa-otp{margin:0.25rem 0;}
         #auth-mfa-code{flex:0 0 auto;width:100%;box-sizing:border-box;text-align:center;letter-spacing:0.12em;font-family:'JetBrains Mono',monospace;font-size:1rem;padding:0.9rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.12);border-radius:10px;color:#fff;outline:none;transition:border-color 0.15s, box-shadow 0.15s;}
         #auth-mfa-code:focus{border-color:rgba(0,240,255,0.6);box-shadow:0 0 0 3px rgba(0,240,255,0.09);}
-        .auth-mini-btn{background:transparent;border:none;font-family:'JetBrains Mono',monospace;cursor:pointer;text-transform:lowercase;padding:0.35rem 0.5rem;border-radius:6px;transition:color 0.2s, background 0.2s, opacity 0.2s;line-height:1;}
-        #auth-mfa-recovery-toggle.auth-mini-btn{color:var(--neon-blue);font-size:0.74rem;font-weight:500;}
-        #auth-mfa-recovery-toggle.auth-mini-btn:hover{background:rgba(0,240,255,0.08);}
-        #auth-mfa-cancel.auth-mini-btn{color:var(--text-muted);font-size:0.74rem;}
-        #auth-mfa-cancel.auth-mini-btn:hover{color:#fff;}
+        .auth-pill-btn{background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.1);padding:12px 24px;border-radius:12px;font-size:0.72rem;cursor:pointer;font-family:'JetBrains Mono',monospace;text-transform:lowercase;transition:all 0.25s ease;min-width:220px;text-align:center;}
+        .auth-pill-btn:hover{background:rgba(255,255,255,0.09);color:#fff;border-color:rgba(255,255,255,0.18);}
+        #auth-mfa-recovery-toggle.auth-pill-btn{color:var(--neon-blue);border-color:rgba(0,240,255,0.28);}
+        #auth-mfa-recovery-toggle.auth-pill-btn:hover{background:rgba(0,240,255,0.08);color:var(--neon-blue);border-color:rgba(0,240,255,0.45);}
     </style>
 </head>
 <body>
@@ -206,17 +205,21 @@
         </div>
 
         <div id="auth-mfa-state" class="auth-card" style="display: none; flex-direction: column; justify-content: center;">
-            <div style="text-align: center;">
-                <h1 style="font-family: 'JetBrains Mono', monospace; font-size: 1.4rem; font-weight: 800; letter-spacing: -1px; color: #fff; text-transform: lowercase; margin-bottom: 0.75rem;">two-step verification</h1>
-                <p id="auth-mfa-desc" style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted); line-height: 1.6; text-transform: lowercase; margin-bottom: 1.5rem;">enter the 6-digit code from your authenticator app to finish signing in.</p>
-            </div>
-            <div class="otp-boxes" id="auth-mfa-otp"></div>
-            <input type="text" id="auth-mfa-code" placeholder="xxxxx-xxxxx-xxxxx-..." inputmode="text" autocomplete="one-time-code" maxlength="50" style="display: none;">
-            <p class="error-msg" id="auth-mfa-error" style="display: none; margin-top: 0.75rem; text-align: center;"></p>
-            <button type="button" class="submit-btn" id="auth-mfa-verify-btn" style="margin-top: 1.5rem;">verify</button>
-            <div style="display: flex; flex-direction: column; align-items: center; gap: 0.15rem; margin-top: 1rem;">
-                <button type="button" id="auth-mfa-recovery-toggle" class="auth-mini-btn">use a recovery seed instead</button>
-                <button type="button" id="auth-mfa-cancel" class="auth-mini-btn">back to login</button>
+            <div style="display: flex; flex-direction: column; width: 100%;">
+                <div class="auth-tabs" style="margin-bottom: 1.75rem;">
+                    <button class="auth-tab active" style="width: 100%; cursor: default; pointer-events: none;">two-step verification</button>
+                </div>
+                <p id="auth-mfa-desc" style="font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; text-transform: lowercase; margin-bottom: 1.75rem; width: 100%; text-align: center;">enter the 6-digit code from your authenticator app to finish signing in.</p>
+                <div style="display: flex; flex-direction: column; align-items: center; width: 100%;">
+                    <div class="otp-boxes" id="auth-mfa-otp"></div>
+                    <input type="text" id="auth-mfa-code" placeholder="xxxxx-xxxxx-xxxxx-..." inputmode="text" autocomplete="one-time-code" maxlength="50" style="display: none;">
+                    <p class="error-msg" id="auth-mfa-error" style="display: none; margin-top: 1rem; text-align: center;"></p>
+                    <button type="button" class="submit-btn" id="auth-mfa-verify-btn" style="margin-top: 1.5rem; width: 100%;">verify</button>
+                </div>
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 0.65rem; padding-top: 1.5rem;">
+                    <button type="button" id="auth-mfa-recovery-toggle" class="auth-pill-btn">use a recovery seed instead</button>
+                    <button type="button" id="auth-mfa-cancel" class="auth-pill-btn">back to login</button>
+                </div>
             </div>
         </div>
 
