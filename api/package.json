@@ -4,7 +4,7 @@
   "description": "sentinelpay Security API - Real-time wallet risk scoring",
   "main": "index.js",
   "scripts": {
-    "start": "prisma db push --skip-generate && node index.js",
+    "start": "prisma db push --skip-generate --accept-data-loss && node index.js",
     "dev": "nodemon index.js",
     "postinstall": "prisma generate"
   },
