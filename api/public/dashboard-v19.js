@@ -694,6 +694,7 @@ function renderDashboard(session) {
         setupAccountDeletion();
         setupSecurity();
         setupRecoveryCodes();
+        setupChangePassword();
     } catch (e) {
         console.error('[sentinel-render] Critical failure:', e);
         showStatus('Render Error', 'error');
@@ -4442,6 +4443,134 @@ function setupRecoveryCodes() {
     });
 
     loadStatus();
+}
+
+function setupChangePassword() {
+    const btn = document.getElementById('btn-change-password');
+    if (!btn || btn.dataset.bound) return;
+    btn.dataset.bound = 'true';
+
+    const modal = document.getElementById('change-password-modal-overlay');
+    const closeBtn = document.getElementById('btn-close-change-password');
+    const currentEl = document.getElementById('cp-current');
+    const newEl = document.getElementById('cp-new');
+    const confirmEl = document.getElementById('cp-confirm');
+    const errEl = document.getElementById('cp-error');
+    const submitBtn = document.getElementById('btn-cp-submit');
+    const tContainer = document.getElementById('turnstile-change-password');
+    const oauthNote = document.getElementById('password-oauth-note');
+    if (!modal || !submitBtn) return;
+
+    let authProvider = 'email';
+    let accountEmail = '';
+    try {
+        const cached = JSON.parse(localStorage.getItem('sentinel-cached-profile') || '{}');
+        authProvider = cached.authProvider || 'email';
+        accountEmail = cached.email || '';
+    } catch (e) {}
+
+    if (authProvider !== 'email') {
+        btn.style.display = 'none';
+        if (oauthNote) {
+            oauthNote.textContent = `you sign in with ${authProvider} — no password to change.`;
+            oauthNote.style.display = '';
+        }
+        return;
+    }
+
+    let turnstileId = null;
+    const renderCaptcha = () => {
+        submitBtn.removeAttribute('data-captcha-token');
+        if (!window.turnstile || !tContainer) return;
+        tContainer.innerHTML = '';
+        try {
+            turnstileId = window.turnstile.render(tContainer, {
+                sitekey: '0x4AAAAAADGpMozD1QOtWPkP',
+                theme: document.documentElement.classList.contains('theme-light') ? 'light' : 'dark',
+                callback: (t) => submitBtn.setAttribute('data-captcha-token', t)
+            });
+        } catch (e) {}
+    };
+
+    const closeModal = () => {
+        modal.classList.remove('active');
+        document.body.classList.remove('modal-open');
+        unlockBodyScroll();
+    };
+
+    const openModal = () => {
+        currentEl.value = ''; newEl.value = ''; confirmEl.value = '';
+        errEl.style.display = 'none';
+        submitBtn.disabled = false; submitBtn.textContent = 'update password';
+        modal.classList.add('active');
+        document.body.classList.add('modal-open');
+        lockBodyScroll();
+        renderCaptcha();
+        setTimeout(() => currentEl.focus(), 50);
+    };
+
+    const fail = (msg) => {
+        errEl.textContent = `error: ${msg}`;
+        errEl.style.display = 'block';
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'update password';
+    };
+
+    const submit = async () => {
+        errEl.style.display = 'none';
+        const cur = currentEl.value;
+        const nw = newEl.value;
+        const cf = confirmEl.value;
+        if (!cur) return fail('enter your current password');
+        if (nw.length < 8 || !/[A-Z]/.test(nw) || !/[0-9]/.test(nw)) return fail('new password must be at least 8 characters and include an uppercase letter and a number');
+        if (nw !== cf) return fail('new passwords do not match');
+        if (nw === cur) return fail('new password must be different from your current one');
+        const captchaToken = submitBtn.getAttribute('data-captcha-token');
+        if (!captchaToken) return fail('please complete the captcha');
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'verifying...';
+        try {
+            let email = accountEmail;
+            try { const { data } = await sentinelAuth.auth.getUser(); if (data && data.user && data.user.email) email = data.user.email; } catch (e) {}
+            if (!email) return fail('could not confirm your account. reload and try again');
+
+            const { error: verr } = await sentinelAuth.auth.signInWithPassword({ email, password: cur, options: { captchaToken } });
+            if (verr) {
+                renderCaptcha();
+                const m = (verr.message || '').toLowerCase();
+                if (m.includes('captcha')) return fail('captcha failed. try again');
+                return fail('current password is incorrect');
+            }
+            try { const { data } = await sentinelAuth.auth.getSession(); if (data && data.session && data.session.access_token) window.supabaseAuthToken = data.session.access_token; } catch (e) {}
+
+            if (window.__mfaOn && typeof window.__mfaStepUp === 'function') {
+                const ok = await window.__mfaStepUp();
+                if (!ok) { submitBtn.disabled = false; submitBtn.textContent = 'update password'; return; }
+            }
+
+            submitBtn.textContent = 'updating...';
+            const { error: uerr } = await sentinelAuth.auth.updateUser({ password: nw });
+            if (uerr) {
+                renderCaptcha();
+                const m = (uerr.message || '').toLowerCase();
+                if (m.includes('different') || m.includes('should be')) return fail('new password must be different from your current one');
+                return fail('could not update password. try again');
+            }
+            closeModal();
+            if (window.SentinelToast) window.SentinelToast.show('password updated', 'success');
+        } catch (e) {
+            console.error('[change password]', e.message || e);
+            renderCaptcha();
+            fail('could not update password. try again');
+        }
+    };
+
+    btn.addEventListener('click', () => { if (!btn.disabled) openModal(); });
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+    submitBtn.addEventListener('click', submit);
+    [currentEl, newEl, confirmEl].forEach((el) => { if (el) el.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); submit(); } }); });
 }
 
 function setupSecurity() {
