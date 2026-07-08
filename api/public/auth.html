@@ -20,6 +20,19 @@
         @keyframes splPulse{from{filter:drop-shadow(0 0 6px rgba(0,255,255,0.3)) drop-shadow(0 0 14px rgba(160,32,240,0.2));}to{filter:drop-shadow(0 0 14px rgba(0,255,255,0.65)) drop-shadow(0 0 28px rgba(160,32,240,0.4));}}
         .spl-eye-blink{transform-origin:60px 60px;animation:splBlink 3.5s ease-in-out infinite;}
         @keyframes splBlink{0%,35%,55%,88%,100%{transform:scaleY(1);}45%{transform:scaleY(0.05);}93%{transform:scaleY(0.05);}}
+        .otp-boxes{display:flex;gap:0.55rem;justify-content:center;flex-wrap:nowrap;width:100%;max-width:100%;}
+        .otp-boxes .otp-box{flex:0 0 auto;box-sizing:border-box;width:44px;height:54px;min-width:0;padding:0;margin:0;text-align:center;line-height:1;font-family:'JetBrains Mono',monospace;font-size:1.4rem;font-weight:700;color:#fff;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.12);border-radius:10px;outline:none;box-shadow:none;caret-color:transparent;transition:border-color 0.15s, box-shadow 0.15s, background 0.15s;-moz-appearance:textfield;}
+        .otp-boxes .otp-box::-webkit-outer-spin-button,.otp-boxes .otp-box::-webkit-inner-spin-button{-webkit-appearance:none;}
+        .otp-boxes .otp-box:focus{border-color:rgba(0,240,255,0.6);box-shadow:0 0 0 3px rgba(0,240,255,0.09);background:rgba(0,240,255,0.03);}
+        .otp-boxes .otp-box.filled{border-color:rgba(0,240,255,0.35);background:rgba(0,240,255,0.04);}
+        #auth-mfa-otp{margin:0.25rem 0;}
+        #auth-mfa-code{flex:0 0 auto;width:100%;box-sizing:border-box;text-align:center;letter-spacing:0.12em;font-family:'JetBrains Mono',monospace;font-size:1rem;padding:0.9rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.12);border-radius:10px;color:#fff;outline:none;transition:border-color 0.15s, box-shadow 0.15s;}
+        #auth-mfa-code:focus{border-color:rgba(0,240,255,0.6);box-shadow:0 0 0 3px rgba(0,240,255,0.09);}
+        .auth-mini-btn{background:transparent;border:none;font-family:'JetBrains Mono',monospace;cursor:pointer;text-transform:lowercase;padding:0.35rem 0.5rem;border-radius:6px;transition:color 0.2s, background 0.2s, opacity 0.2s;line-height:1;}
+        #auth-mfa-recovery-toggle.auth-mini-btn{color:var(--neon-blue);font-size:0.74rem;font-weight:500;}
+        #auth-mfa-recovery-toggle.auth-mini-btn:hover{background:rgba(0,240,255,0.08);}
+        #auth-mfa-cancel.auth-mini-btn{color:var(--text-muted);font-size:0.74rem;}
+        #auth-mfa-cancel.auth-mini-btn:hover{color:#fff;}
     </style>
 </head>
 <body>
@@ -197,11 +210,14 @@
                 <h1 style="font-family: 'JetBrains Mono', monospace; font-size: 1.4rem; font-weight: 800; letter-spacing: -1px; color: #fff; text-transform: lowercase; margin-bottom: 0.75rem;">two-step verification</h1>
                 <p id="auth-mfa-desc" style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted); line-height: 1.6; text-transform: lowercase; margin-bottom: 1.5rem;">enter the 6-digit code from your authenticator app to finish signing in.</p>
             </div>
-            <input type="text" id="auth-mfa-code" placeholder="000000" inputmode="numeric" autocomplete="one-time-code" maxlength="6" style="width: 100%; box-sizing: border-box; text-align: center; letter-spacing: 0.5em; font-family: 'JetBrains Mono', monospace; font-size: 1.2rem; padding: 0.9rem; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; outline: none;">
+            <div class="otp-boxes" id="auth-mfa-otp"></div>
+            <input type="text" id="auth-mfa-code" placeholder="xxxxx-xxxxx-xxxxx-..." inputmode="text" autocomplete="one-time-code" maxlength="50" style="display: none;">
             <p class="error-msg" id="auth-mfa-error" style="display: none; margin-top: 0.75rem; text-align: center;"></p>
-            <button type="button" class="submit-btn" id="auth-mfa-verify-btn" style="margin-top: 1.25rem;">verify</button>
-            <button type="button" id="auth-mfa-recovery-toggle" style="margin-top: 0.9rem; background: transparent; border: none; color: var(--neon-blue); font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; cursor: pointer; text-transform: lowercase;">use a recovery seed instead</button>
-            <button type="button" id="auth-mfa-cancel" style="margin-top: 0.75rem; background: transparent; border: none; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; cursor: pointer; text-transform: lowercase;">back to login</button>
+            <button type="button" class="submit-btn" id="auth-mfa-verify-btn" style="margin-top: 1.5rem;">verify</button>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 0.15rem; margin-top: 1rem;">
+                <button type="button" id="auth-mfa-recovery-toggle" class="auth-mini-btn">use a recovery seed instead</button>
+                <button type="button" id="auth-mfa-cancel" class="auth-mini-btn">back to login</button>
+            </div>
         </div>
 
         <div id="auth-success-state" class="auth-card" style="display: none;">
@@ -299,7 +315,7 @@
     </div>
 
     <script src="/toast.js"></script>
-    <script src="/auth.js?v=16"></script>
+    <script src="/auth.js?v=17"></script>
     <script src="/eye-track.js?v=11.0"></script>
 </body>
 </html>
