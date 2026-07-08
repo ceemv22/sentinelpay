@@ -693,6 +693,8 @@ function renderDashboard(session) {
         setupTelemetry();
         setupAccountDeletion();
         setupSecurity();
+        setupConnectedAccounts();
+        setupSessions();
     } catch (e) {
         console.error('[sentinel-render] Critical failure:', e);
         showStatus('Render Error', 'error');
@@ -4286,6 +4288,105 @@ function mfaFriendlyError(msg) {
     if (m.includes('invalid') || m.includes('incorrect') || m.includes('totp') || m.includes('code') || m.includes('verif')) return 'incorrect code. check your authenticator app and try again.';
     if (m.includes('network') || m.includes('fetch') || m.includes('failed to')) return 'network error. check your connection and try again.';
     return 'could not verify the code. try again.';
+}
+
+function setupConnectedAccounts() {
+    const listEl = document.getElementById('connected-accounts-list');
+    if (!listEl || listEl.dataset.bound) return;
+    listEl.dataset.bound = 'true';
+
+    const auth = (sentinelAuth && sentinelAuth.auth) ? sentinelAuth.auth : null;
+    if (!auth || typeof auth.getUserIdentities !== 'function') return;
+
+    const LABELS = { email: 'email & password', google: 'google', twitter: 'x (twitter)' };
+    const info = (text, color) => {
+        listEl.innerHTML = '';
+        const d = document.createElement('div');
+        d.style.cssText = "padding:0.9rem 1.1rem;font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:" + (color || 'var(--text-muted)') + ';';
+        d.textContent = text;
+        listEl.appendChild(d);
+    };
+
+    const render = async () => {
+        info('loading...');
+        let identities = [];
+        try {
+            const { data, error } = await auth.getUserIdentities();
+            if (error) throw error;
+            identities = (data && data.identities) || [];
+        } catch (e) {
+            info('could not load connected accounts.', '#ff6b6b');
+            return;
+        }
+        if (!identities.length) { info('no linked sign-in methods.'); return; }
+
+        listEl.innerHTML = '';
+        identities.forEach((idn, i) => {
+            const label = LABELS[idn.provider] || idn.provider;
+            const idd = idn.identity_data || {};
+            const sub = idd.email || idd.user_name || idd.preferred_username || '';
+
+            const row = document.createElement('div');
+            row.style.cssText = 'display:flex;align-items:center;justify-content:space-between;gap:0.75rem;padding:0.85rem 1.1rem;' + (i > 0 ? 'border-top:1px solid var(--border-glass);' : '');
+
+            const left = document.createElement('div');
+            left.style.cssText = 'display:flex;flex-direction:column;gap:0.15rem;min-width:0;';
+            const name = document.createElement('span');
+            name.style.cssText = "font-family:'JetBrains Mono',monospace;font-size:0.8rem;color:var(--text-main);";
+            name.textContent = label;
+            left.appendChild(name);
+            if (sub) {
+                const subEl = document.createElement('span');
+                subEl.style.cssText = "font-family:'JetBrains Mono',monospace;font-size:0.68rem;color:var(--text-muted);word-break:break-all;";
+                subEl.textContent = sub;
+                left.appendChild(subEl);
+            }
+            row.appendChild(left);
+
+            if (identities.length > 1) {
+                const btn = document.createElement('button');
+                btn.className = 'btn-cancel';
+                btn.type = 'button';
+                btn.textContent = 'unlink';
+                btn.style.cssText = 'flex-shrink:0;width:auto;padding:0.4rem 0.9rem;font-size:0.68rem;';
+                btn.addEventListener('click', async () => {
+                    if (btn.disabled) return;
+                    btn.disabled = true;
+                    btn.textContent = 'unlinking...';
+                    try {
+                        const { error } = await auth.unlinkIdentity(idn);
+                        if (error) throw error;
+                        if (window.SentinelToast) window.SentinelToast.show(`${label} unlinked`, 'success');
+                        render();
+                    } catch (e) {
+                        btn.disabled = false;
+                        btn.textContent = 'unlink';
+                        if (window.SentinelToast) window.SentinelToast.show((e.message || 'could not unlink this account').toLowerCase(), 'error');
+                    }
+                });
+                row.appendChild(btn);
+            }
+            listEl.appendChild(row);
+        });
+    };
+
+    render();
+}
+
+function setupSessions() {
+    const btn = document.getElementById('btn-signout-all');
+    if (!btn || btn.dataset.bound) return;
+    btn.dataset.bound = 'true';
+    btn.addEventListener('click', async () => {
+        if (btn.disabled) return;
+        btn.disabled = true;
+        btn.textContent = 'signing out...';
+        try { localStorage.removeItem('sentinel-cached-orgs'); localStorage.removeItem('sentinel-cached-profile'); } catch (e) {}
+        try {
+            if (sentinelAuth) await sentinelAuth.auth.signOut({ scope: 'global' });
+        } catch (e) {}
+        window.location.href = '/auth';
+    });
 }
 
 function setupSecurity() {

@@ -4903,6 +4903,35 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="settings-section">
+                    <h2 class="settings-section-title">connected accounts</h2>
+                    <p class="settings-section-desc">the sign-in methods linked to your account.</p>
+                    <div class="sp-mfa-card">
+                        <div id="connected-accounts-list">
+                            <div style="padding:0.9rem 1.1rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;font-size:0.75rem;">loading...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h2 class="settings-section-title">active sessions</h2>
+                    <p class="settings-section-desc">sign out of sentinelpay everywhere you're currently logged in.</p>
+                    <div class="sp-mfa-card">
+                        <div class="sp-mfa-head">
+                            <div class="sp-mfa-head-left">
+                                <span class="sp-mfa-lock">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                                </span>
+                                <span class="sp-mfa-title">sign out of all devices</span>
+                            </div>
+                            <button class="sp-danger-btn" id="btn-signout-all" style="width:auto;padding:0.5rem 1rem;font-size:0.72rem;white-space:nowrap;">sign out everywhere</button>
+                        </div>
+                        <div class="sp-mfa-panel">
+                            <p class="sp-mfa-desc">this ends every active session, including this one — you'll need to sign in again.</p>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div id="account-tab-access-tokens" class="account-tab-panel" style="display:none;"></div>
         </div>
@@ -5300,7 +5329,7 @@
     </div>
 
     <script src="toast.js?v=3"></script>
-    <script src="dashboard-v19.js?v=133"></script>
+    <script src="dashboard-v19.js?v=134"></script>
     <script>
         // Eye Tracking Logic
         function trackEye(element, clientX, clientY) {
