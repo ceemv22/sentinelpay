@@ -3162,16 +3162,23 @@ async function fetchProfile(token) {
                     let cooldownIntervalOld = null;
                     let cooldownIntervalNew = null;
 
+                    const setResendDisabled = (btn, off) => {
+                        btn.disabled = off;
+                        btn.style.opacity = off ? '0.4' : '';
+                        btn.style.cursor = off ? 'not-allowed' : 'pointer';
+                        btn.style.pointerEvents = off ? 'none' : '';
+                    };
+
                     const applyCooldown = (btn, secs, intervalRef) => {
                         if (intervalRef.id) { clearInterval(intervalRef.id); intervalRef.id = null; }
-                        if (secs <= 0) { btn.disabled = false; btn.textContent = 'resend code'; return; }
-                        btn.disabled = true;
+                        if (secs <= 0) { setResendDisabled(btn, false); btn.textContent = 'resend code'; return; }
+                        setResendDisabled(btn, true);
                         btn.textContent = `resend in ${secs}s`;
                         intervalRef.id = setInterval(() => {
                             secs -= 1;
                             if (secs <= 0) {
                                 clearInterval(intervalRef.id); intervalRef.id = null;
-                                btn.disabled = false; btn.textContent = 'resend code';
+                                setResendDisabled(btn, false); btn.textContent = 'resend code';
                             } else { btn.textContent = `resend in ${secs}s`; }
                         }, 1000);
                     };
@@ -3485,16 +3492,22 @@ async function fetchProfile(token) {
                     };
 
                     let cooldownInterval = null;
+                    const setResendDisabled = (btn, off) => {
+                        btn.disabled = off;
+                        btn.style.opacity = off ? '0.4' : '';
+                        btn.style.cursor = off ? 'not-allowed' : 'pointer';
+                        btn.style.pointerEvents = off ? 'none' : '';
+                    };
                     const applyCooldown = (btn, secs) => {
                         if (cooldownInterval) { clearInterval(cooldownInterval); cooldownInterval = null; }
-                        if (secs <= 0) { btn.disabled = false; btn.textContent = 'resend code'; return; }
-                        btn.disabled = true;
+                        if (secs <= 0) { setResendDisabled(btn, false); btn.textContent = 'resend code'; return; }
+                        setResendDisabled(btn, true);
                         btn.textContent = `resend in ${secs}s`;
                         cooldownInterval = setInterval(() => {
                             secs -= 1;
                             if (secs <= 0) {
                                 clearInterval(cooldownInterval); cooldownInterval = null;
-                                btn.disabled = false; btn.textContent = 'resend code';
+                                setResendDisabled(btn, false); btn.textContent = 'resend code';
                             } else { btn.textContent = `resend in ${secs}s`; }
                         }, 1000);
                     };
