@@ -212,48 +212,102 @@ document.addEventListener('DOMContentLoaded', () => {
         const verifyBtn = document.getElementById('auth-mfa-verify-btn');
         const errEl = document.getElementById('auth-mfa-error');
         const cancelBtn = document.getElementById('auth-mfa-cancel');
+        const descEl = document.getElementById('auth-mfa-desc');
+        const toggleBtn = document.getElementById('auth-mfa-recovery-toggle');
         if (!panel || !mfaState) { window.location.href = returnTo || '/dashboard/organizations'; return; }
 
         panel.style.display = 'none';
         mfaState.style.display = 'flex';
-        setTimeout(() => { if (codeInput) codeInput.focus(); }, 60);
 
-        if (codeInput) codeInput.oninput = () => { codeInput.value = codeInput.value.replace(/[^0-9]/g, '').slice(0, 6); };
+        let mode = 'totp';
+        const setMode = (m) => {
+            mode = m;
+            if (errEl) errEl.style.display = 'none';
+            if (codeInput) codeInput.value = '';
+            if (m === 'totp') {
+                if (descEl) descEl.textContent = 'enter the 6-digit code from your authenticator app to finish signing in.';
+                if (codeInput) { codeInput.placeholder = '000000'; codeInput.maxLength = 6; codeInput.style.letterSpacing = '0.5em'; codeInput.setAttribute('inputmode', 'numeric'); }
+                if (toggleBtn) toggleBtn.textContent = 'use a recovery code instead';
+            } else {
+                if (descEl) descEl.textContent = 'enter one of your backup recovery codes. this signs you in and turns off two-factor authentication so you can set it up again.';
+                if (codeInput) { codeInput.placeholder = 'xxxxx-xxxxx'; codeInput.maxLength = 20; codeInput.style.letterSpacing = '0.15em'; codeInput.removeAttribute('inputmode'); }
+                if (toggleBtn) toggleBtn.textContent = 'use your authenticator app instead';
+            }
+            setTimeout(() => { if (codeInput) codeInput.focus(); }, 40);
+        };
+
+        if (codeInput) codeInput.oninput = () => {
+            if (mode === 'totp') codeInput.value = codeInput.value.replace(/[^0-9]/g, '').slice(0, 6);
+            else codeInput.value = codeInput.value.replace(/[^0-9a-zA-Z-]/g, '').toLowerCase().slice(0, 20);
+        };
+
+        const fail = (msg) => {
+            verifyBtn.disabled = false;
+            verifyBtn.textContent = 'verify';
+            errEl.textContent = `error: ${msg}`;
+            errEl.style.display = 'block';
+            if (codeInput) { codeInput.value = ''; codeInput.focus(); }
+        };
 
         const submit = async () => {
             if (!errEl) return;
             errEl.style.display = 'none';
-            const code = (codeInput.value || '').trim();
-            if (!/^[0-9]{6}$/.test(code)) { errEl.textContent = 'error: enter the 6-digit code'; errEl.style.display = 'block'; return; }
+            const raw = (codeInput.value || '').trim();
             verifyBtn.disabled = true;
             verifyBtn.textContent = 'verifying...';
-            try {
-                const { data: factorData } = await s.auth.mfa.listFactors();
-                const factors = (factorData && (factorData.totp || factorData.all)) || [];
-                const f = factors.find(x => x.status === 'verified') || factors[0];
-                if (!f) throw new Error('no authenticator found');
-                const { error } = await s.auth.mfa.challengeAndVerify({ factorId: f.id, code });
-                if (error) throw new Error(error.message);
-                window.location.href = returnTo || '/dashboard/organizations';
-            } catch (e) {
-                console.error('[mfa login verify]', e.message || e);
-                const m = (e.message || '').toLowerCase();
-                let friendly = 'could not verify the code. try again.';
-                if (m.includes('rate') || m.includes('too many') || m.includes('limit')) friendly = 'too many attempts. wait a moment and try again.';
-                else if (m.includes('expired')) friendly = 'the code expired. enter a fresh one from your authenticator app.';
-                else if (m.includes('invalid') || m.includes('incorrect') || m.includes('totp') || m.includes('code') || m.includes('verif')) friendly = 'incorrect code. check your authenticator app and try again.';
-                else if (m.includes('network') || m.includes('fetch') || m.includes('failed to')) friendly = 'network error. check your connection and try again.';
-                verifyBtn.disabled = false;
-                verifyBtn.textContent = 'verify';
-                errEl.textContent = `error: ${friendly}`;
-                errEl.style.display = 'block';
-                if (codeInput) { codeInput.value = ''; codeInput.focus(); }
+
+            if (mode === 'totp') {
+                if (!/^[0-9]{6}$/.test(raw)) { fail('enter the 6-digit code'); return; }
+                try {
+                    const { data: factorData } = await s.auth.mfa.listFactors();
+                    const factors = (factorData && (factorData.totp || factorData.all)) || [];
+                    const f = factors.find(x => x.status === 'verified') || factors[0];
+                    if (!f) throw new Error('no authenticator found');
+                    const { error } = await s.auth.mfa.challengeAndVerify({ factorId: f.id, code: raw });
+                    if (error) throw new Error(error.message);
+                    window.location.href = returnTo || '/dashboard/organizations';
+                } catch (e) {
+                    console.error('[mfa login verify]', e.message || e);
+                    const m = (e.message || '').toLowerCase();
+                    let friendly = 'could not verify the code. try again.';
+                    if (m.includes('rate') || m.includes('too many') || m.includes('limit')) friendly = 'too many attempts. wait a moment and try again.';
+                    else if (m.includes('expired')) friendly = 'the code expired. enter a fresh one from your authenticator app.';
+                    else if (m.includes('invalid') || m.includes('incorrect') || m.includes('totp') || m.includes('code') || m.includes('verif')) friendly = 'incorrect code. check your authenticator app and try again.';
+                    else if (m.includes('network') || m.includes('fetch') || m.includes('failed to')) friendly = 'network error. check your connection and try again.';
+                    fail(friendly);
+                }
+            } else {
+                if (raw.length < 6) { fail('enter a valid recovery code'); return; }
+                try {
+                    const { data: sess } = await s.auth.getSession();
+                    const token = sess && sess.session && sess.session.access_token;
+                    if (!token) throw new Error('session expired');
+                    const r = await fetch('/v1/user/mfa/recovery-codes/recover', {
+                        method: 'POST',
+                        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ code: raw })
+                    });
+                    const d = await r.json().catch(() => ({}));
+                    if (!r.ok) throw new Error(d.error || 'invalid recovery code');
+                    window.location.href = returnTo || '/dashboard/organizations';
+                } catch (e) {
+                    console.error('[mfa recovery login]', e.message || e);
+                    const m = (e.message || '').toLowerCase();
+                    let friendly = 'could not use that recovery code. try again.';
+                    if (m.includes('invalid')) friendly = 'that recovery code is not valid.';
+                    else if (m.includes('session') || m.includes('expired') || m.includes('token')) friendly = 'your session expired. sign in again.';
+                    else if (m.includes('rate') || m.includes('too many')) friendly = 'too many attempts. wait a moment and try again.';
+                    fail(friendly);
+                }
             }
         };
 
         if (verifyBtn) verifyBtn.onclick = submit;
         if (codeInput) codeInput.onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); submit(); } };
+        if (toggleBtn) toggleBtn.onclick = () => setMode(mode === 'totp' ? 'recovery' : 'totp');
         if (cancelBtn) cancelBtn.onclick = async () => { try { await s.auth.signOut(); } catch (e) {} window.location.reload(); };
+
+        setMode('totp');
     }
 
     const regForm = document.getElementById('register-form');
