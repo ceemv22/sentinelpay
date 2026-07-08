@@ -223,6 +223,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function showMfaStep() {
         const panel = document.getElementById('auth-panel');
         const mfaState = document.getElementById('auth-mfa-state');
+        const otpWrap = document.getElementById('auth-mfa-otp');
         const codeInput = document.getElementById('auth-mfa-code');
         const verifyBtn = document.getElementById('auth-mfa-verify-btn');
         const errEl = document.getElementById('auth-mfa-error');
@@ -235,25 +236,75 @@ document.addEventListener('DOMContentLoaded', () => {
         mfaState.style.display = 'flex';
 
         let mode = 'totp';
+        let cells = [];
+        const otpValue = () => cells.map((c) => c.value).join('');
+        const setFilled = () => cells.forEach((c) => c.classList.toggle('filled', !!c.value));
+        const clearOtp = () => { cells.forEach((c) => { c.value = ''; c.disabled = false; }); setFilled(); };
+        const focusFirstOtp = () => { const t = cells.find((c) => !c.value) || cells[0]; if (t) t.focus(); };
+
+        const buildOtp = () => {
+            if (!otpWrap) return;
+            otpWrap.innerHTML = '';
+            cells = [];
+            for (let i = 0; i < 6; i++) {
+                const c = document.createElement('input');
+                c.type = 'text';
+                c.className = 'otp-box';
+                c.inputMode = 'numeric';
+                c.autocomplete = i === 0 ? 'one-time-code' : 'off';
+                c.maxLength = 1;
+                c.setAttribute('aria-label', 'digit ' + (i + 1));
+                cells.push(c);
+                otpWrap.appendChild(c);
+            }
+            cells.forEach((c, idx) => {
+                c.addEventListener('input', () => {
+                    c.value = c.value.replace(/[^0-9]/g, '').slice(0, 1);
+                    setFilled();
+                    if (c.value && idx < 5) cells[idx + 1].focus();
+                    if (otpValue().length === 6) submit();
+                });
+                c.addEventListener('keydown', (e) => {
+                    if (e.key === 'Backspace' && !c.value && idx > 0) { cells[idx - 1].focus(); cells[idx - 1].value = ''; setFilled(); e.preventDefault(); }
+                    else if (e.key === 'ArrowLeft' && idx > 0) { cells[idx - 1].focus(); e.preventDefault(); }
+                    else if (e.key === 'ArrowRight' && idx < 5) { cells[idx + 1].focus(); e.preventDefault(); }
+                    else if (e.key === 'Enter') submit();
+                });
+                c.addEventListener('paste', (e) => {
+                    e.preventDefault();
+                    const src = (e.clipboardData || window.clipboardData);
+                    const digits = (src ? src.getData('text') : '').replace(/[^0-9]/g, '').slice(0, 6);
+                    if (!digits) return;
+                    for (let j = 0; j < 6; j++) cells[j].value = digits[j] || '';
+                    setFilled();
+                    cells[Math.min(digits.length, 5)].focus();
+                    if (otpValue().length === 6) submit();
+                });
+            });
+        };
+
         const setMode = (m) => {
             mode = m;
             if (errEl) errEl.style.display = 'none';
-            if (codeInput) codeInput.value = '';
             if (m === 'totp') {
                 if (descEl) descEl.textContent = 'enter the 6-digit code from your authenticator app to finish signing in.';
-                if (codeInput) { codeInput.placeholder = '000000'; codeInput.maxLength = 6; codeInput.style.letterSpacing = '0.5em'; codeInput.setAttribute('inputmode', 'numeric'); }
+                if (otpWrap) otpWrap.style.display = 'flex';
+                if (codeInput) { codeInput.style.display = 'none'; codeInput.value = ''; }
+                buildOtp();
+                clearOtp();
                 if (toggleBtn) toggleBtn.textContent = 'use a recovery seed instead';
+                setTimeout(() => focusFirstOtp(), 40);
             } else {
                 if (descEl) descEl.textContent = 'enter your master recovery seed. this signs you in and turns off two-factor authentication so you can set it up again.';
-                if (codeInput) { codeInput.placeholder = 'xxxxx-xxxxx-xxxxx-...'; codeInput.maxLength = 50; codeInput.style.letterSpacing = '0.1em'; codeInput.removeAttribute('inputmode'); }
+                if (otpWrap) otpWrap.style.display = 'none';
+                if (codeInput) { codeInput.style.display = 'block'; codeInput.value = ''; codeInput.placeholder = 'xxxxx-xxxxx-xxxxx-...'; codeInput.maxLength = 50; }
                 if (toggleBtn) toggleBtn.textContent = 'use your authenticator app instead';
+                setTimeout(() => { if (codeInput) codeInput.focus(); }, 40);
             }
-            setTimeout(() => { if (codeInput) codeInput.focus(); }, 40);
         };
 
         if (codeInput) codeInput.oninput = () => {
-            if (mode === 'totp') codeInput.value = codeInput.value.replace(/[^0-9]/g, '').slice(0, 6);
-            else codeInput.value = codeInput.value.replace(/[^0-9a-zA-Z-]/g, '').toLowerCase().slice(0, 50);
+            codeInput.value = codeInput.value.replace(/[^0-9a-zA-Z-]/g, '').toLowerCase().slice(0, 50);
         };
 
         const fail = (msg) => {
@@ -261,18 +312,21 @@ document.addEventListener('DOMContentLoaded', () => {
             verifyBtn.textContent = 'verify';
             errEl.textContent = `error: ${msg}`;
             errEl.style.display = 'block';
-            if (codeInput) { codeInput.value = ''; codeInput.focus(); }
+            if (mode === 'totp') { clearOtp(); focusFirstOtp(); }
+            else if (codeInput) { codeInput.value = ''; codeInput.focus(); }
         };
 
         const submit = async () => {
             if (!errEl) return;
+            if (verifyBtn.disabled) return;
             errEl.style.display = 'none';
-            const raw = (codeInput.value || '').trim();
+            const raw = mode === 'totp' ? otpValue() : (codeInput.value || '').trim();
             verifyBtn.disabled = true;
             verifyBtn.textContent = 'verifying...';
 
             if (mode === 'totp') {
                 if (!/^[0-9]{6}$/.test(raw)) { fail('enter the 6-digit code'); return; }
+                cells.forEach((c) => { c.disabled = true; });
                 try {
                     const { data: factorData } = await s.auth.mfa.listFactors();
                     const factors = (factorData && (factorData.totp || factorData.all)) || [];
