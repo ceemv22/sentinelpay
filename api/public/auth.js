@@ -195,6 +195,21 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                     } catch (mfaErr) { needsMfa = false; }
                     if (needsMfa) {
+                        try {
+                            const { data: sess } = await s.auth.getSession();
+                            const tok = sess && sess.session && sess.session.access_token;
+                            if (tok) {
+                                const rr = await fetch('/v1/user/mfa/reconcile', {
+                                    method: 'POST',
+                                    headers: { 'Authorization': `Bearer ${tok}`, 'Content-Type': 'application/json' }
+                                });
+                                const rd = await rr.json().catch(() => ({}));
+                                if (rr.ok && rd.mfaEnabled === false) {
+                                    window.location.href = returnTo || '/dashboard/organizations';
+                                    return;
+                                }
+                            }
+                        } catch (recErr) {}
                         isBusy = false;
                         showMfaStep();
                         return;

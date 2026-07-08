@@ -4312,6 +4312,8 @@ function setupRecoveryCodes() {
 
     let currentSeed = '';
     let hasSeed = false;
+    let confirmMode = false;
+    let confirmCallback = null;
 
     const paintStatus = (on, seedSet) => {
         genBtn.disabled = !on;
@@ -4348,6 +4350,8 @@ function setupRecoveryCodes() {
 
     const showSeed = (seed, requireConfirm) => {
         currentSeed = seed || '';
+        confirmMode = !!requireConfirm;
+        if (!requireConfirm) confirmCallback = null;
         listEl.innerHTML = '';
         const d = document.createElement('div');
         d.textContent = currentSeed;
@@ -4358,6 +4362,7 @@ function setupRecoveryCodes() {
             : "your master recovery seed. keep it offline and private — anyone with it can disable two-factor on your account.";
         if (confirmRow) confirmRow.style.display = requireConfirm ? 'flex' : 'none';
         if (confirmCheck) confirmCheck.checked = false;
+        if (closeBtn) closeBtn.style.display = requireConfirm ? 'none' : '';
         if (doneBtn) {
             doneBtn.textContent = requireConfirm ? 'done' : 'close';
             doneBtn.disabled = !!requireConfirm;
@@ -4366,11 +4371,12 @@ function setupRecoveryCodes() {
         document.body.classList.add('modal-open');
         lockBodyScroll();
     };
-    window.__recoveryShowNew = (seed) => { loadStatus(); showSeed(seed, true); };
+    window.__recoveryShowNew = (seed, onConfirm) => { confirmCallback = onConfirm || null; showSeed(seed, true); };
 
     genBtn.addEventListener('click', async () => {
         if (genBtn.disabled) return;
         if (!window.__mfaOn) { if (window.SentinelToast) window.SentinelToast.show('enable mfa first', 'error'); return; }
+        confirmCallback = null;
         if (typeof window.__mfaStepUp === 'function') {
             const ok = await window.__mfaStepUp();
             if (!ok) return;
@@ -4400,9 +4406,26 @@ function setupRecoveryCodes() {
         if (doneBtn && confirmRow && confirmRow.style.display !== 'none') doneBtn.disabled = !confirmCheck.checked;
     });
 
-    if (closeBtn) closeBtn.addEventListener('click', closeModal);
-    if (doneBtn) doneBtn.addEventListener('click', () => { if (!doneBtn.disabled) closeModal(); });
-    modal.addEventListener('click', (e) => { if (e.target === modal) { if (confirmRow && confirmRow.style.display !== 'none' && confirmCheck && !confirmCheck.checked) return; closeModal(); } });
+    if (closeBtn) closeBtn.addEventListener('click', () => { if (!confirmMode) closeModal(); });
+    if (doneBtn) doneBtn.addEventListener('click', async () => {
+        if (doneBtn.disabled) return;
+        if (confirmCallback) {
+            const label = doneBtn.textContent;
+            doneBtn.disabled = true;
+            doneBtn.textContent = 'enabling...';
+            let ok = false;
+            try { ok = await confirmCallback(); } catch (e) { ok = false; }
+            if (!ok) {
+                doneBtn.disabled = false;
+                doneBtn.textContent = label;
+                if (window.SentinelToast) window.SentinelToast.show('could not enable mfa right now. please try again.', 'error');
+                return;
+            }
+            confirmCallback = null;
+        }
+        closeModal();
+    });
+    modal.addEventListener('click', (e) => { if (e.target === modal && !confirmMode) closeModal(); });
     if (copyBtn) copyBtn.addEventListener('click', () => {
         const done = () => { copyBtn.textContent = 'copied'; setTimeout(() => { copyBtn.textContent = 'copy'; }, 2000); };
         if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(currentSeed).then(done).catch(done);
@@ -4455,6 +4478,7 @@ function setupSecurity() {
     let enabled = readSecCache().mfaOn === true;
     let pendingFactorId = null;
     let enrollDone = false;
+    let awaitingSeedConfirm = false;
 
     window.__mfaOn = enabled;
     sw.classList.remove('is-disabled');
@@ -4503,19 +4527,29 @@ function setupSecurity() {
     };
 
     const refresh = async () => {
-        enabled = !!(await getVerifiedFactor());
+        try {
+            const token = await getFreshToken();
+            if (token) window.supabaseAuthToken = token;
+            const r = await fetch('/v1/user/mfa/reconcile', {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
+            });
+            const d = await r.json().catch(() => ({}));
+            enabled = !!(r.ok && d.mfaEnabled);
+        } catch (e) {
+            enabled = !!(await getVerifiedFactor());
+        }
         setStatus();
-        if (enabled) { setServerState(true).catch(() => {}); }
     };
 
     const closeEnrollModal = () => {
         enrollModal.classList.remove('active');
         document.body.classList.remove('modal-open');
         unlockBodyScroll();
-        if (pendingFactorId && !enrollDone) {
+        if (pendingFactorId && !enrollDone && !awaitingSeedConfirm) {
             mfa.unenroll({ factorId: pendingFactorId }).catch(() => {});
         }
-        pendingFactorId = null;
+        if (!awaitingSeedConfirm) pendingFactorId = null;
     };
 
     const cancelEnroll = () => { closeEnrollModal(); toggle.checked = enabled; };
@@ -4538,31 +4572,46 @@ function setupSecurity() {
         try {
             const { data: vdata, error } = await mfa.challengeAndVerify({ factorId: pendingFactorId, code });
             if (error) throw new Error(error.message);
-            const ok = await setServerState(true, vdata && vdata.access_token);
-            if (!ok) {
-                const fid = pendingFactorId;
-                pendingFactorId = null;
-                enrollDone = false;
-                try { await mfa.unenroll({ factorId: fid }); } catch (e2) {}
-                enabled = false;
-                setStatus();
-                closeEnrollModal();
-                if (window.SentinelToast) window.SentinelToast.show('could not enable mfa right now. please try again.', 'error');
-                return;
-            }
-            enrollDone = true;
-            enabled = true;
-            setStatus();
-            closeEnrollModal();
-            if (window.SentinelToast) window.SentinelToast.show('mfa enabled', 'success');
+            if (vdata && vdata.access_token) window.supabaseAuthToken = vdata.access_token;
+
+            let seed = '';
             try {
                 const rr = await fetch('/v1/user/mfa/recovery-codes/generate', {
                     method: 'POST',
                     headers: { 'Authorization': `Bearer ${window.supabaseAuthToken}`, 'Content-Type': 'application/json' }
                 });
                 const rd = await rr.json().catch(() => ({}));
-                if (rr.ok && rd.seed && typeof window.__recoveryShowNew === 'function') window.__recoveryShowNew(rd.seed);
-            } catch (e2) {}
+                if (!rr.ok || !rd.seed) throw new Error(rd.error || 'seed');
+                seed = rd.seed;
+            } catch (seedErr) {
+                const fid = pendingFactorId;
+                pendingFactorId = null;
+                enrollDone = false;
+                awaitingSeedConfirm = false;
+                try { await mfa.unenroll({ factorId: fid }); } catch (e2) {}
+                enabled = false;
+                setStatus();
+                verifyBusy = false;
+                clearOtp();
+                focusFirstOtp();
+                verifyError.textContent = 'error: could not prepare your recovery seed. please try again.';
+                verifyError.style.display = 'block';
+                return;
+            }
+
+            awaitingSeedConfirm = true;
+            closeEnrollModal();
+            window.__recoveryShowNew(seed, async () => {
+                const ok = await setServerState(true);
+                if (!ok) return false;
+                enrollDone = true;
+                awaitingSeedConfirm = false;
+                pendingFactorId = null;
+                enabled = true;
+                setStatus();
+                if (window.SentinelToast) window.SentinelToast.show('mfa enabled', 'success');
+                return true;
+            });
         } catch (e) {
             console.error('[mfa enable verify]', e.message || e);
             verifyBusy = false;
