@@ -4698,13 +4698,15 @@ function setupSecurity() {
 
     window.__mfaStepUp = () => new Promise((resolve) => {
         const modalEl = document.getElementById('mfa-stepup-modal-overlay');
-        const codeEl = document.getElementById('mfa-stepup-code');
+        const otpWrapEl = document.getElementById('mfa-stepup-otp');
         const errEl = document.getElementById('mfa-stepup-error');
         const vBtn = document.getElementById('btn-mfa-stepup-verify');
         const cBtn = document.getElementById('btn-close-mfa-stepup');
-        if (!modalEl || !codeEl || !vBtn) { resolve(false); return; }
+        if (!modalEl || !otpWrapEl || !vBtn) { resolve(false); return; }
 
         let settled = false;
+        let busy = false;
+        let cells = [];
         const close = () => {
             modalEl.classList.remove('active');
             document.body.classList.remove('modal-open');
@@ -4712,21 +4714,18 @@ function setupSecurity() {
         };
         const finish = (val) => { if (settled) return; settled = true; close(); resolve(val); };
 
-        codeEl.value = '';
-        errEl.style.display = 'none';
-        vBtn.disabled = false;
-        vBtn.textContent = 'verify';
-        modalEl.classList.add('active');
-        document.body.classList.add('modal-open');
-        lockBodyScroll();
-        setTimeout(() => codeEl.focus(), 50);
-
-        codeEl.oninput = () => { codeEl.value = codeEl.value.replace(/[^0-9]/g, '').slice(0, 6); };
+        const value = () => cells.map((c) => c.value).join('');
+        const setFilled = () => cells.forEach((c) => c.classList.toggle('filled', !!c.value));
+        const clear = () => { cells.forEach((c) => { c.value = ''; c.disabled = false; }); setFilled(); };
+        const focusFirst = () => { const t = cells.find((c) => !c.value) || cells[0]; if (t) t.focus(); };
 
         const submit = async () => {
+            if (busy) return;
+            const code = value();
+            if (!/^[0-9]{6}$/.test(code)) { errEl.textContent = 'error: enter the 6-digit code'; errEl.style.display = 'block'; focusFirst(); return; }
+            busy = true;
             errEl.style.display = 'none';
-            const code = (codeEl.value || '').trim();
-            if (!/^[0-9]{6}$/.test(code)) { errEl.textContent = 'error: enter the 6-digit code'; errEl.style.display = 'block'; return; }
+            cells.forEach((c) => { c.disabled = true; });
             vBtn.disabled = true;
             vBtn.textContent = 'verifying...';
             try {
@@ -4738,15 +4737,64 @@ function setupSecurity() {
                 finish(true);
             } catch (e) {
                 console.error('[mfa stepup]', e.message || e);
+                busy = false;
                 vBtn.disabled = false;
                 vBtn.textContent = 'verify';
+                clear();
+                focusFirst();
                 errEl.textContent = `error: ${mfaFriendlyError(e.message)}`;
                 errEl.style.display = 'block';
             }
         };
 
+        otpWrapEl.innerHTML = '';
+        cells = [];
+        for (let i = 0; i < 6; i++) {
+            const c = document.createElement('input');
+            c.type = 'text';
+            c.className = 'otp-box';
+            c.inputMode = 'numeric';
+            c.autocomplete = i === 0 ? 'one-time-code' : 'off';
+            c.maxLength = 1;
+            c.setAttribute('aria-label', 'digit ' + (i + 1));
+            cells.push(c);
+            otpWrapEl.appendChild(c);
+        }
+        cells.forEach((c, idx) => {
+            c.addEventListener('input', () => {
+                c.value = c.value.replace(/[^0-9]/g, '').slice(0, 1);
+                setFilled();
+                if (c.value && idx < 5) cells[idx + 1].focus();
+                if (value().length === 6) submit();
+            });
+            c.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && !c.value && idx > 0) { cells[idx - 1].focus(); cells[idx - 1].value = ''; setFilled(); e.preventDefault(); }
+                else if (e.key === 'ArrowLeft' && idx > 0) { cells[idx - 1].focus(); e.preventDefault(); }
+                else if (e.key === 'ArrowRight' && idx < 5) { cells[idx + 1].focus(); e.preventDefault(); }
+                else if (e.key === 'Enter') submit();
+            });
+            c.addEventListener('paste', (e) => {
+                e.preventDefault();
+                const src = (e.clipboardData || window.clipboardData);
+                const digits = (src ? src.getData('text') : '').replace(/[^0-9]/g, '').slice(0, 6);
+                if (!digits) return;
+                for (let j = 0; j < 6; j++) cells[j].value = digits[j] || '';
+                setFilled();
+                cells[Math.min(digits.length, 5)].focus();
+                if (value().length === 6) submit();
+            });
+        });
+
+        errEl.style.display = 'none';
+        busy = false;
+        vBtn.disabled = false;
+        vBtn.textContent = 'verify';
+        modalEl.classList.add('active');
+        document.body.classList.add('modal-open');
+        lockBodyScroll();
+        setTimeout(() => focusFirst(), 50);
+
         vBtn.onclick = submit;
-        codeEl.onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); submit(); } };
         cBtn.onclick = () => finish(false);
         modalEl.onclick = (e) => { if (e.target === modalEl) finish(false); };
     });
