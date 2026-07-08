@@ -4434,7 +4434,7 @@ function setupSecurity() {
 
     const disableModal = document.getElementById('mfa-disable-modal-overlay');
     const closeDisable = document.getElementById('btn-close-mfa-disable');
-    const disableCode = document.getElementById('mfa-disable-code');
+    const disableOtpWrap = document.getElementById('mfa-disable-otp');
     const disableError = document.getElementById('mfa-disable-error');
     const disableBtn = document.getElementById('btn-mfa-disable-confirm');
 
@@ -4685,15 +4685,108 @@ function setupSecurity() {
 
     const cancelDisable = () => { closeDisableModal(); toggle.checked = enabled; };
 
+    let disableCells = [];
+    let disableBusy = false;
+    const disableValue = () => disableCells.map((c) => c.value).join('');
+    const setDisableFilled = () => disableCells.forEach((c) => c.classList.toggle('filled', !!c.value));
+    const clearDisableOtp = () => { disableCells.forEach((c) => { c.value = ''; c.disabled = false; }); setDisableFilled(); };
+    const focusFirstDisable = () => { const t = disableCells.find((c) => !c.value) || disableCells[0]; if (t) t.focus(); };
+
+    const doDisable = async () => {
+        if (disableBusy) return;
+        const code = disableValue();
+        if (!/^[0-9]{6}$/.test(code)) { disableError.textContent = 'error: enter the 6-digit code'; disableError.style.display = 'block'; focusFirstDisable(); return; }
+        disableBusy = true;
+        disableError.style.display = 'none';
+        disableCells.forEach((c) => { c.disabled = true; });
+        disableBtn.disabled = true;
+        disableBtn.textContent = 'verifying...';
+        try {
+            const f = await getVerifiedFactor();
+            if (!f) throw new Error('no authenticator found');
+            const { data: vdata, error } = await mfa.challengeAndVerify({ factorId: f.id, code });
+            if (error) throw new Error(error.message);
+            const stateOk = await setServerState(false, vdata && vdata.access_token);
+            if (!stateOk) {
+                disableBusy = false;
+                disableBtn.disabled = false;
+                disableBtn.textContent = 'verify & disable';
+                clearDisableOtp();
+                focusFirstDisable();
+                disableError.textContent = 'error: could not disable mfa right now. please try again.';
+                disableError.style.display = 'block';
+                return;
+            }
+            try { await mfa.unenroll({ factorId: f.id }); } catch (e) {}
+            const rest = await getVerifiedFactor();
+            if (rest) { try { await mfa.unenroll({ factorId: rest.id }); } catch (e) {} }
+            enabled = false;
+            setStatus();
+            closeDisableModal();
+            if (window.SentinelToast) window.SentinelToast.show('mfa disabled', 'success');
+        } catch (e) {
+            console.error('[mfa disable verify]', e.message || e);
+            disableBusy = false;
+            disableBtn.disabled = false;
+            disableBtn.textContent = 'verify & disable';
+            clearDisableOtp();
+            focusFirstDisable();
+            disableError.textContent = `error: ${mfaFriendlyError(e.message)}`;
+            disableError.style.display = 'block';
+        }
+    };
+
+    const buildDisableOtp = () => {
+        disableOtpWrap.innerHTML = '';
+        disableCells = [];
+        for (let i = 0; i < 6; i++) {
+            const c = document.createElement('input');
+            c.type = 'text';
+            c.className = 'otp-box';
+            c.inputMode = 'numeric';
+            c.autocomplete = i === 0 ? 'one-time-code' : 'off';
+            c.maxLength = 1;
+            c.setAttribute('aria-label', 'digit ' + (i + 1));
+            disableCells.push(c);
+            disableOtpWrap.appendChild(c);
+        }
+        disableCells.forEach((c, idx) => {
+            c.addEventListener('input', () => {
+                c.value = c.value.replace(/[^0-9]/g, '').slice(0, 1);
+                setDisableFilled();
+                if (c.value && idx < 5) disableCells[idx + 1].focus();
+                if (disableValue().length === 6) doDisable();
+            });
+            c.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && !c.value && idx > 0) { disableCells[idx - 1].focus(); disableCells[idx - 1].value = ''; setDisableFilled(); e.preventDefault(); }
+                else if (e.key === 'ArrowLeft' && idx > 0) { disableCells[idx - 1].focus(); e.preventDefault(); }
+                else if (e.key === 'ArrowRight' && idx < 5) { disableCells[idx + 1].focus(); e.preventDefault(); }
+                else if (e.key === 'Enter') doDisable();
+            });
+            c.addEventListener('paste', (e) => {
+                e.preventDefault();
+                const src = (e.clipboardData || window.clipboardData);
+                const digits = (src ? src.getData('text') : '').replace(/[^0-9]/g, '').slice(0, 6);
+                if (!digits) return;
+                for (let j = 0; j < 6; j++) disableCells[j].value = digits[j] || '';
+                setDisableFilled();
+                disableCells[Math.min(digits.length, 5)].focus();
+                if (disableValue().length === 6) doDisable();
+            });
+        });
+    };
+
     const openDisable = () => {
-        disableCode.value = '';
+        disableBusy = false;
         disableError.style.display = 'none';
         disableBtn.disabled = false;
         disableBtn.textContent = 'verify & disable';
+        buildDisableOtp();
+        clearDisableOtp();
         disableModal.classList.add('active');
         document.body.classList.add('modal-open');
         lockBodyScroll();
-        setTimeout(() => disableCode.focus(), 50);
+        setTimeout(() => focusFirstDisable(), 50);
     };
 
     window.__mfaStepUp = () => new Promise((resolve) => {
@@ -4812,7 +4905,6 @@ function setupSecurity() {
         closeDisable.addEventListener('click', cancelDisable);
         disableModal.addEventListener('click', (e) => { if (e.target === disableModal) cancelDisable(); });
 
-        disableCode.addEventListener('input', () => { disableCode.value = disableCode.value.replace(/[^0-9]/g, '').slice(0, 6); });
 
         if (secretCopyBtn) {
             const COPY_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
@@ -4850,40 +4942,7 @@ function setupSecurity() {
             });
         }
 
-        disableBtn.addEventListener('click', async () => {
-            disableError.style.display = 'none';
-            const code = (disableCode.value || '').trim();
-            if (!/^[0-9]{6}$/.test(code)) { disableError.textContent = 'error: enter the 6-digit code'; disableError.style.display = 'block'; return; }
-            disableBtn.disabled = true;
-            disableBtn.textContent = 'verifying...';
-            try {
-                const f = await getVerifiedFactor();
-                if (!f) throw new Error('no authenticator found');
-                const { data: vdata, error } = await mfa.challengeAndVerify({ factorId: f.id, code });
-                if (error) throw new Error(error.message);
-                const stateOk = await setServerState(false, vdata && vdata.access_token);
-                if (!stateOk) {
-                    disableBtn.disabled = false;
-                    disableBtn.textContent = 'verify & disable';
-                    disableError.textContent = 'error: could not disable mfa right now. please try again.';
-                    disableError.style.display = 'block';
-                    return;
-                }
-                try { await mfa.unenroll({ factorId: f.id }); } catch (e) {}
-                const rest = await getVerifiedFactor();
-                if (rest) { try { await mfa.unenroll({ factorId: rest.id }); } catch (e) {} }
-                enabled = false;
-                setStatus();
-                closeDisableModal();
-                if (window.SentinelToast) window.SentinelToast.show('mfa disabled', 'success');
-            } catch (e) {
-                console.error('[mfa disable verify]', e.message || e);
-                disableBtn.disabled = false;
-                disableBtn.textContent = 'verify & disable';
-                disableError.textContent = `error: ${mfaFriendlyError(e.message)}`;
-                disableError.style.display = 'block';
-            }
-        });
+        disableBtn.addEventListener('click', () => { doDisable(); });
     }
 
     refresh();
