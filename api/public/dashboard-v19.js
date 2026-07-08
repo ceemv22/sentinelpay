@@ -693,6 +693,7 @@ function renderDashboard(session) {
         setupTelemetry();
         setupAccountDeletion();
         setupSecurity();
+        setupRecoveryCodes();
     } catch (e) {
         console.error('[sentinel-render] Critical failure:', e);
         showStatus('Render Error', 'error');
@@ -4288,6 +4289,108 @@ function mfaFriendlyError(msg) {
     return 'could not verify the code. try again.';
 }
 
+function setupRecoveryCodes() {
+    const genBtn = document.getElementById('btn-generate-recovery');
+    if (!genBtn || genBtn.dataset.bound) return;
+    genBtn.dataset.bound = 'true';
+
+    const statusEl = document.getElementById('recovery-status');
+    const modal = document.getElementById('recovery-codes-modal-overlay');
+    const closeBtn = document.getElementById('btn-close-recovery');
+    const doneBtn = document.getElementById('btn-recovery-done');
+    const listEl = document.getElementById('recovery-codes-list');
+    const copyBtn = document.getElementById('btn-recovery-copy');
+    const dlBtn = document.getElementById('btn-recovery-download');
+    if (!modal || !listEl) return;
+
+    let currentCodes = [];
+
+    const loadStatus = async () => {
+        const mfaOn = !!window.__mfaOn;
+        genBtn.disabled = !mfaOn;
+        genBtn.style.opacity = mfaOn ? '' : '0.45';
+        genBtn.style.cursor = mfaOn ? '' : 'not-allowed';
+        if (!mfaOn) {
+            if (statusEl) statusEl.textContent = 'enable two-factor authentication first to create recovery codes.';
+            genBtn.textContent = 'generate codes';
+            return;
+        }
+        try {
+            const r = await fetch('/v1/user/mfa/recovery-codes/status', { headers: { 'Authorization': `Bearer ${window.supabaseAuthToken}` } });
+            const d = await r.json().catch(() => ({}));
+            const count = (r.ok && typeof d.count === 'number') ? d.count : 0;
+            if (statusEl) statusEl.textContent = count > 0
+                ? `${count} recovery code${count === 1 ? '' : 's'} remaining. store them somewhere safe.`
+                : "no recovery codes yet — generate a set so you're never locked out.";
+            genBtn.textContent = count > 0 ? 'regenerate' : 'generate codes';
+        } catch (e) {}
+    };
+    window.__recoveryRefresh = loadStatus;
+
+    const closeModal = () => { modal.classList.remove('active'); document.body.classList.remove('modal-open'); unlockBodyScroll(); };
+    const showCodes = (codes) => {
+        currentCodes = codes || [];
+        listEl.innerHTML = '';
+        currentCodes.forEach((c) => {
+            const d = document.createElement('div');
+            d.textContent = c;
+            d.style.cssText = "font-family:'JetBrains Mono',monospace;font-size:0.85rem;color:var(--text-main);letter-spacing:0.08em;padding:0.3rem 0;text-align:center;";
+            listEl.appendChild(d);
+        });
+        modal.classList.add('active');
+        document.body.classList.add('modal-open');
+        lockBodyScroll();
+    };
+
+    genBtn.addEventListener('click', async () => {
+        if (genBtn.disabled) return;
+        if (!window.__mfaOn) { if (window.SentinelToast) window.SentinelToast.show('enable mfa first', 'error'); return; }
+        if (typeof window.__mfaStepUp === 'function') {
+            const ok = await window.__mfaStepUp();
+            if (!ok) return;
+        }
+        const orig = genBtn.textContent;
+        genBtn.disabled = true;
+        genBtn.textContent = 'generating...';
+        try {
+            const r = await fetch('/v1/user/mfa/recovery-codes/generate', {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${window.supabaseAuthToken}`, 'Content-Type': 'application/json' }
+            });
+            const d = await r.json().catch(() => ({}));
+            if (!r.ok) throw new Error(d.error || 'could not generate codes');
+            showCodes(d.codes || []);
+            loadStatus();
+        } catch (e) {
+            if (window.SentinelToast) window.SentinelToast.show((e.message || 'could not generate codes').toLowerCase(), 'error');
+        } finally {
+            genBtn.disabled = false;
+            genBtn.textContent = orig;
+        }
+    });
+
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+    if (doneBtn) doneBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+    if (copyBtn) copyBtn.addEventListener('click', () => {
+        const text = currentCodes.join('\n');
+        const done = () => { copyBtn.textContent = 'copied'; setTimeout(() => { copyBtn.textContent = 'copy all'; }, 2000); };
+        if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(done).catch(done);
+        else done();
+    });
+    if (dlBtn) dlBtn.addEventListener('click', () => {
+        const blob = new Blob(['sentinelpay recovery codes\n\n' + currentCodes.join('\n') + '\n\nkeep these somewhere safe. each code works once.\n'], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'sentinelpay-recovery-codes.txt';
+        a.click();
+        URL.revokeObjectURL(url);
+    });
+
+    loadStatus();
+}
+
 function setupSecurity() {
     const toggle = document.getElementById('mfa-toggle');
     const sw = document.getElementById('mfa-switch');
@@ -4333,6 +4436,7 @@ function setupSecurity() {
                 ? 'enabled — an authenticator code is required to sign in and to approve sensitive actions.'
                 : 'disabled — your account is protected by password only.';
         }
+        if (typeof window.__recoveryRefresh === 'function') window.__recoveryRefresh();
     };
 
     const getFreshToken = async () => {

@@ -1433,6 +1433,110 @@ app.post('/v1/user/mfa/state', requireRateLimitBackend, requireSupabaseAuth, use
     }
 });
 
+const RECOVERY_CODE_COUNT = 10;
+function genRecoveryCode() {
+    const raw = crypto.randomBytes(5).toString('hex');
+    return `${raw.slice(0, 5)}-${raw.slice(5, 10)}`;
+}
+function hashRecoveryCode(code) {
+    return crypto.createHash('sha256').update(String(code).trim().toLowerCase()).digest('hex');
+}
+
+app.get('/v1/user/mfa/recovery-codes/status', requireRateLimitBackend, requireSupabaseAuth, async (req, res) => {
+    try {
+        const u = await prisma.user.findUnique({
+            where: { id: req.user.id },
+            select: { recoveryCodes: true, recoveryCodesGeneratedAt: true }
+        });
+        res.json({
+            count: (u && Array.isArray(u.recoveryCodes)) ? u.recoveryCodes.length : 0,
+            generatedAt: u ? u.recoveryCodesGeneratedAt : null
+        });
+    } catch (err) {
+        console.error('[recovery status]', err);
+        res.status(500).json({ error: 'failed to load recovery codes', code: 500 });
+    }
+});
+
+app.post('/v1/user/mfa/recovery-codes/generate', requireRateLimitBackend, requireSupabaseAuth, userSensitiveLimiter, async (req, res) => {
+    if (!userHasMfa(req)) {
+        return res.status(400).json({ error: 'enable mfa before generating recovery codes', code: 400 });
+    }
+    if (tokenAal(req.accessToken) !== 'aal2') {
+        return res.status(403).json({ error: 'mfa verification required', code: 'mfa_required' });
+    }
+    try {
+        const codes = Array.from({ length: RECOVERY_CODE_COUNT }, () => genRecoveryCode());
+        const hashes = codes.map(hashRecoveryCode);
+        await prisma.user.update({
+            where: { id: req.user.id },
+            data: { recoveryCodes: hashes, recoveryCodesGeneratedAt: new Date() }
+        });
+        res.json({ codes });
+    } catch (err) {
+        console.error('[recovery generate]', err);
+        res.status(500).json({ error: 'failed to generate recovery codes', code: 500 });
+    }
+});
+
+app.post('/v1/user/mfa/recovery-codes/recover', requireRateLimitBackend, requireSupabaseAuth, userSensitiveLimiter, async (req, res) => {
+    try {
+        const { code } = req.body || {};
+        if (typeof code !== 'string' || !code.trim()) {
+            return res.status(400).json({ error: 'recovery code required', code: 400 });
+        }
+        const u = await prisma.user.findUnique({ where: { id: req.user.id }, select: { recoveryCodes: true } });
+        const hashes = (u && Array.isArray(u.recoveryCodes)) ? u.recoveryCodes : [];
+        const target = hashRecoveryCode(code);
+        const targetBuf = Buffer.from(target);
+        let matched = false;
+        for (const h of hashes) {
+            const hb = Buffer.from(h);
+            if (hb.length === targetBuf.length && crypto.timingSafeEqual(hb, targetBuf)) { matched = true; break; }
+        }
+        if (!matched) {
+            return res.status(400).json({ error: 'invalid recovery code', code: 400 });
+        }
+
+        if (process.env.SUPABASE_SERVICE_ROLE_KEY && req.user.supabaseId) {
+            try {
+                const adminRes = await fetch(`${process.env.SUPABASE_URL}/auth/v1/admin/users/${req.user.supabaseId}`, {
+                    headers: {
+                        apikey: process.env.SUPABASE_SERVICE_ROLE_KEY,
+                        Authorization: `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`
+                    }
+                });
+                if (adminRes.ok) {
+                    const adminData = await adminRes.json();
+                    const factors = (adminData && adminData.factors) || [];
+                    for (const f of factors) {
+                        if (f && f.id) {
+                            await fetch(`${process.env.SUPABASE_URL}/auth/v1/admin/users/${req.user.supabaseId}/factors/${f.id}`, {
+                                method: 'DELETE',
+                                headers: {
+                                    apikey: process.env.SUPABASE_SERVICE_ROLE_KEY,
+                                    Authorization: `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`
+                                }
+                            }).catch(() => {});
+                        }
+                    }
+                }
+            } catch (e) {
+                console.error('[recovery factor cleanup]', e.message);
+            }
+        }
+
+        await prisma.user.update({
+            where: { id: req.user.id },
+            data: { mfaEnabled: false, recoveryCodes: [], recoveryCodesGeneratedAt: null }
+        });
+        res.json({ ok: true });
+    } catch (err) {
+        console.error('[recovery recover]', err);
+        res.status(500).json({ error: 'failed to use recovery code', code: 500 });
+    }
+});
+
 function requireAdmin(req, res, next) {
     const adminKey = process.env.ADMIN_API_KEY;
     if (!adminKey) return res.status(503).json({ error: 'admin api not configured', code: 503 });
