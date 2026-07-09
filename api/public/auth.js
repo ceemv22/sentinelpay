@@ -119,6 +119,30 @@ document.addEventListener('DOMContentLoaded', () => {
         ? returnToRaw
         : null;
 
+    // On load, if a session already exists (e.g. the page was refreshed after the
+    // password step), decide what to do based on assurance level: an MFA account
+    // that hasn't completed the challenge must be shown the challenge — NOT let
+    // through to the dashboard. Only fully-assured / non-MFA sessions proceed.
+    (async () => {
+        if (!s) return;
+        try {
+            const { data: { session } } = await s.auth.getSession();
+            if (!session) return;
+            let needsMfa = false;
+            try {
+                if (s.auth.mfa && s.auth.mfa.getAuthenticatorAssuranceLevel) {
+                    const { data: aal } = await s.auth.mfa.getAuthenticatorAssuranceLevel();
+                    needsMfa = !!(aal && aal.nextLevel === 'aal2' && aal.currentLevel === 'aal1');
+                }
+            } catch (e) {}
+            if (needsMfa) {
+                showMfaStep();
+            } else {
+                window.location.href = returnTo || '/dashboard/organizations';
+            }
+        } catch (e) {}
+    })();
+
     const loginForm = document.getElementById('login-form');
     if (loginForm) {
         let isBusy = false;

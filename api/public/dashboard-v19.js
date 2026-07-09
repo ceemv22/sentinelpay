@@ -564,7 +564,7 @@ function showEmailGate(session) {
     setTimeout(() => input.focus(), 60);
 }
 
-function renderDashboard(session) {
+async function renderDashboard(session) {
     const pendingToken = sessionStorage.getItem('sentinel_join_token');
     const pendingSlug = sessionStorage.getItem('sentinel_join_slug');
     const pendingName = sessionStorage.getItem('sentinel_join_name');
@@ -585,6 +585,22 @@ function renderDashboard(session) {
 
     if (renderDashboard.busy) return;
     renderDashboard.busy = true;
+
+    // Strict MFA: a password-only (aal1) session for an MFA account must complete
+    // the authenticator challenge before it can load any dashboard data. The
+    // server blocks aal1 data access; here we bounce to a full re-login so the
+    // user actually gets prompted (fail-open on a transient check error, since
+    // the server still protects the data).
+    try {
+        if (sentinelAuth && sentinelAuth.auth.mfa && sentinelAuth.auth.mfa.getAuthenticatorAssuranceLevel) {
+            const { data: aal } = await sentinelAuth.auth.mfa.getAuthenticatorAssuranceLevel();
+            if (aal && aal.nextLevel === 'aal2' && aal.currentLevel === 'aal1') {
+                try { await sentinelAuth.auth.signOut(); } catch (e) {}
+                window.location.href = '/auth';
+                return;
+            }
+        }
+    } catch (e) {}
 
     try {
         const token = session.access_token;
