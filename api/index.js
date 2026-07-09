@@ -1280,7 +1280,23 @@ app.post('/v1/user/email-change/finalize', requireSupabaseAuth, enforceMfa, asyn
     }
 });
 
-app.get('/v1/user/api-key/reveal', requireSupabaseAuth, async (req, res) => {
+app.get('/v1/user/api-key/suffix', requireSupabaseAuth, async (req, res) => {
+    try {
+        const apiKey = await prisma.apiKey.findFirst({
+            where: { userId: req.user.id, active: true },
+            orderBy: { createdAt: 'desc' }
+        });
+        if (!apiKey) return res.status(404).json({ error: 'no active api key found' });
+        let suffix = '';
+        try { suffix = String(decrypt(apiKey.rawKey)).slice(-4); } catch (e) {}
+        res.json({ suffix, plan: apiKey.plan });
+    } catch (err) {
+        console.error('[api key suffix error]', err);
+        res.status(500).json({ error: 'failed to load api key' });
+    }
+});
+
+app.get('/v1/user/api-key/reveal', requireSupabaseAuth, enforceMfa, async (req, res) => {
     try {
         const apiKey = await prisma.apiKey.findFirst({
             where: { userId: req.user.id, active: true },
@@ -1302,7 +1318,7 @@ app.get('/v1/user/api-key/reveal', requireSupabaseAuth, async (req, res) => {
     }
 });
 
-app.post('/v1/user/api-key/roll', requireRateLimitBackend, requireSupabaseAuth, userKeyRollLimiter, async (req, res) => {
+app.post('/v1/user/api-key/roll', requireRateLimitBackend, requireSupabaseAuth, userKeyRollLimiter, enforceMfa, async (req, res) => {
     try {
         const existing = await prisma.apiKey.findFirst({
             where: { userId: req.user.id, active: true },
@@ -2118,7 +2134,7 @@ app.get('/v1/organizations/:slug/members', requireSupabaseAuth, async (req, res)
     }
 });
 
-app.delete('/v1/organizations/:slug', requireSupabaseAuth, async (req, res) => {
+app.delete('/v1/organizations/:slug', requireSupabaseAuth, enforceMfa, async (req, res) => {
     const { slug } = req.params;
     if (!/^[a-f0-9]{20}$/.test(slug)) return res.status(400).json({ error: 'invalid slug' });
     try {
