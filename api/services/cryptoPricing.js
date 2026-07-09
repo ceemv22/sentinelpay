@@ -63,7 +63,9 @@ async function convertUsdToCrypto(amountUsd, currency) {
         }
     }
     const rate = priceCache[currency];
-    if (!rate) throw new Error(`price unavailable for ${currency}`);
+    if (!rate || typeof rate !== 'number' || !isFinite(rate) || rate <= 0) {
+        throw new Error(`price unavailable for ${currency}`);
+    }
     const amountCrypto = (amountUsd / rate).toFixed(8);
     return { amountCrypto, exchangeRate: rate };
 }
