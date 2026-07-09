@@ -1655,7 +1655,7 @@ function setupInviteMemberModal(token) {
 
             if (!orgSlug) throw new Error("organization context missing");
 
-            const response = await fetch(`${API_URL}/v1/organizations/${orgSlug}/team/invite`, {
+            const response = await mfaAwareFetch(`${API_URL}/v1/organizations/${orgSlug}/team/invite`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -1990,7 +1990,7 @@ async function resendInvite(email) {
 
         const token = window.supabaseAuthToken;
 
-        const response = await fetch(`${API_URL}/v1/organizations/${orgSlug}/team/invite`, {
+        const response = await mfaAwareFetch(`${API_URL}/v1/organizations/${orgSlug}/team/invite`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

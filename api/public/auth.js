@@ -188,12 +188,18 @@ document.addEventListener('DOMContentLoaded', () => {
                     isBusy = false;
                 } else {
                     let needsMfa = false;
-                    try {
-                        if (s.auth.mfa && s.auth.mfa.getAuthenticatorAssuranceLevel) {
-                            const { data: aal } = await s.auth.mfa.getAuthenticatorAssuranceLevel();
-                            needsMfa = !!(aal && aal.nextLevel === 'aal2' && aal.nextLevel !== aal.currentLevel);
+                    if (s.auth.mfa && s.auth.mfa.getAuthenticatorAssuranceLevel) {
+                        for (let attempt = 0; attempt < 2; attempt++) {
+                            try {
+                                const { data: aal } = await s.auth.mfa.getAuthenticatorAssuranceLevel();
+                                needsMfa = !!(aal && aal.nextLevel === 'aal2' && aal.nextLevel !== aal.currentLevel);
+                                break;
+                            } catch (mfaErr) {
+                                if (attempt === 1) needsMfa = false;
+                                else await new Promise(r => setTimeout(r, 400));
+                            }
                         }
-                    } catch (mfaErr) { needsMfa = false; }
+                    }
                     if (needsMfa) {
                         try {
                             const { data: sess } = await s.auth.getSession();
