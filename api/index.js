@@ -69,16 +69,20 @@ const trustProxySetting = resolveTrustProxySetting(trustProxyEnv);
 app.set('trust proxy', trustProxySetting === undefined ? 1 : trustProxySetting);
 
 app.use((req, res, next) => {
+    // Only trust the client-supplied cf-connecting-ip header when the Cloudflare
+    // origin lockdown is active (every request is verified to come through CF).
+    // Otherwise fall back to Express's trust-proxy-derived req.ip instead of the
+    // raw, spoofable x-forwarded-for chain, so rate limits can't be bypassed by
+    // sending forged IP headers.
     const cfIp = req.headers['cf-connecting-ip'];
-    const forwardedFor = req.headers['x-forwarded-for'];
-
-    req.realIp = cfIp || (forwardedFor ? forwardedFor.split(',')[0].trim() : req.ip);
+    req.realIp = (cfLockdownActive && typeof cfIp === 'string' && cfIp.length > 0) ? cfIp : req.ip;
     next();
 });
 
 const cfOriginSecret = process.env.CF_ORIGIN_SECRET;
 const cfOriginHeader = (process.env.CF_ORIGIN_HEADER || 'x-sentinel-origin').trim().toLowerCase();
 const enforceCloudflare = String(process.env.ENFORCE_CLOUDFLARE || '').trim().toLowerCase() === 'true';
+const cfLockdownActive = enforceCloudflare && Boolean(cfOriginSecret);
 
 if (enforceCloudflare && cfOriginSecret) {
     const expectedOriginHash = crypto.createHash('sha256').update(cfOriginSecret).digest();
@@ -260,7 +264,7 @@ app.use(cors({
         }
         callback(new Error('Not allowed by CORS'));
     },
-    methods: ['POST', 'GET', 'DELETE'],
+    methods: ['POST', 'GET', 'PATCH', 'DELETE'],
 }));
 
 app.use('/v1/stripe', require('./routes/stripe'));
@@ -700,8 +704,9 @@ app.get('/v1/user/profile', requireSupabaseAuth, async (req, res) => {
 app.get('/v1/geo/timezone', requireSupabaseAuth, async (req, res) => {
     try {
         const ip = req.realIp || req.ip || '';
+        const isValidIp = /^[0-9.]{7,15}$/.test(ip) || /^[0-9a-fA-F:]{2,45}$/.test(ip);
         const isPrivate = !ip || /^(127\.|10\.|192\.168\.|::1|fc|fd|172\.(1[6-9]|2\d|3[01])\.)/i.test(ip);
-        const url = isPrivate ? 'https://ipwho.is/' : `https://ipwho.is/${encodeURIComponent(ip)}`;
+        const url = (isPrivate || !isValidIp) ? 'https://ipwho.is/' : `https://ipwho.is/${encodeURIComponent(ip)}`;
         const controller = new AbortController();
         const timer = setTimeout(() => controller.abort(), 4000);
         let data = null;
@@ -1758,6 +1763,9 @@ app.post('/v1/organizations', requireRateLimitBackend, requireSupabaseAuth, user
     if (trimmedName.length < 2 || trimmedName.length > 100) {
         return res.status(400).json({ error: 'organization name must be 2–100 characters', code: 400 });
     }
+    if (/[<>]/.test(trimmedName)) {
+        return res.status(400).json({ error: 'organization name cannot contain < or >', code: 400 });
+    }
 
     try {
         const existing = await prisma.organization.findFirst({
@@ -1957,6 +1965,10 @@ app.post('/v1/organizations/:slug/team/join', requireSupabaseAuth, async (req, r
             return res.status(403).json({ error: 'invitation has expired' });
         }
 
+        if (!req.user.email) {
+            return res.status(400).json({ error: 'a primary email is required to accept invitations' });
+        }
+
         if (invite.email.toLowerCase() !== req.user.email.toLowerCase()) {
             return res.status(403).json({ error: 'this invitation was sent to a different email address' });
         }
@@ -2019,6 +2031,7 @@ app.post('/v1/user/pending-invitations/:inviteId/accept', requireSupabaseAuth, a
         });
         if (!invite || invite.accepted) return res.status(404).json({ error: 'invitation not found or already used' });
         if (invite.expiresAt < new Date()) return res.status(403).json({ error: 'invitation has expired' });
+        if (!req.user.email) return res.status(400).json({ error: 'a primary email is required to accept invitations' });
         if (invite.email.toLowerCase() !== req.user.email.toLowerCase()) {
             return res.status(403).json({ error: 'invitation does not belong to your account' });
         }
