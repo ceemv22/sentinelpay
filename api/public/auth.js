@@ -403,7 +403,18 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
 
-        const cancel = async () => { try { await s.auth.signOut(); } catch (e) {} window.location.reload(); };
+        const cancel = () => {
+            overlay.classList.remove('active');
+            document.body.classList.remove('modal-open');
+            setTimeout(() => { overlay.style.display = 'none'; }, 300);
+            const loginBtn = document.getElementById('login-submit-btn');
+            if (loginBtn) {
+                loginBtn.disabled = false;
+                loginBtn.textContent = 'login';
+                loginBtn.removeAttribute('data-captcha-token');
+            }
+            s.auth.signOut().catch(() => {});
+        };
 
         if (verifyBtn) verifyBtn.onclick = submit;
         if (codeInput) codeInput.onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); submit(); } };
