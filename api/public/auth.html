@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <script>(function(){try{var s=localStorage.getItem('sb-aivqwkgjdpklxxuvkxpy-auth-token');if(s){var d=JSON.parse(s);if(d&&d.expires_at&&Math.floor(Date.now()/1000)<d.expires_at){window.location.replace('/dashboard/organizations');}}}catch(e){}})();</script>
+    <script>(function(){try{var s=localStorage.getItem('sb-aivqwkgjdpklxxuvkxpy-auth-token');if(!s)return;var d=JSON.parse(s);if(!(d&&d.expires_at&&Math.floor(Date.now()/1000)<d.expires_at&&d.access_token))return;var b=d.access_token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/');b+='==='.slice((b.length+3)%4);var p=JSON.parse(decodeURIComponent(escape(atob(b))));if(p&&p.aal==='aal2'){window.location.replace('/dashboard/organizations');}}catch(e){}})();</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>sentinelpay | auth</title>
     <meta name="description" content="login or register for sentinelpay to unlock deep scanning and api access.">
@@ -321,7 +321,7 @@
     </div>
 
     <script src="/toast.js"></script>
-    <script src="/auth.js?v=19"></script>
+    <script src="/auth.js?v=20"></script>
     <script src="/eye-track.js?v=11.0"></script>
 </body>
 </html>
