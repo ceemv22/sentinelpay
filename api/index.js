@@ -1825,7 +1825,7 @@ app.post('/v1/organizations', requireRateLimitBackend, requireSupabaseAuth, user
 
 const INVITE_EMAIL_REGEX = /^[^\s@]{1,64}@[^\s@]{1,255}\.[^\s@]{2,}$/;
 
-app.post('/v1/organizations/:slug/team/invite', requireSupabaseAuth, async (req, res) => {
+app.post('/v1/organizations/:slug/team/invite', requireSupabaseAuth, enforceMfa, async (req, res) => {
     const { slug } = req.params;
     if (!/^[a-f0-9]{20}$/.test(slug)) return res.status(400).json({ error: 'invalid slug' });
     const { emailList, role } = req.body;
