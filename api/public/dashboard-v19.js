@@ -22,6 +22,12 @@ window.showStatus = (msg, type = 'info') => {
     overlay.textContent = msg;
 };
 
+function escHtml(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[c]));
+}
+
 const supabaseUrl = 'https://aivqwkgjdpklxxuvkxpy.supabase.co';
 const supabaseKey = 'sb_publishable_bRfAssaGT6D8oFDQtPARbw_5fyYGWM6';
 let sentinelAuth = null;
@@ -1425,7 +1431,7 @@ function setupCreateOrgModal(token) {
                         <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
                         <span style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--text-muted);">organization</span>
                     </div>
-                    <span class="co-org-name" style="font-family:'JetBrains Mono',monospace;font-size:0.74rem;color:#e0e0e0;font-weight:500;">${name}</span>
+                    <span class="co-org-name" style="font-family:'JetBrains Mono',monospace;font-size:0.74rem;color:#e0e0e0;font-weight:500;">${escHtml(name)}</span>
                 </div>
                 <div class="org-plan-card-summary${p.featured ? ' plan-featured' : ''}">
                     ${p.featured ? '<div class="plan-accent-bar"></div>' : ''}
@@ -1806,11 +1812,11 @@ function addTeamMemberToTable(email, role, status = 'active', isYou = false) {
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.6;"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
                     </button>
                     <div class="dropdown-menu row-actions-dropdown" style="top: calc(100% + 8px); right: 0; width: 210px; padding: 8px; background: rgba(8, 10, 12, 0.96); border: 1px solid rgba(0, 240, 255, 0.15); border-radius: 12px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7), 0 0 20px rgba(0, 240, 255, 0.05); z-index: 1000;">
-                        <div class="dropdown-item" onclick="resendInvite('${email}')" style="font-size: 0.75rem; gap: 10px; padding: 10px; cursor: pointer; font-family: 'JetBrains Mono', monospace;">
+                        <div class="dropdown-item js-resend-invite" style="font-size: 0.75rem; gap: 10px; padding: 10px; cursor: pointer; font-family: 'JetBrains Mono', monospace;">
                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.7;"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
                             resend invitation
                         </div>
-                        <div class="dropdown-item text-red" onclick="cancelInvite('${email}', this)" style="font-size: 0.75rem; gap: 10px; padding: 10px; cursor: pointer; font-family: 'JetBrains Mono', monospace;">
+                        <div class="dropdown-item text-red js-cancel-invite" style="font-size: 0.75rem; gap: 10px; padding: 10px; cursor: pointer; font-family: 'JetBrains Mono', monospace;">
                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.7;"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
                             cancel invitation
                         </div>
@@ -1829,10 +1835,10 @@ function addTeamMemberToTable(email, role, status = 'active', isYou = false) {
     row.innerHTML = `
         <td style="padding: 1.25rem 1.5rem;">
             <div style="display: flex; align-items: center; gap: 1rem;">
-                <div class="org-avatar" style="border-radius: 8px; width: 34px; height: 34px; font-weight: 800; font-size: 0.9rem;">${avatarInitial}</div>
+                <div class="org-avatar" style="border-radius: 8px; width: 34px; height: 34px; font-weight: 800; font-size: 0.9rem;">${escHtml(avatarInitial)}</div>
                 <div style="display: flex; flex-direction: column;">
                     <div style="display: flex; align-items: center; gap: 8px;">
-                        <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; font-weight: 600; color: #fff;">${email}</span>
+                        <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; font-weight: 600; color: #fff;">${escHtml(email)}</span>
                         ${statusBadge}
                     </div>
                 </div>
@@ -1845,7 +1851,7 @@ function addTeamMemberToTable(email, role, status = 'active', isYou = false) {
             </div>
         </td>
         <td style="padding: 1.25rem 1.5rem;">
-            <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: #fff; opacity: 0.9;">${role}</span>
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: #fff; opacity: 0.9;">${escHtml(role)}</span>
         </td>
         <td style="padding: 1.25rem 1.5rem; text-align: right;">
             ${actionButtons}
@@ -1853,6 +1859,11 @@ function addTeamMemberToTable(email, role, status = 'active', isYou = false) {
     `;
 
     tableBody.appendChild(row);
+
+    const resendItem = row.querySelector('.js-resend-invite');
+    if (resendItem) resendItem.addEventListener('click', () => resendInvite(email));
+    const cancelItem = row.querySelector('.js-cancel-invite');
+    if (cancelItem) cancelItem.addEventListener('click', () => cancelInvite(email, cancelItem));
 
     const moreBtn = row.querySelector('.btn-more-actions');
     const dropdown = row.querySelector('.row-actions-dropdown');
@@ -2353,7 +2364,7 @@ async function renderOrgSettings(slug, token) {
     <div style="display:flex;flex-direction:column;">
         <div style="display:flex;align-items:center;justify-content:space-between;padding:0.75rem 0;border-bottom:1px solid rgba(255,255,255,0.04);">
             <span style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--text-muted);">organization name</span>
-            <span style="font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:#e0e0e0;">${org.name}</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:#e0e0e0;">${escHtml(org.name)}</span>
         </div>
         <div style="display:flex;align-items:center;justify-content:space-between;padding:0.75rem 0;border-bottom:1px solid rgba(255,255,255,0.04);">
             <span style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--text-muted);">plan</span>
@@ -2380,9 +2391,9 @@ async function renderOrgSettings(slug, token) {
         <button id="btn-delete-org-init" style="flex-shrink:0;background:transparent;border:1px solid rgba(255,51,51,0.3);color:rgba(255,80,80,0.85);font-family:'JetBrains Mono',monospace;font-size:0.74rem;padding:0.5rem 1rem;border-radius:8px;cursor:pointer;white-space:nowrap;">delete organization</button>
     </div>
     <div id="delete-confirm-zone" style="display:none;margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid rgba(255,51,51,0.1);">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--text-muted);margin-bottom:0.75rem;">type <span style="color:#e0e0e0;">${org.name}</span> to confirm deletion:</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--text-muted);margin-bottom:0.75rem;">type <span style="color:#e0e0e0;">${escHtml(org.name)}</span> to confirm deletion:</div>
         <div style="display:flex;gap:0.75rem;align-items:center;flex-wrap:wrap;">
-            <input id="delete-confirm-input" type="text" placeholder="${org.name}" style="flex:1;min-width:160px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,51,51,0.2);border-radius:8px;padding:0.55rem 0.875rem;font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#e0e0e0;outline:none;box-sizing:border-box;">
+            <input id="delete-confirm-input" type="text" placeholder="${escHtml(org.name)}" style="flex:1;min-width:160px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,51,51,0.2);border-radius:8px;padding:0.55rem 0.875rem;font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#e0e0e0;outline:none;box-sizing:border-box;">
             <button id="btn-delete-org-confirm" style="background:rgba(255,51,51,0.12);border:1px solid rgba(255,51,51,0.3);color:rgba(255,80,80,0.9);font-family:'JetBrains Mono',monospace;font-size:0.74rem;padding:0.55rem 1rem;border-radius:8px;cursor:pointer;white-space:nowrap;">confirm delete</button>
         </div>
         <p id="delete-org-error" class="error-msg" style="display:none;margin-top:0.75rem;"></p>
@@ -2655,13 +2666,15 @@ async function fetchProfile(token) {
                 deletionRequestedAt: profile.deletionRequestedAt || null
             }));
 
-            if (profile.theme) {
-                window.applyThemePreference(profile.theme, true);
-            }
-            if (profile.timezone) {
-                localStorage.setItem('sentinel-timezone', profile.timezone);
-                if (window.__tzSetSelected) window.__tzSetSelected(profile.timezone);
-            }
+            try {
+                if (profile.theme) {
+                    window.applyThemePreference(profile.theme, true);
+                }
+                if (profile.timezone) {
+                    localStorage.setItem('sentinel-timezone', profile.timezone);
+                    if (window.__tzSetSelected) window.__tzSetSelected(profile.timezone);
+                }
+            } catch (e) {}
             if (profile.shortcuts && typeof profile.shortcuts === 'object') {
                 try { localStorage.setItem('sentinel-shortcuts', JSON.stringify(profile.shortcuts)); } catch (e) {}
                 if (window.__applyShortcutPrefs) window.__applyShortcutPrefs(profile.shortcuts);
