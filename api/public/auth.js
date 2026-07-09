@@ -263,7 +263,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const toggleBtn = document.getElementById('auth-mfa-recovery-toggle');
         if (!overlay || !mfaState) { window.location.href = returnTo || '/dashboard/organizations'; return; }
 
-        overlay.classList.add('active');
+        overlay.style.display = 'flex';
+        setTimeout(() => overlay.classList.add('active'), 10);
         document.body.classList.add('modal-open');
 
         let mode = 'totp';
