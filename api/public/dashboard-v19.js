@@ -4515,6 +4515,22 @@ function setupChangePassword() {
         return;
     }
 
+    if (newEl && !newEl.dataset.rulesWired) {
+        newEl.dataset.rulesWired = 'true';
+        newEl.addEventListener('input', () => {
+            const val = newEl.value;
+            const setRule = (id, ok) => {
+                const el = document.getElementById(id);
+                if (!el) return;
+                el.classList.toggle('met', ok);
+                el.textContent = ok ? '✓' : '✕';
+            };
+            setRule('cp-rule-len', val.length >= 8);
+            setRule('cp-rule-upper', /[A-Z]/.test(val));
+            setRule('cp-rule-num', /[0-9]/.test(val));
+        });
+    }
+
     let turnstileId = null;
     const renderCaptcha = () => {
         submitBtn.removeAttribute('data-captcha-token');
@@ -4537,6 +4553,10 @@ function setupChangePassword() {
 
     const openModal = () => {
         currentEl.value = ''; newEl.value = ''; confirmEl.value = '';
+        ['cp-rule-len', 'cp-rule-upper', 'cp-rule-num'].forEach((id) => {
+            const el = document.getElementById(id);
+            if (el) { el.classList.remove('met'); el.textContent = '✕'; }
+        });
         errEl.style.display = 'none';
         submitBtn.disabled = false; submitBtn.textContent = 'update password';
         modal.classList.add('active');
