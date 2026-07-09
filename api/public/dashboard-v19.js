@@ -2421,7 +2421,7 @@ async function renderOrgSettings(slug, token) {
             btn.textContent = 'deleting...';
 
             try {
-                const delRes = await fetch(`/v1/organizations/${slug}`, {
+                const delRes = await mfaAwareFetch(`/v1/organizations/${slug}`, {
                     method: 'DELETE',
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
@@ -2588,11 +2588,11 @@ window.onpopstate = (e) => {
 
 async function fetchHeaderApiKey(token) {
     try {
-        const res = await fetch('/v1/user/api-key/reveal', { headers: { 'Authorization': `Bearer ${token}` } });
+        const res = await fetch('/v1/user/api-key/suffix', { headers: { 'Authorization': `Bearer ${token}` } });
         const result = await res.json();
         const suffixEl = document.getElementById('api-key-suffix');
-        if (res.ok && result.apiKey && suffixEl) {
-            suffixEl.textContent = result.apiKey.slice(-4);
+        if (res.ok && result.suffix && suffixEl) {
+            suffixEl.textContent = result.suffix;
         }
     } catch (err) {}
 }
@@ -3983,7 +3983,7 @@ async function copyApiKeyToClipboard() {
     const token = window.supabaseAuthToken;
     if (!token) return;
     try {
-        const res = await fetch('/v1/user/api-key/reveal', { headers: { 'Authorization': `Bearer ${token}` } });
+        const res = await mfaAwareFetch('/v1/user/api-key/reveal', { headers: { 'Authorization': `Bearer ${token}` } });
         const data = await res.json();
         if (!res.ok || !data.apiKey) throw new Error('no key');
         const done = () => { if (window.SentinelToast) window.SentinelToast.show('api key copied to clipboard', 'success'); };
