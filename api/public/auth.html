@@ -204,27 +204,6 @@
             </div>
         </div>
 
-        <div id="auth-mfa-modal-overlay" class="modal-overlay">
-            <div id="auth-mfa-state" class="auth-card modal-content" style="position: relative; z-index: 1000; display: flex; flex-direction: column; max-width: 440px; width: 100%;">
-                <button class="modal-close-btn" id="auth-mfa-close" type="button">✕</button>
-                <div style="display: flex; flex-direction: column; width: 100%;">
-                    <div class="auth-tabs" style="margin-bottom: 1.75rem; display: flex; justify-content: flex-start;">
-                        <button class="auth-tab active" style="width: auto; padding: 0.4rem 1rem; cursor: default; pointer-events: none; font-size: 0.7rem; border-radius: 6px;">two-step verification</button>
-                    </div>
-                    <p id="auth-mfa-desc" style="font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; text-transform: lowercase; margin-bottom: 1.75rem; width: 100%; text-align: center;">enter the 6-digit code from your authenticator app to finish signing in.</p>
-                    <div style="display: flex; flex-direction: column; align-items: center; width: 100%;">
-                        <div class="otp-boxes" id="auth-mfa-otp"></div>
-                        <input type="text" id="auth-mfa-code" placeholder="xxxxx-xxxxx-xxxxx-..." inputmode="text" autocomplete="one-time-code" maxlength="50" style="display: none;">
-                        <p class="error-msg" id="auth-mfa-error" style="display: none; margin-top: 1rem; text-align: center;"></p>
-                        <button type="button" class="submit-btn" id="auth-mfa-verify-btn" style="margin-top: 1.5rem; width: 100%;">verify</button>
-                    </div>
-                    <div style="display: flex; flex-direction: column; align-items: center; gap: 0.65rem; padding-top: 1.5rem;">
-                        <button type="button" id="auth-mfa-recovery-toggle" class="auth-pill-btn">use a recovery seed instead</button>
-                        <button type="button" id="auth-mfa-cancel" class="auth-pill-btn">back to login</button>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <div id="auth-success-state" class="auth-card" style="display: none;">
             <div class="success-icon-wrap" style="flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;">
@@ -267,6 +246,28 @@
         </div>
 
     </div>
+
+        <div id="auth-mfa-modal-overlay" class="modal-overlay">
+            <div id="auth-mfa-state" class="auth-card modal-content" style="position: relative; z-index: 1000; display: flex; flex-direction: column; max-width: 440px; width: 100%;">
+                <button class="modal-close-btn" id="auth-mfa-close" type="button">✕</button>
+                <div style="display: flex; flex-direction: column; width: 100%;">
+                    <div class="auth-tabs" style="margin-bottom: 1.75rem; display: flex; justify-content: flex-start;">
+                        <button class="auth-tab active" style="width: auto; padding: 0.4rem 1rem; cursor: default; pointer-events: none; font-size: 0.7rem; border-radius: 6px;">two-step verification</button>
+                    </div>
+                    <p id="auth-mfa-desc" style="font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; text-transform: lowercase; margin-bottom: 1.75rem; width: 100%; text-align: center;">enter the 6-digit code from your authenticator app to finish signing in.</p>
+                    <div style="display: flex; flex-direction: column; align-items: center; width: 100%;">
+                        <div class="otp-boxes" id="auth-mfa-otp"></div>
+                        <input type="text" id="auth-mfa-code" placeholder="xxxxx-xxxxx-xxxxx-..." inputmode="text" autocomplete="one-time-code" maxlength="50" style="display: none;">
+                        <p class="error-msg" id="auth-mfa-error" style="display: none; margin-top: 1rem; text-align: center;"></p>
+                        <button type="button" class="submit-btn" id="auth-mfa-verify-btn" style="margin-top: 1.5rem; width: 100%;">verify</button>
+                    </div>
+                    <div style="display: flex; flex-direction: column; align-items: center; gap: 0.65rem; padding-top: 1.5rem;">
+                        <button type="button" id="auth-mfa-recovery-toggle" class="auth-pill-btn">use a recovery seed instead</button>
+                        <button type="button" id="auth-mfa-cancel" class="auth-pill-btn">back to login</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
     <div id="forgot-pw-modal" class="modal-overlay">
         <div class="auth-card modal-content" style="position: relative; z-index: 1000; display: flex; flex-direction: column;">
