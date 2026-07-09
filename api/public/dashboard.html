@@ -5180,16 +5180,55 @@
         <div class="auth-card modal-content" style="position: relative; z-index: 1000; display: flex; flex-direction: column; max-width: 440px; width: 100%;">
             <button class="modal-close-btn" id="btn-close-change-password">✕</button>
             <div style="display: flex; flex-direction: column; width: 100%;">
-                <div class="auth-tabs" style="margin-bottom: 1.5rem; display: flex; justify-content: flex-start;">
-                    <button class="auth-tab active" style="width: auto; padding: 0.4rem 1rem; cursor: default; pointer-events: none; font-size: 0.7rem; border-radius: 6px;">change password</button>
+                <div class="auth-tabs" style="margin-bottom: 2rem;">
+                    <button class="auth-tab active" style="width: 100%; cursor: default; pointer-events: none;">change password</button>
                 </div>
-                <p class="sp-mfa-modal-desc">confirm your current password, then set a new one.</p>
-                <input type="password" id="cp-current" class="settings-input" placeholder="current password" autocomplete="current-password">
-                <input type="password" id="cp-new" class="settings-input" placeholder="new password" autocomplete="new-password" style="margin-top:0.6rem;">
-                <input type="password" id="cp-confirm" class="settings-input" placeholder="confirm new password" autocomplete="new-password" style="margin-top:0.6rem;">
-                <div id="turnstile-change-password" style="margin-top:0.85rem;"></div>
-                <p class="error-msg" id="cp-error" style="display:none; margin-top: 0.5rem;"></p>
-                <button class="submit-btn" id="btn-cp-submit" style="margin-top: 1rem;">update password</button>
+                <p style="color: var(--text-muted); font-size: 0.82rem; font-family: 'JetBrains Mono', monospace; line-height: 1.8; margin-bottom: 2.5rem; width: 100%; text-align: center; max-width: 340px; margin-left: auto; margin-right: auto;">
+                    confirm your current password, then set a new one.
+                </p>
+                <div class="auth-form" style="width: 100%; display: flex; flex-direction: column;">
+                    <div class="input-group">
+                        <label for="cp-current">current password</label>
+                        <div class="password-field-wrap">
+                            <input type="password" id="cp-current" placeholder="••••••••" autocomplete="current-password">
+                            <span class="pw-eye-toggle" role="button" data-target="cp-current">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="eye-off"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="eye-on" style="display:none;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="input-group" style="margin-top: 1.5rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; position: relative;">
+                            <label for="cp-new" style="margin-bottom: 0;">new password</label>
+                            <span id="cp-rules-toggle" class="pw-toggle">?</span>
+                            <div id="cp-rules-tooltip" class="pw-tooltip">
+                                <span id="cp-rule-len" class="rule">✕</span> min 8 characters<br>
+                                <span id="cp-rule-upper" class="rule">✕</span> one uppercase letter<br>
+                                <span id="cp-rule-num" class="rule">✕</span> one number
+                            </div>
+                        </div>
+                        <div class="password-field-wrap">
+                            <input type="password" id="cp-new" placeholder="••••••••" autocomplete="new-password">
+                            <span class="pw-eye-toggle" role="button" data-target="cp-new">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="eye-off"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="eye-on" style="display:none;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="input-group" style="margin-top: 1.5rem;">
+                        <label for="cp-confirm">confirm new password</label>
+                        <div class="password-field-wrap">
+                            <input type="password" id="cp-confirm" placeholder="••••••••" autocomplete="new-password">
+                            <span class="pw-eye-toggle" role="button" data-target="cp-confirm">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="eye-off"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="eye-on" style="display:none;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                            </span>
+                        </div>
+                    </div>
+                    <div id="turnstile-change-password" style="margin-top: 1.5rem;"></div>
+                    <p class="error-msg" id="cp-error" style="display:none; margin-top: 0.75rem;"></p>
+                    <button class="submit-btn" id="btn-cp-submit" style="margin-top: 2rem;">update password</button>
+                </div>
             </div>
         </div>
     </div>
@@ -5364,7 +5403,7 @@
     </div>
 
     <script src="toast.js?v=3"></script>
-    <script src="dashboard-v19.js?v=147"></script>
+    <script src="dashboard-v19.js?v=148"></script>
     <script>
         // Eye Tracking Logic
         function trackEye(element, clientX, clientY) {
