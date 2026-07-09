@@ -97,7 +97,7 @@ async function checkBtcSession(session) {
 async function provisionPayment(session, txHash, amountReceived) {
     await prisma.$transaction(async (tx) => {
         const updated = await tx.paymentSession.updateMany({
-            where: { id: session.id, status: { in: ['pending', 'grace'] } },
+            where: { id: session.id, status: { in: ['pending', 'grace'] }, refundStatus: 'none' },
             data: { status: 'confirmed', txHash, confirmedAt: new Date(), amountReceived: amountReceived || null }
         });
         if (updated.count === 0) return;

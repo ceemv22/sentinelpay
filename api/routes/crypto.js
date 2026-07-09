@@ -285,10 +285,13 @@ router.post('/session/:id/refund', json, requireSupabaseAuth, async (req, res) =
             return res.status(400).json({ error: 'evm session requires an ethereum-compatible refund address' });
         }
 
-        await prisma.paymentSession.update({
-            where: { id: session.id },
+        const upd = await prisma.paymentSession.updateMany({
+            where: { id: session.id, status: { in: ['expired', 'grace'] }, refundStatus: 'none' },
             data: { refundAddress, refundStatus: 'requested' }
         });
+        if (upd.count === 0) {
+            return res.status(409).json({ error: 'refund no longer available for this session' });
+        }
 
         res.json({ message: 'refund request submitted', refundStatus: 'requested' });
     } catch (err) {
