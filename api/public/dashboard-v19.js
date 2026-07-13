@@ -289,6 +289,7 @@ if (logoutBtn) {
         e.preventDefault();
         localStorage.removeItem('sentinel-cached-orgs');
         localStorage.removeItem('sentinel-cached-profile');
+        localStorage.removeItem('sentinel-cached-sessions');
         document.cookie = 'sentinel-theme=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax';
         document.cookie = 'sentinel-theme=; path=/; domain=.sentinelpay.org; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax';
         if (sentinelAuth) await sentinelAuth.auth.signOut();
@@ -4723,40 +4724,60 @@ async function sessionHeartbeat(token) {
 
 const SESSION_DEVICE_SVG = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>';
 
+function renderSessionsList(sessions) {
+    const list = document.getElementById('sessions-list');
+    if (!list) return;
+    const currentId = getDeviceId();
+    if (!sessions || !sessions.length) {
+        list.innerHTML = '<div class="sp-sessions-empty">no active sessions found.</div>';
+        return;
+    }
+    list.innerHTML = '';
+    sessions.forEach(sn => {
+        const { browser, os } = parseUserAgentStr(sn.userAgent);
+        const loc = [sn.city, sn.country].filter(Boolean).join(', ');
+        const meta = [];
+        if (loc) meta.push(loc);
+        if (sn.ip) meta.push(sn.ip);
+        meta.push('active ' + sessionTimeAgo(sn.lastSeenAt));
+        const isCurrent = sn.deviceId === currentId;
+        const row = document.createElement('div');
+        row.className = 'sp-session-row';
+        row.innerHTML = `<span class="sp-session-icon">${SESSION_DEVICE_SVG}</span>` +
+            `<div class="sp-session-info">` +
+            `<span class="sp-session-title">${escHtml(browser)} · ${escHtml(os)}${isCurrent ? '<span class="sp-session-badge">this device</span>' : ''}</span>` +
+            `<span class="sp-session-meta">${escHtml(meta.join(' · '))}</span>` +
+            `</div>`;
+        list.appendChild(row);
+    });
+}
+
 async function loadSessions() {
     const list = document.getElementById('sessions-list');
     if (!list) return;
+
+    // 1) paint cached sessions instantly — no "loading…" flash
+    let hasPainted = false;
+    try {
+        const cached = JSON.parse(localStorage.getItem('sentinel-cached-sessions') || 'null');
+        if (Array.isArray(cached) && cached.length) { renderSessionsList(cached); hasPainted = true; }
+    } catch (e) {}
+
+    const softFail = () => { if (!hasPainted) list.innerHTML = '<div class="sp-sessions-empty">could not load sessions.</div>'; };
+
+    // 2) refresh from server in the background
     const token = await getFreshAuthToken();
-    if (!token) { list.innerHTML = '<div class="sp-sessions-empty">could not load sessions.</div>'; return; }
-    // make sure this device is registered/fresh before listing
+    if (!token) return softFail();
     try { await sessionHeartbeat(token); } catch (e) {}
     try {
         const r = await fetch('/v1/user/sessions', { headers: { 'Authorization': `Bearer ${token}` } });
-        if (!r.ok) { list.innerHTML = '<div class="sp-sessions-empty">could not load sessions.</div>'; return; }
+        if (!r.ok) return softFail();
         const data = await r.json();
         const sessions = (data && data.sessions) || [];
-        const currentId = getDeviceId();
-        if (!sessions.length) { list.innerHTML = '<div class="sp-sessions-empty">no active sessions found.</div>'; return; }
-        list.innerHTML = '';
-        sessions.forEach(sn => {
-            const { browser, os } = parseUserAgentStr(sn.userAgent);
-            const loc = [sn.city, sn.country].filter(Boolean).join(', ');
-            const meta = [];
-            if (loc) meta.push(loc);
-            if (sn.ip) meta.push(sn.ip);
-            meta.push('active ' + sessionTimeAgo(sn.lastSeenAt));
-            const isCurrent = sn.deviceId === currentId;
-            const row = document.createElement('div');
-            row.className = 'sp-session-row';
-            row.innerHTML = `<span class="sp-session-icon">${SESSION_DEVICE_SVG}</span>` +
-                `<div class="sp-session-info">` +
-                `<span class="sp-session-title">${escHtml(browser)} · ${escHtml(os)}${isCurrent ? '<span class="sp-session-badge">this device</span>' : ''}</span>` +
-                `<span class="sp-session-meta">${escHtml(meta.join(' · '))}</span>` +
-                `</div>`;
-            list.appendChild(row);
-        });
+        try { localStorage.setItem('sentinel-cached-sessions', JSON.stringify(sessions)); } catch (e) {}
+        renderSessionsList(sessions);
     } catch (e) {
-        list.innerHTML = '<div class="sp-sessions-empty">could not load sessions.</div>';
+        softFail();
     }
 }
 
