@@ -725,6 +725,84 @@ app.get('/v1/geo/timezone', requireSupabaseAuth, async (req, res) => {
     }
 });
 
+async function lookupGeoForIp(ip) {
+    try {
+        const isValidIp = /^[0-9.]{7,15}$/.test(ip) || /^[0-9a-fA-F:]{2,45}$/.test(ip);
+        const isPrivate = !ip || /^(127\.|10\.|192\.168\.|::1|fc|fd|172\.(1[6-9]|2\d|3[01])\.)/i.test(ip);
+        if (!isValidIp || isPrivate) return null;
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), 4000);
+        try {
+            const r = await fetch(`https://ipwho.is/${encodeURIComponent(ip)}`, { signal: controller.signal });
+            if (!r.ok) return null;
+            const d = await r.json();
+            if (d && d.success) return { country: d.country || null, city: d.city || null };
+            return null;
+        } finally { clearTimeout(timer); }
+    } catch (e) { return null; }
+}
+
+const DEVICE_ID_RE = /^[a-zA-Z0-9_-]{8,64}$/;
+
+app.post('/v1/user/sessions/heartbeat', requireSupabaseAuth, async (req, res) => {
+    try {
+        const { deviceId } = req.body || {};
+        if (typeof deviceId !== 'string' || !DEVICE_ID_RE.test(deviceId)) {
+            return res.status(400).json({ error: 'invalid device id' });
+        }
+        const ua = (req.headers['user-agent'] || '').slice(0, 400);
+        const ip = String(req.realIp || req.ip || '').slice(0, 64);
+        const existing = await prisma.userSession.findUnique({
+            where: { userId_deviceId: { userId: req.user.id, deviceId } },
+            select: { id: true, ip: true, country: true }
+        });
+        let geo = null;
+        if (!existing || existing.ip !== ip || !existing.country) {
+            geo = await lookupGeoForIp(ip);
+        }
+        await prisma.userSession.upsert({
+            where: { userId_deviceId: { userId: req.user.id, deviceId } },
+            update: { userAgent: ua, ip, lastSeenAt: new Date(), ...(geo ? { country: geo.country, city: geo.city } : {}) },
+            create: { userId: req.user.id, deviceId, userAgent: ua, ip, lastSeenAt: new Date(), country: geo ? geo.country : null, city: geo ? geo.city : null }
+        });
+        res.json({ ok: true });
+    } catch (err) {
+        console.error('[session heartbeat]', err.message);
+        res.status(500).json({ error: 'failed to record session' });
+    }
+});
+
+app.get('/v1/user/sessions', requireSupabaseAuth, async (req, res) => {
+    try {
+        const sessions = await prisma.userSession.findMany({
+            where: { userId: req.user.id },
+            orderBy: { lastSeenAt: 'desc' },
+            take: 25,
+            select: { deviceId: true, userAgent: true, ip: true, country: true, city: true, lastSeenAt: true, createdAt: true }
+        });
+        res.json({ sessions });
+    } catch (err) {
+        console.error('[sessions list]', err.message);
+        res.status(500).json({ error: 'failed to load sessions' });
+    }
+});
+
+app.post('/v1/user/sessions/revoke-others', requireRateLimitBackend, requireSupabaseAuth, userSensitiveLimiter, async (req, res) => {
+    try {
+        const { deviceId } = req.body || {};
+        if (typeof deviceId !== 'string' || !DEVICE_ID_RE.test(deviceId)) {
+            return res.status(400).json({ error: 'invalid device id' });
+        }
+        const result = await prisma.userSession.deleteMany({
+            where: { userId: req.user.id, deviceId: { not: deviceId } }
+        });
+        res.json({ ok: true, revoked: result.count });
+    } catch (err) {
+        console.error('[sessions revoke-others]', err.message);
+        res.status(500).json({ error: 'failed to sign out other devices' });
+    }
+});
+
 app.patch('/v1/user/profile', requireSupabaseAuth, async (req, res) => {
     try {
         const { firstName, lastName, username } = req.body;

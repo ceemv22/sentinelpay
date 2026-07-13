@@ -3809,6 +3809,106 @@
             text-transform: lowercase;
         }
 
+        .sp-sessions-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+        .sp-session-row {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            padding: 0.9rem 1.25rem;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.015);
+        }
+        .sp-session-icon {
+            display: flex;
+            flex-shrink: 0;
+            color: var(--text-muted);
+        }
+        .sp-session-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+            min-width: 0;
+            flex: 1;
+        }
+        .sp-session-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #fff;
+            text-transform: lowercase;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .sp-session-meta {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.68rem;
+            color: var(--text-muted);
+            text-transform: lowercase;
+            line-height: 1.5;
+            word-break: break-word;
+        }
+        .sp-session-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6rem;
+            font-weight: 700;
+            text-transform: lowercase;
+            letter-spacing: 0.04em;
+            color: #00ff88;
+            background: rgba(0, 255, 136, 0.08);
+            border: 1px solid rgba(0, 255, 136, 0.25);
+            border-radius: 5px;
+            padding: 2px 7px;
+            flex-shrink: 0;
+        }
+        .sp-sessions-empty {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            padding: 0.9rem 0.25rem;
+            text-transform: lowercase;
+        }
+        .sp-sessions-actions {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: flex-end;
+        }
+        .btn-danger-outline {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            font-weight: 600;
+            text-transform: lowercase;
+            color: rgba(255, 80, 80, 0.9);
+            background: transparent;
+            border: 1px solid rgba(255, 51, 51, 0.3);
+            border-radius: 8px;
+            padding: 0.55rem 1.1rem;
+            cursor: pointer;
+            transition: background 0.2s, border-color 0.2s;
+            white-space: nowrap;
+        }
+        .btn-danger-outline:hover {
+            background: rgba(255, 51, 51, 0.08);
+            border-color: rgba(255, 51, 51, 0.5);
+        }
+        .btn-danger-outline:disabled { opacity: 0.5; cursor: default; }
+        html.theme-light .sp-session-row {
+            border-color: rgba(0, 0, 0, 0.08);
+            background: rgba(0, 0, 0, 0.015);
+        }
+        html.theme-light .sp-session-title { color: var(--text-main); }
+        html.theme-light .btn-danger-outline {
+            color: #c0392b;
+            border-color: rgba(214, 53, 74, 0.35);
+        }
+        html.theme-light .btn-danger-outline:hover { background: rgba(214, 53, 74, 0.06); }
+
         .sp-mfa-badge {
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.58rem;
@@ -4925,6 +5025,17 @@
                             <button class="btn-primary" id="btn-change-password" style="width:auto;padding:0.5rem 1rem;font-size:0.72rem;white-space:nowrap;">change password</button>
                             <span id="password-oauth-note" style="display:none;"></span>
                         </div>
+                    </div>
+                </div>
+
+                <div class="settings-section" id="sessions-section">
+                    <h2 class="settings-section-title">active sessions</h2>
+                    <p class="settings-section-desc">devices currently signed in to your account. if you don't recognize a session, sign out of all other devices.</p>
+                    <div id="sessions-list" class="sp-sessions-list">
+                        <div class="sp-sessions-empty">loading sessions…</div>
+                    </div>
+                    <div class="sp-sessions-actions">
+                        <button class="btn-danger-outline" id="btn-signout-others">sign out of all other devices</button>
                     </div>
                 </div>
             </div>
