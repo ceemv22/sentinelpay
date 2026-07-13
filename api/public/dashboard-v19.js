@@ -232,6 +232,9 @@ const startHydration = async () => {
     }
 
     sentinelAuth.auth.onAuthStateChange(async (event, session) => {
+        // Keep the cached bearer token fresh across auto-refreshes so authed
+        // calls (e.g. active sessions) don't fail with a stale/expired token.
+        if (session && session.access_token) window.supabaseAuthToken = session.access_token;
         if (session && !isInitialized) {
             isInitialized = true;
             renderDashboard(session);
@@ -4697,11 +4700,22 @@ function sessionTimeAgo(dateStr) {
     return `${months} month${months > 1 ? 's' : ''} ago`;
 }
 
+async function getFreshAuthToken() {
+    try {
+        const { data } = await sentinelAuth.auth.getSession();
+        if (data && data.session && data.session.access_token) {
+            window.supabaseAuthToken = data.session.access_token;
+            return data.session.access_token;
+        }
+    } catch (e) {}
+    return window.supabaseAuthToken || null;
+}
+
 async function sessionHeartbeat(token) {
     try {
         await fetch('/v1/user/sessions/heartbeat', {
             method: 'POST',
-            headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+            headers: { 'Authorization': `Bearer ${token || window.supabaseAuthToken}`, 'Content-Type': 'application/json' },
             body: JSON.stringify({ deviceId: getDeviceId() })
         });
     } catch (e) {}
@@ -4712,8 +4726,10 @@ const SESSION_DEVICE_SVG = '<svg xmlns="http://www.w3.org/2000/svg" width="16" h
 async function loadSessions() {
     const list = document.getElementById('sessions-list');
     if (!list) return;
-    const token = window.supabaseAuthToken;
-    if (!token) return;
+    const token = await getFreshAuthToken();
+    if (!token) { list.innerHTML = '<div class="sp-sessions-empty">could not load sessions.</div>'; return; }
+    // make sure this device is registered/fresh before listing
+    try { await sessionHeartbeat(token); } catch (e) {}
     try {
         const r = await fetch('/v1/user/sessions', { headers: { 'Authorization': `Bearer ${token}` } });
         if (!r.ok) { list.innerHTML = '<div class="sp-sessions-empty">could not load sessions.</div>'; return; }
@@ -4756,7 +4772,7 @@ function setupSessions() {
                 if (sentinelAuth && sentinelAuth.auth && sentinelAuth.auth.signOut) {
                     try { await sentinelAuth.auth.signOut({ scope: 'others' }); } catch (e) {}
                 }
-                const token = window.supabaseAuthToken;
+                const token = await getFreshAuthToken();
                 if (token) {
                     await fetch('/v1/user/sessions/revoke-others', {
                         method: 'POST',
