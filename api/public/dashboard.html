@@ -5292,13 +5292,13 @@
             <button class="modal-close-btn" id="btn-close-change-password">✕</button>
             <div style="display: flex; flex-direction: column; width: 100%;">
                 <div class="auth-tabs" style="margin-bottom: 2rem;">
-                    <button class="auth-tab active" style="width: 100%; cursor: default; pointer-events: none;">change password</button>
+                    <button class="auth-tab active" id="cp-title" style="width: 100%; cursor: default; pointer-events: none;">change password</button>
                 </div>
-                <p style="color: var(--text-muted); font-size: 0.82rem; font-family: 'JetBrains Mono', monospace; line-height: 1.8; margin-bottom: 2.5rem; width: 100%; text-align: center; max-width: 340px; margin-left: auto; margin-right: auto;">
+                <p id="cp-desc" style="color: var(--text-muted); font-size: 0.82rem; font-family: 'JetBrains Mono', monospace; line-height: 1.8; margin-bottom: 2.5rem; width: 100%; text-align: center; max-width: 340px; margin-left: auto; margin-right: auto;">
                     confirm your current password, then set a new one.
                 </p>
                 <div class="auth-form" style="width: 100%; display: flex; flex-direction: column;">
-                    <div class="input-group">
+                    <div class="input-group" id="cp-current-group">
                         <label for="cp-current">current password</label>
                         <div class="password-field-wrap">
                             <input type="password" id="cp-current" placeholder="••••••••" autocomplete="current-password">
@@ -5514,7 +5514,7 @@
     </div>
 
     <script src="toast.js?v=3"></script>
-    <script src="dashboard-v19.js?v=148"></script>
+    <script src="dashboard-v19.js?v=149"></script>
     <script>
         // Eye Tracking Logic
         function trackEye(element, clientX, clientY) {
