@@ -119,6 +119,16 @@ document.addEventListener('DOMContentLoaded', () => {
         ? returnToRaw
         : null;
 
+    if (urlParams.get('error') === 'password-login') {
+        const le = document.getElementById('login-error-msg');
+        if (le) {
+            le.textContent = 'error: this account uses a password. sign in with your email and password instead.';
+            le.style.display = 'block';
+        }
+        if (typeof window.switchManual === 'function') window.switchManual('login');
+        try { window.history.replaceState(null, document.title, window.location.pathname); } catch (e) {}
+    }
+
     // On load, if a session already exists (e.g. the page was refreshed after the
     // password step), decide what to do based on assurance level: an MFA account
     // that hasn't completed the challenge must be shown the challenge — NOT let
