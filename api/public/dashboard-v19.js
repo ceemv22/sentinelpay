@@ -4614,11 +4614,6 @@ function setupChangePassword() {
                 try { const { data } = await sentinelAuth.auth.getSession(); if (data && data.session && data.session.access_token) window.supabaseAuthToken = data.session.access_token; } catch (e) {}
             }
 
-            if (window.__mfaOn && typeof window.__mfaStepUp === 'function') {
-                const ok = await window.__mfaStepUp();
-                if (!ok) { submitBtn.disabled = false; submitBtn.textContent = isSetInitial ? 'set password' : 'update password'; return; }
-            }
-
             submitBtn.textContent = isSetInitial ? 'setting...' : 'updating...';
             const { error: uerr } = await sentinelAuth.auth.updateUser({ password: nw });
             if (uerr) {
@@ -4636,7 +4631,19 @@ function setupChangePassword() {
         }
     };
 
-    btn.addEventListener('click', () => { if (!btn.disabled) openModal(); });
+    btn.addEventListener('click', async () => {
+        if (btn.disabled) return;
+        // If MFA is on, require the authenticator challenge FIRST, before the
+        // password form even opens.
+        if (window.__mfaOn && typeof window.__mfaStepUp === 'function') {
+            btn.disabled = true;
+            let ok = false;
+            try { ok = await window.__mfaStepUp(); } catch (e) { ok = false; }
+            btn.disabled = false;
+            if (!ok) return;
+        }
+        openModal();
+    });
     if (closeBtn) closeBtn.addEventListener('click', closeModal);
     modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
     submitBtn.addEventListener('click', submit);
