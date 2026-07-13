@@ -129,23 +129,58 @@ document.addEventListener('DOMContentLoaded', () => {
         try { window.history.replaceState(null, document.title, window.location.pathname); } catch (e) {}
     }
 
-    // On load, if a session already exists (e.g. the page was refreshed after the
-    // password step), decide what to do based on assurance level: an MFA account
-    // that hasn't completed the challenge must be shown the challenge — NOT let
-    // through to the dashboard. Only fully-assured / non-MFA sessions proceed.
-    (async () => {
+    const needsMfaFor = async () => {
+        try {
+            if (s.auth.mfa && s.auth.mfa.getAuthenticatorAssuranceLevel) {
+                const { data: aal } = await s.auth.mfa.getAuthenticatorAssuranceLevel();
+                return !!(aal && aal.nextLevel === 'aal2' && aal.currentLevel === 'aal1');
+            }
+        } catch (e) {}
+        return false;
+    };
+
+    // OAuth callback: a social sign-in redirects back HERE, and Supabase
+    // (detectSessionInUrl) exchanges the ?code= into a session. We decide whether
+    // to allow it before ever touching the dashboard — so an email/password
+    // account that tried OAuth never flashes the dashboard for a second.
+    const oauthCallback = !!urlParams.get('code') || !!sessionStorage.getItem('sentinel_oauth_pending');
+    if (oauthCallback && s) {
+        let handled = false;
+        const finishOauth = async (session) => {
+            if (handled || !session) return;
+            handled = true;
+            const wasOauth = !!sessionStorage.getItem('sentinel_oauth_pending');
+            sessionStorage.removeItem('sentinel_oauth_pending');
+            const u = session.user || {};
+            const hasPassword = Array.isArray(u.identities) && u.identities.some((i) => i && i.provider === 'email');
+            if (wasOauth && hasPassword) {
+                try { await s.auth.signOut(); } catch (e) {}
+                const le = document.getElementById('login-error-msg');
+                if (le) {
+                    le.textContent = 'error: this account uses a password. sign in with your email and password instead.';
+                    le.style.display = 'block';
+                }
+                if (typeof window.switchManual === 'function') window.switchManual('login');
+                try { window.history.replaceState(null, document.title, '/auth'); } catch (e) {}
+                return;
+            }
+            if (await needsMfaFor()) { showMfaStep(); return; }
+            window.location.href = returnTo || '/dashboard/organizations';
+        };
+        s.auth.onAuthStateChange((event, session) => { if (session) finishOauth(session); });
+        (async () => {
+            try { const { data } = await s.auth.getSession(); if (data && data.session) finishOauth(data.session); } catch (e) {}
+        })();
+    }
+
+    // Existing (non-OAuth) session: refreshed after the password step, etc. An MFA
+    // account that hasn't completed the challenge must be shown the challenge.
+    if (!oauthCallback) (async () => {
         if (!s) return;
         try {
             const { data: { session } } = await s.auth.getSession();
             if (!session) return;
-            let needsMfa = false;
-            try {
-                if (s.auth.mfa && s.auth.mfa.getAuthenticatorAssuranceLevel) {
-                    const { data: aal } = await s.auth.mfa.getAuthenticatorAssuranceLevel();
-                    needsMfa = !!(aal && aal.nextLevel === 'aal2' && aal.currentLevel === 'aal1');
-                }
-            } catch (e) {}
-            if (needsMfa) {
+            if (await needsMfaFor()) {
                 showMfaStep();
             } else {
                 window.location.href = returnTo || '/dashboard/organizations';
@@ -656,9 +691,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const oauthButtonIds = ['btn-google', 'btn-google-reg', 'btn-x', 'btn-x-reg'];
 
     const resolveOAuthRedirect = () =>
-        returnTo
-            ? window.location.origin + returnTo
-            : window.location.origin + '/dashboard/organizations';
+        window.location.origin + '/auth' +
+        (returnTo ? '?returnTo=' + encodeURIComponent(returnTo) : '');
 
     const resetOAuthButtons = () => {
         oauthButtonIds.forEach((id) => {
