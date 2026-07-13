@@ -4574,7 +4574,7 @@ function setupChangePassword() {
             if (curGroup) curGroup.style.display = '';
             if (titleEl) titleEl.textContent = 'change password';
             if (descEl) descEl.textContent = 'confirm your current password, then set a new one.';
-            if (tContainer) tContainer.style.display = '';
+            if (tContainer) tContainer.style.display = 'flex';
             submitBtn.textContent = 'update password';
         }
         submitBtn.disabled = false;
