@@ -258,6 +258,19 @@ const startHydration = async () => {
                 const { data, error } = await sentinelAuth.auth.exchangeCodeForSession(code);
                 if (error) throw error;
                 if (data.session && !isInitialized) {
+                    // If this was an OAuth sign-in (flag set before the redirect)
+                    // but the account was created with email/password (it has an
+                    // "email" identity), force the user to sign in with their
+                    // password instead. Email-confirmation links don't set the flag.
+                    const isOauthLogin = !!sessionStorage.getItem('sentinel_oauth_pending');
+                    if (isOauthLogin) sessionStorage.removeItem('sentinel_oauth_pending');
+                    const u = data.session.user || data.user || {};
+                    const hasPasswordIdentity = Array.isArray(u.identities) && u.identities.some(i => i && i.provider === 'email');
+                    if (isOauthLogin && hasPasswordIdentity) {
+                        try { await sentinelAuth.auth.signOut(); } catch (e) {}
+                        window.location.href = '/auth?error=password-login';
+                        return;
+                    }
                     isInitialized = true;
                     renderDashboard(data.session);
                     setTimeout(scrubHash, 500);
