@@ -717,6 +717,7 @@ async function renderDashboard(session) {
         setupSecurity();
         setupRecoveryCodes();
         setupChangePassword();
+        sessionHeartbeat(token).then(() => setupSessions());
     } catch (e) {
         console.error('[sentinel-render] Critical failure:', e);
         showStatus('Render Error', 'error');
@@ -2187,6 +2188,8 @@ function switchToAccountSettings(tab) {
         const panel = document.getElementById('account-tab-' + t);
         if (panel) panel.style.display = t === tab ? '' : 'none';
     });
+
+    if (tab === 'security' && typeof loadSessions === 'function') loadSessions();
 
     if (!accountNav || accountNav.dataset.accountNavBound) return;
     accountNav.dataset.accountNavBound = 'true';
@@ -4628,6 +4631,133 @@ function setupChangePassword() {
     modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
     submitBtn.addEventListener('click', submit);
     [currentEl, newEl, confirmEl].forEach((el) => { if (el) el.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); submit(); } }); });
+}
+
+function getDeviceId() {
+    try {
+        let id = localStorage.getItem('sentinel-device-id');
+        if (!id || !/^[a-zA-Z0-9_-]{8,64}$/.test(id)) {
+            const raw = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : (Date.now().toString(36) + Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2));
+            id = raw.replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 40);
+            if (id.length < 8) id = ('dev' + id + Math.random().toString(36).slice(2)).slice(0, 40);
+            localStorage.setItem('sentinel-device-id', id);
+        }
+        return id;
+    } catch (e) {
+        return 'web' + Math.random().toString(36).slice(2, 14);
+    }
+}
+
+function parseUserAgentStr(ua) {
+    ua = ua || '';
+    let browser = 'browser';
+    if (/edg/i.test(ua)) browser = 'edge';
+    else if (/opr|opera/i.test(ua)) browser = 'opera';
+    else if (/chrome|crios/i.test(ua)) browser = 'chrome';
+    else if (/firefox|fxios/i.test(ua)) browser = 'firefox';
+    else if (/safari/i.test(ua)) browser = 'safari';
+    let os = 'unknown device';
+    if (/windows/i.test(ua)) os = 'windows';
+    else if (/iphone|ipad|ipod/i.test(ua)) os = 'ios';
+    else if (/mac os x|macintosh/i.test(ua)) os = 'macos';
+    else if (/android/i.test(ua)) os = 'android';
+    else if (/linux/i.test(ua)) os = 'linux';
+    return { browser, os };
+}
+
+function sessionTimeAgo(dateStr) {
+    const d = new Date(dateStr).getTime();
+    if (!d) return '';
+    const s = Math.max(0, Math.floor((Date.now() - d) / 1000));
+    if (s < 60) return 'just now';
+    const m = Math.floor(s / 60);
+    if (m < 60) return `${m} min ago`;
+    const h = Math.floor(m / 60);
+    if (h < 24) return `${h} hr ago`;
+    const days = Math.floor(h / 24);
+    if (days < 30) return `${days} day${days > 1 ? 's' : ''} ago`;
+    const months = Math.floor(days / 30);
+    return `${months} month${months > 1 ? 's' : ''} ago`;
+}
+
+async function sessionHeartbeat(token) {
+    try {
+        await fetch('/v1/user/sessions/heartbeat', {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ deviceId: getDeviceId() })
+        });
+    } catch (e) {}
+}
+
+const SESSION_DEVICE_SVG = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>';
+
+async function loadSessions() {
+    const list = document.getElementById('sessions-list');
+    if (!list) return;
+    const token = window.supabaseAuthToken;
+    if (!token) return;
+    try {
+        const r = await fetch('/v1/user/sessions', { headers: { 'Authorization': `Bearer ${token}` } });
+        if (!r.ok) { list.innerHTML = '<div class="sp-sessions-empty">could not load sessions.</div>'; return; }
+        const data = await r.json();
+        const sessions = (data && data.sessions) || [];
+        const currentId = getDeviceId();
+        if (!sessions.length) { list.innerHTML = '<div class="sp-sessions-empty">no active sessions found.</div>'; return; }
+        list.innerHTML = '';
+        sessions.forEach(sn => {
+            const { browser, os } = parseUserAgentStr(sn.userAgent);
+            const loc = [sn.city, sn.country].filter(Boolean).join(', ');
+            const meta = [];
+            if (loc) meta.push(loc);
+            if (sn.ip) meta.push(sn.ip);
+            meta.push('active ' + sessionTimeAgo(sn.lastSeenAt));
+            const isCurrent = sn.deviceId === currentId;
+            const row = document.createElement('div');
+            row.className = 'sp-session-row';
+            row.innerHTML = `<span class="sp-session-icon">${SESSION_DEVICE_SVG}</span>` +
+                `<div class="sp-session-info">` +
+                `<span class="sp-session-title">${escHtml(browser)} · ${escHtml(os)}${isCurrent ? '<span class="sp-session-badge">this device</span>' : ''}</span>` +
+                `<span class="sp-session-meta">${escHtml(meta.join(' · '))}</span>` +
+                `</div>`;
+            list.appendChild(row);
+        });
+    } catch (e) {
+        list.innerHTML = '<div class="sp-sessions-empty">could not load sessions.</div>';
+    }
+}
+
+function setupSessions() {
+    const btn = document.getElementById('btn-signout-others');
+    if (btn && !btn.dataset.bound) {
+        btn.dataset.bound = 'true';
+        btn.addEventListener('click', async () => {
+            const orig = btn.textContent;
+            btn.disabled = true;
+            btn.textContent = 'signing out…';
+            try {
+                if (sentinelAuth && sentinelAuth.auth && sentinelAuth.auth.signOut) {
+                    try { await sentinelAuth.auth.signOut({ scope: 'others' }); } catch (e) {}
+                }
+                const token = window.supabaseAuthToken;
+                if (token) {
+                    await fetch('/v1/user/sessions/revoke-others', {
+                        method: 'POST',
+                        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ deviceId: getDeviceId() })
+                    });
+                }
+                if (window.SentinelToast) window.SentinelToast.show('signed out of all other devices', 'success');
+                await loadSessions();
+            } catch (e) {
+                if (window.SentinelToast) window.SentinelToast.show('could not sign out other devices', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = orig;
+            }
+        });
+    }
+    loadSessions();
 }
 
 function setupSecurity() {
