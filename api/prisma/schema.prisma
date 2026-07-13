@@ -32,8 +32,25 @@ model User {
   ownedOrgs        Organization[]   @relation("OrgOwner")
   paymentSessions  PaymentSession[]
   deletionRequests AccountDeletionRequest[]
+  sessions         UserSession[]
   createdAt        DateTime         @default(now())
   updatedAt        DateTime         @updatedAt
+}
+
+model UserSession {
+  id         String   @id @default(uuid())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String
+  deviceId   String
+  userAgent  String?
+  ip         String?
+  country    String?
+  city       String?
+  lastSeenAt DateTime @default(now())
+  createdAt  DateTime @default(now())
+
+  @@unique([userId, deviceId])
+  @@index([userId])
 }
 
 model Organization {
