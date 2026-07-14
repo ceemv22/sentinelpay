@@ -816,13 +816,3 @@ html.theme-light .lp-nav .auth-nav-btn:hover::after {
     color: #0e2358;
 }
 
-/* spray-paint texture layer over the hero */
-.lp-hero-fx::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: url('/spray-bg.svg') center / cover no-repeat;
-    mix-blend-mode: screen;
-    opacity: 0.85;
-    pointer-events: none;
-}
