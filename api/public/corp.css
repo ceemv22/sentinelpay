@@ -683,3 +683,19 @@ html.theme-light .lp-nav .auth-nav-btn:hover::after {
     transition: left 0.55s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+
+/* first viewport on desktop = hero + network bar exactly */
+@media (min-width: 1281px) {
+    .lp-logo-row { flex-wrap: nowrap; gap: 0.4rem; }
+    .lp-net-mark { padding: 0.2rem 0.6rem; font-size: 0.95rem; }
+    html.theme-light .lp-hero {
+        min-height: calc(100vh - 176px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding-top: 4rem;
+        padding-bottom: 3rem;
+    }
+    .lp-logo-bar { height: 176px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; }
+    .lp-logo-bar .lp-logo-bar-label { margin-bottom: 1.3rem; }
+}
