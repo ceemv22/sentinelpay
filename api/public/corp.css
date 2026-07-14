@@ -651,3 +651,34 @@ html.theme-light .lp-nav .lp-mega-desc {
     line-height: 1.45;
     color: rgba(255, 255, 255, 0.45);
 }
+
+/* nav auth buttons: no lift on hover — light sweep instead */
+html.theme-light .lp-nav .auth-nav-btn {
+    position: relative;
+    overflow: hidden;
+    transform: none !important;
+}
+html.theme-light .lp-nav .auth-nav-btn:hover,
+html.theme-light .lp-nav .auth-nav-btn:active {
+    transform: none !important;
+    box-shadow: none !important;
+}
+html.theme-light .lp-nav .auth-nav-btn::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -80%;
+    width: 55%;
+    height: 100%;
+    background: linear-gradient(105deg, transparent, rgba(255, 255, 255, 0.35) 50%, transparent);
+    transform: skewX(-18deg);
+    transition: none;
+    pointer-events: none;
+}
+html.theme-light .lp-nav .lp-btn-solid::after {
+    background: linear-gradient(105deg, transparent, rgba(123, 108, 255, 0.28) 50%, transparent);
+}
+html.theme-light .lp-nav .auth-nav-btn:hover::after {
+    left: 130%;
+    transition: left 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
