@@ -1,0 +1,153 @@
+/* corporate (elliptic-style) skin for the landing page — loaded after landing.css,
+   only on index.html. light navy palette, no scroll animations. */
+
+html.theme-light body.lp-body {
+    background: #ffffff !important;
+    color: #16244a;
+}
+
+html.theme-light .cyber-grid,
+html.theme-light .glow-orb { display: none !important; }
+
+/* no scroll-reveal animations — everything visible immediately */
+.lp-reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+}
+
+html.theme-light .lp-h1,
+html.theme-light .lp-h2,
+html.theme-light .lp-how-title,
+html.theme-light .lp-role-title {
+    color: #0e2358 !important;
+    background: none !important;
+    -webkit-background-clip: initial !important;
+    background-clip: initial !important;
+    -webkit-text-fill-color: #0e2358 !important;
+}
+
+html.theme-light .lp-hero-sub,
+html.theme-light .lp-chains-desc,
+html.theme-light .lp-how-desc,
+html.theme-light .lp-role-desc,
+html.theme-light .lp-stat-label,
+html.theme-light .lp-marquee-label {
+    color: #5b6b8c !important;
+}
+
+html.theme-light .lp-eyebrow { color: #2563eb !important; }
+
+html.theme-light .lp-hero {
+    background:
+        radial-gradient(ellipse 70% 55% at 50% -10%, rgba(37, 99, 235, 0.07), transparent),
+        #ffffff;
+}
+
+html.theme-light .lp-cta-primary,
+html.theme-light .lp-btn-solid.auth-nav-btn,
+html.theme-light .lp-btn-solid {
+    background: #10275b !important;
+    border-color: #10275b !important;
+    color: #ffffff !important;
+    box-shadow: none !important;
+}
+html.theme-light .lp-cta-primary:hover,
+html.theme-light .lp-btn-solid.auth-nav-btn:hover,
+html.theme-light .lp-btn-solid:hover {
+    background: #1b3a7e !important;
+    box-shadow: 0 6px 18px rgba(16, 39, 91, 0.22) !important;
+}
+
+html.theme-light .lp-cta-ghost {
+    color: #10275b !important;
+    border-color: rgba(16, 39, 91, 0.25) !important;
+}
+html.theme-light .lp-cta-ghost:hover {
+    background: rgba(16, 39, 91, 0.05) !important;
+    border-color: rgba(16, 39, 91, 0.45) !important;
+}
+
+html.theme-light .lp-marquee-strip {
+    border-color: rgba(14, 35, 88, 0.08);
+    background: #f6f8fc;
+}
+
+.lp-client-mark {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    color: #93a1bd;
+    white-space: nowrap;
+    padding: 0.3rem 1.6rem;
+    text-transform: lowercase;
+    transition: color 0.2s ease;
+}
+.lp-client-mark:hover { color: #10275b; }
+
+html.theme-light .lp-stat {
+    background: #ffffff;
+    border-color: rgba(14, 35, 88, 0.1);
+    box-shadow: 0 2px 10px rgba(14, 35, 88, 0.04);
+}
+html.theme-light .lp-stat:hover {
+    border-color: rgba(37, 99, 235, 0.4);
+    transform: none;
+}
+html.theme-light .lp-stat-num {
+    background: none;
+    -webkit-background-clip: initial;
+    background-clip: initial;
+    -webkit-text-fill-color: #10275b;
+    color: #10275b;
+}
+
+html.theme-light .lp-role-tab {
+    background: #ffffff;
+    border-color: rgba(14, 35, 88, 0.15);
+    color: #5b6b8c;
+}
+html.theme-light .lp-role-tab:hover { color: #10275b; border-color: rgba(14, 35, 88, 0.35); }
+html.theme-light .lp-role-tab.active {
+    background: #10275b;
+    color: #ffffff;
+}
+
+html.theme-light .lp-roles-panels {
+    background: #ffffff;
+    border-color: rgba(14, 35, 88, 0.1);
+    box-shadow: 0 4px 22px rgba(14, 35, 88, 0.05);
+}
+.lp-role-panel { animation: none; }
+html.theme-light .lp-role-list li::before { color: #2563eb; }
+html.theme-light .lp-role-cta { color: #2563eb; }
+
+html.theme-light .lp-role-list li,
+html.theme-light .lp-signal-desc,
+html.theme-light .lp-code-note { color: #5b6b8c !important; }
+
+html.theme-light .lp-chain-pill {
+    background: #ffffff;
+    border-color: rgba(14, 35, 88, 0.12);
+    color: #5b6b8c;
+}
+html.theme-light .lp-chain-pill:hover { color: #10275b; border-color: rgba(14, 35, 88, 0.3); }
+
+html.theme-light .lp-status-pill {
+    background: #ffffff !important;
+    border-color: rgba(14, 35, 88, 0.12) !important;
+}
+
+html.theme-light .lp-nav-link,
+html.theme-light .lp-nav-dd-btn { color: #33456b !important; }
+html.theme-light .lp-nav-link:hover,
+html.theme-light .lp-nav-dd-btn:hover { color: #0e2358 !important; }
+
+/* pipes/packets in the hero diagram: keep motion but tone to navy/blue */
+html.theme-light .lp-diag-node-name { color: #0e2358; }
+html.theme-light .lp-diag-node-sub { color: #7181a0; }
+
+@media (prefers-reduced-motion: reduce) {
+    .lp-marquee-track { animation: none !important; }
+}
