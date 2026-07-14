@@ -546,3 +546,62 @@ html.theme-light .lp-hero .lp-hero-inner { position: relative; z-index: 1; }
     50%  { transform: translate(120px, -110px) scale(1.25); opacity: 1; }
     100% { transform: translate(0, 0) scale(1); opacity: 0.7; }
 }
+
+/* navbar matches the dark hero */
+html.theme-light .lp-nav {
+    background: rgba(8, 16, 13, 0.82) !important;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(45, 212, 191, 0.10) !important;
+}
+html.theme-light .lp-nav .lp-logo-text { color: #ffffff !important; }
+html.theme-light .lp-nav .lp-nav-link,
+html.theme-light .lp-nav .lp-nav-dd-btn { color: rgba(255, 255, 255, 0.72) !important; }
+html.theme-light .lp-nav .lp-nav-link:hover,
+html.theme-light .lp-nav .lp-nav-dd-btn:hover { color: #ffffff !important; }
+html.theme-light .lp-nav .lp-nav-chevron { color: rgba(255, 255, 255, 0.45); }
+
+html.theme-light .lp-nav .lp-nav-dd {
+    background: rgba(10, 18, 16, 0.97) !important;
+    border: 1px solid rgba(45, 212, 191, 0.14) !important;
+    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.45) !important;
+}
+html.theme-light .lp-nav .lp-nav-dd-item { color: rgba(255, 255, 255, 0.7) !important; }
+html.theme-light .lp-nav .lp-nav-dd-item:hover {
+    color: #ffffff !important;
+    background: rgba(45, 212, 191, 0.08) !important;
+}
+
+html.theme-light .lp-nav .auth-nav-btn:not(.lp-btn-solid) {
+    background: rgba(255, 255, 255, 0.06) !important;
+    border: 1px solid rgba(255, 255, 255, 0.16) !important;
+    color: rgba(255, 255, 255, 0.85) !important;
+    box-shadow: none !important;
+}
+html.theme-light .lp-nav .auth-nav-btn:not(.lp-btn-solid):hover {
+    background: rgba(255, 255, 255, 0.12) !important;
+    border-color: rgba(255, 255, 255, 0.3) !important;
+    color: #ffffff !important;
+}
+html.theme-light .lp-nav .lp-btn-solid,
+html.theme-light .lp-nav .lp-btn-solid.auth-nav-btn {
+    background: #ffffff !important;
+    border-color: #ffffff !important;
+    color: #0a1210 !important;
+}
+html.theme-light .lp-nav .lp-btn-solid:hover,
+html.theme-light .lp-nav .lp-btn-solid.auth-nav-btn:hover {
+    background: #d9f5ec !important;
+    border-color: #d9f5ec !important;
+    box-shadow: 0 4px 16px rgba(45, 212, 191, 0.25) !important;
+}
+
+/* hamburger + mobile menu in the same dark tone */
+html.theme-light .lp-hamburger .lp-hb-line { background: rgba(255, 255, 255, 0.85) !important; }
+html.theme-light .lp-mobile-menu {
+    background: rgba(8, 16, 13, 0.98) !important;
+}
+html.theme-light .lp-mobile-menu .lp-mobile-link,
+html.theme-light .lp-mobile-menu .lp-mm-acc-btn { color: rgba(255, 255, 255, 0.8) !important; }
+html.theme-light .lp-mobile-menu .lp-mobile-sub-link { color: rgba(255, 255, 255, 0.55) !important; }
+html.theme-light .lp-mobile-menu .lp-mobile-divider { background: rgba(255, 255, 255, 0.08) !important; }
