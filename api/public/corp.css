@@ -473,74 +473,86 @@ html.theme-light .lp-hero .lp-cta-ghost:hover {
 }
 html.theme-light .lp-hero .lp-hero-ctas { margin-top: 2.2rem; }
 
-/* animated hero background — drifting glow blobs + light sweep */
+/* animated hero background — continuous aurora, drifting glows, constant streaks */
 html.theme-light .lp-hero { position: relative; overflow: hidden; }
-.lp-hero-fx {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    z-index: 0;
-}
+.lp-hero-fx { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
 html.theme-light .lp-hero .lp-hero-inner { position: relative; z-index: 1; }
+
+.lp-fx-aurora {
+    position: absolute;
+    width: 160vw;
+    height: 160vw;
+    left: 50%;
+    top: 50%;
+    margin: -80vw 0 0 -80vw;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.5;
+    will-change: transform;
+}
+.lp-fx-a1 {
+    background: conic-gradient(from 0deg,
+        transparent 0deg, rgba(20, 184, 166, 0.20) 55deg, transparent 120deg,
+        rgba(132, 204, 22, 0.12) 190deg, transparent 250deg,
+        rgba(45, 212, 191, 0.16) 310deg, transparent 360deg);
+    animation: lpSpin 26s linear infinite;
+}
+.lp-fx-a2 {
+    background: conic-gradient(from 140deg,
+        transparent 0deg, rgba(45, 212, 191, 0.14) 70deg, transparent 150deg,
+        rgba(20, 184, 166, 0.10) 230deg, transparent 300deg);
+    animation: lpSpin 40s linear infinite reverse;
+}
+@keyframes lpSpin { to { transform: rotate(360deg); } }
 
 .lp-fx-blob {
     position: absolute;
     border-radius: 50%;
     filter: blur(70px);
-    opacity: 0.55;
+    opacity: 0.6;
     will-change: transform;
 }
 .lp-fx-b1 {
     width: 620px; height: 620px;
     left: -12%; bottom: -35%;
-    background: radial-gradient(circle at 40% 40%, rgba(20, 184, 166, 0.55), transparent 65%);
-    animation: lpDrift1 16s ease-in-out infinite alternate;
+    background: radial-gradient(circle at 40% 40%, rgba(20, 184, 166, 0.5), transparent 65%);
+    animation: lpDrift1 14s ease-in-out infinite alternate;
 }
 .lp-fx-b2 {
     width: 540px; height: 540px;
     right: -10%; bottom: -30%;
-    background: radial-gradient(circle at 55% 45%, rgba(132, 204, 22, 0.34), transparent 65%);
-    animation: lpDrift2 20s ease-in-out infinite alternate;
+    background: radial-gradient(circle at 55% 45%, rgba(132, 204, 22, 0.3), transparent 65%);
+    animation: lpDrift2 18s ease-in-out infinite alternate;
 }
-.lp-fx-b3 {
-    width: 720px; height: 480px;
-    left: 30%; top: -45%;
-    background: radial-gradient(circle at 50% 60%, rgba(45, 212, 191, 0.22), transparent 70%);
-    animation: lpDrift3 24s ease-in-out infinite alternate;
-}
-
 @keyframes lpDrift1 {
     from { transform: translate(0, 0) scale(1); }
-    50%  { transform: translate(90px, -60px) scale(1.12); }
-    to   { transform: translate(30px, -110px) scale(0.96); }
+    to   { transform: translate(110px, -90px) scale(1.15); }
 }
 @keyframes lpDrift2 {
-    from { transform: translate(0, 0) scale(1); }
-    50%  { transform: translate(-110px, -40px) scale(1.08); }
-    to   { transform: translate(-40px, 40px) scale(1.18); }
-}
-@keyframes lpDrift3 {
-    from { transform: translate(0, 0); }
-    to   { transform: translate(-140px, 60px); }
+    from { transform: translate(0, 0) scale(1.1); }
+    to   { transform: translate(-120px, -50px) scale(0.95); }
 }
 
-.lp-fx-sheen {
+/* streaks that constantly travel across the hero */
+.lp-fx-streak {
     position: absolute;
-    top: -20%;
-    left: -60%;
-    width: 45%;
-    height: 140%;
-    background: linear-gradient(78deg, transparent 20%, rgba(190, 242, 100, 0.05) 45%, rgba(45, 212, 191, 0.09) 52%, rgba(190, 242, 100, 0.05) 59%, transparent 80%);
-    transform: skewX(-12deg);
-    animation: lpSheen 9s ease-in-out infinite;
+    top: -30%;
+    height: 160%;
+    width: 140px;
+    background: linear-gradient(90deg, transparent, rgba(45, 212, 191, 0.10) 45%, rgba(190, 242, 100, 0.14) 50%, rgba(45, 212, 191, 0.10) 55%, transparent);
+    transform: skewX(-14deg);
     will-change: transform;
+    animation: lpStreak linear infinite;
 }
-@keyframes lpSheen {
-    0%   { transform: translateX(0) skewX(-12deg); }
-    55%  { transform: translateX(390%) skewX(-12deg); }
-    100% { transform: translateX(390%) skewX(-12deg); }
+.lp-fx-s1 { left: -12%; width: 120px; animation-duration: 7s;  animation-delay: 0s; }
+.lp-fx-s2 { left: -18%; width: 220px; animation-duration: 11s; animation-delay: 2.4s; opacity: 0.8; }
+.lp-fx-s3 { left: -10%; width: 70px;  animation-duration: 5.5s; animation-delay: 4.2s; opacity: 0.9; }
+.lp-fx-s4 { left: -25%; width: 300px; animation-duration: 15s; animation-delay: 6.5s; opacity: 0.55; }
+@keyframes lpStreak {
+    from { transform: translateX(0) skewX(-14deg); }
+    to   { transform: translateX(140vw) skewX(-14deg); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .lp-fx-blob, .lp-fx-sheen { animation: none !important; }
+    .lp-fx-blob, .lp-fx-aurora, .lp-fx-streak { animation: none !important; }
 }
