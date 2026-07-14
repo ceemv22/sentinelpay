@@ -735,6 +735,7 @@ async function renderDashboard(session) {
         setupRecoveryCodes();
         setupChangePassword();
         sessionHeartbeat(token).then(() => setupSessions());
+        setupRealtimeSignout(user);
     } catch (e) {
         console.error('[sentinel-render] Critical failure:', e);
         showStatus('Render Error', 'error');
@@ -4819,6 +4820,34 @@ function stopSessionsPolling() {
     if (sessionsPollTimer) { clearInterval(sessionsPollTimer); sessionsPollTimer = null; }
 }
 
+// Real-time "sign out of all other devices". When one device revokes the others
+// it broadcasts on a per-user channel; every other tab receives it and, rather
+// than trusting the message, tries to refresh its session. The refresh token for
+// the revoked devices was already invalidated server-side, so the refresh fails
+// and only those devices sign out — a spoofed broadcast can't kick a valid one.
+function setupRealtimeSignout(user) {
+    if (!user || !user.id || !sentinelAuth || typeof sentinelAuth.channel !== 'function') return;
+    if (window.__signoutChannel) return;
+    const myDevice = getDeviceId();
+    const ch = sentinelAuth.channel('signout:' + user.id, { config: { broadcast: { self: false } } });
+    ch.on('broadcast', { event: 'revoke-others' }, async (msg) => {
+        const except = msg && msg.payload && msg.payload.except;
+        if (except && except === myDevice) return;
+        try {
+            const { error } = await sentinelAuth.auth.refreshSession();
+            if (error) {
+                try { await sentinelAuth.auth.signOut(); } catch (e) {}
+                window.location.href = '/auth';
+            }
+        } catch (e) {
+            try { await sentinelAuth.auth.signOut(); } catch (e2) {}
+            window.location.href = '/auth';
+        }
+    });
+    ch.subscribe();
+    window.__signoutChannel = ch;
+}
+
 function setupSessions() {
     const btn = document.getElementById('btn-signout-others');
     if (btn && !btn.dataset.bound) {
@@ -4838,6 +4867,15 @@ function setupSessions() {
                         headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
                         body: JSON.stringify({ deviceId: getDeviceId() })
                     });
+                }
+                if (window.__signoutChannel) {
+                    try {
+                        await window.__signoutChannel.send({
+                            type: 'broadcast',
+                            event: 'revoke-others',
+                            payload: { except: getDeviceId() }
+                        });
+                    } catch (e) {}
                 }
                 if (window.SentinelToast) window.SentinelToast.show('signed out of all other devices', 'success');
                 await loadSessions();
