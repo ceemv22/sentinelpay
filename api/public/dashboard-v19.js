@@ -16,7 +16,7 @@ window.showStatus = (msg, type = 'info') => {
     if (!overlay) {
         overlay = document.createElement('div');
         overlay.id = 'sentinel-status-overlay';
-        overlay.style.cssText = 'position:fixed;bottom:20px;right:20px;padding:12px 20px;background:rgba(0,0,0,0.8);backdrop-filter:blur(10px);border:1px solid rgba(255,51,51,0.4);border-radius:12px;color:#ff3333;font-family:JetBrains Mono,monospace;font-size:0.75rem;z-index:99999;box-shadow:0 10px 30px rgba(0,0,0,0.5);pointer-events:none;transition:all 0.3s ease;';
+        overlay.style.cssText = 'position:fixed;bottom:20px;right:20px;padding:12px 20px;background:rgba(0,0,0,0.8);backdrop-filter:blur(10px);border:1px solid rgba(255,51,51,0.4);border-radius:12px;color:#ff3333;font-family:Inter,sans-serif;font-size:0.75rem;z-index:99999;box-shadow:0 10px 30px rgba(0,0,0,0.5);pointer-events:none;transition:all 0.3s ease;';
         document.body.appendChild(overlay);
     }
     overlay.textContent = msg;
@@ -336,9 +336,9 @@ function showEmailGate(session) {
 
     const cardStyle = 'position: relative; z-index: 1000; display: flex; flex-direction: column; max-width: 440px; width: 100%;';
     const tabStyle = 'width: 100%; cursor: default; pointer-events: none;';
-    const descStyle = "color: var(--text-muted); font-size: 0.85rem; font-family: 'JetBrains Mono', monospace; line-height: 1.6; width: 100%; text-align: center;";
-    const pillStyle = "background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.1); padding: 12px 24px; border-radius: 12px; font-size: 0.72rem; cursor: pointer; font-family: 'JetBrains Mono', monospace; transition: all 0.3s ease; min-width: 180px;";
-    const textLinkStyle = "background: none; border: none; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; cursor: pointer; padding: 0.35rem;";
+    const descStyle = "color: var(--text-muted); font-size: 0.85rem; font-family: 'Inter', sans-serif; line-height: 1.6; width: 100%; text-align: center;";
+    const pillStyle = "background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.1); padding: 12px 24px; border-radius: 12px; font-size: 0.72rem; cursor: pointer; font-family: 'Inter', sans-serif; transition: all 0.3s ease; min-width: 180px;";
+    const textLinkStyle = "background: none; border: none; color: var(--text-muted); font-family: 'Inter', sans-serif; font-size: 0.72rem; cursor: pointer; padding: 0.35rem;";
 
     let pendingEmail = '';
 
@@ -1005,7 +1005,7 @@ function setupCreateOrgModal(token) {
         const p = PLANS[plan] || PLANS.starter;
 
         step3.innerHTML = `
-            <button id="btn-step3-back" style="position:absolute;top:0.5rem;left:0.5rem;background:transparent;border:none;color:var(--text-muted);cursor:pointer;display:flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:0.73rem;padding:0.5rem;border-radius:6px;transition:color 0.2s;z-index:1001;line-height:1;-webkit-tap-highlight-color:transparent;transform:none !important;box-shadow:none !important;">
+            <button id="btn-step3-back" style="position:absolute;top:0.5rem;left:0.5rem;background:transparent;border:none;color:var(--text-muted);cursor:pointer;display:flex;align-items:center;gap:6px;font-family:'Inter', sans-serif;font-size:0.73rem;padding:0.5rem;border-radius:6px;transition:color 0.2s;z-index:1001;line-height:1;-webkit-tap-highlight-color:transparent;transform:none !important;box-shadow:none !important;">
                 <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>back
             </button>
             <div style="padding-top:2.25rem;width:100%;">
@@ -1019,11 +1019,11 @@ function setupCreateOrgModal(token) {
                 </div>
                 <div id="tab-content-crypto" style="display:none;">
                     <div id="crypto-selector-view">
-                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.67rem;color:var(--text-muted);margin-bottom:0.5rem;letter-spacing:0.03em;">select currency</div>
+                        <div style="font-family:'Inter', sans-serif;font-size:0.67rem;color:var(--text-muted);margin-bottom:0.5rem;letter-spacing:0.03em;">select currency</div>
                         <div id="crypto-dd-wrap" style="position:relative;">
                             <button id="crypto-dd-trigger" style="width:100%;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:0.6rem 0.8rem;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:0.6rem;box-sizing:border-box;-webkit-tap-highlight-color:transparent;box-shadow:none !important;transform:none !important;transition:border-color 0.18s ease;">
                                 <div id="crypto-dd-selected" style="display:flex;align-items:center;gap:0.5rem;flex:1;min-width:0;">
-                                    <span style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--text-muted);">choose a currency...</span>
+                                    <span style="font-family:'Inter', sans-serif;font-size:0.7rem;color:var(--text-muted);">choose a currency...</span>
                                 </div>
                                 <svg id="crypto-dd-chevron" style="flex-shrink:0;transition:transform 0.18s;" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                             </button>
@@ -1031,12 +1031,12 @@ function setupCreateOrgModal(token) {
                         </div>
                         <div id="network-dd-wrap" style="display:none;position:relative;margin-top:0.5rem;">
                             <button id="network-dd-trigger" style="width:100%;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:0.6rem 0.8rem;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:0.6rem;box-sizing:border-box;-webkit-tap-highlight-color:transparent;box-shadow:none !important;transform:none !important;transition:border-color 0.18s ease;">
-                                <span id="network-dd-selected" style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--text-muted);">select network...</span>
+                                <span id="network-dd-selected" style="font-family:'Inter', sans-serif;font-size:0.7rem;color:var(--text-muted);">select network...</span>
                                 <svg id="network-dd-chevron" style="flex-shrink:0;transition:transform 0.18s;" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                             </button>
                             <div id="network-dd-panel" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:#090909;border:1px solid rgba(255,255,255,0.1);border-radius:8px;z-index:200;max-height:160px;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,0.7);"></div>
                         </div>
-                        <p id="crypto-sel-error" style="display:none;font-family:'JetBrains Mono',monospace;font-size:0.67rem;color:#ff3333;margin-top:0.45rem;margin-bottom:0;"></p>
+                        <p id="crypto-sel-error" style="display:none;font-family:'Inter', sans-serif;font-size:0.67rem;color:#ff3333;margin-top:0.45rem;margin-bottom:0;"></p>
                     </div>
                     <div id="crypto-status-area" style="margin-top:0.75rem;"></div>
                 </div>
@@ -1117,27 +1117,27 @@ function setupCreateOrgModal(token) {
                 <div class="crypto-pay-wrap" style="border-top:1px solid rgba(255,255,255,0.06);padding-top:${_pt};display:flex;flex-direction:column;gap:${_gap};">
                     <div style="display:flex;align-items:center;justify-content:space-between;gap:0.5rem;">
                         <div id="batch-id-copy" title="click to copy session id" style="display:flex;align-items:center;gap:0.3rem;cursor:pointer;min-width:0;flex:1;overflow:hidden;-webkit-tap-highlight-color:transparent;">
-                            <span id="batch-id-text" style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;transition:color 0.2s;">${session.batchId}</span>
+                            <span id="batch-id-text" style="font-family:'Inter', sans-serif;font-size:0.58rem;color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;transition:color 0.2s;">${session.batchId}</span>
                             <span id="batch-id-icon" style="flex-shrink:0;color:var(--text-muted);opacity:0.5;display:flex;align-items:center;transition:opacity 0.2s,color 0.2s;"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></span>
                         </div>
-                        <div id="crypto-countdown" style="font-family:'JetBrains Mono',monospace;font-size:0.67rem;color:#f5ac37;flex-shrink:0;">&#x23F1; ${getTimeLeft()}</div>
+                        <div id="crypto-countdown" style="font-family:'Inter', sans-serif;font-size:0.67rem;color:#f5ac37;flex-shrink:0;">&#x23F1; ${getTimeLeft()}</div>
                     </div>
                     <div style="text-align:center;">
-                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.63rem;color:var(--text-muted);margin-bottom:0.2rem;">send exactly</div>
-                        <div class="crypto-amount" style="font-family:'JetBrains Mono',monospace;font-size:1.3rem;font-weight:700;color:#ffffff;letter-spacing:-0.025em;">${session.amountCrypto} <span class="crypto-amount-cur" style="font-size:0.68rem;color:rgba(255,255,255,0.45);">${coin.currency}</span></div>
-                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--text-muted);margin-top:0.15rem;">&asymp; $${session.amountUsd.toLocaleString('en-US')}</div>
+                        <div style="font-family:'Inter', sans-serif;font-size:0.63rem;color:var(--text-muted);margin-bottom:0.2rem;">send exactly</div>
+                        <div class="crypto-amount" style="font-family:'Inter', sans-serif;font-size:1.3rem;font-weight:700;color:#ffffff;letter-spacing:-0.025em;">${session.amountCrypto} <span class="crypto-amount-cur" style="font-size:0.68rem;color:rgba(255,255,255,0.45);">${coin.currency}</span></div>
+                        <div style="font-family:'Inter', sans-serif;font-size:0.6rem;color:var(--text-muted);margin-top:0.15rem;">&asymp; $${session.amountUsd.toLocaleString('en-US')}</div>
                     </div>
                     <div style="display:flex;justify-content:center;">
                         <img class="crypto-qr" src="${session.qrDataUrl}" alt="qr" style="width:${_qr}px;height:${_qr}px;border-radius:8px;border:1px solid rgba(255,255,255,0.12);">
                     </div>
                     <div class="crypto-addr-box" style="background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:0.65rem 0.75rem;display:grid;grid-template-columns:1fr auto;align-items:center;gap:0.5rem;width:100%;box-sizing:border-box;">
-                        <div class="crypto-addr-text" style="font-family:'JetBrains Mono',monospace;font-size:0.68rem;color:#ffffff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${session.address}</div>
+                        <div class="crypto-addr-text" style="font-family:'Inter', sans-serif;font-size:0.68rem;color:#ffffff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${session.address}</div>
                         <button id="btn-copy-address" style="background:transparent;border:none;cursor:pointer;color:var(--text-muted);padding:0.15rem;display:flex;align-items:center;transition:color 0.2s;-webkit-tap-highlight-color:transparent;transform:none !important;box-shadow:none !important;">
                             <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
                         </button>
                     </div>
-                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--text-muted);text-align:center;opacity:0.6;padding:0.35rem 0;">credited after 2 confirmations</div>
-                    <div id="crypto-pay-status" style="font-family:'JetBrains Mono',monospace;font-size:0.63rem;color:var(--text-muted);text-align:center;display:flex;align-items:center;justify-content:center;gap:0.375rem;min-height:0;"></div>
+                    <div style="font-family:'Inter', sans-serif;font-size:0.6rem;color:var(--text-muted);text-align:center;opacity:0.6;padding:0.35rem 0;">credited after 2 confirmations</div>
+                    <div id="crypto-pay-status" style="font-family:'Inter', sans-serif;font-size:0.63rem;color:var(--text-muted);text-align:center;display:flex;align-items:center;justify-content:center;gap:0.375rem;min-height:0;"></div>
                 </div>
             `;
 
@@ -1268,7 +1268,7 @@ function setupCreateOrgModal(token) {
             const gen = ++_currentSessionGen;
             const statusArea = document.getElementById('crypto-status-area');
             if (statusArea) {
-                statusArea.innerHTML = '<p style="font-family:\'JetBrains Mono\',monospace;font-size:0.67rem;color:var(--text-muted);margin:0.5rem 0 0 0;text-align:center;">generating deposit address...</p>';
+                statusArea.innerHTML = '<p style="font-family:\'Inter\',sans-serif;font-size:0.67rem;color:var(--text-muted);margin:0.5rem 0 0 0;text-align:center;">generating deposit address...</p>';
             }
             try {
                 const batchRes = await fetch('/v1/crypto/batch-session', {
@@ -1287,7 +1287,7 @@ function setupCreateOrgModal(token) {
                 if (gen !== _currentSessionGen) return;
                 const area = document.getElementById('crypto-status-area');
                 if (area) {
-                    area.innerHTML = `<p style="font-family:'JetBrains Mono',monospace;font-size:0.67rem;color:#ff3333;margin:0.5rem 0 0 0;text-align:center;">error: ${err.message.toLowerCase()}</p>`;
+                    area.innerHTML = `<p style="font-family:'Inter', sans-serif;font-size:0.67rem;color:#ff3333;margin:0.5rem 0 0 0;text-align:center;">error: ${err.message.toLowerCase()}</p>`;
                 }
             }
         };
@@ -1418,7 +1418,7 @@ function setupCreateOrgModal(token) {
             const payErrEl = document.getElementById('create-org-pay-error');
             if (!container) return;
 
-            container.innerHTML = '<p style="font-family:\'JetBrains Mono\',monospace;font-size:0.67rem;color:var(--text-muted);text-align:center;padding:1rem 0;">initializing secure checkout...</p>';
+            container.innerHTML = '<p style="font-family:\'Inter\',sans-serif;font-size:0.67rem;color:var(--text-muted);text-align:center;padding:1rem 0;">initializing secure checkout...</p>';
 
             try {
                 if (!window.Stripe) throw new Error('payment system not ready, please refresh');
@@ -1470,16 +1470,16 @@ function setupCreateOrgModal(token) {
         const isEnterprise = !!p.contact;
 
         step2.innerHTML = `
-            <button id="btn-step2-back" style="position:absolute;top:0.5rem;left:0.5rem;background:transparent;border:none;color:var(--text-muted);cursor:pointer;display:flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:0.73rem;padding:0.5rem;border-radius:6px;transition:color 0.2s;z-index:1001;-webkit-tap-highlight-color:transparent;line-height:1;transform:none !important;box-shadow:none !important;">
+            <button id="btn-step2-back" style="position:absolute;top:0.5rem;left:0.5rem;background:transparent;border:none;color:var(--text-muted);cursor:pointer;display:flex;align-items:center;gap:6px;font-family:'Inter', sans-serif;font-size:0.73rem;padding:0.5rem;border-radius:6px;transition:color 0.2s;z-index:1001;-webkit-tap-highlight-color:transparent;line-height:1;transform:none !important;box-shadow:none !important;">
                 <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>back
             </button>
             <div style="padding-top:2.25rem;width:100%;">
                 <div class="co-org-row" style="display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:0.6rem 0.875rem;margin-bottom:0.875rem;">
                     <div style="display:flex;align-items:center;gap:0.6rem;">
                         <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-                        <span style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--text-muted);">organization</span>
+                        <span style="font-family:'Inter', sans-serif;font-size:0.7rem;color:var(--text-muted);">organization</span>
                     </div>
-                    <span class="co-org-name" style="font-family:'JetBrains Mono',monospace;font-size:0.74rem;color:#e0e0e0;font-weight:500;">${escHtml(name)}</span>
+                    <span class="co-org-name" style="font-family:'Inter', sans-serif;font-size:0.74rem;color:#e0e0e0;font-weight:500;">${escHtml(name)}</span>
                 </div>
                 <div class="org-plan-card-summary${p.featured ? ' plan-featured' : ''}">
                     ${p.featured ? '<div class="plan-accent-bar"></div>' : ''}
@@ -1498,7 +1498,7 @@ function setupCreateOrgModal(token) {
                     </div>
                 </div>
                 ${isEnterprise ? `
-                <div style="margin-top:1.1rem;padding:0.875rem 1rem;background:rgba(0,240,255,0.03);border:1px solid rgba(0,240,255,0.1);border-radius:10px;font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--text-muted);line-height:1.7;text-align:center;">
+                <div style="margin-top:1.1rem;padding:0.875rem 1rem;background:rgba(0,240,255,0.03);border:1px solid rgba(0,240,255,0.1);border-radius:10px;font-family:'Inter', sans-serif;font-size:0.72rem;color:var(--text-muted);line-height:1.7;text-align:center;">
                     enterprise plans require custom configuration.<br>reach out and we'll get you set up.
                 </div>
                 <a href="mailto:support@sentinelpay.org" class="submit-btn" style="margin-top:1rem;display:flex;align-items:center;justify-content:center;text-decoration:none;">contact sales →</a>
@@ -1836,7 +1836,7 @@ function addTeamMemberToTable(email, role, status = 'active', isYou = false) {
     let actionButtons = '';
     
     if (isYou) {
-        statusBadge = `<span style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: var(--text-muted); font-size: 0.6rem; padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; text-transform: lowercase; margin-left: 8px;">you</span>`;
+        statusBadge = `<span style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: var(--text-muted); font-size: 0.6rem; padding: 2px 6px; border-radius: 4px; font-family: 'Inter', sans-serif; text-transform: lowercase; margin-left: 8px;">you</span>`;
         actionButtons = `
             <div class="tooltip-wrapper">
                 <button class="btn-cancel" style="padding: 0.4rem 0.8rem; font-size: 0.7rem; border-radius: 6px; opacity: 0.5; cursor: not-allowed; pointer-events: none;" disabled>leave team</button>
@@ -1850,7 +1850,7 @@ function addTeamMemberToTable(email, role, status = 'active', isYou = false) {
         actionButtons = `
             <div style="display: flex; align-items: center; gap: 0.75rem; justify-content: flex-end;">
                 <div class="tooltip-wrapper">
-                    <button class="btn-cancel" style="padding: 0.4rem 0.8rem; font-size: 0.7rem; border-radius: 6px; opacity: 0.5; cursor: not-allowed; pointer-events: none; font-family: 'JetBrains Mono', monospace;" disabled>manage access</button>
+                    <button class="btn-cancel" style="padding: 0.4rem 0.8rem; font-size: 0.7rem; border-radius: 6px; opacity: 0.5; cursor: not-allowed; pointer-events: none; font-family: 'Inter', sans-serif;" disabled>manage access</button>
                     <div class="pw-tooltip team-tooltip">
                         access can be managed after the invite is accepted
                     </div>
@@ -1860,11 +1860,11 @@ function addTeamMemberToTable(email, role, status = 'active', isYou = false) {
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.6;"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
                     </button>
                     <div class="dropdown-menu row-actions-dropdown" style="top: calc(100% + 8px); right: 0; width: 210px; padding: 8px; background: rgba(8, 10, 12, 0.96); border: 1px solid rgba(0, 240, 255, 0.15); border-radius: 12px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7), 0 0 20px rgba(0, 240, 255, 0.05); z-index: 1000;">
-                        <div class="dropdown-item js-resend-invite" style="font-size: 0.75rem; gap: 10px; padding: 10px; cursor: pointer; font-family: 'JetBrains Mono', monospace;">
+                        <div class="dropdown-item js-resend-invite" style="font-size: 0.75rem; gap: 10px; padding: 10px; cursor: pointer; font-family: 'Inter', sans-serif;">
                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.7;"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
                             resend invitation
                         </div>
-                        <div class="dropdown-item text-red js-cancel-invite" style="font-size: 0.75rem; gap: 10px; padding: 10px; cursor: pointer; font-family: 'JetBrains Mono', monospace;">
+                        <div class="dropdown-item text-red js-cancel-invite" style="font-size: 0.75rem; gap: 10px; padding: 10px; cursor: pointer; font-family: 'Inter', sans-serif;">
                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.7;"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
                             cancel invitation
                         </div>
@@ -1875,7 +1875,7 @@ function addTeamMemberToTable(email, role, status = 'active', isYou = false) {
     } else {
         actionButtons = `
             <div style="display: flex; justify-content: flex-end;">
-                <button class="btn-cancel" style="padding: 0.4rem 0.8rem; font-size: 0.7rem; border-radius: 6px; font-family: 'JetBrains Mono', monospace;">remove</button>
+                <button class="btn-cancel" style="padding: 0.4rem 0.8rem; font-size: 0.7rem; border-radius: 6px; font-family: 'Inter', sans-serif;">remove</button>
             </div>
         `;
     }
@@ -1886,20 +1886,20 @@ function addTeamMemberToTable(email, role, status = 'active', isYou = false) {
                 <div class="org-avatar" style="border-radius: 8px; width: 34px; height: 34px; font-weight: 800; font-size: 0.9rem;">${escHtml(avatarInitial)}</div>
                 <div style="display: flex; flex-direction: column;">
                     <div style="display: flex; align-items: center; gap: 8px;">
-                        <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; font-weight: 600; color: #fff;">${escHtml(email)}</span>
+                        <span style="font-family: 'Inter', sans-serif; font-size: 0.85rem; font-weight: 600; color: #fff;">${escHtml(email)}</span>
                         ${statusBadge}
                     </div>
                 </div>
             </div>
         </td>
         <td style="padding: 1.25rem 1.5rem;">
-            <div style="display: flex; align-items: center; gap: 6px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;">
+            <div style="display: flex; align-items: center; gap: 6px; color: var(--text-muted); font-family: 'Inter', sans-serif; font-size: 0.8rem;">
                 disabled
                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.5;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             </div>
         </td>
         <td style="padding: 1.25rem 1.5rem;">
-            <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: #fff; opacity: 0.9;">${escHtml(role)}</span>
+            <span style="font-family: 'Inter', sans-serif; font-size: 0.8rem; color: #fff; opacity: 0.9;">${escHtml(role)}</span>
         </td>
         <td style="padding: 1.25rem 1.5rem; text-align: right;">
             ${actionButtons}
@@ -2287,7 +2287,7 @@ async function renderOrgDashboard(slug, token) {
     const view = document.getElementById('org-dashboard-view');
     if (!view || !token) return;
 
-    view.innerHTML = `<div style="color: var(--text-muted); font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; padding: 2rem;">loading...</div>`;
+    view.innerHTML = `<div style="color: var(--text-muted); font-family: 'Inter', sans-serif; font-size: 0.8rem; padding: 2rem;">loading...</div>`;
 
     try {
         const res = await fetch(`/v1/organizations/${slug}`, {
@@ -2313,7 +2313,7 @@ async function renderOrgDashboard(slug, token) {
         const createdLabel = new Date(org.createdAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
 
         const ownerBadge = org.isOwner
-            ? `<span style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--text-muted);font-size:0.65rem;padding:3px 8px;border-radius:4px;font-family:'JetBrains Mono',monospace;text-transform:lowercase;">owner</span>`
+            ? `<span style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--text-muted);font-size:0.65rem;padding:3px 8px;border-radius:4px;font-family:'Inter', sans-serif;text-transform:lowercase;">owner</span>`
             : '';
         const inviteBtn = org.isOwner
             ? `<button class="btn-new-org" id="org-invite-quick-btn" style="white-space:nowrap;flex-shrink:0;"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><line x1="19" y1="8" x2="19" y2="14"></line><line x1="22" y1="11" x2="16" y2="11"></line></svg>invite members</button>`
@@ -2323,11 +2323,11 @@ async function renderOrgDashboard(slug, token) {
 <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
     <div>
         <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem;">
-            <h1 id="org-page-name" style="font-family:'JetBrains Mono',monospace;font-size:1.5rem;font-weight:800;letter-spacing:-1px;color:#fff;margin:0;"></h1>
-            <span id="org-page-plan" style="background:rgba(0,240,255,0.1);border:1px solid rgba(0,240,255,0.2);color:var(--neon-blue);font-size:0.65rem;padding:3px 8px;border-radius:4px;font-family:'JetBrains Mono',monospace;text-transform:lowercase;"></span>
+            <h1 id="org-page-name" style="font-family:'Inter', sans-serif;font-size:1.5rem;font-weight:800;letter-spacing:-1px;color:#fff;margin:0;"></h1>
+            <span id="org-page-plan" style="background:rgba(0,240,255,0.1);border:1px solid rgba(0,240,255,0.2);color:var(--neon-blue);font-size:0.65rem;padding:3px 8px;border-radius:4px;font-family:'Inter', sans-serif;text-transform:lowercase;"></span>
             ${ownerBadge}
         </div>
-        <div style="color:var(--text-muted);font-family:'JetBrains Mono',monospace;font-size:0.75rem;" id="org-page-meta"></div>
+        <div style="color:var(--text-muted);font-family:'Inter', sans-serif;font-size:0.75rem;" id="org-page-meta"></div>
     </div>
     ${inviteBtn}
 </div>
@@ -2357,10 +2357,10 @@ async function renderOrgDashboard(slug, token) {
 
 <div class="glass-panel" style="padding:1.5rem;border-radius:12px;background:rgba(15,15,15,0.4);border:1px solid var(--border-glass);">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:700;color:#fff;text-transform:lowercase;letter-spacing:0.5px;">recent scans</div>
-        <span style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--text-muted);">last 30 days</span>
+        <div style="font-family:'Inter', sans-serif;font-size:0.75rem;font-weight:700;color:#fff;text-transform:lowercase;letter-spacing:0.5px;">recent scans</div>
+        <span style="font-family:'Inter', sans-serif;font-size:0.65rem;color:var(--text-muted);">last 30 days</span>
     </div>
-    <div id="org-recent-scans" style="color:var(--text-muted);font-family:'JetBrains Mono',monospace;font-size:0.75rem;padding:1.5rem 0;text-align:center;opacity:0.6;">no scans yet. start scanning wallets via the api.</div>
+    <div id="org-recent-scans" style="color:var(--text-muted);font-family:'Inter', sans-serif;font-size:0.75rem;padding:1.5rem 0;text-align:center;opacity:0.6;">no scans yet. start scanning wallets via the api.</div>
 </div>`;
 
         view.querySelector('#org-page-name').textContent = org.name;
@@ -2380,7 +2380,7 @@ async function renderOrgDashboard(slug, token) {
         }
     } catch (err) {
         const errDiv = document.createElement('div');
-        errDiv.style.cssText = 'color:var(--color-red);font-family:\'JetBrains Mono\',monospace;font-size:0.8rem;padding:2rem;';
+        errDiv.style.cssText = 'color:var(--color-red);font-family:\'Inter\',sans-serif;font-size:0.8rem;padding:2rem;';
         errDiv.textContent = err.message;
         view.innerHTML = '';
         view.appendChild(errDiv);
@@ -2391,7 +2391,7 @@ async function renderOrgSettings(slug, token) {
     const view = document.getElementById('org-settings-view');
     if (!view || !token) return;
 
-    view.innerHTML = `<div style="color:var(--text-muted);font-family:'JetBrains Mono',monospace;font-size:0.8rem;padding:2rem;">loading...</div>`;
+    view.innerHTML = `<div style="color:var(--text-muted);font-family:'Inter', sans-serif;font-size:0.8rem;padding:2rem;">loading...</div>`;
 
     try {
         const res = await fetch(`/v1/organizations/${slug}`, {
@@ -2401,51 +2401,51 @@ async function renderOrgSettings(slug, token) {
         const org = await res.json();
 
         if (!org.isOwner) {
-            view.innerHTML = `<div style="color:var(--text-muted);font-family:'JetBrains Mono',monospace;font-size:0.8rem;padding:2rem;">only the owner can access settings.</div>`;
+            view.innerHTML = `<div style="color:var(--text-muted);font-family:'Inter', sans-serif;font-size:0.8rem;padding:2rem;">only the owner can access settings.</div>`;
             return;
         }
 
         const createdLabel = new Date(org.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 
         view.innerHTML = `
-<h1 style="font-family:'JetBrains Mono',monospace;font-size:1.5rem;font-weight:800;letter-spacing:-1px;color:#fff;margin:0 0 2rem;">settings</h1>
+<h1 style="font-family:'Inter', sans-serif;font-size:1.5rem;font-weight:800;letter-spacing:-1px;color:#fff;margin:0 0 2rem;">settings</h1>
 
 <div style="padding:1.5rem;border-radius:12px;background:rgba(15,15,15,0.4);border:1px solid var(--border-glass);margin-bottom:1.5rem;">
-    <div style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:1.25rem;">general</div>
+    <div style="font-family:'Inter', sans-serif;font-size:0.65rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:1.25rem;">general</div>
     <div style="display:flex;flex-direction:column;">
         <div style="display:flex;align-items:center;justify-content:space-between;padding:0.75rem 0;border-bottom:1px solid rgba(255,255,255,0.04);">
-            <span style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--text-muted);">organization name</span>
-            <span style="font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:#e0e0e0;">${escHtml(org.name)}</span>
+            <span style="font-family:'Inter', sans-serif;font-size:0.75rem;color:var(--text-muted);">organization name</span>
+            <span style="font-family:'Inter', sans-serif;font-size:0.78rem;color:#e0e0e0;">${escHtml(org.name)}</span>
         </div>
         <div style="display:flex;align-items:center;justify-content:space-between;padding:0.75rem 0;border-bottom:1px solid rgba(255,255,255,0.04);">
-            <span style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--text-muted);">plan</span>
-            <span style="font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:var(--neon-blue);">${org.plan || 'starter'}</span>
+            <span style="font-family:'Inter', sans-serif;font-size:0.75rem;color:var(--text-muted);">plan</span>
+            <span style="font-family:'Inter', sans-serif;font-size:0.78rem;color:var(--neon-blue);">${org.plan || 'starter'}</span>
         </div>
         <div style="display:flex;align-items:center;justify-content:space-between;padding:0.75rem 0;border-bottom:1px solid rgba(255,255,255,0.04);">
-            <span style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--text-muted);">region</span>
-            <span style="font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:#e0e0e0;">${org.region || 'americas'}</span>
+            <span style="font-family:'Inter', sans-serif;font-size:0.75rem;color:var(--text-muted);">region</span>
+            <span style="font-family:'Inter', sans-serif;font-size:0.78rem;color:#e0e0e0;">${org.region || 'americas'}</span>
         </div>
         <div style="display:flex;align-items:center;justify-content:space-between;padding:0.75rem 0;">
-            <span style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--text-muted);">created</span>
-            <span style="font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:#e0e0e0;">${createdLabel}</span>
+            <span style="font-family:'Inter', sans-serif;font-size:0.75rem;color:var(--text-muted);">created</span>
+            <span style="font-family:'Inter', sans-serif;font-size:0.78rem;color:#e0e0e0;">${createdLabel}</span>
         </div>
     </div>
 </div>
 
 <div style="padding:1.5rem;border-radius:12px;background:rgba(12,4,4,0.7);border:1px solid rgba(255,51,51,0.12);">
-    <div style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;font-weight:700;color:rgba(255,51,51,0.5);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:1.25rem;">danger zone</div>
+    <div style="font-family:'Inter', sans-serif;font-size:0.65rem;font-weight:700;color:rgba(255,51,51,0.5);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:1.25rem;">danger zone</div>
     <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:2rem;flex-wrap:wrap;">
         <div>
-            <div style="font-family:'JetBrains Mono',monospace;font-size:0.82rem;color:#e0e0e0;font-weight:600;margin-bottom:0.4rem;">delete organization</div>
-            <div style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--text-muted);line-height:1.6;max-width:380px;">permanently removes this organization, all members, api keys, and scan history. this cannot be undone.</div>
+            <div style="font-family:'Inter', sans-serif;font-size:0.82rem;color:#e0e0e0;font-weight:600;margin-bottom:0.4rem;">delete organization</div>
+            <div style="font-family:'Inter', sans-serif;font-size:0.72rem;color:var(--text-muted);line-height:1.6;max-width:380px;">permanently removes this organization, all members, api keys, and scan history. this cannot be undone.</div>
         </div>
-        <button id="btn-delete-org-init" style="flex-shrink:0;background:transparent;border:1px solid rgba(255,51,51,0.3);color:rgba(255,80,80,0.85);font-family:'JetBrains Mono',monospace;font-size:0.74rem;padding:0.5rem 1rem;border-radius:8px;cursor:pointer;white-space:nowrap;">delete organization</button>
+        <button id="btn-delete-org-init" style="flex-shrink:0;background:transparent;border:1px solid rgba(255,51,51,0.3);color:rgba(255,80,80,0.85);font-family:'Inter', sans-serif;font-size:0.74rem;padding:0.5rem 1rem;border-radius:8px;cursor:pointer;white-space:nowrap;">delete organization</button>
     </div>
     <div id="delete-confirm-zone" style="display:none;margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid rgba(255,51,51,0.1);">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--text-muted);margin-bottom:0.75rem;">type <span style="color:#e0e0e0;">${escHtml(org.name)}</span> to confirm deletion:</div>
+        <div style="font-family:'Inter', sans-serif;font-size:0.72rem;color:var(--text-muted);margin-bottom:0.75rem;">type <span style="color:#e0e0e0;">${escHtml(org.name)}</span> to confirm deletion:</div>
         <div style="display:flex;gap:0.75rem;align-items:center;flex-wrap:wrap;">
-            <input id="delete-confirm-input" type="text" placeholder="${escHtml(org.name)}" style="flex:1;min-width:160px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,51,51,0.2);border-radius:8px;padding:0.55rem 0.875rem;font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#e0e0e0;outline:none;box-sizing:border-box;">
-            <button id="btn-delete-org-confirm" style="background:rgba(255,51,51,0.12);border:1px solid rgba(255,51,51,0.3);color:rgba(255,80,80,0.9);font-family:'JetBrains Mono',monospace;font-size:0.74rem;padding:0.55rem 1rem;border-radius:8px;cursor:pointer;white-space:nowrap;">confirm delete</button>
+            <input id="delete-confirm-input" type="text" placeholder="${escHtml(org.name)}" style="flex:1;min-width:160px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,51,51,0.2);border-radius:8px;padding:0.55rem 0.875rem;font-family:'Inter', sans-serif;font-size:0.75rem;color:#e0e0e0;outline:none;box-sizing:border-box;">
+            <button id="btn-delete-org-confirm" style="background:rgba(255,51,51,0.12);border:1px solid rgba(255,51,51,0.3);color:rgba(255,80,80,0.9);font-family:'Inter', sans-serif;font-size:0.74rem;padding:0.55rem 1rem;border-radius:8px;cursor:pointer;white-space:nowrap;">confirm delete</button>
         </div>
         <p id="delete-org-error" class="error-msg" style="display:none;margin-top:0.75rem;"></p>
     </div>
@@ -2492,7 +2492,7 @@ async function renderOrgSettings(slug, token) {
         };
 
     } catch (err) {
-        view.innerHTML = `<div style="color:var(--text-muted);font-family:'JetBrains Mono',monospace;font-size:0.8rem;padding:2rem;">error: ${err.message}</div>`;
+        view.innerHTML = `<div style="color:var(--text-muted);font-family:'Inter', sans-serif;font-size:0.8rem;padding:2rem;">error: ${err.message}</div>`;
     }
 }
 
@@ -2564,20 +2564,20 @@ function renderNotifications(invites, token) {
         orgNameSpan.textContent = inv.orgName;
 
         const titleDiv = document.createElement('div');
-        titleDiv.style.cssText = 'font-size:0.72rem;color:#fff;font-family:\'JetBrains Mono\',monospace;';
+        titleDiv.style.cssText = 'font-size:0.72rem;color:#fff;font-family:\'Inter\',sans-serif;';
         titleDiv.append('invited to ', orgNameSpan);
 
         const metaSpan = document.createElement('span');
-        metaSpan.style.cssText = 'font-size:0.65rem;color:var(--text-muted);font-family:\'JetBrains Mono\',monospace;';
+        metaSpan.style.cssText = 'font-size:0.65rem;color:var(--text-muted);font-family:\'Inter\',sans-serif;';
         metaSpan.textContent = `by ${inv.invitedBy} · ${inv.role}`;
 
         const acceptBtn = document.createElement('button');
         acceptBtn.textContent = 'accept';
-        acceptBtn.style.cssText = 'padding:3px 10px;font-size:0.65rem;border-radius:4px;background:rgba(0,240,255,0.1);border:1px solid rgba(0,240,255,0.3);color:var(--neon-blue);cursor:pointer;font-family:\'JetBrains Mono\',monospace;';
+        acceptBtn.style.cssText = 'padding:3px 10px;font-size:0.65rem;border-radius:4px;background:rgba(0,240,255,0.1);border:1px solid rgba(0,240,255,0.3);color:var(--neon-blue);cursor:pointer;font-family:\'Inter\',sans-serif;';
 
         const dismissBtn = document.createElement('button');
         dismissBtn.textContent = 'dismiss';
-        dismissBtn.style.cssText = 'padding:3px 10px;font-size:0.65rem;border-radius:4px;background:transparent;border:1px solid rgba(255,255,255,0.08);color:var(--text-muted);cursor:pointer;font-family:\'JetBrains Mono\',monospace;';
+        dismissBtn.style.cssText = 'padding:3px 10px;font-size:0.65rem;border-radius:4px;background:transparent;border:1px solid rgba(255,255,255,0.08);color:var(--text-muted);cursor:pointer;font-family:\'Inter\',sans-serif;';
 
         const btnRow = document.createElement('div');
         btnRow.style.cssText = 'display:flex;gap:6px;margin-top:2px;';
@@ -4420,7 +4420,7 @@ function setupRecoveryCodes() {
         listEl.innerHTML = '';
         const d = document.createElement('div');
         d.textContent = currentSeed;
-        d.style.cssText = "font-family:'JetBrains Mono',monospace;font-size:0.9rem;color:var(--text-main);letter-spacing:0.06em;line-height:1.7;text-align:center;word-break:break-all;";
+        d.style.cssText = "font-family:'Inter', sans-serif;font-size:0.9rem;color:var(--text-main);letter-spacing:0.06em;line-height:1.7;text-align:center;word-break:break-all;";
         listEl.appendChild(d);
         if (descEl) descEl.textContent = requireConfirm
             ? "write this down and keep it offline. it's the master key to recovering your account if you lose your authenticator — treat it like a wallet seed. you can view it again later after verifying with two-factor."
@@ -5166,7 +5166,7 @@ function setupSecurity() {
     const openEnroll = async () => {
         enrollDone = false;
         pendingFactorId = null;
-        qrWrap.innerHTML = '<p style="font-family:\'JetBrains Mono\',monospace;font-size:0.7rem;color:var(--text-muted);text-align:center;margin:1rem 0;">generating...</p>';
+        qrWrap.innerHTML = '<p style="font-family:\'Inter\',sans-serif;font-size:0.7rem;color:var(--text-muted);text-align:center;margin:1rem 0;">generating...</p>';
         secretRow.style.display = 'none';
         codeSection.style.display = 'none';
         verifyBusy = false;
@@ -5185,7 +5185,7 @@ function setupSecurity() {
                 pendingFactorId = null;
                 codeSection.style.display = 'none';
                 secretRow.style.display = 'none';
-                qrWrap.innerHTML = `<p style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:#ff6b6b;text-align:center;line-height:1.6;margin:1rem 0;">this account has no email address.<br>authenticator setup needs one — add an email under account settings first.</p>`;
+                qrWrap.innerHTML = `<p style="font-family:'Inter', sans-serif;font-size:0.72rem;color:#ff6b6b;text-align:center;line-height:1.6;margin:1rem 0;">this account has no email address.<br>authenticator setup needs one — add an email under account settings first.</p>`;
                 return;
             }
 
@@ -5224,11 +5224,11 @@ function setupSecurity() {
                 img.alt = 'mfa qr code';
                 img.className = 'sp-mfa-qr';
                 img.onerror = () => {
-                    qrWrap.innerHTML = '<p style="font-family:\'JetBrains Mono\',monospace;font-size:0.7rem;color:var(--text-muted);text-align:center;margin:1rem 0;">scan unavailable — enter the key below in your app</p>';
+                    qrWrap.innerHTML = '<p style="font-family:\'Inter\',sans-serif;font-size:0.7rem;color:var(--text-muted);text-align:center;margin:1rem 0;">scan unavailable — enter the key below in your app</p>';
                 };
                 qrWrap.appendChild(img);
             } else {
-                qrWrap.innerHTML = '<p style="font-family:\'JetBrains Mono\',monospace;font-size:0.7rem;color:var(--text-muted);text-align:center;margin:1rem 0;">enter the key below in your authenticator app</p>';
+                qrWrap.innerHTML = '<p style="font-family:\'Inter\',sans-serif;font-size:0.7rem;color:var(--text-muted);text-align:center;margin:1rem 0;">enter the key below in your authenticator app</p>';
             }
             if (totp.secret) { secretEl.textContent = totp.secret; secretRow.style.display = 'flex'; }
             buildOtp();
@@ -5240,7 +5240,7 @@ function setupSecurity() {
             pendingFactorId = null;
             codeSection.style.display = 'none';
             secretRow.style.display = 'none';
-            qrWrap.innerHTML = `<p style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:#ff6b6b;text-align:center;line-height:1.6;margin:1rem 0;">could not start mfa setup:<br>${(e.message || 'please try again').toLowerCase()}</p>`;
+            qrWrap.innerHTML = `<p style="font-family:'Inter', sans-serif;font-size:0.72rem;color:#ff6b6b;text-align:center;line-height:1.6;margin:1rem 0;">could not start mfa setup:<br>${(e.message || 'please try again').toLowerCase()}</p>`;
         }
     };
 
