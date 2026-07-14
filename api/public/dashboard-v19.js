@@ -305,6 +305,18 @@ if (logoutBtn) {
         localStorage.removeItem('sentinel-cached-sessions');
         document.cookie = 'sentinel-theme=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax';
         document.cookie = 'sentinel-theme=; path=/; domain=.sentinelpay.org; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax';
+        try {
+            const token = await getFreshAuthToken();
+            if (token) {
+                await fetch('/v1/user/sessions/remove', {
+                    method: 'POST',
+                    keepalive: true,
+                    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ deviceId: getDeviceId() })
+                });
+            }
+            broadcastSessionsChanged();
+        } catch (e) {}
         if (sentinelAuth) await sentinelAuth.auth.signOut();
         window.location.href = 'https://sentinelpay.org';
     };
@@ -736,6 +748,7 @@ async function renderDashboard(session) {
         setupChangePassword();
         sessionHeartbeat(token).then(() => setupSessions());
         setupRealtimeSignout(user);
+        startGlobalHeartbeat();
     } catch (e) {
         console.error('[sentinel-render] Critical failure:', e);
         showStatus('Render Error', 'error');
@@ -4844,8 +4857,41 @@ function setupRealtimeSignout(user) {
             window.location.href = '/auth';
         }
     });
-    ch.subscribe();
+    // a device logged in / out somewhere — refresh the live list instantly if the
+    // user is looking at it, instead of waiting for the next poll.
+    ch.on('broadcast', { event: 'sessions-changed' }, (msg) => {
+        const except = msg && msg.payload && msg.payload.except;
+        if (except && except === myDevice) return;
+        const panel = document.getElementById('account-tab-security');
+        if (panel && panel.style.display !== 'none') loadSessions(true);
+    });
+    ch.subscribe((status) => {
+        // announce ourselves once connected so other open tabs pick up this device
+        if (status === 'SUBSCRIBED') broadcastSessionsChanged();
+    });
     window.__signoutChannel = ch;
+}
+
+function broadcastSessionsChanged() {
+    if (!window.__signoutChannel) return;
+    try {
+        window.__signoutChannel.send({
+            type: 'broadcast',
+            event: 'sessions-changed',
+            payload: { except: getDeviceId() }
+        });
+    } catch (e) {}
+}
+
+// Keep this device's lastSeenAt fresh on ANY dashboard tab, so the server's
+// "active in the last 5 min" filter reflects reality and stale devices drop off.
+let globalHeartbeatTimer = null;
+function startGlobalHeartbeat() {
+    if (globalHeartbeatTimer) return;
+    globalHeartbeatTimer = setInterval(async () => {
+        const token = await getFreshAuthToken();
+        if (token) sessionHeartbeat(token);
+    }, 60000);
 }
 
 function setupSessions() {

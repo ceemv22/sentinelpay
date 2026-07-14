@@ -774,8 +774,9 @@ app.post('/v1/user/sessions/heartbeat', requireSupabaseAuth, async (req, res) =>
 
 app.get('/v1/user/sessions', requireSupabaseAuth, async (req, res) => {
     try {
+        const SESSION_FRESH_MS = 5 * 60 * 1000;
         const sessions = await prisma.userSession.findMany({
-            where: { userId: req.user.id },
+            where: { userId: req.user.id, lastSeenAt: { gte: new Date(Date.now() - SESSION_FRESH_MS) } },
             orderBy: { lastSeenAt: 'desc' },
             take: 25,
             select: { deviceId: true, userAgent: true, ip: true, country: true, city: true, lastSeenAt: true, createdAt: true }
@@ -784,6 +785,20 @@ app.get('/v1/user/sessions', requireSupabaseAuth, async (req, res) => {
     } catch (err) {
         console.error('[sessions list]', err.message);
         res.status(500).json({ error: 'failed to load sessions' });
+    }
+});
+
+app.post('/v1/user/sessions/remove', requireSupabaseAuth, async (req, res) => {
+    try {
+        const { deviceId } = req.body || {};
+        if (typeof deviceId !== 'string' || !DEVICE_ID_RE.test(deviceId)) {
+            return res.status(400).json({ error: 'invalid device id' });
+        }
+        await prisma.userSession.deleteMany({ where: { userId: req.user.id, deviceId } });
+        res.json({ ok: true });
+    } catch (err) {
+        console.error('[sessions remove]', err.message);
+        res.status(500).json({ error: 'failed to remove session' });
     }
 });
 
