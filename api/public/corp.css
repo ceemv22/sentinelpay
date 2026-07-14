@@ -617,3 +617,37 @@ html.theme-light .lp-nav .lp-nav-dd-btn {
     padding: 0.45rem 0.55rem;
 }
 html.theme-light .lp-nav .lp-nav-chevron { width: 11px; height: 11px; }
+
+/* elliptic-style mega dropdown */
+html.theme-light .lp-nav .lp-nav-dd.lp-mega {
+    width: 620px;
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.35rem 0.8rem;
+    padding: 1.1rem;
+    border-radius: 14px;
+}
+html.theme-light .lp-nav .lp-nav-dd.lp-mega .lp-mega-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.22rem;
+    padding: 0.7rem 0.85rem;
+    border-radius: 10px;
+    text-decoration: none;
+    transition: background 0.15s ease;
+}
+html.theme-light .lp-nav .lp-nav-dd.lp-mega .lp-mega-item:hover {
+    background: rgba(45, 212, 191, 0.08);
+}
+html.theme-light .lp-nav .lp-mega-title {
+    font-size: 0.86rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.92);
+    text-transform: capitalize;
+}
+html.theme-light .lp-nav .lp-mega-item:hover .lp-mega-title { color: #5eead4; }
+html.theme-light .lp-nav .lp-mega-desc {
+    font-size: 0.72rem;
+    line-height: 1.45;
+    color: rgba(255, 255, 255, 0.45);
+}
