@@ -699,3 +699,40 @@ html.theme-light .lp-nav .auth-nav-btn:hover::after {
     .lp-logo-bar { height: 176px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; }
     .lp-logo-bar .lp-logo-bar-label { margin-bottom: 1.3rem; }
 }
+
+/* elliptic-style network strip: full-color logos, no label, +more chip */
+.lp-logo-bar-label { display: none; }
+.lp-net-mark {
+    filter: none;
+    opacity: 1;
+    color: #1c2743;
+    font-size: 1.12rem;
+    font-weight: 700;
+    gap: 0.6rem;
+    padding: 0.3rem 1.1rem;
+}
+.lp-net-mark img { width: 32px; height: 32px; }
+.lp-net-mark:hover { transform: none; color: #1c2743; }
+.lp-logo-row { gap: 0.6rem 1.6rem; }
+.lp-net-more {
+    display: inline-flex;
+    align-items: center;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #5b6b8c;
+    background: #f2f5fb;
+    border: 1px solid rgba(14, 35, 88, 0.12);
+    border-radius: 50px;
+    padding: 0.45rem 1rem;
+    margin-left: 0.6rem;
+    text-decoration: none;
+    text-transform: lowercase;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+.lp-net-more:hover {
+    color: #10275b;
+    border-color: rgba(37, 99, 235, 0.45);
+    background: #eaf0fd;
+}
