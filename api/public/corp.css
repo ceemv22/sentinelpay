@@ -736,3 +736,49 @@ html.theme-light .lp-nav .auth-nav-btn:hover::after {
     border-color: rgba(37, 99, 235, 0.45);
     background: #eaf0fd;
 }
+
+/* polished network strip */
+.lp-logo-bar {
+    background: linear-gradient(180deg, #fdfeff, #f7f9fd);
+    border-top: none;
+    border-bottom: 1px solid rgba(14, 35, 88, 0.06);
+}
+.lp-logo-row { gap: 0 3.4rem; }
+.lp-net-mark {
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: #47536e;
+    padding: 0;
+    gap: 0.65rem;
+    opacity: 0.92;
+    transition: opacity 0.25s ease;
+}
+.lp-net-mark img {
+    width: 30px;
+    height: 30px;
+    filter: drop-shadow(0 2px 5px rgba(14, 35, 88, 0.14));
+}
+.lp-net-mark:hover { opacity: 1; color: #0e2358; }
+.lp-net-more {
+    background: none;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    margin-left: 0.4rem;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #2563eb;
+    gap: 0.35rem;
+}
+.lp-net-more-arrow {
+    display: inline-block;
+    margin-left: 0.35rem;
+    transition: transform 0.25s ease;
+}
+.lp-net-more:hover {
+    background: none;
+    border: none;
+    color: #10275b;
+}
+.lp-net-more:hover .lp-net-more-arrow { transform: translateX(4px); }
