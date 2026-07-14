@@ -363,3 +363,33 @@ html.theme-light .lp-cta-h2-gradient {
     -webkit-text-fill-color: #0e2358 !important;
     color: #0e2358 !important;
 }
+
+.lp-logo-bar-label {
+    text-align: center;
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    color: #8494b3;
+    text-transform: lowercase;
+    margin: 0 0 1.5rem;
+}
+.lp-net-mark {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.98rem;
+    font-weight: 700;
+    color: #93a1bd;
+    padding: 0.3rem 1.2rem;
+    white-space: nowrap;
+    text-transform: lowercase;
+    filter: grayscale(1);
+    opacity: 0.75;
+    transition: filter 0.25s ease, opacity 0.25s ease, color 0.25s ease;
+}
+.lp-net-mark img { width: 26px; height: 26px; object-fit: contain; }
+.lp-net-mark:hover { filter: grayscale(0); opacity: 1; color: #10275b; }
+@media (max-width: 560px) {
+    .lp-net-mark { font-size: 0.8rem; padding: 0.25rem 0.6rem; gap: 0.4rem; }
+    .lp-net-mark img { width: 20px; height: 20px; }
+}
