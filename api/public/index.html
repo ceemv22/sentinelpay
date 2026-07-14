@@ -37,7 +37,7 @@
     <link rel="icon" type="image/svg+xml" href="logo.svg">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css?v=23.0">
-    <link rel="stylesheet" href="landing.css?v=4.0">
+    <link rel="stylesheet" href="landing.css?v=4.1">
     <script>
         try{Object.keys(localStorage).forEach(function(k){if(k.indexOf('intercom')!==-1)localStorage.removeItem(k);});}catch(e){}
         window.intercomSettings={api_base:'https://api-iam.intercom.io',app_id:'obn3omwl',hide_default_launcher:true,language_override:'en'};
@@ -517,8 +517,8 @@
                 <span class="lp-status-label">all systems operational</span>
                 <svg class="lp-status-arrow" xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
             </a>
-            <h1 class="lp-h1">monitor every transaction.<br>get alerted instantly.</h1>
-            <p class="lp-hero-sub">connect your rpc endpoint. sentinelpay monitors every transaction across 10+ blockchain networks 24/7 and emails your team the moment a high-risk wallet is detected.</p>
+            <h1 class="lp-h1">make smarter crypto payment<br>decisions with confidence</h1>
+            <p class="lp-hero-sub">empower your team with real-time blockchain risk analytics built for scalable crypto payments. every transaction screened, scored and alerted across 10+ networks — before funds settle.</p>
 
             <div class="lp-diagram">
                 <div class="lp-diag-node lp-diag-source">
@@ -592,8 +592,104 @@
             </div>
 
             <div class="lp-hero-ctas">
-                <a href="/auth#register" class="lp-cta-primary">get started</a>
-                <a href="#how-it-works" class="lp-cta-ghost">explore features</a>
+                <a href="/auth#register" class="lp-cta-primary">start free trial</a>
+                <a href="mailto:support@sentinelpay.org" class="lp-cta-ghost">book a demo</a>
+            </div>
+        </div>
+    </section>
+
+    <div class="lp-marquee-strip">
+        <p class="lp-marquee-label">monitoring the networks that move digital assets</p>
+        <div class="lp-marquee" aria-hidden="true">
+            <div class="lp-marquee-track" id="lp-marquee-track">
+                <div class="lp-chain-pill"><span class="lp-chain-dot" style="background:#627EEA"></span>ethereum</div>
+                <div class="lp-chain-pill"><span class="lp-chain-dot" style="background:#F7931A"></span>bitcoin</div>
+                <div class="lp-chain-pill"><span class="lp-chain-dot" style="background:#9945FF"></span>solana</div>
+                <div class="lp-chain-pill"><span class="lp-chain-dot" style="background:#F3BA2F"></span>bnb chain</div>
+                <div class="lp-chain-pill"><span class="lp-chain-dot" style="background:#8247E5"></span>polygon</div>
+                <div class="lp-chain-pill"><span class="lp-chain-dot" style="background:#E84142"></span>avalanche</div>
+                <div class="lp-chain-pill"><span class="lp-chain-dot" style="background:#12AAFF"></span>arbitrum</div>
+                <div class="lp-chain-pill"><span class="lp-chain-dot" style="background:#FF0420"></span>optimism</div>
+                <div class="lp-chain-pill"><span class="lp-chain-dot" style="background:#0052FF"></span>base</div>
+                <div class="lp-chain-pill"><span class="lp-chain-dot" style="background:#EB0029"></span>tron</div>
+            </div>
+        </div>
+    </div>
+
+    <section class="lp-section lp-stats-section">
+        <div class="lp-section-inner">
+            <div class="lp-stats-grid lp-reveal" id="lp-stats-grid">
+                <div class="lp-stat">
+                    <div class="lp-stat-num"><span class="lp-stat-count" data-count="10" data-suffix="+">0</span></div>
+                    <div class="lp-stat-label">blockchain networks monitored</div>
+                </div>
+                <div class="lp-stat">
+                    <div class="lp-stat-num"><span class="lp-stat-prefix">&lt;</span><span class="lp-stat-count" data-count="1" data-suffix="s">0</span></div>
+                    <div class="lp-stat-label">from detection to alert</div>
+                </div>
+                <div class="lp-stat">
+                    <div class="lp-stat-num"><span class="lp-stat-count" data-count="24" data-suffix="/7">0</span></div>
+                    <div class="lp-stat-label">continuous risk analysis</div>
+                </div>
+                <div class="lp-stat">
+                    <div class="lp-stat-num"><span class="lp-stat-count" data-count="99.9" data-suffix="%" data-decimals="1">0</span></div>
+                    <div class="lp-stat-label">platform uptime</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="lp-section lp-roles" id="who-its-for">
+        <div class="lp-section-inner">
+            <p class="lp-eyebrow lp-reveal">who it's for</p>
+            <h2 class="lp-h2 lp-reveal">one platform. every team.</h2>
+            <div class="lp-roles-tabs lp-reveal" id="lp-roles-tabs">
+                <button class="lp-role-tab active" data-role="operators">payment operators</button>
+                <button class="lp-role-tab" data-role="compliance">compliance teams</button>
+                <button class="lp-role-tab" data-role="exchanges">exchanges &amp; otc</button>
+                <button class="lp-role-tab" data-role="developers">developers</button>
+            </div>
+            <div class="lp-roles-panels lp-reveal" id="lp-roles-panels">
+                <div class="lp-role-panel active" data-role="operators">
+                    <h3 class="lp-role-title">accept crypto without accepting the risk</h3>
+                    <p class="lp-role-desc">screen every inbound payment in real time so tainted funds never touch your treasury. high-risk wallets are flagged before settlement, not after.</p>
+                    <ul class="lp-role-list">
+                        <li>pre-settlement screening on every transaction</li>
+                        <li>instant email alerts to your operations team</li>
+                        <li>risk thresholds tuned to your appetite</li>
+                    </ul>
+                    <a href="/auth#register" class="lp-role-cta">start screening payments →</a>
+                </div>
+                <div class="lp-role-panel" data-role="compliance">
+                    <h3 class="lp-role-title">evidence your regulator will accept</h3>
+                    <p class="lp-role-desc">every score comes with the flags that produced it — mixers, sanctioned entities, velocity patterns — in a payload you can archive and audit.</p>
+                    <ul class="lp-role-list">
+                        <li>explainable risk scores with named heuristics</li>
+                        <li>full alert history for audit trails</li>
+                        <li>sanctioned-entity matching at maximum severity</li>
+                    </ul>
+                    <a href="/auth#register" class="lp-role-cta">strengthen your controls →</a>
+                </div>
+                <div class="lp-role-panel" data-role="exchanges">
+                    <h3 class="lp-role-title">scale deposits without scaling exposure</h3>
+                    <p class="lp-role-desc">monitor deposit addresses across 10+ chains from one dashboard. layering behavior and mixer proximity surface in seconds, not days.</p>
+                    <ul class="lp-role-list">
+                        <li>multi-chain coverage from a single integration</li>
+                        <li>velocity and layering detection built in</li>
+                        <li>on-demand wallet scans for manual review</li>
+                    </ul>
+                    <a href="/auth#register" class="lp-role-cta">protect your order book →</a>
+                </div>
+                <div class="lp-role-panel" data-role="developers">
+                    <h3 class="lp-role-title">one rpc url. that's the integration.</h3>
+                    <p class="lp-role-desc">paste your endpoint, set a threshold, and sentinelpay does the rest. score any wallet on demand with a single api call.</p>
+                    <ul class="lp-role-list">
+                        <li>no sdk, no webhooks to host, no infra to run</li>
+                        <li><code>/v1/score</code> for programmatic wallet checks</li>
+                        <li>clean json alert payloads</li>
+                    </ul>
+                    <a href="https://help.sentinelpay.org" class="lp-role-cta">read the docs →</a>
+                </div>
             </div>
         </div>
     </section>
@@ -1204,7 +1300,7 @@
         })();
     </script>
     <script src="toast.js"></script>
-    <script src="app.js"></script>
+    <script src="app.js?v=2"></script>
     <script>
         (function () {
             var CHAINS = [
@@ -1308,6 +1404,50 @@
                 });
             }, { threshold: 0.3 });
             meters.forEach(function(el) { meterObs.observe(el); });
+
+            var mqTrack = document.getElementById('lp-marquee-track');
+            if (mqTrack) {
+                mqTrack.innerHTML += mqTrack.innerHTML;
+            }
+
+            function animateCount(el) {
+                var target = parseFloat(el.getAttribute('data-count')) || 0;
+                var suffix = el.getAttribute('data-suffix') || '';
+                var decimals = parseInt(el.getAttribute('data-decimals') || '0', 10);
+                var dur = 1400;
+                var start = null;
+                function ease(t) { return 1 - Math.pow(1 - t, 3); }
+                function frame(ts) {
+                    if (!start) start = ts;
+                    var p = Math.min((ts - start) / dur, 1);
+                    el.textContent = (target * ease(p)).toFixed(decimals) + suffix;
+                    if (p < 1) requestAnimationFrame(frame);
+                }
+                requestAnimationFrame(frame);
+            }
+            var statsGrid = document.getElementById('lp-stats-grid');
+            if (statsGrid) {
+                var statsObs = new IntersectionObserver(function(entries) {
+                    entries.forEach(function(e) {
+                        if (e.isIntersecting) {
+                            statsGrid.querySelectorAll('.lp-stat-count').forEach(animateCount);
+                            statsObs.unobserve(statsGrid);
+                        }
+                    });
+                }, { threshold: 0.35 });
+                statsObs.observe(statsGrid);
+            }
+
+            var roleTabs = document.querySelectorAll('.lp-role-tab');
+            roleTabs.forEach(function(tab) {
+                tab.addEventListener('click', function() {
+                    var role = tab.getAttribute('data-role');
+                    roleTabs.forEach(function(t) { t.classList.toggle('active', t === tab); });
+                    document.querySelectorAll('.lp-role-panel').forEach(function(p) {
+                        p.classList.toggle('active', p.getAttribute('data-role') === role);
+                    });
+                });
+            });
 
             var MAX_WAIT = 2200;
             var fallbackTimer = setTimeout(function() {
