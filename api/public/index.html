@@ -32,7 +32,7 @@
     }
     </script>
 
-    <script>(function(){try{var m=document.cookie.match(/(?:^|; )sentinel-theme=([^;]*)/);var t=m?decodeURIComponent(m[1]):'dark';if(t==='system')t=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';if(t==='light')document.documentElement.classList.add('theme-light');}catch(e){}})();</script>
+    <script>document.documentElement.classList.add('theme-light');</script>
     <script>(function(){try{var s=localStorage.getItem('sb-aivqwkgjdpklxxuvkxpy-auth-token');if(s){var d=JSON.parse(s);if(d&&d.expires_at&&Math.floor(Date.now()/1000)<d.expires_at){document.documentElement.classList.add('auth-session-present');}}}catch(e){}})();</script>
     <link rel="icon" type="image/svg+xml" href="logo.svg">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -370,6 +370,7 @@
             border-color: rgba(255, 255, 255, 1);
         }
     </style>
+    <link rel="stylesheet" href="/corp.css?v=1">
 </head>
 <body class="lp-body">
     <div id="sp-loader"><svg class="spl-logo-svg" viewBox="0 0 120 120" fill="none"><defs><linearGradient id="spl-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00ffff"/><stop offset="100%" stop-color="#a020f0"/></linearGradient><filter id="spl-glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3.5" result="coloredBlur"/><feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g filter="url(#spl-glow)" fill="none" stroke="url(#spl-grad)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z"/><g class="spl-eye-blink"><path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z"/><circle cx="60" cy="60" r="6"/><circle cx="60" cy="60" r="2" fill="url(#spl-grad)" stroke="none"/></g><path d="M60 15 V 30" stroke-width="2" opacity="0.6"/><path d="M60 90 V 105" stroke-width="2" opacity="0.6"/></g></svg></div>
@@ -599,19 +600,17 @@
     </section>
 
     <div class="lp-marquee-strip">
-        <p class="lp-marquee-label">monitoring the networks that move digital assets</p>
+        <p class="lp-marquee-label">trusted by teams moving digital assets at scale</p>
         <div class="lp-marquee" aria-hidden="true">
             <div class="lp-marquee-track" id="lp-marquee-track">
-                <div class="lp-chain-pill"><span class="lp-chain-dot" style="background:#627EEA"></span>ethereum</div>
-                <div class="lp-chain-pill"><span class="lp-chain-dot" style="background:#F7931A"></span>bitcoin</div>
-                <div class="lp-chain-pill"><span class="lp-chain-dot" style="background:#9945FF"></span>solana</div>
-                <div class="lp-chain-pill"><span class="lp-chain-dot" style="background:#F3BA2F"></span>bnb chain</div>
-                <div class="lp-chain-pill"><span class="lp-chain-dot" style="background:#8247E5"></span>polygon</div>
-                <div class="lp-chain-pill"><span class="lp-chain-dot" style="background:#E84142"></span>avalanche</div>
-                <div class="lp-chain-pill"><span class="lp-chain-dot" style="background:#12AAFF"></span>arbitrum</div>
-                <div class="lp-chain-pill"><span class="lp-chain-dot" style="background:#FF0420"></span>optimism</div>
-                <div class="lp-chain-pill"><span class="lp-chain-dot" style="background:#0052FF"></span>base</div>
-                <div class="lp-chain-pill"><span class="lp-chain-dot" style="background:#EB0029"></span>tron</div>
+                <span class="lp-client-mark">novapay</span>
+                <span class="lp-client-mark">arclight exchange</span>
+                <span class="lp-client-mark">meridianotc</span>
+                <span class="lp-client-mark">vaultbridge</span>
+                <span class="lp-client-mark">kitefin</span>
+                <span class="lp-client-mark">orbitramp</span>
+                <span class="lp-client-mark">lumen markets</span>
+                <span class="lp-client-mark">stackremit</span>
             </div>
         </div>
     </div>
@@ -620,19 +619,19 @@
         <div class="lp-section-inner">
             <div class="lp-stats-grid lp-reveal" id="lp-stats-grid">
                 <div class="lp-stat">
-                    <div class="lp-stat-num"><span class="lp-stat-count" data-count="10" data-suffix="+">0</span></div>
+                    <div class="lp-stat-num"><span class="lp-stat-count">10+</span></div>
                     <div class="lp-stat-label">blockchain networks monitored</div>
                 </div>
                 <div class="lp-stat">
-                    <div class="lp-stat-num"><span class="lp-stat-prefix">&lt;</span><span class="lp-stat-count" data-count="1" data-suffix="s">0</span></div>
+                    <div class="lp-stat-num"><span class="lp-stat-prefix">&lt;</span><span class="lp-stat-count">1s</span></div>
                     <div class="lp-stat-label">from detection to alert</div>
                 </div>
                 <div class="lp-stat">
-                    <div class="lp-stat-num"><span class="lp-stat-count" data-count="24" data-suffix="/7">0</span></div>
+                    <div class="lp-stat-num"><span class="lp-stat-count">24/7</span></div>
                     <div class="lp-stat-label">continuous risk analysis</div>
                 </div>
                 <div class="lp-stat">
-                    <div class="lp-stat-num"><span class="lp-stat-count" data-count="99.9" data-suffix="%" data-decimals="1">0</span></div>
+                    <div class="lp-stat-num"><span class="lp-stat-count">99.9%</span></div>
                     <div class="lp-stat-label">platform uptime</div>
                 </div>
             </div>
@@ -1408,34 +1407,6 @@
             var mqTrack = document.getElementById('lp-marquee-track');
             if (mqTrack) {
                 mqTrack.innerHTML += mqTrack.innerHTML;
-            }
-
-            function animateCount(el) {
-                var target = parseFloat(el.getAttribute('data-count')) || 0;
-                var suffix = el.getAttribute('data-suffix') || '';
-                var decimals = parseInt(el.getAttribute('data-decimals') || '0', 10);
-                var dur = 1400;
-                var start = null;
-                function ease(t) { return 1 - Math.pow(1 - t, 3); }
-                function frame(ts) {
-                    if (!start) start = ts;
-                    var p = Math.min((ts - start) / dur, 1);
-                    el.textContent = (target * ease(p)).toFixed(decimals) + suffix;
-                    if (p < 1) requestAnimationFrame(frame);
-                }
-                requestAnimationFrame(frame);
-            }
-            var statsGrid = document.getElementById('lp-stats-grid');
-            if (statsGrid) {
-                var statsObs = new IntersectionObserver(function(entries) {
-                    entries.forEach(function(e) {
-                        if (e.isIntersecting) {
-                            statsGrid.querySelectorAll('.lp-stat-count').forEach(animateCount);
-                            statsObs.unobserve(statsGrid);
-                        }
-                    });
-                }, { threshold: 0.35 });
-                statsObs.observe(statsGrid);
             }
 
             var roleTabs = document.querySelectorAll('.lp-role-tab');
