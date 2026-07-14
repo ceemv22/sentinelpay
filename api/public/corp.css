@@ -794,7 +794,6 @@ html.theme-light .lp-nav .auth-nav-btn:hover::after {
     align-items: center;
     gap: 0 3.4rem;
     width: max-content;
-    padding-left: 3.4rem;
     animation: lpNetScroll 38s linear infinite;
     animation-direction: reverse;
     will-change: transform;
@@ -803,7 +802,7 @@ html.theme-light .lp-nav .auth-nav-btn:hover::after {
     from { transform: translateX(0); }
     to   { transform: translateX(-50%); }
 }
-.lp-net-marquee:hover .lp-net-track { animation-play-state: paused; }
+.lp-net-track:has(.lp-net-mark:hover) { animation-play-state: paused; }
 
 .lp-net-track .lp-net-mark {
     filter: grayscale(1);
