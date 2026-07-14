@@ -605,3 +605,15 @@ html.theme-light .lp-mobile-menu .lp-mobile-link,
 html.theme-light .lp-mobile-menu .lp-mm-acc-btn { color: rgba(255, 255, 255, 0.8) !important; }
 html.theme-light .lp-mobile-menu .lp-mobile-sub-link { color: rgba(255, 255, 255, 0.55) !important; }
 html.theme-light .lp-mobile-menu .lp-mobile-divider { background: rgba(255, 255, 255, 0.08) !important; }
+
+/* nav menu text like elliptic — sentence case, larger, medium weight */
+html.theme-light .lp-nav .lp-nav-links { gap: 0.9rem; }
+html.theme-light .lp-nav .lp-nav-link,
+html.theme-light .lp-nav .lp-nav-dd-btn {
+    text-transform: capitalize !important;
+    font-size: 0.95rem !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.005em;
+    padding: 0.45rem 0.55rem;
+}
+html.theme-light .lp-nav .lp-nav-chevron { width: 11px; height: 11px; }
