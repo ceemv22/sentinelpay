@@ -2206,7 +2206,8 @@ function switchToAccountSettings(tab) {
         if (panel) panel.style.display = t === tab ? '' : 'none';
     });
 
-    if (tab === 'security' && typeof loadSessions === 'function') loadSessions();
+    if (tab === 'security' && typeof loadSessions === 'function') { loadSessions(); startSessionsPolling(); }
+    else if (tab !== 'security' && typeof stopSessionsPolling === 'function') stopSessionsPolling();
 
     if (!accountNav || accountNav.dataset.accountNavBound) return;
     accountNav.dataset.accountNavBound = 'true';
@@ -4736,6 +4737,11 @@ async function sessionHeartbeat(token) {
 }
 
 const SESSION_DEVICE_SVG = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>';
+const SESSION_PHONE_SVG = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>';
+
+function sessionIconFor(os) {
+    return (os === 'ios' || os === 'android') ? SESSION_PHONE_SVG : SESSION_DEVICE_SVG;
+}
 
 function renderSessionsList(sessions) {
     const list = document.getElementById('sessions-list');
@@ -4756,7 +4762,7 @@ function renderSessionsList(sessions) {
         const isCurrent = sn.deviceId === currentId;
         const row = document.createElement('div');
         row.className = 'sp-session-row';
-        row.innerHTML = `<span class="sp-session-icon">${SESSION_DEVICE_SVG}</span>` +
+        row.innerHTML = `<span class="sp-session-icon">${sessionIconFor(os)}</span>` +
             `<div class="sp-session-info">` +
             `<span class="sp-session-title">${escHtml(browser)} · ${escHtml(os)}${isCurrent ? '<span class="sp-session-badge">this device</span>' : ''}</span>` +
             `<span class="sp-session-meta">${escHtml(meta.join(' · '))}</span>` +
@@ -4765,16 +4771,19 @@ function renderSessionsList(sessions) {
     });
 }
 
-async function loadSessions() {
+async function loadSessions(silent) {
     const list = document.getElementById('sessions-list');
     if (!list) return;
 
-    // 1) paint cached sessions instantly — no "loading…" flash
-    let hasPainted = false;
-    try {
-        const cached = JSON.parse(localStorage.getItem('sentinel-cached-sessions') || 'null');
-        if (Array.isArray(cached) && cached.length) { renderSessionsList(cached); hasPainted = true; }
-    } catch (e) {}
+    // 1) paint cached sessions instantly — no "loading…" flash. On a silent poll
+    //    we keep whatever is already on screen and just refresh in the background.
+    let hasPainted = !!silent;
+    if (!silent) {
+        try {
+            const cached = JSON.parse(localStorage.getItem('sentinel-cached-sessions') || 'null');
+            if (Array.isArray(cached) && cached.length) { renderSessionsList(cached); hasPainted = true; }
+        } catch (e) {}
+    }
 
     const softFail = () => { if (!hasPainted) list.innerHTML = '<div class="sp-sessions-empty">could not load sessions.</div>'; };
 
@@ -4792,6 +4801,22 @@ async function loadSessions() {
     } catch (e) {
         softFail();
     }
+}
+
+let sessionsPollTimer = null;
+function startSessionsPolling() {
+    if (sessionsPollTimer) return;
+    // new devices show up on their own — poll every 12s while the security tab is
+    // open and the page is visible, so no manual refresh is needed.
+    sessionsPollTimer = setInterval(() => {
+        const panel = document.getElementById('account-tab-security');
+        const visible = panel && panel.style.display !== 'none' && document.visibilityState === 'visible';
+        if (visible) loadSessions(true);
+        else stopSessionsPolling();
+    }, 12000);
+}
+function stopSessionsPolling() {
+    if (sessionsPollTimer) { clearInterval(sessionsPollTimer); sessionsPollTimer = null; }
 }
 
 function setupSessions() {
@@ -4825,6 +4850,15 @@ function setupSessions() {
         });
     }
     loadSessions();
+    startSessionsPolling();
+    if (!document.__sessionsVisBound) {
+        document.__sessionsVisBound = true;
+        document.addEventListener('visibilitychange', () => {
+            const panel = document.getElementById('account-tab-security');
+            const onSecurity = panel && panel.style.display !== 'none';
+            if (document.visibilityState === 'visible' && onSecurity) { loadSessions(true); startSessionsPolling(); }
+        });
+    }
 }
 
 function setupSecurity() {
