@@ -782,3 +782,37 @@ html.theme-light .lp-nav .auth-nav-btn:hover::after {
     color: #10275b;
 }
 .lp-net-more:hover .lp-net-more-arrow { transform: translateX(4px); }
+
+/* rotating network marquee — right-moving, grayscale until hovered, pauses on hover */
+.lp-net-marquee {
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
+    mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
+}
+.lp-net-track {
+    display: flex;
+    align-items: center;
+    gap: 0 3.4rem;
+    width: max-content;
+    padding-left: 3.4rem;
+    animation: lpNetScroll 38s linear infinite;
+    animation-direction: reverse;
+    will-change: transform;
+}
+@keyframes lpNetScroll {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+}
+.lp-net-marquee:hover .lp-net-track { animation-play-state: paused; }
+
+.lp-net-track .lp-net-mark {
+    filter: grayscale(1);
+    opacity: 0.55;
+    transition: filter 0.3s ease, opacity 0.3s ease, color 0.3s ease;
+    cursor: default;
+}
+.lp-net-track .lp-net-mark:hover {
+    filter: grayscale(0);
+    opacity: 1;
+    color: #0e2358;
+}
