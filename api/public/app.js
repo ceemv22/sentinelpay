@@ -123,7 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 30);
     }
 
-    btn.addEventListener('click', async () => {
+    if (btn) btn.addEventListener('click', async () => {
         const wallet = input.value.trim();
         if (!/^0x[a-fA-F0-9]{40}$/.test(wallet)) {
             showError('error: invalid eth address hex');
@@ -219,7 +219,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    shareBtn.addEventListener('click', () => {
+    if (shareBtn) shareBtn.addEventListener('click', () => {
         if (!lastResult) return;
         const text = encodeURIComponent(`Wallet [${lastResult.wallet.slice(0, 6)}...] flagged as ${lastResult.category.toUpperCase()} risk (${lastResult.score}/100) by @sentinelpayorg. \n\nProtect your B2B crypto flow: sentinelpay.org`);
         window.open(`https://twitter.com/intent/tweet?text=${text}`, '_blank');
