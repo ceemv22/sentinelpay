@@ -393,3 +393,33 @@ html.theme-light .lp-cta-h2-gradient {
     .lp-net-mark { font-size: 0.8rem; padding: 0.25rem 0.6rem; gap: 0.4rem; }
     .lp-net-mark img { width: 20px; height: 20px; }
 }
+
+/* polished elliptic-style network bar */
+.lp-logo-bar { padding: 3rem 0 3.2rem; background: #fbfcfe; }
+.lp-logo-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 1.1rem 2.6rem;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+.lp-net-mark {
+    padding: 0.2rem 0;
+    font-size: 1.02rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: #7c8aa8;
+    filter: grayscale(1);
+    opacity: 0.62;
+    cursor: default;
+    transition: filter 0.3s ease, opacity 0.3s ease, color 0.3s ease, transform 0.3s ease;
+}
+.lp-net-mark img { width: 28px; height: 28px; border-radius: 50%; }
+.lp-net-mark:hover {
+    filter: grayscale(0);
+    opacity: 1;
+    color: #0e2358;
+    transform: translateY(-2px);
+}
