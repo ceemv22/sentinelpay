@@ -429,22 +429,22 @@ html.theme-light .lp-hero {
     min-height: 0;
     padding: 8.5rem 2rem 5rem;
     background:
-        radial-gradient(ellipse 42% 55% at 8% 78%, rgba(20, 184, 166, 0.28), transparent),
-        radial-gradient(ellipse 36% 48% at 92% 85%, rgba(132, 204, 22, 0.16), transparent),
-        radial-gradient(ellipse 55% 60% at 55% 0%, rgba(16, 55, 45, 0.55), transparent),
-        #0a1210;
+        radial-gradient(ellipse 42% 55% at 8% 78%, rgba(0, 190, 220, 0.16), transparent),
+        radial-gradient(ellipse 36% 48% at 92% 85%, rgba(160, 32, 240, 0.18), transparent),
+        radial-gradient(ellipse 55% 60% at 55% 0%, rgba(22, 18, 60, 0.65), transparent),
+        #06070f;
 }
 html.theme-light .lp-hero .lp-h1 {
     color: #ffffff !important;
     -webkit-text-fill-color: #ffffff !important;
 }
 .lp-h1-grad {
-    background: linear-gradient(100deg, #2dd4bf 10%, #86efac 55%, #bef264 95%) !important;
+    background: linear-gradient(100deg, #00f0ff 10%, #7b6cff 55%, #a020f0 95%) !important;
     -webkit-background-clip: text !important;
     background-clip: text !important;
     -webkit-text-fill-color: transparent !important;
 }
-html.theme-light .lp-hero .lp-hero-sub { color: #b8c7c2 !important; }
+html.theme-light .lp-hero .lp-hero-sub { color: #b9bfd6 !important; }
 html.theme-light .lp-hero .lp-status-pill {
     background: rgba(255, 255, 255, 0.06) !important;
     border-color: rgba(255, 255, 255, 0.14) !important;
@@ -456,7 +456,7 @@ html.theme-light .lp-hero .lp-cta-primary,
 html.theme-light .lp-hero .lp-cta-ghost {
     background: #ffffff !important;
     border: 1px solid #ffffff !important;
-    color: #0a1210 !important;
+    color: #06070f !important;
     font-weight: 600;
     box-shadow: none !important;
 }
@@ -467,8 +467,8 @@ html.theme-light .lp-hero .lp-cta-ghost::after {
 }
 html.theme-light .lp-hero .lp-cta-primary:hover,
 html.theme-light .lp-hero .lp-cta-ghost:hover {
-    background: #e8f5f0 !important;
-    border-color: #e8f5f0 !important;
+    background: #ebe9fa !important;
+    border-color: #ebe9fa !important;
     transform: translateY(-1px);
 }
 html.theme-light .lp-hero .lp-hero-ctas { margin-top: 2.2rem; }
@@ -488,9 +488,9 @@ html.theme-light .lp-hero .lp-hero-inner { position: relative; z-index: 1; }
     width: 900px; height: 900px;
     left: -22%; bottom: -55%;
     background: radial-gradient(circle,
-        rgba(13, 148, 136, 0.50) 0%,
-        rgba(13, 148, 136, 0.22) 30%,
-        rgba(13, 148, 136, 0.07) 52%,
+        rgba(0, 190, 220, 0.42) 0%,
+        rgba(0, 190, 220, 0.18) 30%,
+        rgba(0, 190, 220, 0.06) 52%,
         transparent 70%);
     animation: lpOrb1 22s ease-in-out infinite;
 }
@@ -498,9 +498,9 @@ html.theme-light .lp-hero .lp-hero-inner { position: relative; z-index: 1; }
     width: 780px; height: 780px;
     right: -18%; bottom: -45%;
     background: radial-gradient(circle,
-        rgba(101, 163, 13, 0.34) 0%,
-        rgba(101, 163, 13, 0.14) 32%,
-        rgba(101, 163, 13, 0.05) 54%,
+        rgba(160, 32, 240, 0.36) 0%,
+        rgba(160, 32, 240, 0.15) 32%,
+        rgba(160, 32, 240, 0.05) 54%,
         transparent 72%);
     animation: lpOrb2 27s ease-in-out infinite;
 }
@@ -508,8 +508,8 @@ html.theme-light .lp-hero .lp-hero-inner { position: relative; z-index: 1; }
     width: 700px; height: 700px;
     left: 28%; top: -48%;
     background: radial-gradient(circle,
-        rgba(45, 212, 191, 0.26) 0%,
-        rgba(45, 212, 191, 0.10) 35%,
+        rgba(80, 60, 220, 0.30) 0%,
+        rgba(80, 60, 220, 0.12) 35%,
         transparent 68%);
     animation: lpOrb3 30s ease-in-out infinite;
 }
@@ -517,8 +517,8 @@ html.theme-light .lp-hero .lp-hero-inner { position: relative; z-index: 1; }
     width: 460px; height: 460px;
     left: 55%; bottom: -25%;
     background: radial-gradient(circle,
-        rgba(94, 234, 212, 0.16) 0%,
-        rgba(94, 234, 212, 0.06) 40%,
+        rgba(120, 100, 255, 0.18) 0%,
+        rgba(120, 100, 255, 0.07) 40%,
         transparent 70%);
     animation: lpOrb4 18s ease-in-out infinite;
 }
@@ -549,10 +549,10 @@ html.theme-light .lp-hero .lp-hero-inner { position: relative; z-index: 1; }
 
 /* navbar matches the dark hero */
 html.theme-light .lp-nav {
-    background: rgba(8, 16, 13, 0.82) !important;
+    background: rgba(7, 8, 18, 0.82) !important;
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(45, 212, 191, 0.10) !important;
+    border-bottom: 1px solid rgba(123, 108, 255, 0.14) !important;
 }
 html.theme-light .lp-nav .lp-logo-text { color: #ffffff !important; }
 html.theme-light .lp-nav .lp-nav-link,
@@ -562,14 +562,14 @@ html.theme-light .lp-nav .lp-nav-dd-btn:hover { color: #ffffff !important; }
 html.theme-light .lp-nav .lp-nav-chevron { color: rgba(255, 255, 255, 0.45); }
 
 html.theme-light .lp-nav .lp-nav-dd {
-    background: rgba(10, 18, 16, 0.97) !important;
-    border: 1px solid rgba(45, 212, 191, 0.14) !important;
+    background: rgba(9, 10, 22, 0.97) !important;
+    border: 1px solid rgba(123, 108, 255, 0.16) !important;
     box-shadow: 0 14px 40px rgba(0, 0, 0, 0.45) !important;
 }
 html.theme-light .lp-nav .lp-nav-dd-item { color: rgba(255, 255, 255, 0.7) !important; }
 html.theme-light .lp-nav .lp-nav-dd-item:hover {
     color: #ffffff !important;
-    background: rgba(45, 212, 191, 0.08) !important;
+    background: rgba(123, 108, 255, 0.10) !important;
 }
 
 html.theme-light .lp-nav .auth-nav-btn:not(.lp-btn-solid) {
@@ -587,19 +587,19 @@ html.theme-light .lp-nav .lp-btn-solid,
 html.theme-light .lp-nav .lp-btn-solid.auth-nav-btn {
     background: #ffffff !important;
     border-color: #ffffff !important;
-    color: #0a1210 !important;
+    color: #06070f !important;
 }
 html.theme-light .lp-nav .lp-btn-solid:hover,
 html.theme-light .lp-nav .lp-btn-solid.auth-nav-btn:hover {
-    background: #d9f5ec !important;
-    border-color: #d9f5ec !important;
-    box-shadow: 0 4px 16px rgba(45, 212, 191, 0.25) !important;
+    background: #e6e2fb !important;
+    border-color: #e6e2fb !important;
+    box-shadow: 0 4px 16px rgba(123, 108, 255, 0.3) !important;
 }
 
 /* hamburger + mobile menu in the same dark tone */
 html.theme-light .lp-hamburger .lp-hb-line { background: rgba(255, 255, 255, 0.85) !important; }
 html.theme-light .lp-mobile-menu {
-    background: rgba(8, 16, 13, 0.98) !important;
+    background: rgba(7, 8, 18, 0.98) !important;
 }
 html.theme-light .lp-mobile-menu .lp-mobile-link,
 html.theme-light .lp-mobile-menu .lp-mm-acc-btn { color: rgba(255, 255, 255, 0.8) !important; }
@@ -637,7 +637,7 @@ html.theme-light .lp-nav .lp-nav-dd.lp-mega .lp-mega-item {
     transition: background 0.15s ease;
 }
 html.theme-light .lp-nav .lp-nav-dd.lp-mega .lp-mega-item:hover {
-    background: rgba(45, 212, 191, 0.08);
+    background: rgba(123, 108, 255, 0.10);
 }
 html.theme-light .lp-nav .lp-mega-title {
     font-size: 0.86rem;
@@ -645,7 +645,7 @@ html.theme-light .lp-nav .lp-mega-title {
     color: rgba(255, 255, 255, 0.92);
     text-transform: capitalize;
 }
-html.theme-light .lp-nav .lp-mega-item:hover .lp-mega-title { color: #5eead4; }
+html.theme-light .lp-nav .lp-mega-item:hover .lp-mega-title { color: #9d8cff; }
 html.theme-light .lp-nav .lp-mega-desc {
     font-size: 0.72rem;
     line-height: 1.45;
