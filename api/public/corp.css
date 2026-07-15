@@ -672,6 +672,8 @@ html.theme-light .lp-nav .auth-nav-btn:hover::after {
     object-fit: contain;
     flex-shrink: 0;
 }
+/* solana ships as a filled square; round it to a coin so it matches the others */
+.lp-net-mark img[alt="solana"] { border-radius: 50%; }
 .lp-net-mark:hover {
     filter: grayscale(0);
     opacity: 1;
