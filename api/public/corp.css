@@ -1104,3 +1104,44 @@ html.theme-light .lp-role-cta-btn:hover {
 @media (min-width: 861px) {
     .lp-role-feature { height: 340px !important; min-height: 0 !important; }
 }
+
+/* ===== role card: half width (room for future quotes), hero-matched bg, inline centered icon ===== */
+@media (min-width: 861px) {
+    html.theme-light .lp-role-panel.active {
+        display: grid !important;
+        grid-template-columns: 1.12fr 0.88fr;
+        gap: 3rem;
+        align-items: stretch;
+    }
+    .lp-role-feature { height: 340px !important; }
+}
+.lp-role-feature {
+    display: grid !important;
+    grid-template-columns: 1fr auto !important;
+    align-items: center;
+    gap: 1.8rem;
+    border: 1px solid rgba(0, 240, 255, 0.1) !important;
+    background:
+        radial-gradient(ellipse 72% 82% at 6% 94%, rgba(0, 190, 220, 0.22), transparent 60%),
+        radial-gradient(ellipse 62% 82% at 98% 102%, rgba(160, 32, 240, 0.26), transparent 60%),
+        radial-gradient(ellipse 55% 60% at 60% -5%, rgba(24, 20, 66, 0.55), transparent 70%),
+        #06070f !important;
+}
+.lp-role-badge {
+    position: static !important;
+    justify-self: end;
+    align-self: center;
+    right: auto !important;
+    bottom: auto !important;
+    width: 108px;
+    height: 108px;
+    background: linear-gradient(135deg, #00f0ff, #a020f0) !important;
+    box-shadow: 0 12px 30px -6px rgba(160, 32, 240, 0.5);
+}
+.lp-role-badge svg { width: 48px; height: 48px; }
+
+@media (max-width: 860px) {
+    .lp-role-feature { grid-template-columns: 1fr; }
+    .lp-role-badge { justify-self: start; width: 84px; height: 84px; }
+    .lp-role-badge svg { width: 38px; height: 38px; }
+}
