@@ -1041,3 +1041,61 @@ html.theme-light .lp-role-aside li::before {
     html.theme-light .lp-role-panel.active { grid-template-columns: 1fr !important; gap: 2rem; }
     .lp-role-badge { right: 1.6rem; bottom: 1.6rem; }
 }
+
+/* card full-width again (checklist removed) */
+html.theme-light .lp-role-panel.active { display: block !important; }
+.lp-role-feature { min-height: 300px; }
+.lp-role-badge {
+    position: absolute !important;
+    right: 2.6rem;
+    bottom: 2.6rem;
+}
+
+/* dropdown pill: sheen sweep + soft glow on hover */
+.lp-roles-dd-btn {
+    position: relative;
+    overflow: hidden;
+    transition: background 0.25s ease, box-shadow 0.3s ease, transform 0.2s ease;
+}
+.lp-roles-dd-btn::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -85%;
+    width: 55%;
+    height: 100%;
+    background: linear-gradient(105deg, transparent, rgba(123, 108, 255, 0.55) 50%, rgba(0, 240, 255, 0.35) 62%, transparent);
+    transform: skewX(-18deg);
+    pointer-events: none;
+}
+.lp-roles-dd-btn:hover {
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.38);
+    transform: translateY(-1px);
+}
+.lp-roles-dd.open .lp-roles-dd-btn { transform: none; }
+.lp-roles-dd-btn:hover::after { left: 135%; transition: left 0.6s cubic-bezier(0.22, 1, 0.36, 1); }
+
+/* learn more: sheen sweep + glow, arrow keeps sliding */
+.lp-role-cta-btn {
+    position: relative;
+    overflow: hidden;
+    transition: box-shadow 0.3s ease, transform 0.2s ease, background 0.25s ease;
+}
+.lp-role-cta-btn::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -85%;
+    width: 55%;
+    height: 100%;
+    background: linear-gradient(105deg, transparent, rgba(123, 108, 255, 0.4) 50%, rgba(0, 240, 255, 0.3) 62%, transparent);
+    transform: skewX(-18deg);
+    pointer-events: none;
+}
+html.theme-light .lp-role-cta-btn:hover {
+    background: #ffffff;
+    box-shadow: 0 10px 28px -8px rgba(123, 108, 255, 0.6);
+}
+.lp-role-cta-btn:hover::after { left: 135%; transition: left 0.6s cubic-bezier(0.22, 1, 0.36, 1); }
+.lp-role-cta-btn span { display: inline-block; transition: transform 0.25s ease; position: relative; z-index: 1; }
+.lp-role-cta-btn:hover span { transform: translateX(5px); }
