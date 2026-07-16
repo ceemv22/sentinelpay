@@ -1099,3 +1099,8 @@ html.theme-light .lp-role-cta-btn:hover {
 .lp-role-cta-btn:hover::after { left: 135%; transition: left 0.6s cubic-bezier(0.22, 1, 0.36, 1); }
 .lp-role-cta-btn span { display: inline-block; transition: transform 0.25s ease; position: relative; z-index: 1; }
 .lp-role-cta-btn:hover span { transform: translateX(5px); }
+
+/* fixed card dimensions so switching industry never resizes it (desktop) */
+@media (min-width: 861px) {
+    .lp-role-feature { height: 340px !important; min-height: 0 !important; }
+}
