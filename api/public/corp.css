@@ -986,3 +986,58 @@ html.theme-light .lp-roles-selector-label { font-size: 0.95rem; color: #5b6b8c; 
 }
 .lp-roles-dd-opt:hover { background: #f2f4fb; color: #0e2358; }
 .lp-roles-dd-opt.active { background: #eef1fb; color: #2563eb; font-weight: 600; }
+
+/* ===== built-for-you: true elliptic two-column (dark card left + capability list right) ===== */
+html.theme-light .lp-role-panel.active {
+    display: grid !important;
+    grid-template-columns: 1.05fr 0.82fr;
+    gap: 3.2rem;
+    align-items: center;
+}
+.lp-role-feature {
+    grid-template-columns: 1fr !important;
+    min-height: 320px;
+}
+.lp-role-badge {
+    position: absolute !important;
+    right: 2.4rem;
+    bottom: 2.4rem;
+    justify-self: auto !important;
+}
+.lp-role-aside { list-style: none; margin: 0; padding: 0; }
+html.theme-light .lp-role-aside li {
+    position: relative;
+    padding-left: 2.1rem;
+    margin-bottom: 1.2rem;
+    font-size: 1.02rem;
+    line-height: 1.5;
+    color: #16244a;
+    font-weight: 500;
+}
+html.theme-light .lp-role-aside li:last-child { margin-bottom: 0; }
+html.theme-light .lp-role-aside li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 2px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #00f0ff, #a020f0);
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") center / 13px no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") center / 13px no-repeat;
+}
+
+/* bolder brand highlight on "scale your" */
+.lp-hl {
+    background: linear-gradient(90deg, #00f0ff, #7b6cff, #a020f0) !important;
+    color: #06070f !important;
+    -webkit-text-fill-color: #06070f !important;
+    padding: 0.02em 0.16em !important;
+    border-radius: 6px !important;
+}
+
+@media (max-width: 900px) {
+    html.theme-light .lp-role-panel.active { grid-template-columns: 1fr !important; gap: 2rem; }
+    .lp-role-badge { right: 1.6rem; bottom: 1.6rem; }
+}
