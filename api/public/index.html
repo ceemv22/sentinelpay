@@ -370,7 +370,7 @@
             border-color: rgba(255, 255, 255, 1);
         }
     </style>
-    <link rel="stylesheet" href="/corp.css?v=33">
+    <link rel="stylesheet" href="/corp.css?v=34">
 </head>
 <body class="lp-body">
     <div id="sp-loader"><svg class="spl-logo-svg" viewBox="0 0 120 120" fill="none"><defs><linearGradient id="spl-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00ffff"/><stop offset="100%" stop-color="#a020f0"/></linearGradient><filter id="spl-glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3.5" result="coloredBlur"/><feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g filter="url(#spl-glow)" fill="none" stroke="url(#spl-grad)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z"/><g class="spl-eye-blink"><path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z"/><circle cx="60" cy="60" r="6"/><circle cx="60" cy="60" r="2" fill="url(#spl-grad)" stroke="none"/></g><path d="M60 15 V 30" stroke-width="2" opacity="0.6"/><path d="M60 90 V 105" stroke-width="2" opacity="0.6"/></g></svg></div>
@@ -700,15 +700,21 @@
         <div class="lp-section-inner">
             <p class="lp-eyebrow">built for you</p>
             <h2 class="lp-h2"><span class="lp-hl">scale your</span> blockchain operations effectively,<br>no matter your role in the ecosystem</h2>
-            <div class="lp-roles-tabs" id="lp-roles-tabs">
-                <button class="lp-role-tab active" data-role="fi">financial institutions</button>
-                <button class="lp-role-tab" data-role="issuers">stablecoin &amp; token issuers</button>
-                <button class="lp-role-tab" data-role="cex">centralized exchanges</button>
-                <button class="lp-role-tab" data-role="psp">payment services</button>
-                <button class="lp-role-tab" data-role="defi">decentralized finance</button>
-                <button class="lp-role-tab" data-role="network">network operators</button>
-                <button class="lp-role-tab" data-role="law">law enforcement</button>
-                <button class="lp-role-tab" data-role="reg">regulators</button>
+            <div class="lp-roles-selector">
+                <span class="lp-roles-selector-label">sentinelpay for</span>
+                <div class="lp-roles-dd" id="lp-roles-dd">
+                    <button class="lp-roles-dd-btn" id="lp-roles-dd-btn"><span class="lp-roles-dd-label">financial institutions</span><svg class="lp-roles-dd-chev" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+                    <div class="lp-roles-dd-menu" id="lp-roles-dd-menu">
+                        <button class="lp-roles-dd-opt active" data-role="fi">financial institutions</button>
+                        <button class="lp-roles-dd-opt" data-role="issuers">stablecoin &amp; token issuers</button>
+                        <button class="lp-roles-dd-opt" data-role="cex">centralized exchanges</button>
+                        <button class="lp-roles-dd-opt" data-role="psp">payment services</button>
+                        <button class="lp-roles-dd-opt" data-role="defi">decentralized finance</button>
+                        <button class="lp-roles-dd-opt" data-role="network">network operators</button>
+                        <button class="lp-roles-dd-opt" data-role="law">law enforcement</button>
+                        <button class="lp-roles-dd-opt" data-role="reg">regulators</button>
+                    </div>
+                </div>
             </div>
             <div class="lp-roles-panels" id="lp-roles-panels">
                 <div class="lp-role-panel active" data-role="fi">
@@ -1419,16 +1425,28 @@
             }, { threshold: 0.3 });
             meters.forEach(function(el) { meterObs.observe(el); });
 
-            var roleTabs = document.querySelectorAll('.lp-role-tab');
-            roleTabs.forEach(function(tab) {
-                tab.addEventListener('click', function() {
-                    var role = tab.getAttribute('data-role');
-                    roleTabs.forEach(function(t) { t.classList.toggle('active', t === tab); });
-                    document.querySelectorAll('.lp-role-panel').forEach(function(p) {
-                        p.classList.toggle('active', p.getAttribute('data-role') === role);
+            var rolesDd = document.getElementById('lp-roles-dd');
+            var rolesDdBtn = document.getElementById('lp-roles-dd-btn');
+            var rolesDdMenu = document.getElementById('lp-roles-dd-menu');
+            if (rolesDd && rolesDdBtn && rolesDdMenu) {
+                var rolesLabel = rolesDdBtn.querySelector('.lp-roles-dd-label');
+                rolesDdBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    rolesDd.classList.toggle('open');
+                });
+                document.addEventListener('click', function() { rolesDd.classList.remove('open'); });
+                rolesDdMenu.querySelectorAll('.lp-roles-dd-opt').forEach(function(opt) {
+                    opt.addEventListener('click', function() {
+                        var role = opt.getAttribute('data-role');
+                        if (rolesLabel) rolesLabel.innerHTML = opt.innerHTML;
+                        rolesDdMenu.querySelectorAll('.lp-roles-dd-opt').forEach(function(o) { o.classList.toggle('active', o === opt); });
+                        document.querySelectorAll('.lp-role-panel').forEach(function(p) {
+                            p.classList.toggle('active', p.getAttribute('data-role') === role);
+                        });
+                        rolesDd.classList.remove('open');
                     });
                 });
-            });
+            }
 
             var MAX_WAIT = 2200;
             var fallbackTimer = setTimeout(function() {

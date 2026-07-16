@@ -922,3 +922,67 @@ html.theme-light .lp-nav .auth-nav-btn:hover::after {
     }
     html.theme-light .lp-nav .lp-mega-promo:hover .lp-mega-cta-arrow { transform: translateX(4px); }
 }
+
+/* role selector dropdown pill (replaces tabs, matches elliptic screenshot) */
+.lp-roles-selector {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    margin: 2.2rem 0 2rem;
+    flex-wrap: wrap;
+}
+html.theme-light .lp-roles-selector-label { font-size: 0.95rem; color: #5b6b8c; }
+.lp-roles-dd { position: relative; }
+.lp-roles-dd-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: #0e2358;
+    color: #ffffff;
+    border: none;
+    border-radius: 50px;
+    padding: 0.6rem 1.2rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+.lp-roles-dd-btn:hover { background: #17307a; }
+.lp-roles-dd-chev { width: 15px; height: 15px; transition: transform 0.25s ease; }
+.lp-roles-dd.open .lp-roles-dd-chev { transform: rotate(180deg); }
+.lp-roles-dd-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    min-width: 260px;
+    background: #ffffff;
+    border: 1px solid rgba(14, 35, 88, 0.1);
+    border-radius: 14px;
+    box-shadow: 0 16px 40px rgba(14, 35, 88, 0.14);
+    padding: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    opacity: 0;
+    transform: translateY(-6px);
+    pointer-events: none;
+    transition: opacity 0.18s ease, transform 0.18s ease;
+    z-index: 20;
+}
+.lp-roles-dd.open .lp-roles-dd-menu { opacity: 1; transform: translateY(0); pointer-events: auto; }
+.lp-roles-dd-opt {
+    text-align: left;
+    background: none;
+    border: none;
+    border-radius: 8px;
+    padding: 0.6rem 0.9rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #33456b;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+.lp-roles-dd-opt:hover { background: #f2f4fb; color: #0e2358; }
+.lp-roles-dd-opt.active { background: #eef1fb; color: #2563eb; font-weight: 600; }
