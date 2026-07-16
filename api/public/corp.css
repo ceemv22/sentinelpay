@@ -159,33 +159,107 @@ html.theme-light .lp-diag-node-sub { color: #7181a0; }
 
 .lp-roles-tabs { justify-content: flex-start; }
 
-.lp-roles-panels {
+.lp-roles-panels,
+html.theme-light .lp-roles-panels {
     max-width: none;
     min-height: 0;
-    padding: 2.4rem 2.6rem;
+    padding: 0;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    overflow: visible;
 }
-.lp-role-panel-grid {
+
+.lp-roles .lp-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+.lp-roles .lp-eyebrow::before {
+    content: '';
+    width: 3px;
+    height: 14px;
+    border-radius: 2px;
+    background: #2563eb;
+}
+
+.lp-hl {
+    background: linear-gradient(120deg, rgba(37, 99, 235, 0.16), rgba(56, 189, 248, 0.18));
+    color: #0e2358;
+    -webkit-text-fill-color: #0e2358;
+    padding: 0 0.14em;
+    border-radius: 6px;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+}
+
+.lp-role-feature {
+    position: relative;
     display: grid;
-    grid-template-columns: 1.3fr 1fr;
-    gap: 2.5rem;
-    align-items: start;
+    grid-template-columns: 1.55fr 1fr;
+    align-items: center;
+    gap: 2rem;
+    min-height: 300px;
+    padding: 3rem 3.2rem;
+    border-radius: 22px;
+    overflow: hidden;
+    border: 1px solid rgba(120, 160, 255, 0.14);
+    box-shadow: 0 24px 60px -28px rgba(10, 24, 54, 0.7);
+    background:
+        radial-gradient(circle at 1px 1px, rgba(120, 160, 255, 0.09) 1px, transparent 0) 0 0 / 26px 26px,
+        radial-gradient(ellipse 80% 120% at 86% 18%, rgba(37, 99, 235, 0.24), transparent 60%),
+        linear-gradient(150deg, #0e2358 0%, #0a1836 100%);
 }
-.lp-role-quote {
-    border-left: 3px solid #2563eb;
-    padding: 0.4rem 0 0.4rem 1.4rem;
+
+html.theme-light .lp-role-feature .lp-role-title {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    font-size: 1.6rem;
+    margin: 0 0 0.9rem;
 }
-html.theme-light .lp-role-quote-text {
-    font-size: 0.95rem;
-    line-height: 1.6;
-    color: #16244a;
-    margin: 0 0 0.8rem;
-    font-weight: 500;
+html.theme-light .lp-role-feature .lp-role-desc {
+    color: rgba(214, 224, 245, 0.74) !important;
+    font-size: 0.92rem;
+    line-height: 1.72;
+    max-width: 42ch;
+    margin: 0 0 1.9rem;
 }
-html.theme-light .lp-role-quote-attr {
-    font-size: 0.72rem;
-    color: #8494b3;
-    margin: 0;
+
+.lp-role-cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-transform: lowercase;
+    text-decoration: none;
+    color: #0e2358;
+    background: #ffffff;
+    padding: 0.8rem 1.5rem;
+    border-radius: 10px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
+.lp-role-cta-btn span { transition: transform 0.25s ease; }
+.lp-role-cta-btn:hover {
+    background: #eaf1ff;
+    box-shadow: 0 10px 26px -10px rgba(120, 170, 255, 0.5);
+}
+.lp-role-cta-btn:hover span { transform: translateX(4px); }
+
+.lp-role-badge {
+    justify-self: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 128px;
+    height: 128px;
+    border-radius: 50%;
+    color: #ffffff;
+    background: linear-gradient(150deg, #2563eb 0%, #38bdf8 100%);
+    box-shadow: 0 18px 44px -14px rgba(37, 99, 235, 0.65), inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+}
+.lp-role-badge svg { width: 54px; height: 54px; }
 
 .lp-stats-band { padding: 3.4rem 0; }
 html.theme-light .lp-stats-band { background: #0e2358; }
@@ -313,7 +387,11 @@ html.theme-light .lp-footer { background: #f6f8fc !important; }
 @media (max-width: 1000px) {
     .lp-sol-grid, .lp-testi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .lp-insight-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .lp-role-panel-grid { grid-template-columns: 1fr; gap: 1.4rem; }
+    .lp-role-feature { grid-template-columns: 1fr; gap: 1.6rem; padding: 2.2rem 2rem; text-align: center; }
+    .lp-role-feature-body { order: 2; }
+    .lp-role-badge { order: 1; width: 92px; height: 92px; }
+    .lp-role-badge svg { width: 40px; height: 40px; }
+    html.theme-light .lp-role-feature .lp-role-desc { max-width: none; margin-left: auto; margin-right: auto; }
 }
 @media (max-width: 560px) {
     .lp-sol-grid, .lp-testi-grid, .lp-insight-grid { grid-template-columns: 1fr; }
