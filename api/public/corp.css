@@ -563,39 +563,7 @@ html.theme-light .lp-nav .lp-nav-dd-btn {
 }
 html.theme-light .lp-nav .lp-nav-chevron { width: 11px; height: 11px; }
 
-/* elliptic-style mega dropdown */
-html.theme-light .lp-nav .lp-nav-dd.lp-mega {
-    width: 620px;
-    display: grid !important;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.35rem 0.8rem;
-    padding: 1.1rem;
-    border-radius: 14px;
-}
-html.theme-light .lp-nav .lp-nav-dd.lp-mega .lp-mega-item {
-    display: flex;
-    flex-direction: column;
-    gap: 0.22rem;
-    padding: 0.7rem 0.85rem;
-    border-radius: 10px;
-    text-decoration: none;
-    transition: background 0.15s ease;
-}
-html.theme-light .lp-nav .lp-nav-dd.lp-mega .lp-mega-item:hover {
-    background: rgba(123, 108, 255, 0.10);
-}
-html.theme-light .lp-nav .lp-mega-title {
-    font-size: 0.86rem;
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.92);
-    text-transform: capitalize;
-}
-html.theme-light .lp-nav .lp-mega-item:hover .lp-mega-title { color: #9d8cff; }
-html.theme-light .lp-nav .lp-mega-desc {
-    font-size: 0.72rem;
-    line-height: 1.45;
-    color: rgba(255, 255, 255, 0.45);
-}
+
 
 /* nav auth buttons: no lift on hover — light sweep instead */
 html.theme-light .lp-nav .auth-nav-btn {
@@ -703,3 +671,176 @@ html.theme-light .lp-nav .auth-nav-btn:hover::after {
     .lp-net-mark img { width: 22px; height: 22px; }
 }
 
+
+/* ============ elliptic-style full-width mega dropdown (desktop only) ============ */
+@media (min-width: 1281px) {
+    /* keep hover alive when moving from the button down into the full-width panel */
+    html.theme-light .lp-nav .lp-nav-dd-wrap {
+        height: 64px;
+        display: flex;
+        align-items: center;
+    }
+    /* full-width light panel pinned under the nav */
+    html.theme-light .lp-nav .lp-nav-dd.lp-mega {
+        position: fixed;
+        top: 64px;
+        left: 0;
+        right: 0;
+        width: 100%;
+        min-width: 0;
+        transform: translateY(-10px) !important;
+        background: #ffffff !important;
+        border: none !important;
+        border-bottom: 1px solid rgba(14, 35, 88, 0.08) !important;
+        border-radius: 0 !important;
+        box-shadow: 0 26px 50px rgba(14, 35, 88, 0.13) !important;
+        padding: 0 !important;
+        display: block !important;
+        overflow: visible !important;
+    }
+    html.theme-light .lp-nav .lp-nav-dd-wrap:hover .lp-nav-dd.lp-mega {
+        transform: translateY(0) !important;
+    }
+    /* invisible bridge covering the seam so hover never drops */
+    html.theme-light .lp-nav .lp-nav-dd.lp-mega::before {
+        content: '';
+        position: absolute;
+        top: -16px; left: 0; right: 0; height: 16px;
+    }
+
+    html.theme-light .lp-nav .lp-mega-inner {
+        display: grid;
+        grid-template-columns: 260px 1fr 300px;
+        gap: 2.6rem;
+        max-width: 1220px;
+        margin: 0 auto;
+        padding: 2.4rem 2rem 2.6rem;
+        align-items: start;
+    }
+
+    /* left rail */
+    html.theme-light .lp-nav .lp-mega-rail {
+        border-right: 1px solid rgba(14, 35, 88, 0.08);
+        padding-right: 2rem;
+    }
+    html.theme-light .lp-nav .lp-mega-eyebrow {
+        display: block;
+        font-size: 0.68rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: #2563eb;
+        font-weight: 700;
+        margin-bottom: 0.7rem;
+    }
+    html.theme-light .lp-nav .lp-mega-heading {
+        font-size: 1.15rem;
+        line-height: 1.3;
+        font-weight: 700;
+        color: #0e2358;
+        margin: 0 0 0.7rem;
+        text-transform: none;
+    }
+    html.theme-light .lp-nav .lp-mega-rail-desc {
+        font-size: 0.82rem;
+        line-height: 1.6;
+        color: #5b6b8c;
+        margin: 0 0 1.1rem;
+    }
+    html.theme-light .lp-nav .lp-mega-rail-cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        font-size: 0.82rem;
+        font-weight: 600;
+        color: #2563eb;
+        text-decoration: none;
+    }
+    .lp-mega-cta-arrow { display: inline-block; transition: transform 0.2s ease; }
+    html.theme-light .lp-nav .lp-mega-rail-cta:hover .lp-mega-cta-arrow { transform: translateX(4px); }
+
+    /* middle grid of items */
+    html.theme-light .lp-nav .lp-mega-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.2rem 1.2rem;
+        align-content: start;
+    }
+    html.theme-light .lp-nav .lp-mega-item {
+        display: flex;
+        flex-direction: column;
+        gap: 0.2rem;
+        padding: 0.7rem 0.9rem;
+        border-radius: 10px;
+        text-decoration: none;
+        transition: background 0.15s ease;
+    }
+    html.theme-light .lp-nav .lp-mega-item:hover { background: #f2f4fb; }
+    html.theme-light .lp-nav .lp-mega-title {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #0e2358;
+        text-transform: none;
+    }
+    html.theme-light .lp-nav .lp-mega-item:hover .lp-mega-title { color: #2563eb; }
+    html.theme-light .lp-nav .lp-mega-desc {
+        font-size: 0.75rem;
+        line-height: 1.45;
+        color: #7181a0;
+    }
+
+    /* right promo card */
+    html.theme-light .lp-nav .lp-mega-promo {
+        display: flex;
+        flex-direction: column;
+        background: linear-gradient(160deg, #0e1230, #1a1350);
+        border-radius: 16px;
+        padding: 1.5rem;
+        text-decoration: none;
+        position: relative;
+        overflow: hidden;
+        min-height: 210px;
+    }
+    html.theme-light .lp-nav .lp-mega-promo::after {
+        content: '';
+        position: absolute;
+        width: 220px; height: 220px;
+        right: -70px; top: -70px;
+        background: radial-gradient(circle, rgba(123, 108, 255, 0.45), transparent 70%);
+        pointer-events: none;
+    }
+    html.theme-light .lp-nav .lp-mega-promo-visual {
+        width: 46px; height: 46px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #00f0ff, #a020f0);
+        display: flex; align-items: center; justify-content: center;
+        margin-bottom: 1rem;
+        position: relative; z-index: 1;
+    }
+    html.theme-light .lp-nav .lp-mega-promo-visual svg { width: 26px; height: 26px; }
+    html.theme-light .lp-nav .lp-mega-promo-title {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #ffffff;
+        margin-bottom: 0.4rem;
+        position: relative; z-index: 1;
+        text-transform: none;
+    }
+    html.theme-light .lp-nav .lp-mega-promo-desc {
+        font-size: 0.8rem;
+        line-height: 1.5;
+        color: rgba(255, 255, 255, 0.6);
+        margin-bottom: 1rem;
+        position: relative; z-index: 1;
+    }
+    html.theme-light .lp-nav .lp-mega-promo-cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #7bdcff;
+        margin-top: auto;
+        position: relative; z-index: 1;
+    }
+    html.theme-light .lp-nav .lp-mega-promo:hover .lp-mega-cta-arrow { transform: translateX(4px); }
+}
