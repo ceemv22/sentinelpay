@@ -555,7 +555,7 @@ html.theme-light .lp-mobile-menu .lp-mobile-divider { background: rgba(255, 255,
 html.theme-light .lp-nav .lp-nav-links { gap: 0.9rem; }
 html.theme-light .lp-nav .lp-nav-link,
 html.theme-light .lp-nav .lp-nav-dd-btn {
-    text-transform: capitalize !important;
+    text-transform: lowercase !important;
     font-size: 0.95rem !important;
     font-weight: 500 !important;
     letter-spacing: 0.005em;
