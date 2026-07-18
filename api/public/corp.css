@@ -1219,3 +1219,92 @@ html.theme-light .lp-role-feature .lp-role-desc {
     margin: 0 0 1.6rem !important;
     max-width: 46ch;
 }
+
+/* ============ elliptic-style stats section (our colors) ============ */
+html.theme-light .lp-statsx {
+    position: relative;
+    overflow: hidden;
+    background:
+        radial-gradient(ellipse 50% 60% at 12% 20%, rgba(0, 190, 220, 0.14), transparent 60%),
+        radial-gradient(ellipse 50% 60% at 90% 85%, rgba(160, 32, 240, 0.16), transparent 60%),
+        #070912;
+    padding: 5.5rem 0;
+}
+.lp-statsx-bg {
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle at 1px 1px, rgba(120, 160, 255, 0.12) 1px, transparent 0);
+    background-size: 30px 30px;
+    -webkit-mask-image: radial-gradient(ellipse 70% 70% at 50% 45%, #000 30%, transparent 75%);
+    mask-image: radial-gradient(ellipse 70% 70% at 50% 45%, #000 30%, transparent 75%);
+    opacity: 0.6;
+    pointer-events: none;
+}
+html.theme-light .lp-statsx .lp-section-inner { position: relative; z-index: 1; }
+html.theme-light .lp-statsx-heading {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.55rem;
+    font-weight: 700;
+    line-height: 1.4;
+    color: #ffffff;
+    -webkit-text-fill-color: #ffffff;
+    max-width: 640px;
+    margin: 0 0 2.6rem;
+    text-transform: none;
+}
+.lp-statsx-hl {
+    background: linear-gradient(100deg, #00f0ff, #7b6cff 55%, #a020f0);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+}
+.lp-statsx-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1.3rem;
+}
+.lp-statsx-card {
+    background: rgba(255, 255, 255, 0.025) !important;
+    border: 1px solid rgba(120, 160, 255, 0.12);
+    border-radius: 18px;
+    padding: 2.2rem 1.6rem 2rem;
+    text-align: center;
+    transition: border-color 0.25s ease, transform 0.25s ease, background 0.25s ease;
+}
+.lp-statsx-card:hover {
+    border-color: rgba(0, 240, 255, 0.35);
+    background: rgba(0, 240, 255, 0.04) !important;
+    transform: translateY(-4px);
+}
+.lp-statsx-icon { margin-bottom: 1.1rem; }
+.lp-statsx-icon svg { width: 34px; height: 34px; }
+.lp-statsx-num {
+    font-family: 'Inter', sans-serif;
+    font-size: 2.9rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    background: linear-gradient(120deg, #00f0ff, #7b6cff 55%, #a020f0);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    font-variant-numeric: tabular-nums;
+}
+html.theme-light .lp-statsx-label {
+    margin-top: 0.7rem;
+    font-size: 0.82rem;
+    line-height: 1.45;
+    color: rgba(200, 212, 240, 0.62) !important;
+    text-transform: lowercase;
+}
+
+@media (max-width: 860px) {
+    .lp-statsx-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+    html.theme-light .lp-statsx-heading { font-size: 1.3rem; }
+    .lp-statsx-num { font-size: 2.4rem; }
+}
+@media (max-width: 460px) {
+    .lp-statsx-grid { grid-template-columns: 1fr; }
+}

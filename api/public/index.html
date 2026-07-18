@@ -370,7 +370,7 @@
             border-color: rgba(255, 255, 255, 1);
         }
     </style>
-    <link rel="stylesheet" href="/corp.css?v=41">
+    <link rel="stylesheet" href="/corp.css?v=43">
 </head>
 <body class="lp-body">
     <div id="sp-loader"><svg class="spl-logo-svg" viewBox="0 0 120 120" fill="none"><defs><linearGradient id="spl-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00ffff"/><stop offset="100%" stop-color="#a020f0"/></linearGradient><filter id="spl-glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3.5" result="coloredBlur"/><feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g filter="url(#spl-glow)" fill="none" stroke="url(#spl-grad)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z"/><g class="spl-eye-blink"><path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z"/><circle cx="60" cy="60" r="6"/><circle cx="60" cy="60" r="2" fill="url(#spl-grad)" stroke="none"/></g><path d="M60 15 V 30" stroke-width="2" opacity="0.6"/><path d="M60 90 V 105" stroke-width="2" opacity="0.6"/></g></svg></div>
@@ -801,24 +801,31 @@
         </div>
     </section>
 
-    <section class="lp-section lp-stats-band">
+    <section class="lp-section lp-statsx" id="stats">
+        <div class="lp-statsx-bg" aria-hidden="true"></div>
+        <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="statGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00f0ff"/><stop offset="100%" stop-color="#a020f0"/></linearGradient></defs></svg>
         <div class="lp-section-inner">
-            <div class="lp-stats-grid">
-                <div class="lp-stat">
-                    <div class="lp-stat-num">10+</div>
-                    <div class="lp-stat-label">blockchain networks covered</div>
+            <h2 class="lp-statsx-heading"><span class="lp-statsx-hl">make confident risk decisions</span> backed by real-time monitoring across every major chain.</h2>
+            <div class="lp-statsx-grid" id="lp-statsx-grid">
+                <div class="lp-statsx-card">
+                    <div class="lp-statsx-icon"><svg viewBox="0 0 24 24" fill="none" stroke="url(#statGrad)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="6" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="12" cy="18" r="2"/><path d="M6.7 7.3l4.3 8.5M17.3 7.3l-4.3 8.5M7 6h10"/></svg></div>
+                    <div class="lp-statsx-num" data-target="10" data-suffix="+">0+</div>
+                    <div class="lp-statsx-label">blockchain networks covered</div>
                 </div>
-                <div class="lp-stat">
-                    <div class="lp-stat-num">&lt;1s</div>
-                    <div class="lp-stat-label">from detection to alert</div>
+                <div class="lp-statsx-card">
+                    <div class="lp-statsx-icon"><svg viewBox="0 0 24 24" fill="none" stroke="url(#statGrad)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a5 5 0 0 0-5 5c0 4-2 5-2 5h14s-2-1-2-5a5 5 0 0 0-5-5z"/><path d="M10.3 20a2 2 0 0 0 3.4 0"/></svg></div>
+                    <div class="lp-statsx-num" data-target="1" data-prefix="&lt;" data-suffix="s">&lt;0s</div>
+                    <div class="lp-statsx-label">from detection to alert</div>
                 </div>
-                <div class="lp-stat">
-                    <div class="lp-stat-num">24/7</div>
-                    <div class="lp-stat-label">continuous transaction monitoring</div>
+                <div class="lp-statsx-card">
+                    <div class="lp-statsx-icon"><svg viewBox="0 0 24 24" fill="none" stroke="url(#statGrad)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></div>
+                    <div class="lp-statsx-num" data-target="24" data-suffix="/7">0/7</div>
+                    <div class="lp-statsx-label">continuous transaction monitoring</div>
                 </div>
-                <div class="lp-stat">
-                    <div class="lp-stat-num">99.9%</div>
-                    <div class="lp-stat-label">uptime for unmatched reliability</div>
+                <div class="lp-statsx-card">
+                    <div class="lp-statsx-icon"><svg viewBox="0 0 24 24" fill="none" stroke="url(#statGrad)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 8-6-16-3 8H2"/></svg></div>
+                    <div class="lp-statsx-num" data-target="99.9" data-decimals="1" data-suffix="%">0.0%</div>
+                    <div class="lp-statsx-label">uptime for unmatched reliability</div>
                 </div>
             </div>
         </div>
@@ -1430,6 +1437,35 @@
                         rolesDd.classList.remove('open');
                     });
                 });
+            }
+
+            var statsxGrid = document.getElementById('lp-statsx-grid');
+            if (statsxGrid) {
+                var animateStatNum = function(el) {
+                    var target = parseFloat(el.getAttribute('data-target')) || 0;
+                    var decimals = parseInt(el.getAttribute('data-decimals') || '0', 10);
+                    var prefix = el.getAttribute('data-prefix') || '';
+                    var suffix = el.getAttribute('data-suffix') || '';
+                    var dur = 1700, startTs = null;
+                    var ease = function(t) { return 1 - Math.pow(1 - t, 3); };
+                    var frame = function(ts) {
+                        if (!startTs) startTs = ts;
+                        var p = Math.min((ts - startTs) / dur, 1);
+                        el.textContent = prefix + (target * ease(p)).toFixed(decimals) + suffix;
+                        if (p < 1) requestAnimationFrame(frame);
+                        else el.textContent = prefix + target.toFixed(decimals) + suffix;
+                    };
+                    requestAnimationFrame(frame);
+                };
+                var statsxObs = new IntersectionObserver(function(entries) {
+                    entries.forEach(function(e) {
+                        if (e.isIntersecting) {
+                            statsxGrid.querySelectorAll('.lp-statsx-num').forEach(animateStatNum);
+                            statsxObs.unobserve(statsxGrid);
+                        }
+                    });
+                }, { threshold: 0.4 });
+                statsxObs.observe(statsxGrid);
             }
 
             var MAX_WAIT = 2200;
