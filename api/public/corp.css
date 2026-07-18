@@ -1601,6 +1601,12 @@ html.theme-light .lp-intel-sub {
     -webkit-text-fill-color: #ffffff;
     margin: 0;
     text-transform: lowercase;
+    /* always exactly two lines so the card never changes size between guides */
+    min-height: 2.3em;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 .lp-intel-guide-accent {
     display: block;
