@@ -1145,3 +1145,77 @@ html.theme-light .lp-role-cta-btn:hover {
     .lp-role-badge { justify-self: start; width: 84px; height: 84px; }
     .lp-role-badge svg { width: 38px; height: 38px; }
 }
+
+/* ===== enhanced role card: refined frame + radar-ring icon treatment ===== */
+.lp-role-feature {
+    grid-template-columns: 1fr 260px !important;
+    padding: 3rem 3.4rem !important;
+    border: 1px solid rgba(120, 180, 255, 0.14) !important;
+    box-shadow:
+        0 30px 70px -34px rgba(6, 10, 40, 0.9),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+}
+html.theme-light .lp-role-feature .lp-role-title {
+    font-size: 1.7rem !important;
+    letter-spacing: -0.01em;
+    margin: 0 0 1rem !important;
+}
+html.theme-light .lp-role-feature .lp-role-desc {
+    font-size: 0.95rem !important;
+    line-height: 1.7 !important;
+    color: rgba(206, 218, 244, 0.72) !important;
+    max-width: 44ch;
+    margin: 0 0 2rem !important;
+}
+
+/* icon: centered in its column with concentric radar rings + glow */
+.lp-role-badge {
+    position: relative !important;
+    justify-self: center !important;
+    align-self: center !important;
+    width: 118px !important;
+    height: 118px !important;
+    background: linear-gradient(140deg, #00f0ff, #7b6cff 55%, #a020f0) !important;
+    box-shadow:
+        0 16px 40px -8px rgba(160, 32, 240, 0.55),
+        inset 0 2px 6px rgba(255, 255, 255, 0.35) !important;
+    z-index: 1;
+}
+.lp-role-badge::before {
+    content: '';
+    position: absolute;
+    inset: -30px;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 240, 255, 0.22);
+    z-index: -1;
+}
+.lp-role-badge::after {
+    content: '';
+    position: absolute;
+    inset: -58px;
+    border-radius: 50%;
+    border: 1px solid rgba(160, 32, 240, 0.14);
+    background: radial-gradient(circle, rgba(123, 108, 255, 0.16), transparent 62%);
+    z-index: -2;
+}
+.lp-role-badge svg { width: 50px !important; height: 50px !important; }
+
+@media (max-width: 860px) {
+    .lp-role-feature { grid-template-columns: 1fr !important; padding: 2rem !important; }
+    .lp-role-badge { justify-self: start !important; width: 84px !important; height: 84px !important; }
+    .lp-role-badge::before { inset: -18px; }
+    .lp-role-badge::after { inset: -34px; }
+    .lp-role-badge svg { width: 38px !important; height: 38px !important; }
+}
+
+/* fit correction: keep enhanced look but guarantee content fits the fixed card */
+@media (min-width: 861px) {
+    .lp-role-feature { height: 366px !important; grid-template-columns: 1fr 230px !important; }
+}
+html.theme-light .lp-role-feature .lp-role-title { font-size: 1.5rem !important; margin: 0 0 0.85rem !important; }
+html.theme-light .lp-role-feature .lp-role-desc {
+    font-size: 0.9rem !important;
+    line-height: 1.62 !important;
+    margin: 0 0 1.6rem !important;
+    max-width: 46ch;
+}
