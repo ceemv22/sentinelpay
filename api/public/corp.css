@@ -1545,6 +1545,30 @@ html.theme-light .lp-intel-sub {
     box-shadow: 0 30px 60px -26px rgba(0, 0, 0, 0.6);
     -webkit-backdrop-filter: blur(6px);
     backdrop-filter: blur(6px);
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.25s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+/* banger sheen sweep across the whole card on hover */
+.lp-intel-guide::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -85%;
+    width: 55%;
+    height: 100%;
+    background: linear-gradient(105deg, transparent, rgba(123, 108, 255, 0.4) 48%, rgba(0, 240, 255, 0.32) 60%, transparent);
+    transform: skewX(-18deg);
+    pointer-events: none;
+    z-index: 3;
+}
+.lp-intel-guide:hover::after {
+    left: 135%;
+    transition: left 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.lp-intel-guide:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 34px 70px -24px rgba(0, 240, 255, 0.28);
 }
 .lp-intel-guide-icon {
     width: 54px;
@@ -1599,7 +1623,7 @@ html.theme-light .lp-intel-sub {
     color: #ffffff;
     transition: color 0.2s ease;
 }
-.lp-intel-guide:hover { border-color: rgba(0, 240, 255, 0.3); }
+.lp-intel-guide:hover { border-color: rgba(0, 240, 255, 0.35); }
 .lp-intel-guide:hover .lp-intel-guide-read { color: #7bdcff; }
 
 @media (max-width: 860px) {
