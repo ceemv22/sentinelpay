@@ -572,9 +572,9 @@ html.theme-light .lp-hero .lp-hero-inner { position: relative; z-index: 1; }
 
 /* navbar matches the dark hero */
 html.theme-light .lp-nav {
-    background: rgba(7, 8, 18, 0.82) !important;
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    background: #070812 !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
     border-bottom: 1px solid rgba(123, 108, 255, 0.14) !important;
 }
 html.theme-light .lp-nav .lp-logo-text { color: #ffffff !important; }
