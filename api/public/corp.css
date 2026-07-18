@@ -1416,6 +1416,13 @@ html.theme-light .lp-intel-sub {
     .lp-intel-report { width: 280px; }
 }
 
+@media (max-width: 860px) {
+    .lp-intel-banner { grid-template-columns: 1fr; padding: 2.2rem; gap: 2.4rem; }
+    .lp-intel-dots { display: none; }
+    .lp-intel-banner-title { font-size: 1.4rem; max-width: none; }
+    .lp-intel-report { width: 280px; }
+}
+
 /* ===== 3D book cover graphic ===== */
 .lp-intel-book {
     position: relative;
@@ -1524,4 +1531,80 @@ html.theme-light .lp-intel-sub {
     .lp-intel-banner-title { font-size: 1.4rem; max-width: none; }
     .lp-intel-visual { min-height: 340px; }
     .lp-intel-book { transform: perspective(1400px) rotateY(-18deg) rotateX(3deg); }
+}
+
+/* ===== minimal guide card (flat, banger via glow + gradient accents) ===== */
+.lp-intel-guide {
+    position: relative;
+    z-index: 1;
+    width: 300px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 2rem 1.9rem 1.7rem;
+    box-shadow: 0 30px 60px -26px rgba(0, 0, 0, 0.6);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+}
+.lp-intel-guide-icon {
+    width: 54px;
+    height: 54px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(140deg, #00f0ff, #7b6cff 55%, #a020f0);
+    box-shadow: 0 12px 28px -6px rgba(160, 32, 240, 0.55);
+    margin-bottom: 1.5rem;
+}
+.lp-intel-guide-icon svg { width: 26px; height: 26px; }
+.lp-intel-guide-kicker {
+    display: block;
+    font-size: 0.64rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: #7bdcff;
+    margin-bottom: 0.55rem;
+}
+.lp-intel-guide-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+    color: #ffffff;
+    -webkit-text-fill-color: #ffffff;
+    margin: 0;
+    text-transform: lowercase;
+}
+.lp-intel-guide-accent {
+    display: block;
+    width: 46px;
+    height: 3px;
+    border-radius: 3px;
+    background: linear-gradient(90deg, #00f0ff, #a020f0);
+    margin: 1.1rem 0 1.3rem;
+}
+.lp-intel-guide-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.76rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: lowercase;
+}
+.lp-intel-guide-read {
+    color: #ffffff;
+    transition: color 0.2s ease;
+}
+.lp-intel-guide:hover { border-color: rgba(0, 240, 255, 0.3); }
+.lp-intel-guide:hover .lp-intel-guide-read { color: #7bdcff; }
+
+@media (max-width: 860px) {
+    .lp-intel-banner { grid-template-columns: 1fr; padding: 2.2rem; gap: 2.4rem; }
+    .lp-intel-dots { display: none; }
+    .lp-intel-banner-title { font-size: 1.4rem; max-width: none; }
+    .lp-intel-guide { width: 100%; max-width: 320px; }
 }
