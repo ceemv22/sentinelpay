@@ -929,7 +929,7 @@ html.theme-light .lp-nav .auth-nav-btn:hover::after {
     display: flex;
     align-items: center;
     gap: 0.7rem;
-    margin: 2.2rem 0 2rem;
+    margin: 0 0 2rem;
     flex-wrap: wrap;
 }
 html.theme-light .lp-roles-selector-label { font-size: 0.95rem; color: #5b6b8c; }
@@ -1318,8 +1318,10 @@ html.theme-light .lp-intel-sub {
     max-width: 560px;
     margin: 0 0 2.4rem;
 }
-html.theme-light .lp-intel .lp-h2 { margin: 0 0 1.15rem; }
-.lp-intel .lp-eyebrow { margin-bottom: 1rem; }
+html.theme-light .lp-intel .lp-h2,
+html.theme-light .lp-roles .lp-h2 { margin: 0 0 1.15rem; }
+.lp-intel .lp-eyebrow,
+.lp-roles .lp-eyebrow { margin-bottom: 1rem; }
 .lp-intel-banner {
     position: relative;
     display: grid;
