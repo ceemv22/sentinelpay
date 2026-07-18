@@ -284,26 +284,28 @@ html.theme-light .lp-stats-band .lp-stat-label { color: #9fb1d6 !important; }
     margin-top: 2.4rem;
 }
 .lp-sol-card {
-    border: 1px solid rgba(14, 35, 88, 0.1);
-    border-radius: 14px;
-    background: #ffffff;
-    padding: 1.7rem 1.6rem;
+    border: 1px solid rgba(14, 35, 88, 0.1) !important;
+    border-radius: 16px;
+    background: #ffffff !important;
+    padding: 1.9rem 1.7rem;
     box-shadow: 0 2px 10px rgba(14, 35, 88, 0.04);
     display: flex;
     flex-direction: column;
-    gap: 0.7rem;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    text-decoration: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 .lp-sol-card:hover {
-    border-color: rgba(37, 99, 235, 0.45);
-    box-shadow: 0 8px 26px rgba(14, 35, 88, 0.09);
+    border-color: rgba(37, 99, 235, 0.45) !important;
+    box-shadow: 0 12px 30px rgba(14, 35, 88, 0.1);
+    transform: translateY(-3px);
 }
-.lp-sol-card-cta { background: #f2f6ff; border-color: rgba(37, 99, 235, 0.25); }
+.lp-sol-icon { margin-bottom: 1.2rem; }
+.lp-sol-icon svg { width: 34px; height: 34px; }
 html.theme-light .lp-sol-title {
-    font-size: 1rem;
+    font-size: 1.05rem;
     font-weight: 700;
     color: #0e2358;
-    margin: 0;
+    margin: 0 0 0.6rem;
     text-transform: lowercase;
 }
 html.theme-light .lp-sol-desc {
@@ -313,6 +315,33 @@ html.theme-light .lp-sol-desc {
     margin: 0;
     flex: 1;
 }
+.lp-sol-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 1.4rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #2563eb;
+    text-transform: lowercase;
+}
+.lp-sol-cta-arrow { display: inline-block; transition: transform 0.25s ease; }
+.lp-sol-card:hover .lp-sol-cta-arrow { transform: translateX(4px); }
+
+/* inverted dark "get started" card */
+.lp-sol-card.lp-sol-card-cta {
+    background:
+        radial-gradient(ellipse 80% 90% at 100% 100%, rgba(160, 32, 240, 0.35), transparent 55%),
+        linear-gradient(150deg, #0e1230, #14163c) !important;
+    border-color: rgba(120, 160, 255, 0.2) !important;
+}
+html.theme-light .lp-sol-card-cta .lp-sol-title {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+}
+html.theme-light .lp-sol-card-cta .lp-sol-desc { color: rgba(214, 224, 245, 0.68) !important; }
+.lp-sol-card-cta .lp-sol-cta { color: #7bdcff; }
+.lp-sol-card.lp-sol-card-cta:hover { border-color: rgba(0, 240, 255, 0.4) !important; }
 
 .lp-testi-grid {
     display: grid;
