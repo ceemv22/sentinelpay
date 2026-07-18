@@ -170,17 +170,18 @@ html.theme-light .lp-roles-panels {
     overflow: visible;
 }
 
-.lp-roles .lp-eyebrow {
+.lp-eyebrow {
     display: inline-flex;
     align-items: center;
     gap: 0.6rem;
 }
-.lp-roles .lp-eyebrow::before {
+.lp-eyebrow::before {
     content: '';
     width: 3px;
     height: 14px;
     border-radius: 2px;
     background: #2563eb;
+    flex-shrink: 0;
 }
 
 .lp-hl {
