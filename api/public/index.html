@@ -370,7 +370,7 @@
             border-color: rgba(255, 255, 255, 1);
         }
     </style>
-    <link rel="stylesheet" href="/corp.css?v=50">
+    <link rel="stylesheet" href="/corp.css?v=51">
 </head>
 <body class="lp-body">
     <div id="sp-loader"><svg class="spl-logo-svg" viewBox="0 0 120 120" fill="none"><defs><linearGradient id="spl-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00ffff"/><stop offset="100%" stop-color="#a020f0"/></linearGradient><filter id="spl-glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3.5" result="coloredBlur"/><feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g filter="url(#spl-glow)" fill="none" stroke="url(#spl-grad)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z"/><g class="spl-eye-blink"><path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z"/><circle cx="60" cy="60" r="6"/><circle cx="60" cy="60" r="2" fill="url(#spl-grad)" stroke="none"/></g><path d="M60 15 V 30" stroke-width="2" opacity="0.6"/><path d="M60 90 V 105" stroke-width="2" opacity="0.6"/></g></svg></div>
@@ -844,14 +844,16 @@
                 </div>
                 <div class="lp-intel-visual" aria-hidden="true">
                     <span class="lp-intel-glow"></span>
-                    <div class="lp-intel-guide">
-                        <div class="lp-intel-guide-icon">
+                    <div class="lp-intel-guide" id="lp-guide-card">
+                        <div class="lp-intel-guide-icon" id="lp-guide-icon">
                             <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h11l5 5v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/><path d="M14 4v5h5"/><path d="M8 13h8M8 17h5"/></svg>
                         </div>
-                        <span class="lp-intel-guide-kicker">free compliance guide</span>
-                        <h4 class="lp-intel-guide-title">the crypto risk playbook</h4>
-                        <span class="lp-intel-guide-accent"></span>
-                        <div class="lp-intel-guide-meta"><span>48 pages</span><span class="lp-intel-guide-read">read now</span></div>
+                        <div class="lp-intel-guide-body" id="lp-guide-body">
+                            <span class="lp-intel-guide-kicker" id="lp-guide-kicker">free compliance guide</span>
+                            <h4 class="lp-intel-guide-title" id="lp-guide-title">the crypto risk playbook</h4>
+                            <span class="lp-intel-guide-accent"></span>
+                            <div class="lp-intel-guide-meta"><span id="lp-guide-pages">48 pages</span><span class="lp-intel-guide-read">read now</span></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1435,6 +1437,57 @@
                         rolesDd.classList.remove('open');
                     });
                 });
+            }
+
+            var guideCard = document.getElementById('lp-guide-card');
+            var guideBody = document.getElementById('lp-guide-body');
+            if (guideCard && guideBody) {
+                var GUIDES = [
+                    { kicker: 'free compliance guide',   title: 'the crypto risk playbook',            pages: '48 pages' },
+                    { kicker: 'threat intelligence',     title: 'detecting mixers & tumblers',         pages: '32 pages' },
+                    { kicker: 'annual report',           title: 'the 2026 crypto typologies report',   pages: '60 pages' },
+                    { kicker: 'compliance guide',        title: 'sanctions screening for digital assets', pages: '28 pages' },
+                    { kicker: 'product guide',           title: 'wallet risk scoring, explained',      pages: '24 pages' },
+                    { kicker: 'compliance handbook',     title: 'the stablecoin compliance handbook',  pages: '40 pages' },
+                    { kicker: 'investigations guide',    title: 'tracing cross-chain fund flows',      pages: '36 pages' },
+                    { kicker: 'regulatory checklist',    title: 'the travel rule readiness checklist', pages: '18 pages' },
+                    { kicker: 'compliance guide',        title: 'onboarding crypto customers safely',  pages: '30 pages' },
+                    { kicker: 'threat report',           title: 'inside the top laundering typologies', pages: '44 pages' }
+                ];
+                for (var gi = GUIDES.length - 1; gi > 0; gi--) {
+                    var gj = Math.floor(Math.random() * (gi + 1));
+                    var gt = GUIDES[gi]; GUIDES[gi] = GUIDES[gj]; GUIDES[gj] = gt;
+                }
+                var gKicker = document.getElementById('lp-guide-kicker');
+                var gTitle = document.getElementById('lp-guide-title');
+                var gPages = document.getElementById('lp-guide-pages');
+                var gIcon = document.getElementById('lp-guide-icon');
+                var gIdx = 0;
+                var renderGuide = function(g) {
+                    gKicker.textContent = g.kicker;
+                    gTitle.textContent = g.title;
+                    gPages.textContent = g.pages;
+                };
+                renderGuide(GUIDES[0]);
+                var swapGuide = function() {
+                    if (guideCard.matches(':hover')) return;
+                    guideBody.style.transition = 'opacity 0.34s ease, transform 0.34s ease';
+                    guideBody.style.opacity = '0';
+                    guideBody.style.transform = 'translateY(-14px)';
+                    if (gIcon) { gIcon.style.transition = 'transform 0.34s ease'; gIcon.style.transform = 'scale(0.82) rotate(-6deg)'; }
+                    setTimeout(function() {
+                        gIdx = (gIdx + 1) % GUIDES.length;
+                        renderGuide(GUIDES[gIdx]);
+                        guideBody.style.transition = 'none';
+                        guideBody.style.transform = 'translateY(16px)';
+                        void guideBody.offsetWidth;
+                        guideBody.style.transition = 'opacity 0.4s ease, transform 0.4s cubic-bezier(0.22, 1, 0.36, 1)';
+                        guideBody.style.opacity = '1';
+                        guideBody.style.transform = 'translateY(0)';
+                        if (gIcon) { gIcon.style.transform = 'scale(1) rotate(0deg)'; }
+                    }, 340);
+                };
+                setInterval(swapGuide, 3200);
             }
 
             var statsxGrid = document.getElementById('lp-statsx-grid');
