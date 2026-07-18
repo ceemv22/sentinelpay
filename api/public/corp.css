@@ -1672,3 +1672,27 @@ html.theme-light .lp-roles .lp-h2 { margin: 0 0 1.15rem; }
     .lp-intel-banner-title { font-size: 1.4rem; max-width: none; }
     .lp-intel-guide { width: 100%; max-width: 320px; }
 }
+
+/* banger sheen sweep on solution cards */
+.lp-sol-card { position: relative; overflow: hidden; }
+.lp-sol-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -85%;
+    width: 55%;
+    height: 100%;
+    background: linear-gradient(105deg, transparent, rgba(123, 108, 255, 0.16) 48%, rgba(0, 240, 255, 0.13) 60%, transparent);
+    transform: skewX(-18deg);
+    pointer-events: none;
+    z-index: 1;
+}
+.lp-sol-card:hover::after {
+    left: 135%;
+    transition: left 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.lp-sol-card.lp-sol-card-cta::after {
+    background: linear-gradient(105deg, transparent, rgba(123, 108, 255, 0.4) 48%, rgba(0, 240, 255, 0.3) 60%, transparent);
+}
+/* keep content above the sheen band */
+.lp-sol-icon, .lp-sol-title, .lp-sol-desc, .lp-sol-cta { position: relative; z-index: 2; }
