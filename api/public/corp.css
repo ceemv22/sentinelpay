@@ -1765,22 +1765,41 @@ html.theme-light .lp-demo-card .lp-cta-label {
 /* form side */
 .lp-demo-right { position: relative; z-index: 1; }
 .lp-demo-formhead {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
     font-family: 'Inter', sans-serif;
     font-size: 1.15rem;
     font-weight: 700;
     color: #ffffff;
-    margin-bottom: 1.4rem;
+    margin-bottom: 1.5rem;
     text-transform: lowercase;
 }
-.lp-demo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem 1.1rem; }
-.lp-demo-field { display: flex; flex-direction: column; gap: 0.4rem; }
+.lp-demo-formhead::before {
+    content: '';
+    width: 3px;
+    height: 15px;
+    border-radius: 2px;
+    background: linear-gradient(#00f0ff, #a020f0);
+}
+/* animated step container so switching steps slides in cleanly */
+.lp-demo-step { animation: lpDemoStepIn 0.42s cubic-bezier(0.22, 1, 0.36, 1); }
+@keyframes lpDemoStepIn {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+.lp-demo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.05rem 1.1rem; }
+.lp-demo-field { display: flex; flex-direction: column; gap: 0.45rem; }
 .lp-demo-field-full { grid-column: 1 / -1; }
 .lp-demo-field label {
-    font-size: 0.76rem;
+    font-size: 0.74rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.7);
+    letter-spacing: 0.01em;
+    color: rgba(255, 255, 255, 0.62);
     text-transform: lowercase;
+    transition: color 0.18s ease;
 }
+.lp-demo-field:focus-within label { color: #7bdcff; }
 .lp-demo-field label i { color: #7bdcff; font-style: normal; margin-left: 1px; }
 .lp-demo-field input,
 .lp-demo-field select,
@@ -1789,25 +1808,30 @@ html.theme-light .lp-demo-card .lp-cta-label {
     box-sizing: border-box;
     font-family: 'Inter', sans-serif;
     font-size: 0.9rem;
-    color: #0b1020;
-    background: #ffffff;
-    border: 1px solid transparent;
-    border-radius: 9px;
-    padding: 0.7rem 0.85rem;
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.045);
+    border: 1px solid rgba(255, 255, 255, 0.13);
+    border-radius: 10px;
+    padding: 0.78rem 0.9rem;
     outline: none;
-    transition: border-color 0.18s ease, box-shadow 0.18s ease;
+    transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
 }
-.lp-demo-field textarea { resize: vertical; min-height: 68px; }
+.lp-demo-field input::placeholder,
+.lp-demo-field textarea::placeholder { color: rgba(255, 255, 255, 0.3); }
+.lp-demo-field select { color: rgba(255, 255, 255, 0.55); }
+.lp-demo-field select option { color: #0b1020; }
+.lp-demo-field textarea { resize: vertical; min-height: 74px; }
 .lp-demo-field input:focus,
 .lp-demo-field select:focus,
 .lp-demo-field textarea:focus {
-    border-color: #7b6cff;
-    box-shadow: 0 0 0 3px rgba(123, 108, 255, 0.25);
+    border-color: rgba(0, 240, 255, 0.55);
+    background: rgba(255, 255, 255, 0.07);
+    box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.12);
 }
 .lp-demo-field.lp-demo-invalid input,
 .lp-demo-field.lp-demo-invalid select {
     border-color: #ff5a7a;
-    box-shadow: 0 0 0 3px rgba(255, 90, 122, 0.18);
+    box-shadow: 0 0 0 3px rgba(255, 90, 122, 0.16);
 }
 .lp-demo-consent {
     display: flex;
@@ -1823,7 +1847,7 @@ html.theme-light .lp-demo-card .lp-cta-label {
 .lp-demo-progress { display: flex; align-items: center; gap: 0.8rem; margin: 1.6rem 0 1.2rem; }
 .lp-demo-pct { font-size: 0.8rem; font-weight: 700; color: #ffffff; min-width: 34px; }
 .lp-demo-track { flex: 1; height: 6px; border-radius: 50px; background: rgba(255, 255, 255, 0.1); overflow: hidden; }
-.lp-demo-fill { height: 100%; width: 33%; border-radius: 50px; background: linear-gradient(90deg, #00f0ff, #a020f0); transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1); }
+.lp-demo-fill { height: 100%; width: 33%; border-radius: 50px; background: linear-gradient(90deg, #00f0ff, #7b6cff, #a020f0); box-shadow: 0 0 14px rgba(0, 240, 255, 0.45); transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1); }
 
 .lp-demo-actions { display: flex; align-items: center; justify-content: flex-end; gap: 0.7rem; }
 .lp-demo-back {
