@@ -452,6 +452,17 @@ const usernameLoginLimiter = rateLimit({
     message: { error: 'too many requests. try again in 15 minutes.', code: 429 }
 });
 
+const demoRequestLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000,
+    max: 5,
+    standardHeaders: true,
+    legacyHeaders: false,
+    keyGenerator: (req) => `demo_request:${req.realIp}`,
+    validate: false,
+    store: createStore('demo_request:'),
+    message: { error: 'too many requests. try again later.', code: 429 }
+});
+
 const userKeyRollLimiter = rateLimit({
     windowMs: 60 * 60 * 1000,
     max: 5,
@@ -946,6 +957,59 @@ app.post('/v1/auth/resolve-login', requireRateLimitBackend, usernameLoginLimiter
     } catch (err) {
         console.error('[resolve-login error]', err);
         res.status(500).json({ error: 'failed to resolve login' });
+    }
+});
+
+app.post('/v1/demo-request', requireRateLimitBackend, demoRequestLimiter, async (req, res) => {
+    try {
+        const b = req.body || {};
+        const clean = (v, max) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
+        const firstName = clean(b.firstName, 80);
+        const lastName = clean(b.lastName, 80);
+        const jobTitle = clean(b.jobTitle, 120);
+        const email = clean(b.email, 160);
+        const company = clean(b.company, 120);
+        const country = clean(b.country, 80);
+        const size = clean(b.size, 40);
+        const message = clean(b.message, 2000);
+        const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!firstName || !lastName || !jobTitle || !emailRe.test(email) || b.consent !== true) {
+            return res.status(400).json({ error: 'invalid submission' });
+        }
+
+        const esc = (s) => String(s).replace(/[<>&"]/g, (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c]));
+        const row = (k, v) => v ? `<tr><td style="padding:4px 12px 4px 0;color:#888;">${k}</td><td style="padding:4px 0;color:#111;">${esc(v)}</td></tr>` : '';
+
+        if (process.env.RESEND_API_KEY) {
+            const { Resend } = require('resend');
+            const resend = new Resend(process.env.RESEND_API_KEY);
+            await resend.emails.send({
+                from: 'sentinelpay <noreply@sentinelpay.org>',
+                to: 'support@sentinelpay.org',
+                replyTo: email,
+                subject: `new demo request — ${firstName} ${lastName}${company ? ' @ ' + company : ''}`,
+                html: `<div style="font-family:Arial,sans-serif;font-size:14px;">
+                    <h2 style="margin:0 0 12px;">new demo request</h2>
+                    <table style="border-collapse:collapse;">
+                        ${row('name', firstName + ' ' + lastName)}
+                        ${row('job title', jobTitle)}
+                        ${row('email', email)}
+                        ${row('company', company)}
+                        ${row('company size', size)}
+                        ${row('country', country)}
+                        ${row('message', message)}
+                    </table>
+                </div>`
+            });
+        } else {
+            console.log('[demo-request]', { firstName, lastName, jobTitle, email, company, size, country });
+        }
+
+        res.json({ ok: true });
+    } catch (err) {
+        console.error('[demo-request error]', err.message);
+        res.status(500).json({ error: 'failed to submit' });
     }
 });
 
