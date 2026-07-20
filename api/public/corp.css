@@ -1983,6 +1983,7 @@ html.theme-light .lp-demo-card .lp-cta-label {
 .lp-demo-next:hover, .lp-demo-submit:hover { box-shadow: 0 10px 30px -8px rgba(123, 108, 255, 0.55); }
 .lp-demo-next:hover::after, .lp-demo-submit:hover::after { left: 135%; transition: left 0.6s cubic-bezier(0.22, 1, 0.36, 1); }
 
+.lp-demo-success[hidden] { display: none; }
 .lp-demo-success {
     grid-column: 1 / -1;
     display: flex;
