@@ -1783,7 +1783,7 @@ html.theme-light .lp-demo-card .lp-cta-label {
     background: linear-gradient(#00f0ff, #a020f0);
 }
 /* animated step container so switching steps slides in cleanly */
-.lp-demo-step { animation: lpDemoStepIn 0.42s cubic-bezier(0.22, 1, 0.36, 1); }
+.lp-demo-step { animation: lpDemoStepIn 0.42s cubic-bezier(0.22, 1, 0.36, 1); min-height: 208px; }
 @keyframes lpDemoStepIn {
     from { opacity: 0; transform: translateY(14px); }
     to   { opacity: 1; transform: translateY(0); }
@@ -1983,18 +1983,32 @@ html.theme-light .lp-demo-card .lp-cta-label {
 .lp-demo-next:hover, .lp-demo-submit:hover { box-shadow: 0 10px 30px -8px rgba(123, 108, 255, 0.55); }
 .lp-demo-next:hover::after, .lp-demo-submit:hover::after { left: 135%; transition: left 0.6s cubic-bezier(0.22, 1, 0.36, 1); }
 
-.lp-demo-success { text-align: center; padding: 1.5rem 0; }
+.lp-demo-success {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-height: 260px;
+    padding: 2rem 1rem;
+    position: relative;
+    z-index: 1;
+    animation: lpDemoStepIn 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
 .lp-demo-success-check {
-    width: 58px; height: 58px;
-    margin: 0 auto 1.1rem;
+    width: 74px; height: 74px;
+    margin: 0 auto 1.5rem;
     border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
-    font-size: 1.6rem; color: #fff;
+    font-size: 2.1rem; color: #fff;
     background: linear-gradient(135deg, #00f0ff, #a020f0);
-    box-shadow: 0 12px 30px -6px rgba(160, 32, 240, 0.5);
+    box-shadow: 0 16px 40px -8px rgba(160, 32, 240, 0.55);
+    animation: lpDemoPop 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) 0.05s both;
 }
-.lp-demo-success h3 { font-size: 1.3rem; font-weight: 700; color: #fff; margin: 0 0 0.5rem; text-transform: lowercase; }
-.lp-demo-success p { font-size: 0.9rem; color: rgba(255, 255, 255, 0.6); margin: 0; }
+.lp-demo-success h3 { font-size: 1.85rem; font-weight: 800; color: #fff; margin: 0 0 0.6rem; letter-spacing: -0.01em; text-transform: lowercase; }
+.lp-demo-success p { font-size: 1rem; color: rgba(255, 255, 255, 0.6); margin: 0; max-width: 420px; }
+@keyframes lpDemoPop { from { transform: scale(0.3); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
 @media (max-width: 860px) {
     .lp-demo-card { grid-template-columns: 1fr; gap: 2.2rem; padding: 2.2rem; }
