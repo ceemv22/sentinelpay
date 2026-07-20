@@ -370,7 +370,7 @@
             border-color: rgba(255, 255, 255, 1);
         }
     </style>
-    <link rel="stylesheet" href="/corp.css?v=76">
+    <link rel="stylesheet" href="/corp.css?v=77">
 </head>
 <body class="lp-body">
     <div id="sp-loader"><svg class="spl-logo-svg" viewBox="0 0 120 120" fill="none"><defs><linearGradient id="spl-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00ffff"/><stop offset="100%" stop-color="#a020f0"/></linearGradient><filter id="spl-glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3.5" result="coloredBlur"/><feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g filter="url(#spl-glow)" fill="none" stroke="url(#spl-grad)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z"/><g class="spl-eye-blink"><path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z"/><circle cx="60" cy="60" r="6"/><circle cx="60" cy="60" r="2" fill="url(#spl-grad)" stroke="none"/></g><path d="M60 15 V 30" stroke-width="2" opacity="0.6"/><path d="M60 90 V 105" stroke-width="2" opacity="0.6"/></g></svg></div>
@@ -1139,9 +1139,15 @@
                     </form>
                 </div>
                 <div class="lp-demo-success" id="lp-demo-success" hidden>
-                    <div class="lp-demo-success-check">&#10003;</div>
-                    <h3>thanks, you are on the list.</h3>
-                    <p>our team will reach out within one business day — keep an eye on your inbox.</p>
+                    <div class="lp-demo-success-badge">
+                        <svg viewBox="0 0 52 52" class="lp-demo-success-svg" aria-hidden="true">
+                            <circle class="lp-demo-success-ring" cx="26" cy="26" r="24"/>
+                            <path class="lp-demo-success-tick" d="M15 27 l7.5 7.5 L38 18"/>
+                        </svg>
+                    </div>
+                    <span class="lp-demo-success-eyebrow">request received</span>
+                    <h3>you're on the radar.</h3>
+                    <p>a sentinelpay specialist will reach out within one business day to tailor a walkthrough around how <em>your</em> business moves crypto. keep an eye on your inbox — we move fast.</p>
                 </div>
             </div>
         </div>
