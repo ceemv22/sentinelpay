@@ -1994,8 +1994,7 @@ html.theme-light .lp-demo-card .lp-cta-label {
     transform: skewX(-18deg);
     pointer-events: none;
 }
-.lp-demo-next:hover, .lp-demo-submit:hover { box-shadow: 0 12px 32px -8px rgba(123, 108, 255, 0.6); transform: translateY(-2px); }
-.lp-demo-next:active, .lp-demo-submit:active { transform: translateY(0); }
+.lp-demo-next:hover, .lp-demo-submit:hover { box-shadow: 0 12px 32px -8px rgba(123, 108, 255, 0.6); }
 .lp-demo-next:hover::after, .lp-demo-submit:hover::after { left: 135%; transition: left 0.65s cubic-bezier(0.22, 1, 0.36, 1); }
 
 .lp-demo-success[hidden] { display: none; }
