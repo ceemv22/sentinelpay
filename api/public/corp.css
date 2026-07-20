@@ -1703,7 +1703,7 @@ html.theme-light .lp-roles .lp-h2 { margin: 0 0 1.15rem; }
     display: grid;
     grid-template-columns: 1fr 1.05fr;
     gap: 3rem;
-    align-items: stretch;
+    align-items: center;
     border-radius: 26px;
     padding: 3.4rem 3.6rem;
     overflow: hidden;
@@ -1968,7 +1968,7 @@ html.theme-light .lp-demo-card .lp-cta-label {
     transform-origin: right center;
     transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
-.lp-demo-back:hover { color: #ffffff; transform: translateX(-3px); }
+.lp-demo-back:hover { color: #ffffff; }
 .lp-demo-back:hover::after { transform: scaleX(1); transform-origin: left center; }
 .lp-demo-next, .lp-demo-submit {
     position: relative;
@@ -1985,6 +1985,7 @@ html.theme-light .lp-demo-card .lp-cta-label {
     text-transform: lowercase;
     transition: box-shadow 0.3s ease, transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
 }
+.lp-demo-next, .lp-demo-submit, .lp-demo-back { transform: none !important; }
 .lp-demo-next:hover, .lp-demo-submit:hover { box-shadow: 0 12px 32px -8px rgba(123, 108, 255, 0.6); }
 
 .lp-demo-success[hidden] { display: none; }
