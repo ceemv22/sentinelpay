@@ -1850,6 +1850,46 @@ html.theme-light .lp-demo-card .lp-cta-label {
     border-color: #ff5a7a;
     box-shadow: 0 0 0 3px rgba(255, 90, 122, 0.16);
 }
+.lp-demo-note {
+    font-size: 0.72rem;
+    line-height: 1.4;
+    color: rgba(255, 255, 255, 0.4);
+    margin: -0.15rem 0 0.1rem;
+}
+.lp-demo-note-inline { color: rgba(255, 255, 255, 0.38); font-weight: 500; text-transform: none; letter-spacing: 0; }
+.lp-demo-checks {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem 0.9rem;
+}
+.lp-demo-check {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.55rem 0.7rem;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.03);
+    font-size: 0.83rem;
+    color: rgba(255, 255, 255, 0.66);
+    cursor: pointer;
+    transition: border-color 0.18s ease, background 0.18s ease, color 0.18s ease;
+}
+.lp-demo-check:hover { border-color: rgba(0, 240, 255, 0.4); color: #fff; }
+.lp-demo-check input {
+    flex: 0 0 auto;
+    width: 16px; height: 16px;
+    accent-color: #7b6cff;
+    cursor: pointer;
+}
+.lp-demo-check:has(input:checked) {
+    border-color: transparent;
+    background: linear-gradient(120deg, rgba(0, 240, 255, 0.16), rgba(160, 32, 240, 0.16));
+    color: #fff;
+    box-shadow: inset 0 0 0 1px rgba(123, 108, 255, 0.5);
+}
+.lp-demo-field.lp-demo-invalid .lp-demo-checks { outline: 1px solid rgba(255, 90, 122, 0.5); outline-offset: 4px; border-radius: 10px; }
+@media (max-width: 560px) { .lp-demo-checks { grid-template-columns: 1fr; } }
 .lp-demo-hint {
     font-size: 0.62rem;
     font-weight: 600;
@@ -1985,7 +2025,7 @@ html.theme-light .lp-demo-card .lp-cta-label {
     text-transform: lowercase;
     transition: box-shadow 0.3s ease, transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
 }
-.lp-demo-next, .lp-demo-submit, .lp-demo-back { transform: none !important; }
+.lp-demo-next, .lp-demo-submit, .lp-demo-back, .lp-demo-select-btn { transform: none !important; }
 .lp-demo-next:hover, .lp-demo-submit:hover { box-shadow: 0 12px 32px -8px rgba(123, 108, 255, 0.6); }
 
 .lp-demo-success[hidden] { display: none; }
