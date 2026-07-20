@@ -1763,7 +1763,8 @@ html.theme-light .lp-demo-card .lp-cta-label {
 }
 
 /* form side */
-.lp-demo-right { position: relative; z-index: 1; }
+.lp-demo-right { position: relative; z-index: 1; display: flex; flex-direction: column; }
+.lp-demo-form { display: flex; flex-direction: column; flex: 1; }
 .lp-demo-formhead {
     display: inline-flex;
     align-items: center;
@@ -1821,7 +1822,7 @@ html.theme-light .lp-demo-card .lp-cta-label {
 .lp-demo-field textarea::placeholder { color: rgba(255, 255, 255, 0.3); }
 .lp-demo-field select { color: rgba(255, 255, 255, 0.55); }
 .lp-demo-field select option { color: #0b1020; }
-.lp-demo-field textarea { resize: none; overflow: hidden; min-height: 84px; line-height: 1.5; }
+.lp-demo-field textarea { resize: none; overflow-y: auto; min-height: 84px; max-height: 116px; line-height: 1.5; }
 .lp-demo-count {
     margin-top: 0.4rem;
     text-align: right;
