@@ -1820,7 +1820,15 @@ html.theme-light .lp-demo-card .lp-cta-label {
 .lp-demo-field textarea::placeholder { color: rgba(255, 255, 255, 0.3); }
 .lp-demo-field select { color: rgba(255, 255, 255, 0.55); }
 .lp-demo-field select option { color: #0b1020; }
-.lp-demo-field textarea { resize: vertical; min-height: 74px; }
+.lp-demo-field textarea { resize: none; overflow: hidden; min-height: 84px; line-height: 1.5; }
+.lp-demo-count {
+    margin-top: 0.4rem;
+    text-align: right;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: rgba(255, 255, 255, 0.35);
+}
 .lp-demo-field input:focus,
 .lp-demo-field select:focus,
 .lp-demo-field textarea:focus {
@@ -1910,14 +1918,24 @@ html.theme-light .lp-demo-card .lp-cta-label {
 }
 .lp-demo-consent {
     display: flex;
-    align-items: flex-start;
-    gap: 0.55rem;
-    margin-top: 1rem;
-    font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.6);
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    margin-top: 1.2rem;
+    padding: 0.7rem 1rem;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    font-size: 0.82rem;
+    color: rgba(255, 255, 255, 0.7);
     cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease;
 }
-.lp-demo-consent input { margin-top: 2px; accent-color: #7b6cff; }
+.lp-demo-consent:hover { border-color: rgba(0, 240, 255, 0.35); background: rgba(0, 240, 255, 0.04); }
+.lp-demo-consent input {
+    width: 17px; height: 17px; flex-shrink: 0;
+    accent-color: #7b6cff; cursor: pointer;
+}
 
 .lp-demo-progress { display: flex; align-items: center; gap: 0.8rem; margin: 1.6rem 0 1.2rem; }
 .lp-demo-pct { font-size: 0.8rem; font-weight: 700; color: #ffffff; min-width: 34px; }
