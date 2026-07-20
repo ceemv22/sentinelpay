@@ -974,11 +974,9 @@ app.post('/v1/demo-request', requireRateLimitBackend, demoRequestLimiter, async 
         const message = clean(b.message, 2000);
         const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         const nameRe = /^[a-zA-ZÀ-ɏ'’.\- ]{2,}$/;
-        const freeDomains = ['gmail.com','yahoo.com','hotmail.com','outlook.com','icloud.com','aol.com','proton.me','protonmail.com','gmx.com','mail.com','yandex.com','live.com','msn.com'];
 
         if (!nameRe.test(firstName) || !nameRe.test(lastName) || jobTitle.length < 2 ||
-            !emailRe.test(email) || freeDomains.indexOf(email.split('@')[1].toLowerCase()) !== -1 ||
-            !company || b.consent !== true) {
+            !emailRe.test(email) || !company || b.consent !== true) {
             return res.status(400).json({ error: 'invalid submission' });
         }
 
