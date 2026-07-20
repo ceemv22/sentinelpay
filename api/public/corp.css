@@ -1908,3 +1908,16 @@ html.theme-light .lp-demo-card .lp-cta-label {
     .lp-demo-title { font-size: 2rem; }
     .lp-demo-grid { grid-template-columns: 1fr; }
 }
+
+/* demo form field-level error messages */
+.lp-demo-error {
+    display: block;
+    margin-top: 0.35rem;
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: #ff7a95;
+    text-transform: lowercase;
+    animation: lpDemoStepIn 0.25s ease;
+}
+.lp-demo-consent.lp-demo-consent-err { color: #ff7a95 !important; }
+.lp-demo-consent.lp-demo-consent-err input { accent-color: #ff5a7a; outline: 2px solid rgba(255, 90, 122, 0.4); outline-offset: 1px; border-radius: 3px; }
