@@ -370,7 +370,7 @@
             border-color: rgba(255, 255, 255, 1);
         }
     </style>
-    <link rel="stylesheet" href="/corp.css?v=64">
+    <link rel="stylesheet" href="/corp.css?v=65">
 </head>
 <body class="lp-body">
     <div id="sp-loader"><svg class="spl-logo-svg" viewBox="0 0 120 120" fill="none"><defs><linearGradient id="spl-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00ffff"/><stop offset="100%" stop-color="#a020f0"/></linearGradient><filter id="spl-glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3.5" result="coloredBlur"/><feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g filter="url(#spl-glow)" fill="none" stroke="url(#spl-grad)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z"/><g class="spl-eye-blink"><path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z"/><circle cx="60" cy="60" r="6"/><circle cx="60" cy="60" r="2" fill="url(#spl-grad)" stroke="none"/></g><path d="M60 15 V 30" stroke-width="2" opacity="0.6"/><path d="M60 90 V 105" stroke-width="2" opacity="0.6"/></g></svg></div>
@@ -1083,7 +1083,7 @@
                 </div>
                 <div class="lp-demo-right">
                     <form class="lp-demo-form" id="lp-demo-form" novalidate>
-                        <div class="lp-demo-formhead">tell us about yourself</div>
+                        <div class="lp-demo-formhead" id="lp-demo-formhead">tell us about yourself</div>
 
                         <div class="lp-demo-step" data-step="1">
                             <div class="lp-demo-grid">
@@ -1096,9 +1096,19 @@
 
                         <div class="lp-demo-step" data-step="2" hidden>
                             <div class="lp-demo-grid">
-                                <div class="lp-demo-field"><label>company<i>*</i></label><input name="company" type="text" autocomplete="organization"></div>
-                                <div class="lp-demo-field"><label>country</label><input name="country" type="text" autocomplete="country-name"></div>
-                                <div class="lp-demo-field lp-demo-field-full"><label>company size</label><select name="size"><option value="">select…</option><option>1–10</option><option>11–50</option><option>51–200</option><option>201–1000</option><option>1000+</option></select></div>
+                                <div class="lp-demo-field"><label>company<i>*</i></label><input name="company" type="text" autocomplete="organization" placeholder="e.g. sentinelpay"></div>
+                                <div class="lp-demo-field"><label>country</label><input name="country" type="text" autocomplete="country-name" placeholder="where you operate"></div>
+                                <div class="lp-demo-field lp-demo-field-full">
+                                    <label>company size <span class="lp-demo-hint">employees</span></label>
+                                    <div class="lp-demo-choice" role="radiogroup" aria-label="company size">
+                                        <button type="button" class="lp-demo-chip" data-value="1–10">1–10</button>
+                                        <button type="button" class="lp-demo-chip" data-value="11–50">11–50</button>
+                                        <button type="button" class="lp-demo-chip" data-value="51–200">51–200</button>
+                                        <button type="button" class="lp-demo-chip" data-value="201–1000">201–1000</button>
+                                        <button type="button" class="lp-demo-chip" data-value="1000+">1000+</button>
+                                    </div>
+                                    <input type="hidden" name="size">
+                                </div>
                             </div>
                         </div>
 
@@ -1776,6 +1786,10 @@
             var emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
             var nameRe = /^[a-zA-ZÀ-ɏ'’.\- ]+$/;
+            var letterRe = /[a-zA-ZÀ-ɏ]/;
+            var alnumRe = /[a-zA-Z0-9À-ɏ]/;
+            var heads = { 1: 'tell us about yourself', 2: 'tell us about your company', 3: 'what brings you here' };
+            var headEl = document.getElementById('lp-demo-formhead');
             function setError(input, msg) {
                 var field = input.closest('.lp-demo-field');
                 if (!field) return;
@@ -1792,17 +1806,29 @@
                     case 'firstName':
                     case 'lastName':
                         if (!v) return 'this field is required';
-                        if (!nameRe.test(v)) return 'letters only — no numbers or symbols';
                         if (v.length < 2) return 'that looks too short';
+                        if (!nameRe.test(v)) return 'letters only — no numbers or symbols';
                         return '';
                     case 'jobTitle':
+                        if (!v) return 'this field is required';
+                        if (v.length < 2) return 'that looks too short';
+                        if (!letterRe.test(v)) return 'enter a real job title';
+                        return '';
                     case 'company':
                         if (!v) return 'this field is required';
                         if (v.length < 2) return 'that looks too short';
+                        if (!alnumRe.test(v)) return 'enter a real company name';
+                        return '';
+                    case 'country':
+                        if (!v) return '';
+                        if (v.length < 2) return 'that looks too short';
+                        if (!nameRe.test(v)) return 'letters only';
                         return '';
                     case 'email':
                         if (!v) return 'this field is required';
+                        if (/\s/.test(v)) return 'email cannot contain spaces';
                         if (!emailRe.test(v)) return 'enter a valid email address';
+                        if (/\.\./.test(v) || /@\./.test(v) || /\.$/.test(v)) return 'enter a valid email address';
                         return '';
                 }
                 return '';
@@ -1837,10 +1863,20 @@
                 backBtn.hidden = cur === 0;
                 nextBtn.hidden = cur === total - 1;
                 submitBtn.hidden = cur !== total - 1;
+                if (headEl) { var no = parseInt(active.getAttribute('data-step'), 10); if (heads[no]) headEl.textContent = heads[no]; }
             }
             render();
 
-            var validatedNames = ['firstName','lastName','jobTitle','company','email'];
+            var sizeInput = form.querySelector('input[name="size"]');
+            form.querySelectorAll('.lp-demo-chip').forEach(function(chip) {
+                chip.addEventListener('click', function() {
+                    form.querySelectorAll('.lp-demo-chip').forEach(function(c) { c.classList.remove('is-active'); });
+                    chip.classList.add('is-active');
+                    if (sizeInput) sizeInput.value = chip.getAttribute('data-value');
+                });
+            });
+
+            var validatedNames = ['firstName','lastName','jobTitle','company','country','email'];
             form.querySelectorAll('input[name], select[name]').forEach(function(inp) {
                 if (validatedNames.indexOf(inp.name) === -1) return;
                 inp.addEventListener('blur', function() { setError(inp, fieldError(inp)); });
