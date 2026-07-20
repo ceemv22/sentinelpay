@@ -1945,6 +1945,7 @@ html.theme-light .lp-demo-card .lp-cta-label {
 
 .lp-demo-actions { display: flex; align-items: center; justify-content: flex-end; gap: 0.7rem; }
 .lp-demo-back {
+    position: relative;
     background: none;
     border: none;
     color: rgba(255, 255, 255, 0.6);
@@ -1952,11 +1953,22 @@ html.theme-light .lp-demo-card .lp-cta-label {
     font-size: 0.85rem;
     font-weight: 600;
     cursor: pointer;
-    padding: 0.6rem 0.4rem;
+    padding: 0.6rem 0.5rem;
     text-transform: lowercase;
-    transition: color 0.2s ease;
+    transition: color 0.25s ease, transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
 }
-.lp-demo-back:hover { color: #ffffff; }
+.lp-demo-back::after {
+    content: '';
+    position: absolute;
+    left: 0.5rem; right: 0.5rem; bottom: 0.35rem;
+    height: 1.5px;
+    background: linear-gradient(90deg, #00f0ff, #7b6cff, #a020f0);
+    transform: scaleX(0);
+    transform-origin: right center;
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.lp-demo-back:hover { color: #ffffff; transform: translateX(-3px); }
+.lp-demo-back:hover::after { transform: scaleX(1); transform-origin: left center; }
 .lp-demo-next, .lp-demo-submit {
     position: relative;
     overflow: hidden;
@@ -1970,7 +1982,7 @@ html.theme-light .lp-demo-card .lp-cta-label {
     padding: 0.8rem 1.9rem;
     cursor: pointer;
     text-transform: lowercase;
-    transition: box-shadow 0.3s ease;
+    transition: box-shadow 0.3s ease, transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .lp-demo-next::after, .lp-demo-submit::after {
     content: '';
@@ -1981,8 +1993,9 @@ html.theme-light .lp-demo-card .lp-cta-label {
     transform: skewX(-18deg);
     pointer-events: none;
 }
-.lp-demo-next:hover, .lp-demo-submit:hover { box-shadow: 0 10px 30px -8px rgba(123, 108, 255, 0.55); }
-.lp-demo-next:hover::after, .lp-demo-submit:hover::after { left: 135%; transition: left 0.6s cubic-bezier(0.22, 1, 0.36, 1); }
+.lp-demo-next:hover, .lp-demo-submit:hover { box-shadow: 0 12px 32px -8px rgba(123, 108, 255, 0.6); transform: translateY(-2px); }
+.lp-demo-next:active, .lp-demo-submit:active { transform: translateY(0); }
+.lp-demo-next:hover::after, .lp-demo-submit:hover::after { left: 135%; transition: left 0.65s cubic-bezier(0.22, 1, 0.36, 1); }
 
 .lp-demo-success[hidden] { display: none; }
 .lp-demo-success {
