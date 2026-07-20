@@ -1829,7 +1829,8 @@ html.theme-light .lp-demo-card .lp-cta-label {
     box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.12);
 }
 .lp-demo-field.lp-demo-invalid input,
-.lp-demo-field.lp-demo-invalid select {
+.lp-demo-field.lp-demo-invalid select,
+.lp-demo-field.lp-demo-invalid .lp-demo-select-btn {
     border-color: #ff5a7a;
     box-shadow: 0 0 0 3px rgba(255, 90, 122, 0.16);
 }
@@ -1875,13 +1876,10 @@ html.theme-light .lp-demo-card .lp-cta-label {
 .lp-demo-select.is-open .lp-demo-select-caret { transform: rotate(180deg); color: #00f0ff; }
 .lp-demo-select-menu {
     list-style: none;
-    margin: 0.4rem 0 0;
+    margin: 0;
     padding: 0.35rem;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    z-index: 20;
+    position: fixed;
+    z-index: 9999;
     background: #0d1120;
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;

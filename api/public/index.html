@@ -370,7 +370,7 @@
             border-color: rgba(255, 255, 255, 1);
         }
     </style>
-    <link rel="stylesheet" href="/corp.css?v=66">
+    <link rel="stylesheet" href="/corp.css?v=67">
 </head>
 <body class="lp-body">
     <div id="sp-loader"><svg class="spl-logo-svg" viewBox="0 0 120 120" fill="none"><defs><linearGradient id="spl-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00ffff"/><stop offset="100%" stop-color="#a020f0"/></linearGradient><filter id="spl-glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3.5" result="coloredBlur"/><feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g filter="url(#spl-glow)" fill="none" stroke="url(#spl-grad)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z"/><g class="spl-eye-blink"><path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z"/><circle cx="60" cy="60" r="6"/><circle cx="60" cy="60" r="2" fill="url(#spl-grad)" stroke="none"/></g><path d="M60 15 V 30" stroke-width="2" opacity="0.6"/><path d="M60 90 V 105" stroke-width="2" opacity="0.6"/></g></svg></div>
@@ -1099,7 +1099,7 @@
                                 <div class="lp-demo-field"><label>company<i>*</i></label><input name="company" type="text" autocomplete="organization" placeholder="e.g. sentinelpay"></div>
                                 <div class="lp-demo-field"><label>country<i>*</i></label><input name="country" type="text" autocomplete="country-name" placeholder="where you operate"></div>
                                 <div class="lp-demo-field lp-demo-field-full">
-                                    <label>company size <span class="lp-demo-hint">employees</span></label>
+                                    <label>company size<i>*</i></label>
                                     <div class="lp-demo-select" id="lp-demo-size">
                                         <button type="button" class="lp-demo-select-btn" aria-haspopup="listbox" aria-expanded="false">
                                             <span class="lp-demo-select-val is-placeholder">select company size…</span>
@@ -1830,6 +1830,9 @@
                         if (v.length < 2) return 'that looks too short';
                         if (!nameRe.test(v)) return 'letters only';
                         return '';
+                    case 'size':
+                        if (!v) return 'please select company size';
+                        return '';
                     case 'email':
                         if (!v) return 'this field is required';
                         if (/\s/.test(v)) return 'email cannot contain spaces';
@@ -1841,7 +1844,7 @@
             }
             function validateStep(i) {
                 var ok = true;
-                var required = { 1: ['firstName','lastName','jobTitle','email'], 2: ['company','country'], 3: [] };
+                var required = { 1: ['firstName','lastName','jobTitle','email'], 2: ['company','country','size'], 3: [] };
                 var stepEl = steps[i];
                 var stepNo = parseInt(stepEl.getAttribute('data-step'), 10);
                 var names = required[stepNo] || [];
@@ -1879,11 +1882,20 @@
                 var sizeBtn = sizeWrap.querySelector('.lp-demo-select-btn');
                 var sizeMenu = sizeWrap.querySelector('.lp-demo-select-menu');
                 var sizeVal = sizeWrap.querySelector('.lp-demo-select-val');
+                var placeSize = function() {
+                    var r = sizeBtn.getBoundingClientRect();
+                    sizeMenu.style.left = r.left + 'px';
+                    sizeMenu.style.width = r.width + 'px';
+                    sizeMenu.style.top = (r.bottom + 6) + 'px';
+                };
                 var openSize = function(open) {
                     sizeMenu.hidden = !open;
                     sizeWrap.classList.toggle('is-open', open);
                     sizeBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+                    if (open) placeSize();
                 };
+                window.addEventListener('resize', function() { if (!sizeMenu.hidden) placeSize(); });
+                window.addEventListener('scroll', function() { if (!sizeMenu.hidden) openSize(false); }, true);
                 sizeBtn.addEventListener('click', function(e) { e.stopPropagation(); openSize(sizeMenu.hidden); });
                 sizeWrap.querySelectorAll('.lp-demo-select-opt').forEach(function(opt) {
                     opt.addEventListener('click', function() {
@@ -1892,6 +1904,7 @@
                         sizeInput.value = opt.getAttribute('data-value');
                         sizeVal.textContent = opt.textContent;
                         sizeVal.classList.remove('is-placeholder');
+                        setError(sizeInput, '');
                         openSize(false);
                     });
                 });
