@@ -1828,6 +1828,12 @@ html.theme-light .lp-demo-card .lp-cta-label {
     font-weight: 600;
     letter-spacing: 0.02em;
     color: rgba(255, 255, 255, 0.35);
+    order: 1;
+}
+.lp-demo-field-full .lp-demo-error {
+    position: static;
+    order: 0;
+    margin-top: 0.35rem;
 }
 .lp-demo-field input:focus,
 .lp-demo-field select:focus,
@@ -1919,21 +1925,15 @@ html.theme-light .lp-demo-card .lp-cta-label {
 .lp-demo-consent {
     display: flex;
     align-items: center;
-    justify-content: center;
     gap: 0.6rem;
     margin-top: 1.2rem;
-    padding: 0.7rem 1rem;
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
     font-size: 0.82rem;
-    color: rgba(255, 255, 255, 0.7);
+    color: rgba(255, 255, 255, 0.62);
     cursor: pointer;
-    transition: border-color 0.2s ease, background 0.2s ease;
 }
-.lp-demo-consent:hover { border-color: rgba(0, 240, 255, 0.35); background: rgba(0, 240, 255, 0.04); }
 .lp-demo-consent input {
-    width: 17px; height: 17px; flex-shrink: 0;
+    flex: 0 0 auto;
+    width: 17px; height: 17px;
     accent-color: #7b6cff; cursor: pointer;
 }
 
