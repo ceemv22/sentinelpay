@@ -1788,8 +1788,8 @@ html.theme-light .lp-demo-card .lp-cta-label {
     from { opacity: 0; transform: translateY(14px); }
     to   { opacity: 1; transform: translateY(0); }
 }
-.lp-demo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.05rem 1.1rem; }
-.lp-demo-field { display: flex; flex-direction: column; gap: 0.45rem; }
+.lp-demo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem 1.1rem; align-items: start; }
+.lp-demo-field { display: flex; flex-direction: column; gap: 0.45rem; position: relative; }
 .lp-demo-field-full { grid-column: 1 / -1; }
 .lp-demo-field label {
     font-size: 0.74rem;
@@ -1911,8 +1911,10 @@ html.theme-light .lp-demo-card .lp-cta-label {
 
 /* demo form field-level error messages */
 .lp-demo-error {
-    display: block;
-    margin-top: 0.35rem;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin-top: 0.3rem;
     font-size: 0.72rem;
     font-weight: 500;
     color: #ff7a95;
