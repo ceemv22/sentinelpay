@@ -370,7 +370,7 @@
             border-color: rgba(255, 255, 255, 1);
         }
     </style>
-    <link rel="stylesheet" href="/corp.css?v=83">
+    <link rel="stylesheet" href="/corp.css?v=84">
 </head>
 <body class="lp-body">
     <div id="sp-loader"><svg class="spl-logo-svg" viewBox="0 0 120 120" fill="none"><defs><linearGradient id="spl-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00ffff"/><stop offset="100%" stop-color="#a020f0"/></linearGradient><filter id="spl-glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3.5" result="coloredBlur"/><feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g filter="url(#spl-glow)" fill="none" stroke="url(#spl-grad)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z"/><g class="spl-eye-blink"><path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z"/><circle cx="60" cy="60" r="6"/><circle cx="60" cy="60" r="2" fill="url(#spl-grad)" stroke="none"/></g><path d="M60 15 V 30" stroke-width="2" opacity="0.6"/><path d="M60 90 V 105" stroke-width="2" opacity="0.6"/></g></svg></div>
@@ -1095,13 +1095,59 @@
 
                         <div class="lp-demo-step" data-step="2" hidden>
                             <div class="lp-demo-grid">
-                                <div class="lp-demo-field"><label>company<i>*</i></label><input name="company" type="text" autocomplete="organization" placeholder="e.g. sentinelpay"></div>
-                                <div class="lp-demo-field"><label>country<i>*</i></label><input name="country" type="text" autocomplete="country-name" placeholder="where you operate"></div>
+                                <div class="lp-demo-field lp-demo-field-full"><label>registered company name<i>*</i></label><input name="company" type="text" autocomplete="organization" placeholder="e.g. sentinelpay ltd"></div>
                                 <div class="lp-demo-field lp-demo-field-full">
-                                    <label>company size<i>*</i></label>
-                                    <div class="lp-demo-select" id="lp-demo-size">
+                                    <label>company website<i>*</i></label>
+                                    <span class="lp-demo-note">only domains that match your work email will be contacted.</span>
+                                    <input name="website" type="text" autocomplete="url" placeholder="yourcompany.com">
+                                </div>
+                                <div class="lp-demo-field">
+                                    <label>which industry<i>*</i></label>
+                                    <div class="lp-demo-select">
                                         <button type="button" class="lp-demo-select-btn" aria-haspopup="listbox" aria-expanded="false">
-                                            <span class="lp-demo-select-val is-placeholder">select company size…</span>
+                                            <span class="lp-demo-select-val is-placeholder">select industry…</span>
+                                            <svg class="lp-demo-select-caret" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                        </button>
+                                        <ul class="lp-demo-select-menu" role="listbox" hidden>
+                                            <li class="lp-demo-select-opt" role="option" data-value="crypto exchange">crypto exchange</li>
+                                            <li class="lp-demo-select-opt" role="option" data-value="payments / psp">payments / psp</li>
+                                            <li class="lp-demo-select-opt" role="option" data-value="banking &amp; financial institution">banking &amp; financial institution</li>
+                                            <li class="lp-demo-select-opt" role="option" data-value="fintech">fintech</li>
+                                            <li class="lp-demo-select-opt" role="option" data-value="web3 / defi">web3 / defi</li>
+                                            <li class="lp-demo-select-opt" role="option" data-value="government / regulator">government / regulator</li>
+                                            <li class="lp-demo-select-opt" role="option" data-value="other">other</li>
+                                        </ul>
+                                        <input type="hidden" name="industry">
+                                    </div>
+                                </div>
+                                <div class="lp-demo-field">
+                                    <label>where are you based<i>*</i></label>
+                                    <div class="lp-demo-select">
+                                        <button type="button" class="lp-demo-select-btn" aria-haspopup="listbox" aria-expanded="false">
+                                            <span class="lp-demo-select-val is-placeholder">select region…</span>
+                                            <svg class="lp-demo-select-caret" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                        </button>
+                                        <ul class="lp-demo-select-menu" role="listbox" hidden>
+                                            <li class="lp-demo-select-opt" role="option" data-value="north america">north america</li>
+                                            <li class="lp-demo-select-opt" role="option" data-value="united kingdom">united kingdom</li>
+                                            <li class="lp-demo-select-opt" role="option" data-value="europe">europe</li>
+                                            <li class="lp-demo-select-opt" role="option" data-value="asia pacific">asia pacific</li>
+                                            <li class="lp-demo-select-opt" role="option" data-value="middle east &amp; africa">middle east &amp; africa</li>
+                                            <li class="lp-demo-select-opt" role="option" data-value="latin america">latin america</li>
+                                        </ul>
+                                        <input type="hidden" name="region">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="lp-demo-step" data-step="3" hidden>
+                            <div class="lp-demo-grid">
+                                <div class="lp-demo-field">
+                                    <label>company size<i>*</i></label>
+                                    <div class="lp-demo-select">
+                                        <button type="button" class="lp-demo-select-btn" aria-haspopup="listbox" aria-expanded="false">
+                                            <span class="lp-demo-select-val is-placeholder">employees…</span>
                                             <svg class="lp-demo-select-caret" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                                         </button>
                                         <ul class="lp-demo-select-menu" role="listbox" hidden>
@@ -1114,12 +1160,42 @@
                                         <input type="hidden" name="size">
                                     </div>
                                 </div>
+                                <div class="lp-demo-field">
+                                    <label>wallets / txns per year<i>*</i></label>
+                                    <div class="lp-demo-select">
+                                        <button type="button" class="lp-demo-select-btn" aria-haspopup="listbox" aria-expanded="false">
+                                            <span class="lp-demo-select-val is-placeholder">expected volume…</span>
+                                            <svg class="lp-demo-select-caret" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                        </button>
+                                        <ul class="lp-demo-select-menu" role="listbox" hidden>
+                                            <li class="lp-demo-select-opt" role="option" data-value="under 1k">under 1k</li>
+                                            <li class="lp-demo-select-opt" role="option" data-value="1k – 10k">1k – 10k</li>
+                                            <li class="lp-demo-select-opt" role="option" data-value="10k – 100k">10k – 100k</li>
+                                            <li class="lp-demo-select-opt" role="option" data-value="100k – 1m">100k – 1m</li>
+                                            <li class="lp-demo-select-opt" role="option" data-value="1m+">1m+</li>
+                                        </ul>
+                                        <input type="hidden" name="volume">
+                                    </div>
+                                </div>
+                                <div class="lp-demo-field lp-demo-field-full">
+                                    <label>which solutions interest you <span class="lp-demo-note-inline">(select all that apply)</span><i>*</i></label>
+                                    <div class="lp-demo-checks">
+                                        <label class="lp-demo-check"><input type="checkbox" name="solutions" value="transaction screening"><span>transaction screening</span></label>
+                                        <label class="lp-demo-check"><input type="checkbox" name="solutions" value="wallet investigations"><span>wallet investigations</span></label>
+                                        <label class="lp-demo-check"><input type="checkbox" name="solutions" value="risk scoring & kyt"><span>risk scoring &amp; kyt</span></label>
+                                        <label class="lp-demo-check"><input type="checkbox" name="solutions" value="travel rule / vasp"><span>travel rule / vasp</span></label>
+                                        <label class="lp-demo-check"><input type="checkbox" name="solutions" value="stablecoin monitoring"><span>stablecoin monitoring</span></label>
+                                        <label class="lp-demo-check"><input type="checkbox" name="solutions" value="api & data feeds"><span>api &amp; data feeds</span></label>
+                                        <label class="lp-demo-check"><input type="checkbox" name="solutions" value="reporting & audit"><span>reporting &amp; audit</span></label>
+                                        <label class="lp-demo-check"><input type="checkbox" name="solutions" value="not sure yet"><span>not sure yet</span></label>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="lp-demo-step" data-step="3" hidden>
+                        <div class="lp-demo-step" data-step="4" hidden>
                             <div class="lp-demo-field lp-demo-field-full">
-                                <label>what are you looking to solve?<i>*</i></label>
+                                <label>anything specific you want to solve?<i>*</i></label>
                                 <textarea name="message" rows="3" maxlength="250" placeholder="e.g. we settle stablecoin payouts to 40+ countries and need to screen every counterparty wallet before funds move…"></textarea>
                                 <div class="lp-demo-count"><span id="lp-demo-msg-count">0</span> / 250 · min 50</div>
                             </div>
@@ -1127,7 +1203,7 @@
                         </div>
 
                         <div class="lp-demo-progress">
-                            <span class="lp-demo-pct" id="lp-demo-pct">33%</span>
+                            <span class="lp-demo-pct" id="lp-demo-pct">25%</span>
                             <div class="lp-demo-track"><div class="lp-demo-fill" id="lp-demo-fill"></div></div>
                         </div>
 
@@ -1801,7 +1877,8 @@
             var nameRe = /^[a-zA-ZÀ-ɏ'’.\- ]+$/;
             var letterRe = /[a-zA-ZÀ-ɏ]/;
             var alnumRe = /[a-zA-Z0-9À-ɏ]/;
-            var heads = { 1: 'tell us about yourself', 2: 'tell us about your company', 3: 'what brings you here' };
+            var heads = { 1: 'tell us about yourself', 2: 'help us understand your business', 3: 'your crypto exposure & needs', 4: 'one last thing' };
+            var domainRe = /^([a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,}$/i;
             var headEl = document.getElementById('lp-demo-formhead');
             function setError(input, msg) {
                 var field = input.closest('.lp-demo-field');
@@ -1832,13 +1909,22 @@
                         if (v.length < 2) return 'that looks too short';
                         if (!alnumRe.test(v)) return 'enter a real company name';
                         return '';
-                    case 'country':
+                    case 'website':
                         if (!v) return 'this field is required';
-                        if (v.length < 2) return 'that looks too short';
-                        if (!nameRe.test(v)) return 'letters only';
+                        var host = v.replace(/^https?:\/\//i, '').replace(/\/.*$/, '').replace(/^www\./i, '').trim();
+                        if (!domainRe.test(host)) return 'enter a valid domain, e.g. company.com';
                         return '';
                     case 'size':
                         if (!v) return 'please select company size';
+                        return '';
+                    case 'industry':
+                        if (!v) return 'please pick an industry';
+                        return '';
+                    case 'region':
+                        if (!v) return 'please pick a region';
+                        return '';
+                    case 'volume':
+                        if (!v) return 'please pick an expected volume';
                         return '';
                     case 'message':
                         if (!v) return 'this field is required';
@@ -1856,7 +1942,7 @@
             }
             function validateStep(i) {
                 var ok = true;
-                var required = { 1: ['firstName','lastName','jobTitle','email'], 2: ['company','country','size'], 3: ['message'] };
+                var required = { 1: ['firstName','lastName','jobTitle','email'], 2: ['company','website','industry','region'], 3: ['size','volume'], 4: ['message'] };
                 var stepEl = steps[i];
                 var stepNo = parseInt(stepEl.getAttribute('data-step'), 10);
                 var names = required[stepNo] || [];
@@ -1867,6 +1953,20 @@
                     setError(inp, msg);
                     if (msg) ok = false;
                 });
+                var checks = stepEl.querySelectorAll('input[name="solutions"]');
+                if (checks.length) {
+                    var anyChecked = Array.prototype.some.call(checks, function(c) { return c.checked; });
+                    var checkField = checks[0].closest('.lp-demo-field');
+                    if (checkField) {
+                        checkField.classList.toggle('lp-demo-invalid', !anyChecked);
+                        var cerr = checkField.querySelector('.lp-demo-error');
+                        if (!anyChecked) {
+                            if (!cerr) { cerr = document.createElement('span'); cerr.className = 'lp-demo-error'; checkField.appendChild(cerr); }
+                            cerr.textContent = 'pick at least one';
+                            ok = false;
+                        } else if (cerr) { cerr.remove(); }
+                    }
+                }
                 if (i === total - 1) {
                     var consent = form.querySelector('input[name="consent"]');
                     if (consent && !consent.checked) { ok = false; consent.closest('.lp-demo-consent').classList.add('lp-demo-consent-err'); }
@@ -1888,40 +1988,58 @@
             }
             render();
 
-            var sizeWrap = document.getElementById('lp-demo-size');
-            if (sizeWrap) {
-                var sizeInput = sizeWrap.querySelector('input[name="size"]');
-                var sizeBtn = sizeWrap.querySelector('.lp-demo-select-btn');
-                var sizeMenu = sizeWrap.querySelector('.lp-demo-select-menu');
-                var sizeVal = sizeWrap.querySelector('.lp-demo-select-val');
-                var placeSize = function() {
-                    var r = sizeBtn.getBoundingClientRect();
-                    sizeMenu.style.left = r.left + 'px';
-                    sizeMenu.style.width = r.width + 'px';
-                    sizeMenu.style.top = (r.bottom + 6) + 'px';
+            var allSelects = form.querySelectorAll('.lp-demo-select');
+            var closeAllSelects = function(except) {
+                allSelects.forEach(function(w) {
+                    if (w === except) return;
+                    var m = w.querySelector('.lp-demo-select-menu');
+                    if (m && !m.hidden) { m.hidden = true; w.classList.remove('is-open'); w.querySelector('.lp-demo-select-btn').setAttribute('aria-expanded', 'false'); }
+                });
+            };
+            allSelects.forEach(function(wrap) {
+                var input = wrap.querySelector('input[type="hidden"]');
+                var btn = wrap.querySelector('.lp-demo-select-btn');
+                var menu = wrap.querySelector('.lp-demo-select-menu');
+                var val = wrap.querySelector('.lp-demo-select-val');
+                var place = function() {
+                    var r = btn.getBoundingClientRect();
+                    menu.style.left = r.left + 'px';
+                    menu.style.width = r.width + 'px';
+                    menu.style.top = (r.bottom + 6) + 'px';
                 };
-                var openSize = function(open) {
-                    sizeMenu.hidden = !open;
-                    sizeWrap.classList.toggle('is-open', open);
-                    sizeBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
-                    if (open) placeSize();
+                var open = function(o) {
+                    menu.hidden = !o;
+                    wrap.classList.toggle('is-open', o);
+                    btn.setAttribute('aria-expanded', o ? 'true' : 'false');
+                    if (o) place();
                 };
-                window.addEventListener('resize', function() { if (!sizeMenu.hidden) placeSize(); });
-                window.addEventListener('scroll', function() { if (!sizeMenu.hidden) openSize(false); }, true);
-                sizeBtn.addEventListener('click', function(e) { e.stopPropagation(); openSize(sizeMenu.hidden); });
-                sizeWrap.querySelectorAll('.lp-demo-select-opt').forEach(function(opt) {
+                window.addEventListener('resize', function() { if (!menu.hidden) place(); });
+                window.addEventListener('scroll', function() { if (!menu.hidden) open(false); }, true);
+                btn.addEventListener('click', function(e) { e.stopPropagation(); var willOpen = menu.hidden; closeAllSelects(wrap); open(willOpen); });
+                wrap.querySelectorAll('.lp-demo-select-opt').forEach(function(opt) {
                     opt.addEventListener('click', function() {
-                        sizeWrap.querySelectorAll('.lp-demo-select-opt').forEach(function(o) { o.classList.remove('is-active'); });
+                        wrap.querySelectorAll('.lp-demo-select-opt').forEach(function(o) { o.classList.remove('is-active'); });
                         opt.classList.add('is-active');
-                        sizeInput.value = opt.getAttribute('data-value');
-                        sizeVal.textContent = opt.textContent;
-                        sizeVal.classList.remove('is-placeholder');
-                        setError(sizeInput, '');
-                        openSize(false);
+                        input.value = opt.getAttribute('data-value');
+                        val.textContent = opt.textContent;
+                        val.classList.remove('is-placeholder');
+                        setError(input, '');
+                        open(false);
                     });
                 });
-                document.addEventListener('click', function(e) { if (!sizeWrap.contains(e.target)) openSize(false); });
-            }
+                document.addEventListener('click', function(e) { if (!wrap.contains(e.target)) open(false); });
+            });
+
+            form.querySelectorAll('input[name="solutions"]').forEach(function(cb) {
+                cb.addEventListener('change', function() {
+                    var field = cb.closest('.lp-demo-field');
+                    if (field && field.classList.contains('lp-demo-invalid') && form.querySelector('input[name="solutions"]:checked')) {
+                        field.classList.remove('lp-demo-invalid');
+                        var e = field.querySelector('.lp-demo-error');
+                        if (e) e.remove();
+                    }
+                });
+            });
 
             var msgArea = form.querySelector('textarea[name="message"]');
             var msgCount = document.getElementById('lp-demo-msg-count');
@@ -1937,7 +2055,7 @@
                 autoGrow();
             }
 
-            var validatedNames = ['firstName','lastName','jobTitle','company','country','email','message'];
+            var validatedNames = ['firstName','lastName','jobTitle','company','website','email','message'];
             form.querySelectorAll('input[name], select[name], textarea[name]').forEach(function(inp) {
                 if (validatedNames.indexOf(inp.name) === -1) return;
                 inp.addEventListener('blur', function() { setError(inp, fieldError(inp)); });
@@ -1963,7 +2081,8 @@
                 e.preventDefault();
                 if (!validateStep(cur)) return;
                 var data = {};
-                new FormData(form).forEach(function(v, k) { data[k] = typeof v === 'string' ? v.trim() : v; });
+                new FormData(form).forEach(function(v, k) { if (k !== 'solutions') data[k] = typeof v === 'string' ? v.trim() : v; });
+                data.solutions = Array.prototype.map.call(form.querySelectorAll('input[name="solutions"]:checked'), function(c) { return c.value; });
                 data.consent = !!form.querySelector('input[name="consent"]').checked;
                 submitBtn.disabled = true;
                 submitBtn.textContent = 'sending…';

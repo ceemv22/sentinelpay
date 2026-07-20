@@ -969,8 +969,12 @@ app.post('/v1/demo-request', requireRateLimitBackend, demoRequestLimiter, async 
         const jobTitle = clean(b.jobTitle, 120);
         const email = clean(b.email, 160);
         const company = clean(b.company, 120);
-        const country = clean(b.country, 80);
+        const website = clean(b.website, 160);
+        const industry = clean(b.industry, 80);
+        const region = clean(b.region || b.country, 80);
         const size = clean(b.size, 40);
+        const volume = clean(b.volume, 40);
+        const solutions = Array.isArray(b.solutions) ? b.solutions.map((s) => clean(s, 60)).filter(Boolean).slice(0, 12).join(', ') : '';
         const message = clean(b.message, 2000);
         const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         const nameRe = /^[a-zA-ZÀ-ɏ'’.\- ]{2,}$/;
@@ -998,14 +1002,18 @@ app.post('/v1/demo-request', requireRateLimitBackend, demoRequestLimiter, async 
                         ${row('job title', jobTitle)}
                         ${row('email', email)}
                         ${row('company', company)}
+                        ${row('website', website)}
+                        ${row('industry', industry)}
+                        ${row('region', region)}
                         ${row('company size', size)}
-                        ${row('country', country)}
+                        ${row('wallets/txns per year', volume)}
+                        ${row('solutions', solutions)}
                         ${row('message', message)}
                     </table>
                 </div>`
             });
         } else {
-            console.log('[demo-request]', { firstName, lastName, jobTitle, email, company, size, country });
+            console.log('[demo-request]', { firstName, lastName, jobTitle, email, company, website, industry, region, size, volume, solutions });
         }
 
         res.json({ ok: true });
