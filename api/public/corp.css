@@ -2353,3 +2353,34 @@ html.theme-light .lp-demo-select-list { scrollbar-width: thin; scrollbar-color: 
     /* footer breathing room */
     .lp-footer-top { gap: 1.6rem; }
 }
+
+/* ============ mobile first-screen + layout corrections (≤640px) ============ */
+@media (max-width: 640px) {
+    /* first screen = hero + supported-chains line, exactly like desktop */
+    html.theme-light .lp-hero {
+        min-height: calc(100svh - 106px);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 5.5rem 1.4rem 2.6rem;
+    }
+    /* headings: let text flow naturally, no desktop line breaks */
+    .lp-h2 br { display: none; }
+    /* role card: badge sits centered above the text, not floating bottom-right */
+    .lp-role-feature {
+        display: flex !important;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        min-height: 0 !important;
+        padding: 2.2rem 1.5rem 2.4rem !important;
+    }
+    .lp-role-badge {
+        position: static !important;
+        order: -1;
+        margin: 0 0 1.4rem;
+        width: 84px !important;
+        height: 84px !important;
+    }
+    .lp-role-feature-body { order: 0; }
+}
