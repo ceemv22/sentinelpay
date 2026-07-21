@@ -2259,3 +2259,38 @@ html.theme-light .lp-demo-select-list { scrollbar-width: thin; scrollbar-color: 
     .lp-ins-featured { grid-template-columns: 1fr; gap: 1rem; }
     .lp-ins-grid { grid-template-columns: 1fr; }
 }
+
+/* ============ mobile hardening (≤860px) — desktop untouched ============ */
+@media (max-width: 860px) {
+    /* demo form: release the fixed desktop geometry, let steps flow */
+    .lp-demo-step {
+        height: auto;
+        min-height: 0;
+        max-height: none;
+    }
+    .lp-demo-left { padding-top: 0; }
+    .lp-demo-form { padding-top: 0; }
+    .lp-demo-success { min-height: 0; padding: 2rem 0.5rem; }
+    /* field errors: back into the flow so long messages wrap instead of clipping */
+    .lp-demo-error {
+        position: static;
+        white-space: normal;
+        margin-top: 0.35rem;
+    }
+    .lp-demo-grid { gap: 1.05rem; }
+    .lp-demo-actions { margin-top: 0.4rem; }
+    .lp-demo-next, .lp-demo-submit { width: 100%; }
+    .lp-demo-back { align-self: center; }
+    .lp-demo-actions { flex-direction: column-reverse; align-items: stretch; gap: 0.4rem; }
+    /* insights: tighter rhythm when stacked */
+    .lp-ins-featured { margin-bottom: 1.8rem; }
+    .lp-ins-title { font-size: 1.15rem; }
+    /* dropdown menus: don't let the fixed-position panel exceed the phone screen */
+    .lp-demo-select-menu { max-height: 180px; }
+}
+@media (max-width: 480px) {
+    .lp-demo-card { padding: 1.8rem 1.3rem; }
+    .lp-demo-title { font-size: 1.75rem; }
+    .lp-statsx-heading { font-size: 1.35rem; }
+    .lp-h2 { font-size: 1.65rem; }
+}
