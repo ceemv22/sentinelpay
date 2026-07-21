@@ -971,7 +971,7 @@ app.post('/v1/demo-request', requireRateLimitBackend, demoRequestLimiter, async 
         const company = clean(b.company, 120);
         const website = clean(b.website, 160);
         const industry = clean(b.industry, 80);
-        const region = clean(b.region || b.country, 80);
+        const country = clean(b.country || b.region, 80);
         const size = clean(b.size, 40);
         const volume = clean(b.volume, 40);
         const solutions = Array.isArray(b.solutions) ? b.solutions.map((s) => clean(s, 60)).filter(Boolean).slice(0, 12).join(', ') : '';
@@ -1004,7 +1004,7 @@ app.post('/v1/demo-request', requireRateLimitBackend, demoRequestLimiter, async 
                         ${row('company', company)}
                         ${row('website', website)}
                         ${row('industry', industry)}
-                        ${row('region', region)}
+                        ${row('country', country)}
                         ${row('company size', size)}
                         ${row('wallets/txns per year', volume)}
                         ${row('solutions', solutions)}
@@ -1013,7 +1013,7 @@ app.post('/v1/demo-request', requireRateLimitBackend, demoRequestLimiter, async 
                 </div>`
             });
         } else {
-            console.log('[demo-request]', { firstName, lastName, jobTitle, email, company, website, industry, region, size, volume, solutions });
+            console.log('[demo-request]', { firstName, lastName, jobTitle, email, company, website, industry, country, size, volume, solutions });
         }
 
         res.json({ ok: true });

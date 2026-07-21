@@ -1931,20 +1931,50 @@ html.theme-light .lp-demo-card .lp-cta-label {
 }
 .lp-demo-select.is-open .lp-demo-select-caret { transform: rotate(180deg); color: #00f0ff; }
 .lp-demo-select-menu {
-    list-style: none;
     margin: 0;
     padding: 0.35rem;
     position: fixed;
     z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    max-height: 264px;
     background: #0d1120;
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
     box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55);
     animation: lpDemoStepIn 0.18s ease;
-    max-height: 232px;
+}
+.lp-demo-select-search-wrap { padding: 0.15rem 0.15rem 0.4rem; }
+.lp-demo-select-search {
+    width: 100%;
+    padding: 0.5rem 0.7rem;
+    border-radius: 9px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+    font: inherit;
+    font-size: 0.85rem;
+    outline: none;
+}
+.lp-demo-select-search::placeholder { color: rgba(255, 255, 255, 0.35); }
+.lp-demo-select-search:focus { border-color: #00f0ff; box-shadow: 0 0 0 2px rgba(0, 240, 255, 0.16); }
+.lp-demo-select-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
     overflow-y: auto;
     overscroll-behavior: contain;
+    flex: 1;
+    min-height: 0;
 }
+.lp-demo-select-empty { padding: 0.7rem; text-align: center; font-size: 0.82rem; color: rgba(255, 255, 255, 0.4); }
+.lp-demo-select-menu::-webkit-scrollbar,
+.lp-demo-select-list::-webkit-scrollbar { width: 8px; }
+.lp-demo-select-menu::-webkit-scrollbar-thumb,
+.lp-demo-select-list::-webkit-scrollbar-thumb { background: rgba(123, 108, 255, 0.4); border-radius: 8px; border: 2px solid #0d1120; }
+.lp-demo-select-menu::-webkit-scrollbar-thumb:hover,
+.lp-demo-select-list::-webkit-scrollbar-thumb:hover { background: rgba(123, 108, 255, 0.6); }
+.lp-demo-select-list { scrollbar-width: thin; scrollbar-color: rgba(123, 108, 255, 0.5) transparent; }
 .lp-demo-select-opt {
     padding: 0.6rem 0.75rem;
     border-radius: 9px;
@@ -1954,6 +1984,9 @@ html.theme-light .lp-demo-card .lp-cta-label {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     transition: background 0.15s ease, color 0.15s ease;
 }
 .lp-demo-select-opt:hover { background: rgba(0, 240, 255, 0.1); color: #ffffff; }
