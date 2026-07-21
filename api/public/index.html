@@ -2067,8 +2067,8 @@
                 }
                 window.addEventListener('resize', function() { if (!menu.hidden) place(); });
                 window.addEventListener('scroll', function(e) {
-                    // scrolling inside the menu itself must not close it
-                    if (!menu.hidden && !(e.target instanceof Node && menu.contains(e.target))) open(false);
+                    // page scrolls: keep the fixed-position menu glued to its button
+                    if (!menu.hidden && !(e.target instanceof Node && menu.contains(e.target))) place();
                 }, true);
                 btn.addEventListener('click', function(e) { e.stopPropagation(); var willOpen = menu.hidden; closeAllSelects(wrap); open(willOpen); });
                 btn.addEventListener('keydown', function(e) { if (e.key === 'Escape') open(false); });
