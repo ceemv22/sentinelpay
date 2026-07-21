@@ -4,11 +4,12 @@ const app = express();
 
 const PORT = process.env.PORT || 3000;
 
-// help.sentinelpay.org is intentionally empty — serve a blank page for every path.
+// Intentionally-empty subdomains (help.sentinelpay.org, blog.sentinelpay.org, …):
+// serve a blank page for every host and path until real content is built.
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Help Center running on http://0.0.0.0:${PORT}`);
+    console.log(`empty-subdomain server running on http://0.0.0.0:${PORT}`);
 });
