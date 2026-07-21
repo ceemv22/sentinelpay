@@ -2411,3 +2411,15 @@ html.theme-light .lp-demo-select-list { scrollbar-width: thin; scrollbar-color: 
     .lp-intel-visual { min-height: 0 !important; }
     .lp-intel-guide { margin: 0 auto; }
 }
+
+/* ============ mobile audit fixes (≤640px) ============ */
+@media (max-width: 640px) {
+    /* stats section had a higher-specificity 5.5rem padding — match the 3rem section rhythm */
+    html.theme-light .lp-statsx { padding: 3rem 0 !important; }
+    /* footer links: bigger tap targets + comfortable spacing */
+    .lp-footer-link { display: inline-block; padding: 0.32rem 0; font-size: 0.9rem; }
+    .lp-footer-email { display: inline-block; padding: 0.3rem 0; font-size: 0.9rem; }
+    .lp-footer-col { margin-bottom: 0.4rem; }
+    /* footer link columns: even 2-up grid instead of ragged flex */
+    .lp-footer-links { gap: 1.6rem 1.2rem; }
+}
