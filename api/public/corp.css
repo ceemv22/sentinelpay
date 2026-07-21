@@ -1785,7 +1785,7 @@ html.theme-light .lp-demo-card .lp-cta-label {
 }
 /* animated step container so switching steps slides in cleanly */
 .lp-demo-step[hidden] { display: none !important; }
-.lp-demo-step { animation: lpDemoStepIn 0.42s cubic-bezier(0.22, 1, 0.36, 1); min-height: 300px; display: flex; flex-direction: column; justify-content: flex-start; }
+.lp-demo-step { animation: lpDemoStepIn 0.42s cubic-bezier(0.22, 1, 0.36, 1); height: 316px; min-height: 316px; max-height: 316px; overflow: visible; display: flex; flex-direction: column; justify-content: flex-start; }
 @keyframes lpDemoStepIn {
     from { opacity: 0; transform: translateY(14px); }
     to   { opacity: 1; transform: translateY(0); }
@@ -1823,7 +1823,7 @@ html.theme-light .lp-demo-card .lp-cta-label {
 .lp-demo-field textarea::placeholder { color: rgba(255, 255, 255, 0.3); }
 .lp-demo-field select { color: rgba(255, 255, 255, 0.55); }
 .lp-demo-field select option { color: #0b1020; }
-.lp-demo-field textarea { resize: none; overflow-y: auto; min-height: 84px; max-height: 116px; line-height: 1.5; }
+.lp-demo-field textarea { resize: none; overflow-y: auto; min-height: 116px; max-height: 116px; line-height: 1.5; }
 .lp-demo-count {
     margin-top: 0.4rem;
     text-align: right;
@@ -1832,11 +1832,6 @@ html.theme-light .lp-demo-card .lp-cta-label {
     letter-spacing: 0.02em;
     color: rgba(255, 255, 255, 0.35);
     order: 1;
-}
-.lp-demo-field-full .lp-demo-error {
-    position: static;
-    order: 0;
-    margin-top: 0.35rem;
 }
 .lp-demo-field input:focus,
 .lp-demo-field select:focus,
@@ -2066,7 +2061,7 @@ html.theme-light .lp-demo-select-list { scrollbar-width: thin; scrollbar-color: 
     align-items: center;
     justify-content: center;
     text-align: center;
-    min-height: 354px;
+    min-height: 478px;
     padding: 1rem;
     position: relative;
     z-index: 1;
@@ -2163,6 +2158,7 @@ html.theme-light .lp-demo-select-list { scrollbar-width: thin; scrollbar-color: 
     font-weight: 500;
     color: #ff7a95;
     text-transform: lowercase;
+    white-space: nowrap;
     animation: lpDemoStepIn 0.25s ease;
 }
 .lp-demo-consent.lp-demo-consent-err { color: #ff7a95 !important; }
