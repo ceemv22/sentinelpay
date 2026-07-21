@@ -1793,7 +1793,7 @@ html.theme-light .lp-demo-card .lp-cta-label {
 .lp-demo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem 1.1rem; align-items: start; }
 .lp-demo-field { display: flex; flex-direction: column; gap: 0.45rem; position: relative; }
 .lp-demo-field-full { grid-column: 1 / -1; }
-.lp-demo-field label {
+.lp-demo-field > label {
     font-size: 0.74rem;
     font-weight: 600;
     letter-spacing: 0.01em;
@@ -1801,8 +1801,8 @@ html.theme-light .lp-demo-card .lp-cta-label {
     text-transform: lowercase;
     transition: color 0.18s ease;
 }
-.lp-demo-field:focus-within label { color: #7bdcff; }
-.lp-demo-field label i { color: #7bdcff; font-style: normal; margin-left: 1px; }
+.lp-demo-field:focus-within > label { color: #7bdcff; }
+.lp-demo-field > label i { color: #7bdcff; font-style: normal; margin-left: 1px; }
 .lp-demo-field input,
 .lp-demo-field select,
 .lp-demo-field textarea {
