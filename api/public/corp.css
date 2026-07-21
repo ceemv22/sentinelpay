@@ -2456,3 +2456,10 @@ html.theme-light .lp-demo-select-list { scrollbar-width: thin; scrollbar-color: 
     .lp-sol-card, .lp-ins-card { transition: box-shadow 0.25s ease; }
     .lp-sol-card:hover, .lp-ins-card:hover, .lp-ins-featured:hover { transform: none !important; }
 }
+
+/* keep the log in / get started nav buttons visible on laptops & tablets
+   (base landing.css hides .lp-desktop-auth ≤1280px; only truly hide on phones,
+   where the hamburger menu carries them) */
+@media (min-width: 641px) and (max-width: 1280px) {
+    #auth-nav-container .lp-desktop-auth { display: inline-flex !important; }
+}
