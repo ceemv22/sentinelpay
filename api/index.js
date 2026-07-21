@@ -984,6 +984,18 @@ app.post('/v1/demo-request', requireRateLimitBackend, demoRequestLimiter, async 
             return res.status(400).json({ error: 'invalid submission' });
         }
 
+        // website domain must match the work email domain (subdomains either way are fine)
+        if (website) {
+            const host = website.replace(/^https?:\/\//i, '').replace(/\/.*$/, '').replace(/^www\./i, '').toLowerCase();
+            const emailDomain = email.split('@').pop().toLowerCase();
+            const matches = host === emailDomain ||
+                host.endsWith('.' + emailDomain) ||
+                emailDomain.endsWith('.' + host);
+            if (!matches) {
+                return res.status(400).json({ error: 'website domain must match your work email domain' });
+            }
+        }
+
         const esc = (s) => String(s).replace(/[<>&"]/g, (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c]));
         const row = (k, v) => v ? `<tr><td style="padding:4px 12px 4px 0;color:#888;">${k}</td><td style="padding:4px 0;color:#111;">${esc(v)}</td></tr>` : '';
 
