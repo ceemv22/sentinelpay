@@ -1784,7 +1784,7 @@ html.theme-light .lp-demo-card .lp-cta-label {
     background: linear-gradient(#00f0ff, #a020f0);
 }
 /* animated step container so switching steps slides in cleanly */
-.lp-demo-step[hidden] { display: none; }
+.lp-demo-step[hidden] { display: none !important; }
 .lp-demo-step { animation: lpDemoStepIn 0.42s cubic-bezier(0.22, 1, 0.36, 1); min-height: 300px; display: flex; flex-direction: column; justify-content: flex-start; }
 @keyframes lpDemoStepIn {
     from { opacity: 0; transform: translateY(14px); }
@@ -1930,6 +1930,7 @@ html.theme-light .lp-demo-card .lp-cta-label {
     transition: transform 0.25s ease, color 0.2s ease;
 }
 .lp-demo-select.is-open .lp-demo-select-caret { transform: rotate(180deg); color: #00f0ff; }
+.lp-demo-select-menu[hidden] { display: none !important; }
 .lp-demo-select-menu {
     margin: 0;
     padding: 0.35rem;
@@ -2053,7 +2054,7 @@ html.theme-light .lp-demo-select-list::-webkit-scrollbar-thumb { background: rgb
 .lp-demo-next, .lp-demo-submit, .lp-demo-back, .lp-demo-select-btn { transform: none !important; }
 .lp-demo-next:hover, .lp-demo-submit:hover { box-shadow: 0 12px 32px -8px rgba(123, 108, 255, 0.6); }
 
-.lp-demo-success[hidden] { display: none; }
+.lp-demo-success[hidden] { display: none !important; }
 .lp-demo-success {
     grid-column: 1 / -1;
     display: flex;
