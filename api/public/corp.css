@@ -2285,8 +2285,15 @@ html.theme-light .lp-demo-select-list { scrollbar-width: thin; scrollbar-color: 
     /* insights: tighter rhythm when stacked */
     .lp-ins-featured { margin-bottom: 1.8rem; }
     .lp-ins-title { font-size: 1.15rem; }
-    /* dropdown menus: don't let the fixed-position panel exceed the phone screen */
-    .lp-demo-select-menu { max-height: 180px; }
+    /* dropdown menus on mobile: taller so more options show, with bigger tap targets */
+    .lp-demo-select-menu { max-height: 45vh; padding: 0.4rem; }
+    .lp-demo-select-opt {
+        padding: 0.85rem 0.85rem;
+        font-size: 0.98rem;
+        border-radius: 10px;
+    }
+    /* the fixed-position button itself: comfortable height for touch */
+    .lp-demo-select-btn { padding: 0.85rem 1rem; font-size: 0.98rem; }
 }
 @media (max-width: 480px) {
     .lp-demo-card { padding: 1.8rem 1.3rem; }
@@ -2356,9 +2363,13 @@ html.theme-light .lp-demo-select-list { scrollbar-width: thin; scrollbar-color: 
 
 /* ============ mobile first-screen + layout corrections (≤640px) ============ */
 @media (max-width: 640px) {
-    /* first screen = hero + supported-chains line, exactly like desktop */
+    /* first screen = only nav + hero + supported-chains line.
+       size to the LARGE viewport (toolbar hidden) so nothing below (built-for-you)
+       ever peeks through when the mobile URL bar retracts. 100vh on mobile == the
+       large viewport and is stable (doesn't change on scroll), so no shake. */
     html.theme-light .lp-hero {
-        min-height: calc(100svh - 106px);
+        min-height: calc(100vh - 106px);
+        min-height: calc(100lvh - 106px);
         display: flex;
         flex-direction: column;
         justify-content: center;
