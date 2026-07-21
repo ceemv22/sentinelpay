@@ -26,10 +26,15 @@ function resolveTrustProxySetting(value) {
 const trustProxySetting = resolveTrustProxySetting(process.env.TRUST_PROXY);
 app.set('trust proxy', trustProxySetting === undefined ? 1 : trustProxySetting);
 
-// Prefer Cloudflare's connecting IP when present; otherwise Express's trust-proxy req.ip.
+// Only trust the client-supplied cf-connecting-ip header when we know every request
+// arrives through Cloudflare (ENFORCE_CLOUDFLARE=true). Otherwise it is spoofable —
+// an attacker could rotate it per request to get a fresh rate-limit bucket and bypass
+// the demo-form limit. Default: Express's trust-proxy-derived req.ip (not spoofable
+// past the immediate proxy).
+const enforceCloudflare = String(process.env.ENFORCE_CLOUDFLARE || '').trim().toLowerCase() === 'true';
 app.use((req, res, next) => {
     const cfIp = req.headers['cf-connecting-ip'];
-    req.realIp = (typeof cfIp === 'string' && cfIp.length > 0) ? cfIp : req.ip;
+    req.realIp = (enforceCloudflare && typeof cfIp === 'string' && cfIp.length > 0) ? cfIp : req.ip;
     next();
 });
 
