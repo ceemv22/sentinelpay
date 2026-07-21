@@ -2463,3 +2463,15 @@ html.theme-light .lp-demo-select-list { scrollbar-width: thin; scrollbar-color: 
 @media (min-width: 641px) and (max-width: 1280px) {
     #auth-nav-container .lp-desktop-auth { display: inline-flex !important; }
 }
+
+/* honeypot: off-screen, never focusable, hidden from AT — bots fill it, humans don't */
+.lp-demo-hp {
+    position: absolute !important;
+    left: -9999px !important;
+    top: auto;
+    width: 1px; height: 1px;
+    overflow: hidden;
+}
+/* turnstile widget spacing (only renders when a site key is configured) */
+.lp-demo-turnstile { margin-top: 1rem; }
+.lp-demo-turnstile:empty { margin-top: 0; }

@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const crypto = require('crypto');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const hpp = require('hpp');
@@ -38,6 +39,42 @@ app.use((req, res, next) => {
     next();
 });
 
+// --- Origin lockdown ---------------------------------------------------------
+// When CF_ORIGIN_SECRET is set, require a matching secret header (injected by a
+// Cloudflare Transform Rule) so the sensitive endpoint can't be reached by hitting
+// the Railway origin directly and bypassing Cloudflare's WAF/rate-limit/bot rules.
+// Not set → skipped, so the site keeps working until the CF rule is configured.
+const cfOriginSecret = process.env.CF_ORIGIN_SECRET;
+const cfOriginHeader = (process.env.CF_ORIGIN_HEADER || 'x-sentinel-origin').trim().toLowerCase();
+const sha256 = (s) => crypto.createHash('sha256').update(String(s)).digest();
+function requireCloudflareOrigin(req, res, next) {
+    if (!cfOriginSecret) return next();
+    const provided = req.headers[cfOriginHeader];
+    if (provided && crypto.timingSafeEqual(sha256(provided), sha256(cfOriginSecret))) return next();
+    return res.status(403).json({ error: 'forbidden' });
+}
+
+// --- Cloudflare Turnstile ----------------------------------------------------
+// When TURNSTILE_SECRET_KEY is set, the demo form must include a valid Turnstile
+// token. Not set → skipped (staged rollout; the form still works before keys exist).
+const turnstileSecret = process.env.TURNSTILE_SECRET_KEY;
+async function verifyTurnstile(token, ip) {
+    if (!turnstileSecret) return true;
+    if (!token || typeof token !== 'string') return false;
+    try {
+        const resp = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({ secret: turnstileSecret, response: token, remoteip: ip || '' })
+        });
+        const data = await resp.json();
+        return data && data.success === true;
+    } catch (err) {
+        console.error('[turnstile verify error]', err.message);
+        return false;
+    }
+}
+
 app.use(hpp());
 app.use(helmet({
     contentSecurityPolicy: {
@@ -46,6 +83,7 @@ app.use(helmet({
             'script-src': [
                 "'self'",
                 "'unsafe-inline'",
+                'https://challenges.cloudflare.com',
                 'https://widget.intercom.io',
                 'https://js.intercomcdn.com',
                 'https://*.intercomcdn.com',
@@ -63,6 +101,7 @@ app.use(helmet({
             ],
             'connect-src': [
                 "'self'",
+                'https://challenges.cloudflare.com',
                 'https://api-iam.intercom.io',
                 'https://*.intercom.io',
                 'https://uploads.intercomcdn.com',
@@ -73,7 +112,7 @@ app.use(helmet({
                 'wss://*.intercom.io',
                 'wss://*.intercom-messenger.com'
             ],
-            'frame-src': ["'self'", 'https://intercom-sheets.com', 'https://*.intercom.io', 'blob:'],
+            'frame-src': ["'self'", 'https://challenges.cloudflare.com', 'https://intercom-sheets.com', 'https://*.intercom.io', 'blob:'],
             'base-uri': ["'self'"],
             'form-action': ["'self'"],
             'frame-ancestors': ["'none'"],
@@ -124,9 +163,22 @@ const demoRequestLimiter = rateLimit({
     message: { error: 'too many requests, please try again later' }
 });
 
-app.post('/v1/demo-request', demoRequestLimiter, async (req, res) => {
+app.post('/v1/demo-request', requireCloudflareOrigin, demoRequestLimiter, async (req, res) => {
     try {
         const b = req.body || {};
+
+        // Honeypot: a hidden field real users never fill. If it's populated, it's a bot —
+        // pretend success and silently drop (no email, don't reveal the trap).
+        if (typeof b.company_url === 'string' && b.company_url.trim() !== '') {
+            return res.json({ ok: true });
+        }
+
+        // Bot challenge: verify the Cloudflare Turnstile token (no-op until keys are set).
+        const turnstileToken = b['cf-turnstile-response'] || b.turnstileToken;
+        if (!(await verifyTurnstile(turnstileToken, req.realIp))) {
+            return res.status(400).json({ error: 'verification failed, please try again' });
+        }
+
         const clean = (v, max) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
         const firstName = clean(b.firstName, 80);
         const lastName = clean(b.lastName, 80);
