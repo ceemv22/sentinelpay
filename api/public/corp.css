@@ -2423,3 +2423,25 @@ html.theme-light .lp-demo-select-list { scrollbar-width: thin; scrollbar-color: 
     /* footer link columns: even 2-up grid instead of ragged flex */
     .lp-footer-links { gap: 1.6rem 1.2rem; }
 }
+
+/* ============ mobile performance: kill scroll jank (≤640px) ============ */
+@media (max-width: 640px) {
+    /* freeze the big blended hero orbs — static gradient stays, no per-frame repaint */
+    .lp-fx-orb {
+        animation: none !important;
+        mix-blend-mode: normal;
+        will-change: auto;
+        opacity: 0.7;
+    }
+    /* backdrop-filter blur is expensive to composite while scrolling on phones */
+    .lp-intel-guide {
+        -webkit-backdrop-filter: none !important;
+        backdrop-filter: none !important;
+        background: rgba(255, 255, 255, 0.05);
+    }
+    /* smoother momentum scrolling on iOS */
+    html { -webkit-overflow-scrolling: touch; }
+    /* hover-lift transforms shouldn't stick after a tap on touch devices */
+    .lp-sol-card, .lp-ins-card { transition: box-shadow 0.25s ease; }
+    .lp-sol-card:hover, .lp-ins-card:hover, .lp-ins-featured:hover { transform: none !important; }
+}
