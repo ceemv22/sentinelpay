@@ -18,6 +18,3 @@ Thumbs.db
 # Git
 .git/
 .gitignore
-
-# Branding assets (not needed in container)
-*.png

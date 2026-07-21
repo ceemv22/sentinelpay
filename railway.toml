@@ -2,4 +2,4 @@
 builder = "dockerfile"
 
 [deploy]
-startCommand = "sh -c 'cd api && npx prisma db push --skip-generate --accept-data-loss && node index.js'"
+startCommand = "sh -c 'cd api && node index.js'"
