@@ -1938,7 +1938,7 @@ html.theme-light .lp-demo-card .lp-cta-label {
     z-index: 9999;
     display: flex;
     flex-direction: column;
-    max-height: 264px;
+    max-height: 200px;
     background: #0d1120;
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
@@ -1954,16 +1954,25 @@ html.theme-light .lp-demo-card .lp-cta-label {
     flex: 1;
     min-height: 0;
 }
-.lp-demo-select-menu::-webkit-scrollbar,
-.lp-demo-select-list::-webkit-scrollbar { width: 8px; }
-.lp-demo-select-menu::-webkit-scrollbar-thumb,
-.lp-demo-select-list::-webkit-scrollbar-thumb { background: rgba(123, 108, 255, 0.4); border-radius: 8px; border: 2px solid #0d1120; }
-.lp-demo-select-menu::-webkit-scrollbar-thumb:hover,
-.lp-demo-select-list::-webkit-scrollbar-thumb:hover { background: rgba(123, 108, 255, 0.6); }
-.lp-demo-select-list,
-html.theme-light .lp-demo-select-list { scrollbar-width: thin; scrollbar-color: rgba(123, 108, 255, 0.55) #0d1120; }
+/* scrollbar: same recipe as the site scrollbar (thin, rounded, light-blue thumb) on a dark track */
+.lp-demo-select-list::-webkit-scrollbar,
+html.theme-light .lp-demo-select-list::-webkit-scrollbar { width: 6px; height: 6px; }
+.lp-demo-select-list::-webkit-scrollbar-track,
 html.theme-light .lp-demo-select-list::-webkit-scrollbar-track { background: #0d1120; }
-html.theme-light .lp-demo-select-list::-webkit-scrollbar-thumb { background: rgba(123, 108, 255, 0.4); border: 2px solid #0d1120; }
+.lp-demo-select-list::-webkit-scrollbar-thumb,
+html.theme-light .lp-demo-select-list::-webkit-scrollbar-thumb {
+    background: rgba(0, 145, 200, 0.35);
+    border-radius: 10px;
+    border: 1px solid rgba(0, 145, 200, 0.2);
+    transition: background 0.3s ease;
+}
+.lp-demo-select-list::-webkit-scrollbar-thumb:hover,
+html.theme-light .lp-demo-select-list::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 145, 200, 0.6);
+    box-shadow: 0 0 10px rgba(0, 145, 200, 0.3);
+}
+.lp-demo-select-list,
+html.theme-light .lp-demo-select-list { scrollbar-width: thin; scrollbar-color: rgba(0, 145, 200, 0.45) #0d1120; }
 .lp-demo-select-opt {
     text-transform: lowercase;
     padding: 0.6rem 0.75rem;
