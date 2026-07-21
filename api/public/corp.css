@@ -1801,7 +1801,8 @@ html.theme-light .lp-demo-card .lp-cta-label {
     text-transform: lowercase;
     transition: color 0.18s ease;
 }
-.lp-demo-field:focus-within > label { color: #7bdcff; }
+.lp-demo-field:focus-within > label,
+.lp-demo-field:has(.lp-demo-checks):hover > label { color: #7bdcff; }
 .lp-demo-field > label i { color: #7bdcff; font-style: normal; margin-left: 1px; }
 .lp-demo-field input,
 .lp-demo-field select,
