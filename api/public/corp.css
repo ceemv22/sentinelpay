@@ -2384,3 +2384,30 @@ html.theme-light .lp-demo-select-list { scrollbar-width: thin; scrollbar-color: 
     }
     .lp-role-feature-body { order: 0; }
 }
+
+/* ============ mobile: roles picker + intel banner consistency (≤640px) ============ */
+@media (max-width: 640px) {
+    /* picker always stacks: label above pill, identical for every industry */
+    .lp-roles-selector {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 0.55rem !important;
+    }
+    .lp-roles-dd-btn { white-space: nowrap; }
+    /* dropdown menu opens under the pill, pinned to the left, never off-screen */
+    .lp-roles-dd-menu {
+        left: 0 !important;
+        right: auto !important;
+        width: max-content;
+        min-width: 230px;
+        max-width: calc(100vw - 2.8rem);
+    }
+    /* role card: constant height across industries, no jumping */
+    .lp-role-feature { min-height: 440px !important; justify-content: flex-start; }
+    /* intel banner: centered composition */
+    .lp-intel-banner { padding: 2.2rem 1.4rem !important; gap: 2rem !important; text-align: center; }
+    .lp-intel-banner-title { font-size: 1.3rem !important; }
+    .lp-intel-btn { margin-left: auto; margin-right: auto; }
+    .lp-intel-visual { min-height: 0 !important; }
+    .lp-intel-guide { margin: 0 auto; }
+}
