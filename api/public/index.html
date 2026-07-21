@@ -370,7 +370,7 @@
             border-color: rgba(255, 255, 255, 1);
         }
     </style>
-    <link rel="stylesheet" href="/corp.css?v=86">
+    <link rel="stylesheet" href="/corp.css?v=88">
 </head>
 <body class="lp-body">
     <div id="sp-loader"><svg class="spl-logo-svg" viewBox="0 0 120 120" fill="none"><defs><linearGradient id="spl-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00ffff"/><stop offset="100%" stop-color="#a020f0"/></linearGradient><filter id="spl-glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3.5" result="coloredBlur"/><feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g filter="url(#spl-glow)" fill="none" stroke="url(#spl-grad)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z"/><g class="spl-eye-blink"><path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z"/><circle cx="60" cy="60" r="6"/><circle cx="60" cy="60" r="2" fill="url(#spl-grad)" stroke="none"/></g><path d="M60 15 V 30" stroke-width="2" opacity="0.6"/><path d="M60 90 V 105" stroke-width="2" opacity="0.6"/></g></svg></div>
@@ -1981,6 +1981,12 @@
                 return ok;
             }
             function render() {
+                // any open dropdown belongs to the outgoing step — close them all
+                form.querySelectorAll('.lp-demo-select-menu:not([hidden])').forEach(function(m) {
+                    m.hidden = true;
+                    var w = m.closest('.lp-demo-select');
+                    if (w) { w.classList.remove('is-open'); w.querySelector('.lp-demo-select-btn').setAttribute('aria-expanded', 'false'); }
+                });
                 steps.forEach(function(s, i) { s.hidden = i !== cur; });
                 var active = steps[cur];
                 active.style.animation = 'none'; void active.offsetWidth; active.style.animation = '';
@@ -2028,7 +2034,14 @@
                     var r = btn.getBoundingClientRect();
                     menu.style.left = r.left + 'px';
                     menu.style.width = r.width + 'px';
-                    menu.style.top = (r.bottom + 6) + 'px';
+                    // open upward when the menu would poke past the bottom of the viewport
+                    var mh = Math.min(menu.scrollHeight, 264);
+                    var below = window.innerHeight - r.bottom - 12;
+                    if (below < mh && r.top - 12 > mh) {
+                        menu.style.top = (r.top - 6 - mh) + 'px';
+                    } else {
+                        menu.style.top = (r.bottom + 6) + 'px';
+                    }
                 };
                 var search = wrap.querySelector('.lp-demo-select-search');
                 var emptyMsg = wrap.querySelector('.lp-demo-select-empty');
@@ -2049,7 +2062,7 @@
                     btn.setAttribute('aria-expanded', o ? 'true' : 'false');
                     if (o) {
                         place();
-                        if (search) { search.value = ''; runFilter(); setTimeout(function() { search.focus(); }, 0); }
+                        if (search) { search.value = ''; runFilter(); setTimeout(function() { search.focus({ preventScroll: true }); }, 0); }
                     }
                 };
                 if (search) {
@@ -2057,8 +2070,13 @@
                     search.addEventListener('click', function(e) { e.stopPropagation(); });
                 }
                 window.addEventListener('resize', function() { if (!menu.hidden) place(); });
-                window.addEventListener('scroll', function() { if (!menu.hidden) open(false); }, true);
+                window.addEventListener('scroll', function(e) {
+                    // scrolling inside the menu itself must not close it
+                    if (!menu.hidden && !(e.target instanceof Node && menu.contains(e.target))) open(false);
+                }, true);
                 btn.addEventListener('click', function(e) { e.stopPropagation(); var willOpen = menu.hidden; closeAllSelects(wrap); open(willOpen); });
+                btn.addEventListener('keydown', function(e) { if (e.key === 'Escape') open(false); });
+                menu.addEventListener('keydown', function(e) { if (e.key === 'Escape') { open(false); btn.focus(); } });
                 wrap.querySelectorAll('.lp-demo-select-opt').forEach(function(opt) {
                     opt.addEventListener('click', function() {
                         wrap.querySelectorAll('.lp-demo-select-opt').forEach(function(o) { o.classList.remove('is-active'); });
