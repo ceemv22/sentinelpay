@@ -370,7 +370,7 @@
             border-color: rgba(255, 255, 255, 1);
         }
     </style>
-    <link rel="stylesheet" href="/corp.css?v=85">
+    <link rel="stylesheet" href="/corp.css?v=86">
 </head>
 <body class="lp-body">
     <div id="sp-loader"><svg class="spl-logo-svg" viewBox="0 0 120 120" fill="none"><defs><linearGradient id="spl-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00ffff"/><stop offset="100%" stop-color="#a020f0"/></linearGradient><filter id="spl-glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3.5" result="coloredBlur"/><feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g filter="url(#spl-glow)" fill="none" stroke="url(#spl-grad)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z"/><g class="spl-eye-blink"><path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z"/><circle cx="60" cy="60" r="6"/><circle cx="60" cy="60" r="2" fill="url(#spl-grad)" stroke="none"/></g><path d="M60 15 V 30" stroke-width="2" opacity="0.6"/><path d="M60 90 V 105" stroke-width="2" opacity="0.6"/></g></svg></div>
@@ -1108,34 +1108,40 @@
                                             <span class="lp-demo-select-val is-placeholder">select industry…</span>
                                             <svg class="lp-demo-select-caret" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                                         </button>
-                                        <ul class="lp-demo-select-menu" role="listbox" hidden>
-                                            <li class="lp-demo-select-opt" role="option" data-value="crypto exchange">crypto exchange</li>
-                                            <li class="lp-demo-select-opt" role="option" data-value="payments / psp">payments / psp</li>
-                                            <li class="lp-demo-select-opt" role="option" data-value="banking &amp; financial institution">banking &amp; financial institution</li>
-                                            <li class="lp-demo-select-opt" role="option" data-value="fintech">fintech</li>
-                                            <li class="lp-demo-select-opt" role="option" data-value="web3 / defi">web3 / defi</li>
-                                            <li class="lp-demo-select-opt" role="option" data-value="government / regulator">government / regulator</li>
-                                            <li class="lp-demo-select-opt" role="option" data-value="other">other</li>
-                                        </ul>
+                                        <div class="lp-demo-select-menu" role="listbox" hidden>
+                                            <ul class="lp-demo-select-list">
+                                                <li class="lp-demo-select-opt" role="option" data-value="Crypto Exchange">Crypto Exchange</li>
+                                                <li class="lp-demo-select-opt" role="option" data-value="Payments / PSP">Payments / PSP</li>
+                                                <li class="lp-demo-select-opt" role="option" data-value="Banking &amp; Finance">Banking &amp; Finance</li>
+                                                <li class="lp-demo-select-opt" role="option" data-value="Fintech">Fintech</li>
+                                                <li class="lp-demo-select-opt" role="option" data-value="Web3 / DeFi">Web3 / DeFi</li>
+                                                <li class="lp-demo-select-opt" role="option" data-value="OTC / Trading Desk">OTC / Trading Desk</li>
+                                                <li class="lp-demo-select-opt" role="option" data-value="Asset Management / Fund">Asset Management / Fund</li>
+                                                <li class="lp-demo-select-opt" role="option" data-value="Gambling / iGaming">Gambling / iGaming</li>
+                                                <li class="lp-demo-select-opt" role="option" data-value="Marketplace / NFT">Marketplace / NFT</li>
+                                                <li class="lp-demo-select-opt" role="option" data-value="Government / Regulator">Government / Regulator</li>
+                                                <li class="lp-demo-select-opt" role="option" data-value="Law Enforcement">Law Enforcement</li>
+                                                <li class="lp-demo-select-opt" role="option" data-value="Other">Other</li>
+                                            </ul>
+                                        </div>
                                         <input type="hidden" name="industry">
                                     </div>
                                 </div>
                                 <div class="lp-demo-field">
                                     <label>where are you based<i>*</i></label>
-                                    <div class="lp-demo-select">
+                                    <div class="lp-demo-select" data-select="country">
                                         <button type="button" class="lp-demo-select-btn" aria-haspopup="listbox" aria-expanded="false">
-                                            <span class="lp-demo-select-val is-placeholder">select region…</span>
+                                            <span class="lp-demo-select-val is-placeholder">select country…</span>
                                             <svg class="lp-demo-select-caret" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                                         </button>
-                                        <ul class="lp-demo-select-menu" role="listbox" hidden>
-                                            <li class="lp-demo-select-opt" role="option" data-value="north america">north america</li>
-                                            <li class="lp-demo-select-opt" role="option" data-value="united kingdom">united kingdom</li>
-                                            <li class="lp-demo-select-opt" role="option" data-value="europe">europe</li>
-                                            <li class="lp-demo-select-opt" role="option" data-value="asia pacific">asia pacific</li>
-                                            <li class="lp-demo-select-opt" role="option" data-value="middle east &amp; africa">middle east &amp; africa</li>
-                                            <li class="lp-demo-select-opt" role="option" data-value="latin america">latin america</li>
-                                        </ul>
-                                        <input type="hidden" name="region">
+                                        <div class="lp-demo-select-menu" role="listbox" hidden>
+                                            <div class="lp-demo-select-search-wrap">
+                                                <input type="text" class="lp-demo-select-search" placeholder="search country…" autocomplete="off">
+                                            </div>
+                                            <ul class="lp-demo-select-list"></ul>
+                                            <div class="lp-demo-select-empty" hidden>no matches</div>
+                                        </div>
+                                        <input type="hidden" name="country">
                                     </div>
                                 </div>
                             </div>
@@ -1920,8 +1926,8 @@
                     case 'industry':
                         if (!v) return 'please pick an industry';
                         return '';
-                    case 'region':
-                        if (!v) return 'please pick a region';
+                    case 'country':
+                        if (!v) return 'please pick your country';
                         return '';
                     case 'volume':
                         if (!v) return 'please pick an expected volume';
@@ -1942,7 +1948,7 @@
             }
             function validateStep(i) {
                 var ok = true;
-                var required = { 1: ['firstName','lastName','jobTitle','email'], 2: ['company','website','industry','region'], 3: ['size','volume'], 4: ['message'] };
+                var required = { 1: ['firstName','lastName','jobTitle','email'], 2: ['company','website','industry','country'], 3: ['size','volume'], 4: ['message'] };
                 var stepEl = steps[i];
                 var stepNo = parseInt(stepEl.getAttribute('data-step'), 10);
                 var names = required[stepNo] || [];
@@ -1988,6 +1994,23 @@
             }
             render();
 
+            var COUNTRIES = ["Afghanistan","Albania","Algeria","Andorra","Angola","Antigua & Barbuda","Argentina","Armenia","Australia","Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados","Belarus","Belgium","Belize","Benin","Bhutan","Bolivia","Bosnia & Herzegovina","Botswana","Brazil","Brunei","Bulgaria","Burkina Faso","Burundi","Cambodia","Cameroon","Canada","Cape Verde","Central African Republic","Chad","Chile","China","Colombia","Comoros","Congo (Brazzaville)","Congo (Kinshasa)","Costa Rica","Côte d’Ivoire","Croatia","Cuba","Cyprus","Czechia","Denmark","Djibouti","Dominica","Dominican Republic","Ecuador","Egypt","El Salvador","Equatorial Guinea","Eritrea","Estonia","Eswatini","Ethiopia","Fiji","Finland","France","Gabon","Gambia","Georgia","Germany","Ghana","Greece","Grenada","Guatemala","Guinea","Guinea-Bissau","Guyana","Haiti","Honduras","Hong Kong","Hungary","Iceland","India","Indonesia","Iran","Iraq","Ireland","Israel","Italy","Jamaica","Japan","Jordan","Kazakhstan","Kenya","Kiribati","Kosovo","Kuwait","Kyrgyzstan","Laos","Latvia","Lebanon","Lesotho","Liberia","Libya","Liechtenstein","Lithuania","Luxembourg","Macau","Madagascar","Malawi","Malaysia","Maldives","Mali","Malta","Marshall Islands","Mauritania","Mauritius","Mexico","Micronesia","Moldova","Monaco","Mongolia","Montenegro","Morocco","Mozambique","Myanmar","Namibia","Nauru","Nepal","Netherlands","New Zealand","Nicaragua","Niger","Nigeria","North Korea","North Macedonia","Norway","Oman","Pakistan","Palau","Palestine","Panama","Papua New Guinea","Paraguay","Peru","Philippines","Poland","Portugal","Qatar","Romania","Russia","Rwanda","Saint Kitts & Nevis","Saint Lucia","Saint Vincent & the Grenadines","Samoa","San Marino","São Tomé & Príncipe","Saudi Arabia","Senegal","Serbia","Seychelles","Sierra Leone","Singapore","Slovakia","Slovenia","Solomon Islands","Somalia","South Africa","South Korea","South Sudan","Spain","Sri Lanka","Sudan","Suriname","Sweden","Switzerland","Syria","Taiwan","Tajikistan","Tanzania","Thailand","Timor-Leste","Togo","Tonga","Trinidad & Tobago","Tunisia","Turkey","Turkmenistan","Tuvalu","Uganda","Ukraine","United Arab Emirates","United Kingdom","United States","Uruguay","Uzbekistan","Vanuatu","Vatican City","Venezuela","Vietnam","Yemen","Zambia","Zimbabwe"];
+            (function() {
+                var cList = form.querySelector('.lp-demo-select[data-select="country"] .lp-demo-select-list');
+                if (cList) {
+                    var frag = document.createDocumentFragment();
+                    COUNTRIES.forEach(function(c) {
+                        var li = document.createElement('li');
+                        li.className = 'lp-demo-select-opt';
+                        li.setAttribute('role', 'option');
+                        li.setAttribute('data-value', c);
+                        li.textContent = c;
+                        frag.appendChild(li);
+                    });
+                    cList.appendChild(frag);
+                }
+            })();
+
             var allSelects = form.querySelectorAll('.lp-demo-select');
             var closeAllSelects = function(except) {
                 allSelects.forEach(function(w) {
@@ -2007,12 +2030,32 @@
                     menu.style.width = r.width + 'px';
                     menu.style.top = (r.bottom + 6) + 'px';
                 };
+                var search = wrap.querySelector('.lp-demo-select-search');
+                var emptyMsg = wrap.querySelector('.lp-demo-select-empty');
+                var runFilter = function() {
+                    if (!search) return;
+                    var q = search.value.trim().toLowerCase();
+                    var shown = 0;
+                    wrap.querySelectorAll('.lp-demo-select-opt').forEach(function(o) {
+                        var match = o.textContent.toLowerCase().indexOf(q) !== -1;
+                        o.hidden = !match;
+                        if (match) shown++;
+                    });
+                    if (emptyMsg) emptyMsg.hidden = shown !== 0;
+                };
                 var open = function(o) {
                     menu.hidden = !o;
                     wrap.classList.toggle('is-open', o);
                     btn.setAttribute('aria-expanded', o ? 'true' : 'false');
-                    if (o) place();
+                    if (o) {
+                        place();
+                        if (search) { search.value = ''; runFilter(); setTimeout(function() { search.focus(); }, 0); }
+                    }
                 };
+                if (search) {
+                    search.addEventListener('input', runFilter);
+                    search.addEventListener('click', function(e) { e.stopPropagation(); });
+                }
                 window.addEventListener('resize', function() { if (!menu.hidden) place(); });
                 window.addEventListener('scroll', function() { if (!menu.hidden) open(false); }, true);
                 btn.addEventListener('click', function(e) { e.stopPropagation(); var willOpen = menu.hidden; closeAllSelects(wrap); open(willOpen); });
