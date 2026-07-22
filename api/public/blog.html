@@ -30,18 +30,26 @@
         html.theme-light .lp-btn-ghost.auth-nav-btn:hover { background: rgba(0,0,0,0.04) !important; }
 
         /* blog-specific: centered Howl-style header + card excerpt/byline/pagination in homepage's light style */
-        .lp-insights { padding-top: 4rem; }
-        .lp-blog-hero { text-align: center; padding: 2rem 0 3.5rem; }
-        .blog-brand { display: inline-flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem; }
-        .blog-brand-svg { width: 52px; height: 52px; }
-        .blog-brand-text { font-size: 2.15rem; font-weight: 800; letter-spacing: -0.02em; color: #0e2358; }
-        .blog-tag { max-width: 46ch; margin: 0 auto; font-size: 1.45rem; font-weight: 600; line-height: 1.45; color: #0e2358; }
-        .blog-tag .tg { background: linear-gradient(90deg, #00f0ff, #7b6cff 55%, #a020f0); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; font-weight: 700; }
-        .lp-ins-featured { margin-top: 1rem; }
+        .lp-insights { padding-top: 4.5rem; }
+        .lp-blog-hero { position: relative; text-align: center; padding: 3rem 0 4.5rem; }
+        .blog-hero-glow {
+            position: absolute; top: -60px; left: 50%; transform: translateX(-50%);
+            width: min(620px, 90vw); height: 340px; pointer-events: none; z-index: 0;
+            background: radial-gradient(ellipse at center, rgba(0,240,255,0.16), rgba(123,108,255,0.13) 42%, rgba(160,32,240,0.08) 62%, transparent 75%);
+            filter: blur(22px);
+        }
+        .blog-brand { position: relative; z-index: 1; display: inline-flex; margin-bottom: 1.9rem; }
+        .blog-brand-svg { width: 92px; height: 92px; }
+        .blog-tag {
+            position: relative; z-index: 1; max-width: 24ch; margin: 0 auto;
+            font-size: 2.7rem; font-weight: 800; line-height: 1.14; letter-spacing: -0.02em; color: #0e2358;
+        }
+        .blog-tag .tg { background: linear-gradient(90deg, #00f0ff, #7b6cff 55%, #a020f0); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .lp-ins-featured { margin-top: 1.5rem; }
         @media (max-width: 640px) {
-            .lp-insights { padding-top: 2.5rem; }
-            .blog-brand-text { font-size: 1.7rem; }
-            .blog-tag { font-size: 1.15rem; }
+            .lp-insights { padding-top: 3rem; }
+            .blog-brand-svg { width: 74px; height: 74px; }
+            .blog-tag { font-size: 1.8rem; max-width: 20ch; }
         }
         .lp-ins-card-ex { margin: 0.55rem 0 0; font-size: 0.9rem; line-height: 1.6; color: rgba(14,35,88,0.6); }
         .lp-ins-by { display: flex; align-items: center; gap: 0.6rem; margin-top: 1rem; padding-top: 0.9rem; border-top: 1px solid rgba(14,35,88,0.1); }
@@ -92,6 +100,7 @@
     <section class="lp-section lp-insights" id="blog">
         <div class="lp-section-inner">
             <header class="lp-blog-hero">
+                <div class="blog-hero-glow" aria-hidden="true"></div>
                 <div class="blog-brand">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" class="blog-brand-svg">
                         <defs>
@@ -105,9 +114,8 @@
                             <path d="M60 15 V 30" stroke-width="2" opacity="0.6"/><path d="M60 90 V 105" stroke-width="2" opacity="0.6"/>
                         </g>
                     </svg>
-                    <span class="blog-brand-text">sentinelpay</span>
                 </div>
-                <p class="blog-tag">the latest <span class="tg">guides</span>, breakdowns and <span class="tg">updates</span> on crypto risk &amp; compliance</p>
+                <h1 class="blog-tag">the latest <span class="tg">guides</span>, breakdowns and <span class="tg">updates</span> on crypto risk &amp; compliance</h1>
             </header>
 
             <div class="lp-ins-featured">
