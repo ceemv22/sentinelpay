@@ -18,6 +18,11 @@
             --accent-glow: rgba(0,145,200,0.12); --accent-light: #0091c8; --neon-blue: #0091c8;
         }
         html.theme-light body.lp-body { background: linear-gradient(180deg, #fbfcfd 0%, #eef0f3 100%) fixed; }
+        /* same scrollbar as sentinelpay.org (light-blue on light track) */
+        html.theme-light, html.theme-light * { scrollbar-color: rgba(0,145,200,0.25) #f0f0f2; }
+        html.theme-light::-webkit-scrollbar-track, html.theme-light ::-webkit-scrollbar-track { background: #f0f0f2; }
+        html.theme-light::-webkit-scrollbar-thumb, html.theme-light ::-webkit-scrollbar-thumb { background: rgba(0,145,200,0.25); border: 1px solid rgba(0,145,200,0.15); }
+        html.theme-light::-webkit-scrollbar-thumb:hover, html.theme-light ::-webkit-scrollbar-thumb:hover { background: rgba(0,145,200,0.5); box-shadow: 0 0 10px rgba(0,145,200,0.3); }
         html.theme-light .lp-nav { background: rgba(255,255,255,0.85); border-bottom-color: rgba(0,0,0,0.06); }
         html.theme-light .lp-btn-ghost.auth-nav-btn { border-color: rgba(0,0,0,0.08) !important; }
         html.theme-light .lp-btn-ghost.auth-nav-btn:hover { background: rgba(0,0,0,0.04) !important; }
