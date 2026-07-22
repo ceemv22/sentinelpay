@@ -1,207 +1,120 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
     <title>blog · sentinelpay</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>document.documentElement.classList.add('theme-light');</script>
+    <link rel="icon" type="image/svg+xml" href="/logo.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css?v=23.0">
+    <link rel="stylesheet" href="/landing.css?v=4.1">
+    <link rel="stylesheet" href="/corp.css?v=124">
     <style>
-        *, *::before, *::after { box-sizing: border-box; }
-        :root {
-            --cyan: #00f0ff; --purple: #a020f0; --blurple: #7b6cff;
-            --bg: #06070f; --panel: #0c0f1c; --panel2: #0e1120;
-            --line: rgba(120, 160, 255, 0.12);
-            --tx: #eef1f8; --mut: rgba(255,255,255,0.6); --mut2: rgba(255,255,255,0.42);
+        /* essential theme-light base (mirrors the homepage inline theme) */
+        html.theme-light {
+            --bg-dark: #f6f7f9; --bg-panel: rgba(255,255,255,0.75);
+            --border-glass: rgba(20,20,30,0.08); --text-main: #15161a; --text-muted: #82828c;
+            --accent-glow: rgba(0,145,200,0.12); --accent-light: #0091c8; --neon-blue: #0091c8;
         }
-        html, body { margin: 0; }
-        body {
-            font-family: 'Inter', system-ui, sans-serif;
-            color: var(--tx);
-            background:
-                radial-gradient(ellipse 50% 40% at 12% 8%, rgba(0,190,220,0.12), transparent 60%),
-                radial-gradient(ellipse 45% 45% at 92% 6%, rgba(160,32,240,0.14), transparent 60%),
-                var(--bg);
-            -webkit-font-smoothing: antialiased;
-            min-height: 100vh;
+        html.theme-light body.lp-body { background: linear-gradient(180deg, #fbfcfd 0%, #eef0f3 100%) fixed; }
+        html.theme-light .lp-nav { background: rgba(255,255,255,0.85); border-bottom-color: rgba(0,0,0,0.06); }
+        html.theme-light .lp-logo-text,
+        html.theme-light .lp-h1,
+        html.theme-light .lp-h2 {
+            background: linear-gradient(160deg, #15161a 0%, #5a5a66 100%);
+            -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
         }
-        a { color: inherit; text-decoration: none; }
-        .wrap { max-width: 1180px; margin: 0 auto; padding: 0 1.4rem; }
+        html.theme-light .lp-btn-ghost.auth-nav-btn { border-color: rgba(0,0,0,0.08) !important; }
+        html.theme-light .lp-btn-ghost.auth-nav-btn:hover { background: rgba(0,0,0,0.04) !important; }
 
-        /* nav */
-        .nav {
-            position: sticky; top: 0; z-index: 20;
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 0.85rem 1.4rem;
-            background: rgba(6,7,15,0.72);
-            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--line);
+        /* blog-specific: card excerpt + byline + pagination, in the homepage's light style */
+        .lp-blog-hero { text-align: left; padding-bottom: 1rem; }
+        .lp-ins-card-ex { margin: 0.55rem 0 0; font-size: 0.9rem; line-height: 1.6; color: rgba(14,35,88,0.6); }
+        .lp-ins-by { display: flex; align-items: center; gap: 0.6rem; margin-top: 1rem; padding-top: 0.9rem; border-top: 1px solid rgba(14,35,88,0.1); }
+        .lp-ins-avatar { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: rgba(0,145,200,0.08); border: 1px solid rgba(14,35,88,0.1); }
+        .lp-ins-avatar svg { width: 18px; height: 18px; }
+        .lp-ins-by b { font-size: 0.82rem; font-weight: 600; color: #0e2358; }
+        .lp-ins-by small { display: block; font-size: 0.74rem; color: rgba(14,35,88,0.5); }
+        .lp-ins-readmore { display: inline-flex; align-items: center; gap: 0.45rem; margin-top: 1.3rem; font-weight: 700; font-size: 0.9rem; color: #0e2358; }
+        .lp-ins-readmore span { transition: transform 0.25s; }
+        .lp-ins-featured:hover .lp-ins-readmore span { transform: translateX(4px); }
+        .lp-ins-card { cursor: pointer; }
+        .lp-blog-pager { display: flex; align-items: center; justify-content: center; gap: 1.4rem; padding: 3rem 0 1rem; }
+        .lp-blog-pager button {
+            font: inherit; font-size: 0.88rem; font-weight: 700; color: #0e2358; cursor: pointer;
+            padding: 0.65rem 1.5rem; border-radius: 10px; background: #fff; border: 1px solid rgba(14,35,88,0.14);
+            transition: border-color 0.2s, box-shadow 0.2s, opacity 0.2s;
         }
-        .brand { display: flex; align-items: center; gap: 0.6rem; font-weight: 800; letter-spacing: -0.01em; }
-        .brand svg { width: 30px; height: 30px; }
-        .brand b { font-size: 1.02rem; }
-        .brand b i { color: var(--cyan); font-style: normal; }
-        .nav-back {
-            font-size: 0.85rem; font-weight: 600; color: var(--mut);
-            padding: 0.5rem 0.95rem; border: 1px solid var(--line); border-radius: 999px;
-            transition: color .2s, border-color .2s, background .2s;
-        }
-        .nav-back:hover { color: #fff; border-color: rgba(0,240,255,0.4); background: rgba(0,240,255,0.05); }
-
-        /* header */
-        .head { text-align: center; padding: 4.5rem 1.4rem 2.6rem; }
-        .eyebrow {
-            display: inline-flex; align-items: center; gap: 0.5rem;
-            font-size: 0.72rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase;
-            color: #7bdcff; margin-bottom: 1rem;
-        }
-        .eyebrow::before { content: ''; width: 3px; height: 13px; border-radius: 2px; background: linear-gradient(var(--cyan), var(--purple)); }
-        .head h1 { margin: 0 auto 1rem; max-width: 16ch; font-size: 2.9rem; font-weight: 800; line-height: 1.08; letter-spacing: -0.02em; text-transform: lowercase; }
-        .hl { background: linear-gradient(90deg, var(--cyan), var(--blurple), var(--purple)); color: var(--bg); padding: 0.02em 0.18em; border-radius: 7px; }
-        .head p { margin: 0 auto; max-width: 54ch; color: var(--mut); font-size: 1.02rem; line-height: 1.65; }
-
-        /* placeholder image (same language as homepage) */
-        .thumb {
-            position: relative; overflow: hidden; aspect-ratio: 16 / 9; border-radius: 14px;
-            background:
-                radial-gradient(ellipse 60% 80% at 100% 0%, rgba(160,32,240,0.26), transparent 60%),
-                radial-gradient(ellipse 55% 80% at 0% 100%, rgba(0,240,255,0.2), transparent 60%),
-                #070912;
-            border: 1px solid var(--line);
-        }
-        .thumb.cy { background: radial-gradient(ellipse 65% 85% at 0% 0%, rgba(0,240,255,0.28), transparent 60%), radial-gradient(ellipse 50% 70% at 100% 100%, rgba(123,108,255,0.18), transparent 60%), #070912; }
-        .thumb.pu { background: radial-gradient(ellipse 65% 85% at 100% 0%, rgba(160,32,240,0.3), transparent 60%), radial-gradient(ellipse 50% 70% at 0% 100%, rgba(0,190,220,0.16), transparent 60%), #070912; }
-        .thumb::before {
-            content: ''; position: absolute; inset: 0;
-            background-image: radial-gradient(circle at 1px 1px, rgba(140,170,255,0.22) 1.2px, transparent 0);
-            background-size: 16px 16px;
-            -webkit-mask-image: linear-gradient(135deg, #000, transparent 70%);
-            mask-image: linear-gradient(135deg, #000, transparent 70%);
-        }
-        .thumb .mark {
-            position: absolute; top: 50%; left: 50%; width: 52px; height: 52px; transform: translate(-50%,-50%);
-            border-radius: 50%;
-            background: linear-gradient(135deg, rgba(0,240,255,0.55), rgba(160,32,240,0.55));
-            -webkit-mask-image: radial-gradient(circle, transparent 42%, #000 44%, #000 58%, transparent 60%);
-            mask-image: radial-gradient(circle, transparent 42%, #000 44%, #000 58%, transparent 60%);
-            opacity: 0.85;
-        }
-        .thumb::after {
-            content: ''; position: absolute; top: 0; left: -85%; width: 55%; height: 100%;
-            background: linear-gradient(105deg, transparent, rgba(123,108,255,0.24) 50%, rgba(0,240,255,0.16) 62%, transparent);
-            transform: skewX(-18deg); pointer-events: none;
-        }
-        .card:hover .thumb::after, .feat:hover .thumb::after { left: 135%; transition: left 0.7s cubic-bezier(0.22,1,0.36,1); }
-
-        /* featured */
-        .feat {
-            display: grid; grid-template-columns: 1.15fr 1fr; gap: 2.2rem; align-items: center;
-            padding: 2rem; margin: 1.5rem 0 3.4rem;
-            background:
-                radial-gradient(ellipse 50% 80% at 100% 0%, rgba(160,32,240,0.14), transparent 55%),
-                var(--panel);
-            border: 1px solid var(--line); border-radius: 22px; cursor: pointer;
-            transition: border-color .25s, transform .25s;
-        }
-        .feat:hover { border-color: rgba(0,240,255,0.28); transform: translateY(-2px); }
-        .feat .thumb { aspect-ratio: 4/3; border-radius: 16px; }
-        .feat-body .date, .card .date { display: inline-block; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.03em; color: var(--cyan); text-transform: lowercase; margin-bottom: 0.7rem; }
-        .feat-body h2 { margin: 0 0 0.9rem; font-size: 1.85rem; font-weight: 800; line-height: 1.22; letter-spacing: -0.01em; text-transform: lowercase; }
-        .feat-body p { margin: 0 0 1.4rem; color: var(--mut); font-size: 0.98rem; line-height: 1.65; }
-        .readmore { display: inline-flex; align-items: center; gap: 0.45rem; font-weight: 700; font-size: 0.9rem; color: #fff; }
-        .readmore span { transition: transform .25s; }
-        .feat:hover .readmore span, .card:hover .readmore span { transform: translateX(4px); }
-
-        /* grid */
-        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.6rem; }
-        .card {
-            display: flex; flex-direction: column; gap: 0; padding: 1rem;
-            background: var(--panel2); border: 1px solid var(--line); border-radius: 18px;
-            cursor: pointer; transition: border-color .25s, transform .25s;
-        }
-        .card:hover { border-color: rgba(0,240,255,0.28); transform: translateY(-3px); }
-        .card .thumb { margin-bottom: 1.1rem; }
-        .card-body { padding: 0 0.4rem 0.4rem; display: flex; flex-direction: column; flex: 1; }
-        .card h3 { margin: 0.2rem 0 0.6rem; font-size: 1.08rem; font-weight: 700; line-height: 1.3; letter-spacing: -0.01em; text-transform: lowercase; }
-        .card p { margin: 0 0 1.1rem; color: var(--mut2); font-size: 0.88rem; line-height: 1.6; flex: 1; }
-        .byline { display: flex; align-items: center; gap: 0.6rem; padding-top: 0.9rem; border-top: 1px solid var(--line); }
-        .avatar { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: rgba(0,240,255,0.08); border: 1px solid var(--line); }
-        .avatar svg { width: 18px; height: 18px; }
-        .byline b { font-size: 0.82rem; font-weight: 600; }
-        .byline small { display: block; font-size: 0.74rem; color: var(--mut2); }
-
-        /* pagination */
-        .pager { display: flex; align-items: center; justify-content: center; gap: 1.4rem; padding: 3.4rem 0 4.5rem; }
-        .pager button {
-            font: inherit; font-size: 0.88rem; font-weight: 700; color: #fff;
-            padding: 0.65rem 1.4rem; border-radius: 10px; cursor: pointer;
-            background: var(--panel2); border: 1px solid var(--line); transition: border-color .2s, background .2s, opacity .2s;
-        }
-        .pager button:hover:not(:disabled) { border-color: rgba(0,240,255,0.4); background: rgba(0,240,255,0.05); }
-        .pager button:disabled { opacity: 0.4; cursor: default; }
-        .pager .count { font-size: 0.85rem; font-weight: 600; color: var(--mut); }
-
-        /* footer */
-        .foot { border-top: 1px solid var(--line); padding: 1.8rem 1.4rem; text-align: center; color: var(--mut2); font-size: 0.82rem; }
-
-        @media (max-width: 900px) { .grid { grid-template-columns: repeat(2, 1fr); } .feat { grid-template-columns: 1fr; } .feat .thumb { aspect-ratio: 16/9; } }
-        @media (max-width: 620px) {
-            .grid { grid-template-columns: 1fr; }
-            .head { padding: 3rem 1.2rem 2rem; }
-            .head h1 { font-size: 2.1rem; }
-            .feat-body h2 { font-size: 1.5rem; }
-            .feat { padding: 1.3rem; }
-        }
+        .lp-blog-pager button:hover:not(:disabled) { border-color: rgba(37,99,235,0.45); box-shadow: 0 6px 18px rgba(14,35,88,0.08); }
+        .lp-blog-pager button:disabled { opacity: 0.4; cursor: default; }
+        .lp-blog-pager .cnt { font-size: 0.85rem; font-weight: 600; color: rgba(14,35,88,0.6); }
+        .lp-nav-inner { justify-content: space-between; }
     </style>
 </head>
-<body>
-    <nav class="nav">
-        <a class="brand" href="https://sentinelpay.org">
-            <svg viewBox="0 0 120 120" aria-hidden="true"><defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00f0ff"/><stop offset="100%" stop-color="#a020f0"/></linearGradient></defs><g fill="none" stroke="url(#g)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z"/><path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z"/><circle cx="60" cy="60" r="6"/><circle cx="60" cy="60" r="2" fill="url(#g)" stroke="none"/></g></svg>
-            <b>sentinel<i>pay</i></b>
-        </a>
-        <a class="nav-back" href="https://sentinelpay.org">← back to sentinelpay.org</a>
+<body class="lp-body">
+    <nav class="lp-nav">
+        <div class="lp-nav-inner">
+            <a href="https://sentinelpay.org" class="lp-logo-link">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" class="lp-logo-svg">
+                    <defs><linearGradient id="ng" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00ffff"/><stop offset="100%" stop-color="#a020f0"/></linearGradient></defs>
+                    <g fill="none" stroke="url(#ng)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z"/>
+                        <path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z"/>
+                        <circle cx="60" cy="60" r="6"/><circle cx="60" cy="60" r="2" fill="url(#ng)" stroke="none"/>
+                    </g>
+                </svg>
+                <span class="lp-logo-text">sentinelpay</span>
+            </a>
+            <div style="display:flex; gap:0.5rem; align-items:center;">
+                <a href="https://sentinelpay.org" class="auth-nav-btn lp-btn-ghost">← back to sentinelpay</a>
+                <a href="https://sentinelpay.org#demo" class="auth-nav-btn lp-btn-solid">get started</a>
+            </div>
+        </div>
     </nav>
 
-    <header class="head">
-        <div class="eyebrow">from the blog</div>
-        <h1>the latest in <span class="hl">crypto risk</span></h1>
-        <p>lorem ipsum dolor sit amet, consectetur adipiscing elit. research, regulation and laundering typologies from the frontline of blockchain compliance.</p>
-    </header>
-
-    <main class="wrap">
-        <!-- featured -->
-        <article class="feat">
-            <div class="thumb"><span class="mark"></span></div>
-            <div class="feat-body">
-                <span class="date">july 21, 2026</span>
-                <h2>lorem ipsum dolor sit amet, consectetur adipiscing elit sed do</h2>
-                <p>lorem ipsum dolor sit amet, consectetur adipiscing elit. sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                <a class="readmore" href="#">read more <span>→</span></a>
+    <section class="lp-section lp-insights" id="blog">
+        <div class="lp-section-inner">
+            <div class="lp-blog-hero">
+                <p class="lp-eyebrow">from the blog</p>
+                <h2 class="lp-h2"><span class="lp-hl">the latest</span> in crypto risk <br>&amp; compliance</h2>
             </div>
-        </article>
 
-        <!-- grid -->
-        <div class="grid">
-            <article class="card"><div class="thumb cy"><span class="mark"></span></div><div class="card-body"><span class="date">july 18, 2026</span><h3>lorem ipsum dolor sit amet consectetur adipiscing</h3><p>lorem ipsum dolor sit amet, consectetur adipiscing elit. sed do eiusmod tempor incididunt ut labore.</p><div class="byline"><span class="avatar"><svg viewBox="0 0 120 120"><g fill="none" stroke="#00f0ff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z"/><circle cx="60" cy="60" r="7"/></g></svg></span><div><b>sentinelpay</b><small>july 18, 2026</small></div></div></div></article>
-            <article class="card"><div class="thumb pu"><span class="mark"></span></div><div class="card-body"><span class="date">july 16, 2026</span><h3>sed do eiusmod tempor incididunt ut labore et dolore</h3><p>ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo.</p><div class="byline"><span class="avatar"><svg viewBox="0 0 120 120"><g fill="none" stroke="#00f0ff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z"/><circle cx="60" cy="60" r="7"/></g></svg></span><div><b>sentinelpay</b><small>july 16, 2026</small></div></div></div></article>
-            <article class="card"><div class="thumb"><span class="mark"></span></div><div class="card-body"><span class="date">july 14, 2026</span><h3>ut enim ad minim veniam quis nostrud exercitation</h3><p>duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p><div class="byline"><span class="avatar"><svg viewBox="0 0 120 120"><g fill="none" stroke="#00f0ff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z"/><circle cx="60" cy="60" r="7"/></g></svg></span><div><b>sentinelpay</b><small>july 14, 2026</small></div></div></div></article>
-            <article class="card"><div class="thumb pu"><span class="mark"></span></div><div class="card-body"><span class="date">july 11, 2026</span><h3>excepteur sint occaecat cupidatat non proident</h3><p>sunt in culpa qui officia deserunt mollit anim id est laborum. lorem ipsum dolor sit amet consectetur.</p><div class="byline"><span class="avatar"><svg viewBox="0 0 120 120"><g fill="none" stroke="#00f0ff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z"/><circle cx="60" cy="60" r="7"/></g></svg></span><div><b>sentinelpay</b><small>july 11, 2026</small></div></div></div></article>
-            <article class="card"><div class="thumb"><span class="mark"></span></div><div class="card-body"><span class="date">july 9, 2026</span><h3>lorem ipsum dolor sit amet consectetur elit sed</h3><p>eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim ad minim veniam quis nostrud.</p><div class="byline"><span class="avatar"><svg viewBox="0 0 120 120"><g fill="none" stroke="#00f0ff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z"/><circle cx="60" cy="60" r="7"/></g></svg></span><div><b>sentinelpay</b><small>july 9, 2026</small></div></div></div></article>
-            <article class="card"><div class="thumb cy"><span class="mark"></span></div><div class="card-body"><span class="date">july 7, 2026</span><h3>nostrud exercitation ullamco laboris nisi aliquip</h3><p>ex ea commodo consequat duis aute irure dolor in reprehenderit in voluptate velit esse cillum.</p><div class="byline"><span class="avatar"><svg viewBox="0 0 120 120"><g fill="none" stroke="#00f0ff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z"/><circle cx="60" cy="60" r="7"/></g></svg></span><div><b>sentinelpay</b><small>july 7, 2026</small></div></div></div></article>
-            <article class="card"><div class="thumb"><span class="mark"></span></div><div class="card-body"><span class="date">july 4, 2026</span><h3>consectetur adipiscing elit sed do eiusmod tempor</h3><p>incididunt ut labore et dolore magna aliqua ut enim ad minim veniam quis nostrud exercitation.</p><div class="byline"><span class="avatar"><svg viewBox="0 0 120 120"><g fill="none" stroke="#00f0ff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z"/><circle cx="60" cy="60" r="7"/></g></svg></span><div><b>sentinelpay</b><small>july 4, 2026</small></div></div></div></article>
-            <article class="card"><div class="thumb cy"><span class="mark"></span></div><div class="card-body"><span class="date">july 2, 2026</span><h3>duis aute irure dolor in reprehenderit voluptate</h3><p>velit esse cillum dolore eu fugiat nulla pariatur excepteur sint occaecat cupidatat non proident.</p><div class="byline"><span class="avatar"><svg viewBox="0 0 120 120"><g fill="none" stroke="#00f0ff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z"/><circle cx="60" cy="60" r="7"/></g></svg></span><div><b>sentinelpay</b><small>july 2, 2026</small></div></div></div></article>
-            <article class="card"><div class="thumb pu"><span class="mark"></span></div><div class="card-body"><span class="date">june 29, 2026</span><h3>sunt in culpa qui officia deserunt mollit anim</h3><p>id est laborum lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor.</p><div class="byline"><span class="avatar"><svg viewBox="0 0 120 120"><g fill="none" stroke="#00f0ff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z"/><circle cx="60" cy="60" r="7"/></g></svg></span><div><b>sentinelpay</b><small>june 29, 2026</small></div></div></div></article>
+            <div class="lp-ins-featured">
+                <div class="lp-ins-img lp-ins-img-lg" aria-hidden="true"><span class="lp-ins-img-mark"></span></div>
+                <div class="lp-ins-meta">
+                    <span class="lp-ins-date">july 21, 2026</span>
+                    <h3 class="lp-ins-title">lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod</h3>
+                    <p class="lp-ins-excerpt">lorem ipsum dolor sit amet, consectetur adipiscing elit. sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat…</p>
+                    <a href="#" class="lp-ins-readmore">read more <span>→</span></a>
+                </div>
+            </div>
+
+            <div class="lp-ins-grid">
+                <div class="lp-ins-card"><div class="lp-ins-img" aria-hidden="true"><span class="lp-ins-img-mark"></span></div><span class="lp-ins-date">july 18, 2026</span><h3 class="lp-ins-title-sm">lorem ipsum dolor sit amet consectetur adipiscing</h3><p class="lp-ins-card-ex">sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim ad minim.</p><div class="lp-ins-by"><span class="lp-ins-avatar"><svg viewBox="0 0 120 120"><g fill="none" stroke="#0091c8" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z"/><circle cx="60" cy="60" r="7"/></g></svg></span><div><b>sentinelpay</b><small>july 18, 2026</small></div></div></div>
+                <div class="lp-ins-card"><div class="lp-ins-img" aria-hidden="true"><span class="lp-ins-img-mark"></span></div><span class="lp-ins-date">july 16, 2026</span><h3 class="lp-ins-title-sm">sed do eiusmod tempor incididunt ut labore et dolore</h3><p class="lp-ins-card-ex">ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea.</p><div class="lp-ins-by"><span class="lp-ins-avatar"><svg viewBox="0 0 120 120"><g fill="none" stroke="#0091c8" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z"/><circle cx="60" cy="60" r="7"/></g></svg></span><div><b>sentinelpay</b><small>july 16, 2026</small></div></div></div>
+                <div class="lp-ins-card"><div class="lp-ins-img" aria-hidden="true"><span class="lp-ins-img-mark"></span></div><span class="lp-ins-date">july 14, 2026</span><h3 class="lp-ins-title-sm">ut enim ad minim veniam quis nostrud exercitation</h3><p class="lp-ins-card-ex">duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat.</p><div class="lp-ins-by"><span class="lp-ins-avatar"><svg viewBox="0 0 120 120"><g fill="none" stroke="#0091c8" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z"/><circle cx="60" cy="60" r="7"/></g></svg></span><div><b>sentinelpay</b><small>july 14, 2026</small></div></div></div>
+                <div class="lp-ins-card"><div class="lp-ins-img" aria-hidden="true"><span class="lp-ins-img-mark"></span></div><span class="lp-ins-date">july 11, 2026</span><h3 class="lp-ins-title-sm">excepteur sint occaecat cupidatat non proident</h3><p class="lp-ins-card-ex">sunt in culpa qui officia deserunt mollit anim id est laborum lorem ipsum dolor sit.</p><div class="lp-ins-by"><span class="lp-ins-avatar"><svg viewBox="0 0 120 120"><g fill="none" stroke="#0091c8" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z"/><circle cx="60" cy="60" r="7"/></g></svg></span><div><b>sentinelpay</b><small>july 11, 2026</small></div></div></div>
+                <div class="lp-ins-card"><div class="lp-ins-img" aria-hidden="true"><span class="lp-ins-img-mark"></span></div><span class="lp-ins-date">july 9, 2026</span><h3 class="lp-ins-title-sm">lorem ipsum dolor sit amet consectetur elit sed</h3><p class="lp-ins-card-ex">eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim ad minim veniam.</p><div class="lp-ins-by"><span class="lp-ins-avatar"><svg viewBox="0 0 120 120"><g fill="none" stroke="#0091c8" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z"/><circle cx="60" cy="60" r="7"/></g></svg></span><div><b>sentinelpay</b><small>july 9, 2026</small></div></div></div>
+                <div class="lp-ins-card"><div class="lp-ins-img" aria-hidden="true"><span class="lp-ins-img-mark"></span></div><span class="lp-ins-date">july 7, 2026</span><h3 class="lp-ins-title-sm">nostrud exercitation ullamco laboris nisi aliquip</h3><p class="lp-ins-card-ex">ex ea commodo consequat duis aute irure dolor in reprehenderit in voluptate velit.</p><div class="lp-ins-by"><span class="lp-ins-avatar"><svg viewBox="0 0 120 120"><g fill="none" stroke="#0091c8" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z"/><circle cx="60" cy="60" r="7"/></g></svg></span><div><b>sentinelpay</b><small>july 7, 2026</small></div></div></div>
+                <div class="lp-ins-card"><div class="lp-ins-img" aria-hidden="true"><span class="lp-ins-img-mark"></span></div><span class="lp-ins-date">july 4, 2026</span><h3 class="lp-ins-title-sm">consectetur adipiscing elit sed do eiusmod tempor</h3><p class="lp-ins-card-ex">incididunt ut labore et dolore magna aliqua ut enim ad minim veniam quis nostrud.</p><div class="lp-ins-by"><span class="lp-ins-avatar"><svg viewBox="0 0 120 120"><g fill="none" stroke="#0091c8" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z"/><circle cx="60" cy="60" r="7"/></g></svg></span><div><b>sentinelpay</b><small>july 4, 2026</small></div></div></div>
+                <div class="lp-ins-card"><div class="lp-ins-img" aria-hidden="true"><span class="lp-ins-img-mark"></span></div><span class="lp-ins-date">july 2, 2026</span><h3 class="lp-ins-title-sm">duis aute irure dolor in reprehenderit voluptate</h3><p class="lp-ins-card-ex">velit esse cillum dolore eu fugiat nulla pariatur excepteur sint occaecat cupidatat.</p><div class="lp-ins-by"><span class="lp-ins-avatar"><svg viewBox="0 0 120 120"><g fill="none" stroke="#0091c8" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z"/><circle cx="60" cy="60" r="7"/></g></svg></span><div><b>sentinelpay</b><small>july 2, 2026</small></div></div></div>
+                <div class="lp-ins-card"><div class="lp-ins-img" aria-hidden="true"><span class="lp-ins-img-mark"></span></div><span class="lp-ins-date">june 29, 2026</span><h3 class="lp-ins-title-sm">sunt in culpa qui officia deserunt mollit anim</h3><p class="lp-ins-card-ex">id est laborum lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod.</p><div class="lp-ins-by"><span class="lp-ins-avatar"><svg viewBox="0 0 120 120"><g fill="none" stroke="#0091c8" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z"/><circle cx="60" cy="60" r="7"/></g></svg></span><div><b>sentinelpay</b><small>june 29, 2026</small></div></div></div>
+            </div>
+
+            <div class="lp-blog-pager">
+                <button disabled>prev</button>
+                <span class="cnt">viewing 1–9 of 55</span>
+                <button>next</button>
+            </div>
         </div>
+    </section>
 
-        <!-- pagination -->
-        <div class="pager">
-            <button disabled>prev</button>
-            <span class="count">viewing 1–9 of 55</span>
-            <button>next</button>
+    <footer class="lp-footer">
+        <div class="lp-section-inner" style="text-align:center; padding: 1.5rem 0;">
+            <span style="color: rgba(14,35,88,0.5); font-size: 0.82rem;">© 2026 sentinelpay. all rights reserved.</span>
         </div>
-    </main>
-
-    <footer class="foot">© 2026 sentinelpay. all rights reserved.</footer>
+    </footer>
 </body>
 </html>

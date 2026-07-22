@@ -157,8 +157,13 @@ const BLANK_PAGE = '<!doctype html><html lang="en"><head><meta charset="utf-8"><
 app.use((req, res, next) => {
     const host = String(req.headers.host || '').split(':')[0].toLowerCase();
     if (host === 'blog.sentinelpay.org') {
-        res.set('X-Robots-Tag', 'noindex, nofollow');
-        return res.status(200).sendFile(path.join(__dirname, 'public', 'blog.html'));
+        // serve the blog page for navigation requests; let assets (.css/.svg/.png)
+        // fall through to express.static so the shared homepage styles load.
+        if (req.method === 'GET' && !path.extname(req.path)) {
+            res.set('X-Robots-Tag', 'noindex, nofollow');
+            return res.status(200).sendFile(path.join(__dirname, 'public', 'blog.html'));
+        }
+        return next();
     }
     if (host === 'help.sentinelpay.org') {
         res.set('X-Robots-Tag', 'noindex, nofollow');
