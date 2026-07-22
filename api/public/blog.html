@@ -29,14 +29,20 @@
         html.theme-light .lp-btn-ghost.auth-nav-btn { border-color: rgba(0,0,0,0.08) !important; }
         html.theme-light .lp-btn-ghost.auth-nav-btn:hover { background: rgba(0,0,0,0.04) !important; }
 
-        /* blog-specific: card excerpt + byline + pagination, in the homepage's light style */
-        .lp-insights { padding-top: 4.5rem; }
-        .lp-blog-hero { text-align: left; padding: 1.5rem 0 3.5rem; max-width: 760px; }
-        .lp-blog-hero .lp-eyebrow { margin-bottom: 1.15rem; }
-        .lp-blog-hero .lp-h2 { margin: 0 0 1.3rem; font-size: 3.1rem; line-height: 1.12; }
-        .lp-blog-sub { max-width: 62ch; margin: 0; font-size: 1.08rem; line-height: 1.75; color: rgba(14, 35, 88, 0.6); }
-        .lp-ins-featured { margin-top: 0.5rem; }
-        @media (max-width: 640px) { .lp-blog-hero .lp-h2 { font-size: 2.1rem; } .lp-insights { padding-top: 2.5rem; } }
+        /* blog-specific: centered Howl-style header + card excerpt/byline/pagination in homepage's light style */
+        .lp-insights { padding-top: 4rem; }
+        .lp-blog-hero { text-align: center; padding: 2rem 0 3.5rem; }
+        .blog-brand { display: inline-flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem; }
+        .blog-brand-svg { width: 52px; height: 52px; }
+        .blog-brand-text { font-size: 2.15rem; font-weight: 800; letter-spacing: -0.02em; color: #0e2358; }
+        .blog-tag { max-width: 46ch; margin: 0 auto; font-size: 1.45rem; font-weight: 600; line-height: 1.45; color: #0e2358; }
+        .blog-tag .tg { background: linear-gradient(90deg, #00f0ff, #7b6cff 55%, #a020f0); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; font-weight: 700; }
+        .lp-ins-featured { margin-top: 1rem; }
+        @media (max-width: 640px) {
+            .lp-insights { padding-top: 2.5rem; }
+            .blog-brand-text { font-size: 1.7rem; }
+            .blog-tag { font-size: 1.15rem; }
+        }
         .lp-ins-card-ex { margin: 0.55rem 0 0; font-size: 0.9rem; line-height: 1.6; color: rgba(14,35,88,0.6); }
         .lp-ins-by { display: flex; align-items: center; gap: 0.6rem; margin-top: 1rem; padding-top: 0.9rem; border-top: 1px solid rgba(14,35,88,0.1); }
         .lp-ins-avatar { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: rgba(0,145,200,0.08); border: 1px solid rgba(14,35,88,0.1); }
@@ -86,9 +92,22 @@
     <section class="lp-section lp-insights" id="blog">
         <div class="lp-section-inner">
             <header class="lp-blog-hero">
-                <p class="lp-eyebrow">the sentinelpay blog</p>
-                <h2 class="lp-h2">what we're learning about <span class="lp-hl">crypto risk</span></h2>
-                <p class="lp-blog-sub">guides, breakdowns and regulatory updates from the team that screens crypto transactions for a living.</p>
+                <div class="blog-brand">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" class="blog-brand-svg">
+                        <defs>
+                            <linearGradient id="ng2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00ffff"/><stop offset="100%" stop-color="#a020f0"/></linearGradient>
+                            <filter id="ngGlow2" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3.5" result="coloredBlur"/><feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+                        </defs>
+                        <g filter="url(#ngGlow2)" fill="none" stroke="url(#ng2)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z"/>
+                            <path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z"/>
+                            <circle cx="60" cy="60" r="6"/><circle cx="60" cy="60" r="2" fill="url(#ng2)" stroke="none"/>
+                            <path d="M60 15 V 30" stroke-width="2" opacity="0.6"/><path d="M60 90 V 105" stroke-width="2" opacity="0.6"/>
+                        </g>
+                    </svg>
+                    <span class="blog-brand-text">sentinelpay</span>
+                </div>
+                <p class="blog-tag">the latest <span class="tg">guides</span>, breakdowns and <span class="tg">updates</span> on crypto risk &amp; compliance</p>
             </header>
 
             <div class="lp-ins-featured">
