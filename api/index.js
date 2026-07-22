@@ -150,6 +150,19 @@ app.use(cors({
 
 app.use(express.json({ limit: '10kb' }));
 
+// Empty subdomains (blog.sentinelpay.org, help.sentinelpay.org): served by this same
+// service via Host routing — a blank page until real content exists. No extra service.
+const EMPTY_SUBDOMAINS = new Set(['blog.sentinelpay.org', 'help.sentinelpay.org']);
+const BLANK_PAGE = '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>sentinelpay</title><style>html,body{margin:0;height:100%;background:#06070f}</style></head><body></body></html>';
+app.use((req, res, next) => {
+    const host = String(req.headers.host || '').split(':')[0].toLowerCase();
+    if (EMPTY_SUBDOMAINS.has(host)) {
+        res.set('X-Robots-Tag', 'noindex, nofollow');
+        return res.status(200).type('html').send(BLANK_PAGE);
+    }
+    next();
+});
+
 // Serve the static marketing site (/, /privacy, /tos, assets).
 app.use(express.static(path.join(__dirname, 'public'), { extensions: ['html'] }));
 
