@@ -30,7 +30,13 @@
         html.theme-light .lp-btn-ghost.auth-nav-btn:hover { background: rgba(0,0,0,0.04) !important; }
 
         /* blog-specific: card excerpt + byline + pagination, in the homepage's light style */
-        .lp-blog-hero { text-align: left; padding-bottom: 1rem; }
+        .lp-insights { padding-top: 4.5rem; }
+        .lp-blog-hero { text-align: left; padding: 1.5rem 0 3.5rem; max-width: 760px; }
+        .lp-blog-hero .lp-eyebrow { margin-bottom: 1.15rem; }
+        .lp-blog-hero .lp-h2 { margin: 0 0 1.3rem; font-size: 3.1rem; line-height: 1.12; }
+        .lp-blog-sub { max-width: 62ch; margin: 0; font-size: 1.08rem; line-height: 1.75; color: rgba(14, 35, 88, 0.6); }
+        .lp-ins-featured { margin-top: 0.5rem; }
+        @media (max-width: 640px) { .lp-blog-hero .lp-h2 { font-size: 2.1rem; } .lp-insights { padding-top: 2.5rem; } }
         .lp-ins-card-ex { margin: 0.55rem 0 0; font-size: 0.9rem; line-height: 1.6; color: rgba(14,35,88,0.6); }
         .lp-ins-by { display: flex; align-items: center; gap: 0.6rem; margin-top: 1rem; padding-top: 0.9rem; border-top: 1px solid rgba(14,35,88,0.1); }
         .lp-ins-avatar { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: rgba(0,145,200,0.08); border: 1px solid rgba(14,35,88,0.1); }
@@ -50,7 +56,7 @@
         .lp-blog-pager button:hover:not(:disabled) { border-color: rgba(37,99,235,0.45); box-shadow: 0 6px 18px rgba(14,35,88,0.08); }
         .lp-blog-pager button:disabled { opacity: 0.4; cursor: default; }
         .lp-blog-pager .cnt { font-size: 0.85rem; font-weight: 600; color: rgba(14,35,88,0.6); }
-        .lp-nav-inner { justify-content: space-between; }
+        .lp-nav-inner { display: flex !important; justify-content: space-between; align-items: center; }
     </style>
 </head>
 <body class="lp-body">
@@ -67,19 +73,19 @@
                 </svg>
                 <span class="lp-logo-text">sentinelpay</span>
             </a>
-            <div style="display:flex; gap:0.5rem; align-items:center;">
+            <div style="display:flex; align-items:center;">
                 <a href="https://sentinelpay.org" class="auth-nav-btn lp-btn-ghost">← back to sentinelpay</a>
-                <a href="https://sentinelpay.org#demo" class="auth-nav-btn lp-btn-solid">get started</a>
             </div>
         </div>
     </nav>
 
     <section class="lp-section lp-insights" id="blog">
         <div class="lp-section-inner">
-            <div class="lp-blog-hero">
+            <header class="lp-blog-hero">
                 <p class="lp-eyebrow">from the blog</p>
-                <h2 class="lp-h2"><span class="lp-hl">the latest</span> in crypto risk <br>&amp; compliance</h2>
-            </div>
+                <h2 class="lp-h2"><span class="lp-hl">the latest</span> in crypto risk &amp; compliance</h2>
+                <p class="lp-blog-sub">research, regulatory updates and laundering typologies from the frontline of blockchain compliance — written for the teams who have to act on them.</p>
+            </header>
 
             <div class="lp-ins-featured">
                 <div class="lp-ins-img lp-ins-img-lg" aria-hidden="true"><span class="lp-ins-img-mark"></span></div>
