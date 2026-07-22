@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>why criminals target small businesses · sentinelpay blog</title>
+    <script>document.documentElement.classList.add('theme-light');</script>
+    <link rel="icon" type="image/svg+xml" href="/logo.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css?v=23.0">
+    <link rel="stylesheet" href="/landing.css?v=4.1">
+    <link rel="stylesheet" href="/corp.css?v=124">
+    <style>
+        html.theme-light {
+            --bg-dark: #f6f7f9; --bg-panel: rgba(255,255,255,0.75);
+            --border-glass: rgba(20,20,30,0.08); --text-main: #15161a; --text-muted: #82828c;
+            --accent-glow: rgba(0,145,200,0.12); --accent-light: #0091c8; --neon-blue: #0091c8;
+        }
+        html.theme-light body.lp-body { background: linear-gradient(180deg, #fbfcfd 0%, #eef0f3 100%) fixed; }
+        html.theme-light .lp-nav { background: rgba(255,255,255,0.85); border-bottom-color: rgba(0,0,0,0.06); }
+        html.theme-light .lp-btn-ghost.auth-nav-btn { border-color: rgba(0,0,0,0.08) !important; }
+        html.theme-light .lp-btn-ghost.auth-nav-btn:hover { background: rgba(0,0,0,0.04) !important; }
+        .lp-nav-inner { display: flex !important; justify-content: space-between; align-items: center; }
+
+        /* reading progress bar */
+        .read-progress { position: fixed; top: 0; left: 0; height: 3px; width: 0; z-index: 9999; background: linear-gradient(90deg, #00f0ff, #7b6cff, #a020f0); transition: width 0.08s linear; }
+
+        .article-shell { max-width: 720px; margin: 0 auto; padding: 0 1.4rem; }
+        .lp-section.article { padding-top: 3.5rem; }
+        .article-back { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; font-weight: 600; color: rgba(14,35,88,0.55); margin-bottom: 1.6rem; }
+        .article-back:hover { color: #0e2358; }
+        .article-tag { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #0091c8; margin-bottom: 0.9rem; }
+        .article-tag::before { content: ''; width: 3px; height: 13px; border-radius: 2px; background: linear-gradient(#00f0ff, #a020f0); }
+        .article-title { margin: 0 0 1.4rem; font-size: 2.7rem; font-weight: 800; line-height: 1.14; letter-spacing: -0.02em; color: #0e2358; text-transform: lowercase; }
+        .article-byline { display: flex; align-items: center; gap: 0.7rem; }
+        .article-avatar { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: rgba(0,145,200,0.08); border: 1px solid rgba(14,35,88,0.1); }
+        .article-avatar svg { width: 22px; height: 22px; }
+        .article-byline b { font-size: 0.92rem; font-weight: 700; color: #0e2358; }
+        .article-byline small { display: block; font-size: 0.8rem; color: rgba(14,35,88,0.5); }
+
+        .article-cover {
+            position: relative; overflow: hidden; max-width: 960px; margin: 2.4rem auto 0;
+            aspect-ratio: 21 / 9; border-radius: 20px;
+            background:
+                radial-gradient(ellipse 60% 90% at 100% 0%, rgba(160,32,240,0.3), transparent 60%),
+                radial-gradient(ellipse 55% 90% at 0% 100%, rgba(0,240,255,0.22), transparent 60%),
+                #070912;
+            border: 1px solid rgba(120,160,255,0.14);
+        }
+        .article-cover::before {
+            content: ''; position: absolute; inset: 0;
+            background-image: radial-gradient(circle at 1px 1px, rgba(140,170,255,0.2) 1.2px, transparent 0);
+            background-size: 18px 18px;
+            -webkit-mask-image: linear-gradient(135deg, #000, transparent 72%); mask-image: linear-gradient(135deg, #000, transparent 72%);
+        }
+        .article-cover-mark {
+            position: absolute; top: 50%; left: 50%; width: 64px; height: 64px; transform: translate(-50%,-50%);
+            border-radius: 50%; background: linear-gradient(135deg, rgba(0,240,255,0.5), rgba(160,32,240,0.5));
+            -webkit-mask-image: radial-gradient(circle, transparent 42%, #000 44%, #000 58%, transparent 60%); mask-image: radial-gradient(circle, transparent 42%, #000 44%, #000 58%, transparent 60%);
+            opacity: 0.85;
+        }
+
+        .article-body { margin-top: 3rem; padding-bottom: 1rem; }
+        .article-body > p { margin: 1.35rem 0; font-size: 1.13rem; line-height: 1.8; color: #2a3550; }
+        .article-body > p.lead { font-size: 1.35rem; line-height: 1.6; font-weight: 500; color: #0e2358; }
+        .article-body h2 { margin: 3rem 0 1rem; font-size: 1.7rem; font-weight: 800; line-height: 1.25; letter-spacing: -0.01em; color: #0e2358; text-transform: lowercase; }
+        .article-body strong { font-weight: 700; color: #0e2358; }
+        .article-body ul { margin: 1.3rem 0; padding: 0; list-style: none; }
+        .article-body ul li { position: relative; padding-left: 1.9rem; margin-bottom: 0.8rem; font-size: 1.08rem; line-height: 1.6; color: #2a3550; }
+        .article-body ul li::before {
+            content: ''; position: absolute; left: 0; top: 4px; width: 20px; height: 20px; border-radius: 50%;
+            background: linear-gradient(135deg, #00f0ff, #a020f0);
+            -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") center / 12px no-repeat;
+            mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") center / 12px no-repeat;
+        }
+        .article-callout {
+            margin: 2rem 0; padding: 1.3rem 1.6rem; border-left: 4px solid; border-image: linear-gradient(#00f0ff, #a020f0) 1;
+            background: linear-gradient(90deg, rgba(0,145,200,0.06), transparent);
+            font-size: 1.3rem; font-weight: 700; line-height: 1.45; color: #0e2358;
+        }
+        .article-example {
+            margin: 1.6rem 0; padding: 1.4rem 1.6rem; border-radius: 16px;
+            background: #fff; border: 1px solid rgba(14,35,88,0.1); box-shadow: 0 8px 26px -18px rgba(14,35,88,0.25);
+        }
+        .article-example h3 { margin: 0 0 0.7rem; font-size: 1.15rem; font-weight: 800; color: #0e2358; text-transform: lowercase; }
+        .article-example p { margin: 0.7rem 0 0; font-size: 1.05rem; line-height: 1.7; color: #2a3550; }
+        .article-example p:first-of-type { margin-top: 0; }
+
+        .article-cta {
+            margin: 3.5rem 0 1rem; padding: 2.4rem 2.2rem; border-radius: 22px; text-align: center; position: relative; overflow: hidden;
+            background:
+                radial-gradient(ellipse 60% 90% at 100% 0%, rgba(160,32,240,0.22), transparent 55%),
+                radial-gradient(ellipse 55% 90% at 0% 100%, rgba(0,240,255,0.16), transparent 55%),
+                #070912;
+            border: 1px solid rgba(120,160,255,0.14);
+        }
+        .article-cta h3 { margin: 0 0 0.7rem; font-size: 1.6rem; font-weight: 800; color: #fff; text-transform: lowercase; letter-spacing: -0.01em; }
+        .article-cta p { margin: 0 auto 1.5rem; max-width: 46ch; font-size: 1rem; line-height: 1.65; color: rgba(255,255,255,0.66); }
+        .article-cta-btn { display: inline-block; padding: 0.85rem 1.9rem; border-radius: 10px; background: #fff; color: #06070f; font-weight: 700; font-size: 0.92rem; }
+        .article-cta-btn:hover { box-shadow: 0 12px 32px -8px rgba(0,240,255,0.4); }
+
+        @media (max-width: 640px) {
+            .article-title { font-size: 2rem; }
+            .lp-section.article { padding-top: 2.5rem; }
+            .article-body > p { font-size: 1.06rem; }
+            .article-body > p.lead { font-size: 1.2rem; }
+            .article-body h2 { font-size: 1.45rem; }
+            .article-cover { border-radius: 14px; aspect-ratio: 16/10; }
+        }
+    </style>
+</head>
+<body class="lp-body">
+    <div class="read-progress" id="read-progress"></div>
+    <nav class="lp-nav">
+        <div class="lp-nav-inner">
+            <a href="https://sentinelpay.org" class="lp-logo-link">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" class="lp-logo-svg">
+                    <defs>
+                        <linearGradient id="ng" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00ffff"/><stop offset="100%" stop-color="#a020f0"/></linearGradient>
+                        <filter id="ngGlow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3.5" result="coloredBlur"/><feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+                    </defs>
+                    <g filter="url(#ngGlow)" fill="none" stroke="url(#ng)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z"/>
+                        <path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z"/>
+                        <circle cx="60" cy="60" r="6"/><circle cx="60" cy="60" r="2" fill="url(#ng)" stroke="none"/>
+                        <path d="M60 15 V 30" stroke-width="2" opacity="0.6"/><path d="M60 90 V 105" stroke-width="2" opacity="0.6"/>
+                    </g>
+                </svg>
+            </a>
+            <div style="display:flex; align-items:center;">
+                <a href="https://sentinelpay.org" class="auth-nav-btn lp-btn-ghost">back to sentinelpay</a>
+            </div>
+        </div>
+    </nav>
+
+    <article class="lp-section article">
+        <div class="article-shell">
+            <a href="/" class="article-back">← all articles</a>
+            <div class="article-tag">crypto compliance</div>
+            <h1 class="article-title">why criminals target small businesses (and exactly how they do it)</h1>
+            <div class="article-byline">
+                <span class="article-avatar"><svg viewBox="0 0 120 120"><g fill="none" stroke="#0091c8" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z"/><circle cx="60" cy="60" r="7"/></g></svg></span>
+                <div><b>sentinelpay</b><small>july 22, 2026 · 4 min read</small></div>
+            </div>
+        </div>
+
+        <div class="article-cover" aria-hidden="true"><span class="article-cover-mark"></span></div>
+
+        <div class="article-shell article-body">
+            <p class="lead">"we're too small to be worth targeting." i thought that too, then i went through the case files, and i was wrong.</p>
+            <p>criminals don't chase the big players. big exchanges have entire aml departments, screening tools, compliance officers, and budgets in the millions. going after them is hard work.</p>
+            <p>going after you is not.</p>
+            <p>no screening tool. no compliance team. just you, running your business, trying to keep customers happy. to someone moving dirty money, that is an open door.</p>
+
+            <h2>you're not paranoid, you're the target</h2>
+            <p>the firms that track this for a living keep saying the same thing. trm labs has warned that criminals are deliberately going after smaller operators with tactics that used to be aimed at banks. chainalysis puts it plainly: small businesses don't have the infrastructure to spot laundering, and that is exactly what makes them useful for pushing illicit funds into the real economy.</p>
+            <div class="article-callout">read that word again. useful. you're not collateral damage in someone else's scheme, you are the scheme.</div>
+            <p>here is why you fit the profile:</p>
+            <ul>
+                <li>you don't screen wallets automatically</li>
+                <li>you don't have time to investigate every payment</li>
+                <li>you trust your clients, because normally that is good business</li>
+                <li>you're not on any regulator's radar</li>
+                <li>you move fast to close deals, so you never stop to ask questions</li>
+            </ul>
+            <p>every one of those is a strength in a normal business. against a laundering operation, every one of them is a hole.</p>
+
+            <h2>three ways it actually happens</h2>
+            <p>these aren't hypotheticals. they are patterns pulled straight out of chainalysis and elliptic case work.</p>
+            <div class="article-example">
+                <h3>the new client with the clean story</h3>
+                <p>a new customer shows up wanting your service. 10,000 usdt, paid upfront. they have a website, a linkedin, they even hop on a video call. it all checks out, so you deliver.</p>
+                <p>three months later tether freezes that 10,000 usdt. it traces back to a sanctioned group. you didn't know. it doesn't matter. your account is frozen and you are the one explaining it to a regulator.</p>
+            </div>
+            <div class="article-example">
+                <h3>the loyal client with a new wallet every time</h3>
+                <p>you have a customer who pays like clockwork, every month, never late. the only odd thing is a different wallet address each time. "security reasons," they tell you.</p>
+                <p>what you can't see is that every one of those addresses spins out of the same master key, and that key is tied to a darknet market. you have been settling payments for a criminal operation for half a year without a clue.</p>
+            </div>
+            <div class="article-example">
+                <h3>the urgent one</h3>
+                <p>a client calls in a panic. needs it now, sends the money, asks you to ship immediately. you are a good operator, so you do.</p>
+                <p>that payment came out of a ransomware payout. someone paid to get their files back, and the money landed with you. now you are a link in an extortion chain.</p>
+            </div>
+
+            <h2>policies in a drawer won't save you</h2>
+            <p>elliptic talks about "operationalizing" risk. strip out the jargon and it means doing something on every single transaction, instead of writing a policy and filing it away. complyadvantage makes the same point a different way: nobody gets caught out because they lack an aml policy. they get caught because they can't enforce it on the payment sitting in front of them.</p>
+            <p>so here is what actually moves the needle.</p>
+            <p><strong>stop checking wallets by hand.</strong> manual checks are slow, inconsistent, and they fall apart the moment you get busy. you miss things. your clients wait. it does not scale past a handful of payments.</p>
+            <p><strong>check before the money hits your account, not after.</strong> that is the whole game. once a bad payment settles, you are doing damage control. before it settles, you still have a choice.</p>
+
+            <h2>how sentinelpay fits in</h2>
+            <p>you drop your public key into our api. we scan every wallet that has ever touched your business: every transaction, every customer, every address.</p>
+            <p>each one gets a risk score built from sanctions lists, darknet activity, known scam patterns, usdt freeze history, and other signals. then you decide.</p>
+            <p><strong>low score?</strong> proceed. no friction, your customer gets their product.</p>
+            <p><strong>high score?</strong> you stop and ask for more before you commit: identity, source of funds, wallet history, a proper kyc on that client. you investigate first, decide second, send third.</p>
+            <p>that is the safety net. you never ship blind, and you never take money from a wallet that might be dirty.</p>
+
+            <h2>bottom line</h2>
+            <p>criminals pick you because you don't have the tools to see them coming. that is the only reason, and it is fixable.</p>
+
+            <div class="article-cta">
+                <h3>check before you accept</h3>
+                <p>sentinelpay scores every wallet that touches your business before the money lands. see the risk before you commit, not after.</p>
+                <a href="https://sentinelpay.org#demo" class="article-cta-btn">see how it works</a>
+            </div>
+        </div>
+    </article>
+
+    <footer class="lp-footer">
+        <div class="lp-section-inner" style="text-align:center; padding: 1.5rem 0;">
+            <span style="color: rgba(14,35,88,0.5); font-size: 0.82rem;">© 2026 sentinelpay. all rights reserved.</span>
+        </div>
+    </footer>
+
+    <script>
+        (function() {
+            var bar = document.getElementById('read-progress');
+            function update() {
+                var h = document.documentElement.scrollHeight - window.innerHeight;
+                bar.style.width = (h > 0 ? Math.min(100, window.scrollY / h * 100) : 0) + '%';
+            }
+            window.addEventListener('scroll', update, { passive: true });
+            window.addEventListener('resize', update);
+            update();
+        })();
+    </script>
+</body>
+</html>
