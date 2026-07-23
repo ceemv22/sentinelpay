@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>blog · sentinelpay</title>
+    <script>document.documentElement.classList.add('theme-light');</script>
+    <link rel="icon" type="image/svg+xml" href="/logo.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css?v=23.0">
+    <link rel="stylesheet" href="/landing.css?v=4.1">
+    <link rel="stylesheet" href="/corp.css?v=125">
+    <style>
+        /* essential theme-light base (mirrors the homepage inline theme) */
+        html.theme-light {
+            --bg-dark: #f6f7f9; --bg-panel: rgba(255,255,255,0.75);
+            --border-glass: rgba(20,20,30,0.08); --text-main: #15161a; --text-muted: #82828c;
+            --accent-glow: rgba(0,145,200,0.12); --accent-light: #0091c8; --neon-blue: #0091c8;
+        }
+        html.theme-light body.lp-body { background: linear-gradient(180deg, #fbfcfd 0%, #eef0f3 100%) fixed; }
+        /* same scrollbar as sentinelpay.org (light-blue on light track) */
+        html.theme-light, html.theme-light * { scrollbar-color: rgba(0,145,200,0.25) #f0f0f2; }
+        html.theme-light::-webkit-scrollbar-track, html.theme-light ::-webkit-scrollbar-track { background: #f0f0f2; }
+        html.theme-light::-webkit-scrollbar-thumb, html.theme-light ::-webkit-scrollbar-thumb { background: rgba(0,145,200,0.25); border: 1px solid rgba(0,145,200,0.15); }
+        html.theme-light::-webkit-scrollbar-thumb:hover, html.theme-light ::-webkit-scrollbar-thumb:hover { background: rgba(0,145,200,0.5); box-shadow: 0 0 10px rgba(0,145,200,0.3); }
+        html.theme-light .lp-nav { background: rgba(255,255,255,0.85); border-bottom-color: rgba(0,0,0,0.06); }
+        html.theme-light .lp-logo-text,
+        html.theme-light .lp-h1,
+        html.theme-light .lp-h2 {
+            background: linear-gradient(160deg, #15161a 0%, #5a5a66 100%);
+            -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        html.theme-light .lp-btn-ghost.auth-nav-btn { border-color: rgba(0,0,0,0.08) !important; }
+        html.theme-light .lp-btn-ghost.auth-nav-btn:hover { background: rgba(0,0,0,0.04) !important; }
+
+        /* blog-specific: centered Howl-style header + card excerpt/byline/pagination in homepage's light style */
+        /* nav is 64px fixed; equal gaps -> nav→hero == hero→featured */
+        .lp-insights { padding-top: 9.5rem; }
+        .lp-blog-hero { position: relative; text-align: center; padding: 0; }
+        .blog-tag {
+            position: relative; z-index: 1; max-width: 26ch; margin: 0 auto;
+            font-size: 2.6rem; font-weight: 800; line-height: 1.5; letter-spacing: -0.02em; color: #0e2358;
+        }
+        .blog-tag .lp-hl {
+            -webkit-box-decoration-break: clone; box-decoration-break: clone;
+            line-height: 1.15;
+        }
+        .lp-ins-featured { margin-top: 5.5rem; text-decoration: none; color: inherit; }
+        a.lp-ins-featured, a.lp-ins-featured * { text-decoration: none; }
+        @media (max-width: 640px) {
+            .lp-insights { padding-top: 7rem; }
+            .lp-ins-featured { margin-top: 3rem; }
+            .blog-tag { font-size: 1.8rem; max-width: 20ch; }
+        }
+        .lp-ins-card-ex { margin: 0.55rem 0 0; font-size: 0.9rem; line-height: 1.6; color: rgba(14,35,88,0.6); }
+        .lp-ins-by { display: flex; align-items: center; gap: 0.6rem; margin-top: 1rem; padding-top: 0.9rem; border-top: 1px solid rgba(14,35,88,0.1); }
+        .lp-ins-avatar { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: rgba(0,145,200,0.08); border: 1px solid rgba(14,35,88,0.1); }
+        .lp-ins-avatar svg { width: 18px; height: 18px; }
+        .lp-ins-by b { font-size: 0.82rem; font-weight: 600; color: #0e2358; }
+        .lp-ins-by small { display: block; font-size: 0.74rem; color: rgba(14,35,88,0.5); }
+        .lp-ins-readmore { display: inline-flex; align-items: center; gap: 0.45rem; margin-top: 1.3rem; font-weight: 700; font-size: 0.9rem; color: #0e2358; }
+        .lp-ins-readmore span { transition: transform 0.25s; }
+        .lp-ins-featured:hover .lp-ins-readmore span { transform: translateX(4px); }
+        .lp-ins-card { cursor: pointer; }
+        /* Howl-style cover: brand + title + read-more baked onto the image */
+        .ins-cover { position: absolute; inset: 0; z-index: 2; display: flex; flex-direction: column; padding: 1.15rem 1.25rem; }
+        .ins-cover-logo { display: inline-flex; align-items: center; gap: 0.4rem; }
+        .ins-cover-logo svg { width: 22px; height: 22px; }
+        .ins-cover-logo span { font-size: 0.82rem; font-weight: 800; letter-spacing: -0.01em; color: #fff; }
+        .ins-cover-title { margin: 0.9rem 0 0; font-size: 1.06rem; font-weight: 800; line-height: 1.22; text-transform: uppercase; letter-spacing: 0.005em; color: #fff; max-width: 92%; }
+        .ins-cover-btn {
+            margin-top: auto; align-self: flex-start; font-size: 0.7rem; font-weight: 700; color: #fff;
+            padding: 0.4rem 0.85rem; border: 1px solid rgba(255,255,255,0.28); border-radius: 7px;
+            transition: background 0.2s, border-color 0.2s;
+        }
+        .lp-ins-card:hover .ins-cover-btn, .lp-ins-featured:hover .ins-cover-btn { border-color: rgba(0,240,255,0.6); background: rgba(0,240,255,0.1); }
+        .lp-ins-featured .ins-cover { padding: 1.7rem 1.9rem; }
+        .lp-ins-featured .ins-cover-logo svg { width: 30px; height: 30px; }
+        .lp-ins-featured .ins-cover-logo span { font-size: 1rem; }
+        .lp-ins-featured .ins-cover-title { font-size: 1.75rem; margin-top: 1.1rem; max-width: 88%; }
+        .lp-ins-featured .ins-cover-btn { font-size: 0.8rem; padding: 0.55rem 1.15rem; }
+        .lp-blog-pager { display: flex; align-items: center; justify-content: center; gap: 1.4rem; padding: 3rem 0 1rem; }
+        .lp-blog-pager button {
+            font: inherit; font-size: 0.88rem; font-weight: 700; color: #0e2358; cursor: pointer;
+            padding: 0.65rem 1.5rem; border-radius: 10px; background: #fff; border: 1px solid rgba(14,35,88,0.14);
+            transition: border-color 0.2s, box-shadow 0.2s, opacity 0.2s;
+        }
+        .lp-blog-pager button:hover:not(:disabled) { border-color: rgba(37,99,235,0.45); box-shadow: 0 6px 18px rgba(14,35,88,0.08); }
+        .lp-blog-pager button:disabled { opacity: 0.4; cursor: default; }
+        .lp-blog-pager .cnt { font-size: 0.85rem; font-weight: 600; color: rgba(14,35,88,0.6); }
+        .lp-nav-inner { display: flex !important; justify-content: space-between; align-items: center; }
+    </style>
+</head>
+<body class="lp-body">
+    <nav class="lp-nav">
+        <div class="lp-nav-inner">
+            <a href="https://sentinelpay.org" class="lp-logo-link">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" class="lp-logo-svg">
+                    <defs>
+                        <linearGradient id="ng" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00ffff"/><stop offset="100%" stop-color="#a020f0"/></linearGradient>
+                        <filter id="ngGlow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3.5" result="coloredBlur"/><feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+                    </defs>
+                    <g filter="url(#ngGlow)" fill="none" stroke="url(#ng)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z"/>
+                        <path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z"/>
+                        <circle cx="60" cy="60" r="6"/><circle cx="60" cy="60" r="2" fill="url(#ng)" stroke="none"/>
+                        <path d="M60 15 V 30" stroke-width="2" opacity="0.6"/>
+                        <path d="M60 90 V 105" stroke-width="2" opacity="0.6"/>
+                    </g>
+                </svg>
+            </a>
+            <div style="display:flex; align-items:center;">
+                <a href="https://sentinelpay.org" class="auth-nav-btn lp-btn-ghost">back to sentinelpay</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="lp-section lp-insights" id="blog">
+        <div class="lp-section-inner">
+            <header class="lp-blog-hero">
+                <h1 class="blog-tag">the latest <span class="lp-hl">guides</span>, <span class="lp-hl">breakdowns</span> and <span class="lp-hl">updates</span> on crypto risk &amp; compliance</h1>
+            </header>
+
+            <a class="lp-ins-featured" href="/article/why-criminals-target-small-businesses">
+                <div class="lp-ins-img lp-ins-img-lg has-cover">
+                    <img class="lp-ins-cover-img" src="/covers/why-criminals.png" alt="why criminals target small businesses" loading="lazy" decoding="async" onerror="this.remove()">
+                </div>
+                <div class="lp-ins-meta">
+                    <span class="lp-ins-date">july 22, 2026</span>
+                    <h3 class="lp-ins-title">why criminals target small businesses (and exactly how they do it)</h3>
+                    <p class="lp-ins-excerpt">"we're too small to be worth targeting." i thought that too, then i went through the case files. criminals don't chase the big players with whole aml departments. they chase the easy path. here is exactly how they do it, with three real cases, and what actually stops it.</p>
+                </div>
+            </a>
+
+            <div class="lp-blog-pager">
+                <button disabled>prev</button>
+                <span class="cnt">viewing 1–1 of 1</span>
+                <button disabled>next</button>
+            </div>
+        </div>
+    </section>
+
+    <footer class="lp-footer">
+        <div class="lp-section-inner" style="text-align:center; padding: 1.5rem 0;">
+            <span style="color: rgba(14,35,88,0.5); font-size: 0.82rem;">© 2026 sentinelpay. all rights reserved.</span>
+        </div>
+    </footer>
+</body>
+</html>

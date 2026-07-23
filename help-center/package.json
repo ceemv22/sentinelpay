@@ -1,7 +1,7 @@
 {
   "name": "sentinelpay-help-center",
   "version": "1.0.0",
-  "description": "Static documentation for SentinelPay",
+  "description": "Static documentation for sentinelpay",
   "scripts": {
     "start": "node server.js"
   },
