@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/style.css?v=23.0">
     <link rel="stylesheet" href="/landing.css?v=4.1">
-    <link rel="stylesheet" href="/corp.css?v=124">
+    <link rel="stylesheet" href="/corp.css?v=125">
     <style>
         html.theme-light {
             --bg-dark: #f6f7f9; --bg-panel: rgba(255,255,255,0.75);
@@ -52,6 +52,10 @@
                 radial-gradient(ellipse 55% 90% at 0% 100%, rgba(0,240,255,0.22), transparent 60%),
                 #070912;
             border: 1px solid rgba(120,160,255,0.14);
+        }
+        .article-cover-img {
+            position: absolute; inset: 0; width: 100%; height: 100%;
+            object-fit: cover; object-position: center; display: block; z-index: 2;
         }
         .article-cover::before {
             content: ''; position: absolute; inset: 0;
@@ -150,7 +154,7 @@
             </div>
         </div>
 
-        <div class="article-cover" aria-hidden="true"><span class="article-cover-mark"></span></div>
+        <div class="article-cover has-cover"><img class="article-cover-img" src="/covers/why-criminals.jpg" alt="why criminals target small businesses" decoding="async" onerror="this.remove()"></div>
 
         <div class="article-shell article-body">
             <p class="lead">"we're too small to be worth targeting." i thought that too, then i went through the case files, and i was wrong.</p>
