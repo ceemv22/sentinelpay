@@ -91,7 +91,7 @@ html {
 body {
     background-color: var(--bg-dark);
     color: var(--text-main);
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Inter', sans-serif;
     min-height: 100vh;
     min-height: 100dvh;
     display: flex;
@@ -208,7 +208,7 @@ header {
     border-radius: 50px;
     font-size: 0.85rem;
     font-weight: 600;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Inter', sans-serif;
     text-decoration: none;
     text-transform: lowercase;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -240,7 +240,7 @@ header {
     color: var(--neon-blue);
     font-size: 0.9rem;
     text-transform: lowercase;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Inter', sans-serif;
     opacity: 0.8;
 }
 
@@ -267,7 +267,7 @@ input {
     padding: 1rem 1.2rem;
     border-radius: 8px;
     color: #fff;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Inter', sans-serif;
     font-size: 1rem;
     outline: none;
     transition: all 0.3s ease;
@@ -284,12 +284,11 @@ button {
     cursor: pointer;
     transition: all 0.2s ease;
     text-transform: lowercase;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Inter', sans-serif;
 }
 
 button:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(255, 255, 255, 0.1);
 }
 
 .outline-btn {
@@ -368,7 +367,7 @@ button:hover:not(:disabled) {
     font-weight: 800;
     line-height: 1;
     margin-bottom: 0.5rem;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Inter', sans-serif;
 }
 
 .flags {
@@ -385,7 +384,7 @@ button:hover:not(:disabled) {
     padding: 0.4rem 0.8rem;
     border-radius: 4px;
     font-size: 0.85rem;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Inter', sans-serif;
     text-transform: lowercase;
 }
 
@@ -400,13 +399,13 @@ button:hover:not(:disabled) {
     font-size: 0.9rem;
     text-align: center;
     display: none;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Inter', sans-serif;
 }
 
 .cyber-footer {
     text-align: center;
     margin-top: 3rem;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Inter', sans-serif;
     font-size: 0.75rem;
     color: var(--text-muted);
 }
@@ -535,7 +534,7 @@ button:hover:not(:disabled) {
     align-items: center;
     gap: 0.5rem;
     font-weight: 700;
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: 'Inter', sans-serif;
     color: var(--text);
 }
 
@@ -608,7 +607,7 @@ button:hover:not(:disabled) {
     border: none;
     color: var(--text-muted);
     font-weight: 600;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Inter', sans-serif;
     font-size: 0.82rem;
     cursor: pointer;
     border-radius: 6px;
@@ -648,7 +647,7 @@ button:hover:not(:disabled) {
     justify-content: center;
     gap: 0.75rem;
     padding: 0.85rem;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Inter', sans-serif;
     font-weight: 500;
     font-size: 0.9rem;
     border-radius: 8px;
@@ -668,7 +667,7 @@ button:hover:not(:disabled) {
     align-items: center;
     text-align: center;
     color: var(--text-muted);
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Inter', sans-serif;
     font-size: 0.75rem;
     margin: 1.5rem 0;
     letter-spacing: 0.5px;
@@ -710,7 +709,7 @@ button:hover:not(:disabled) {
     padding: 1rem 1.2rem;
     border-radius: 8px;
     color: #fff;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Inter', sans-serif;
     font-size: 0.9rem;
     width: 100%;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
@@ -726,7 +725,7 @@ button:hover:not(:disabled) {
 
 .auth-form label {
     display: block;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Inter', sans-serif;
     font-size: 0.72rem;
     color: var(--text-muted);
     text-transform: lowercase;
@@ -738,7 +737,7 @@ button:hover:not(:disabled) {
 .auth-form .forgot-pw-link {
     display: inline-block;
     text-align: right;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Inter', sans-serif;
     font-size: 0.7rem;
     color: var(--text-muted);
     text-decoration: none;
@@ -757,7 +756,7 @@ button:hover:not(:disabled) {
     margin: 1.5rem 0;
     font-size: 0.72rem;
     color: rgba(255, 255, 255, 0.4);
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Inter', sans-serif;
     line-height: 1.8;
     text-align: center;
     width: 100%;
@@ -781,7 +780,7 @@ button:hover:not(:disabled) {
     cursor: pointer;
     color: var(--text-muted);
     font-size: 0.65rem;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Inter', sans-serif;
     border: 1px solid rgba(255,255,255,0.1);
     border-radius: 50%;
     width: 16px;
@@ -816,7 +815,7 @@ button:hover:not(:disabled) {
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(0, 240, 255, 0.05) !important;
     
     color: #a0a0a0 !important;
-    font-family: 'JetBrains Mono', monospace !important;
+    font-family: 'Inter', sans-serif !important;
     font-size: 0.72rem !important;
     line-height: 2 !important;
     text-align: left !important;
@@ -850,7 +849,7 @@ button:hover:not(:disabled) {
     height: 3rem;
     font-size: 0.9rem;
     font-weight: 700;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Inter', sans-serif;
     background: #fff;
     color: #000;
     border: none;
@@ -875,7 +874,7 @@ button:hover:not(:disabled) {
     margin-top: 1rem;
     font-size: 0.8rem;
     color: var(--color-red);
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Inter', sans-serif;
     text-align: center;
     min-height: 1.2rem;
 }
@@ -1095,7 +1094,7 @@ body.modal-open {
         line-height: 1.6;
         font-size: 0.72rem;
         color: rgba(255,255,255,0.4);
-        font-family: 'JetBrains Mono', monospace;
+        font-family: 'Inter', sans-serif;
         text-align: center;
     }
     
@@ -1174,14 +1173,14 @@ body.modal-open {
     font-weight: 700 !important;
     letter-spacing: -1.85px !important;
     color: #fff !important;
-    font-family: 'Space Grotesk', sans-serif !important;
+    font-family: 'Inter', sans-serif !important;
     text-transform: lowercase !important;
     line-height: 1.05 !important;
 }
 
 .success-subtitle-new {
     color: rgba(255,255,255,0.5) !important;
-    font-family: 'JetBrains Mono', monospace !important;
+    font-family: 'Inter', sans-serif !important;
     line-height: 1.8 !important;
     max-width: 280px !important;
     margin: 0 auto 2.5rem auto !important;
@@ -1272,7 +1271,7 @@ body.modal-open {
     border-radius: 12px;
     padding: 1rem 1.5rem;
     color: #fff;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Inter', sans-serif;
     font-size: 0.85rem;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
     transform: translateX(120%);
@@ -1358,7 +1357,7 @@ body.modal-open {
 }
 
 .noscript-title {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Inter', sans-serif;
     font-size: 1.5rem;
     font-weight: 800;
     color: #fff;
@@ -1367,7 +1366,7 @@ body.modal-open {
 }
 
 .noscript-text {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Inter', sans-serif;
     font-size: 0.85rem;
     color: var(--text-muted);
     line-height: 1.8;
@@ -1390,7 +1389,7 @@ body.modal-open {
     grid-column: 1 / -1;
     text-align: center;
     padding: 3rem 1rem;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Inter', sans-serif;
     font-size: 0.85rem;
     color: var(--text-muted);
     letter-spacing: -0.5px;
@@ -1422,7 +1421,7 @@ body.modal-open {
     border-radius: 8px;
     color: var(--text-main);
     padding: 0.8rem 1rem;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Inter', sans-serif;
     font-size: 0.85rem;
     width: 100%;
     outline: none;
@@ -1447,7 +1446,7 @@ body.modal-open {
 }
 
 .org-rec-text {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Inter', sans-serif;
     font-size: 0.72rem;
     color: var(--text-muted);
     margin-top: 0.6rem;
@@ -1491,7 +1490,7 @@ body.modal-open .sidebar-container {
     align-items: center;
     justify-content: space-between;
     gap: 0.6rem;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Inter', sans-serif;
     font-size: 0.78rem;
     color: var(--text-main);
     transition: border-color 0.18s ease;
@@ -1514,7 +1513,7 @@ body.modal-open .sidebar-container {
 .sentinel-select-trigger .selected-value {
     font-size: 0.7rem;
     color: var(--text-muted);
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Inter', sans-serif;
 }
 
 .sentinel-select-trigger .chevron {
@@ -1551,7 +1550,7 @@ body.modal-open .sidebar-container {
     background: transparent;
     border: none;
     padding: 0.5rem 0.8rem;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Inter', sans-serif;
     font-size: 0.7rem;
     color: var(--text-muted);
     cursor: pointer;

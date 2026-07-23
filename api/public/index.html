@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>sentinelpay</title>
-    <meta name="description" content="Connect your RPC. SentinelPay monitors every transaction 24/7 and emails your team the moment a high-risk wallet is detected.">
+    <meta name="description" content="connect your rpc. sentinelpay monitors every transaction 24/7 and emails your team the moment a high-risk wallet is detected.">
     <meta name="keywords" content="sentinelpay, blockchain monitoring, crypto aml, real-time risk detection, rpc listener, wallet screening">
     <meta name="google-site-verification" content="eJA6iy1k02Jx0DsiCQeXU9TvMZyPqaZaTVvOPop3hY8" />
     <link rel="canonical" href="https://sentinelpay.org">
@@ -25,24 +25,27 @@
     {
       "@context": "https://schema.org",
       "@type": "SoftwareApplication",
-      "name": "SentinelPay",
+      "name": "sentinelpay",
       "operatingSystem": "Web",
       "applicationCategory": "SecurityApplication",
       "description": "Real-time blockchain monitoring platform. Connect your RPC and get instant email alerts when high-risk wallets are detected."
     }
     </script>
 
+    <script>document.documentElement.classList.add('theme-light');</script>
     <script>(function(){try{var s=localStorage.getItem('sb-aivqwkgjdpklxxuvkxpy-auth-token');if(s){var d=JSON.parse(s);if(d&&d.expires_at&&Math.floor(Date.now()/1000)<d.expires_at){document.documentElement.classList.add('auth-session-present');}}}catch(e){}})();</script>
     <link rel="icon" type="image/svg+xml" href="logo.svg">
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=4.0">
-    <link rel="stylesheet" href="landing.css?v=3.2">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=23.0">
+    <link rel="stylesheet" href="landing.css?v=4.1">
     <script>
         try{Object.keys(localStorage).forEach(function(k){if(k.indexOf('intercom')!==-1)localStorage.removeItem(k);});}catch(e){}
         window.intercomSettings={api_base:'https://api-iam.intercom.io',app_id:'obn3omwl',hide_default_launcher:true,language_override:'en'};
+        // Cloudflare Turnstile: paste your Turnstile SITE key here to turn on the bot challenge
+        // on the demo form (pair it with TURNSTILE_SECRET_KEY on the server). Empty = disabled.
+        window.__TURNSTILE_SITEKEY='0x4AAAAAAD6yvLDIagSfULi7';
     </script>
     <script>(function(){var w=window;var ic=w.Intercom;if(typeof ic==="function"){ic('reattach_activator');ic('update',w.intercomSettings);}else{var d=document;var i=function(){i.c(arguments);};i.q=[];i.c=function(a){i.q.push(a);};w.Intercom=i;var l=function(){var s=d.createElement('script');s.type='text/javascript';s.async=true;s.src='https://widget.intercom.io/widget/obn3omwl';var x=d.getElementsByTagName('script')[0];x.parentNode.insertBefore(s,x);};if(document.readyState==='complete'){l();}else if(w.attachEvent){w.attachEvent('onload',l);}else{w.addEventListener('load',l,false);}}})()</script>
-    <script src="lib/supabase.js"></script>
     <style>
         #sp-loader{position:fixed;inset:0;z-index:99999;background:#050505;display:flex;align-items:center;justify-content:center;transition:opacity 0.55s ease;}
         #sp-loader.spl-done{opacity:0;pointer-events:none;}
@@ -50,7 +53,326 @@
         @keyframes splPulse{from{filter:drop-shadow(0 0 6px rgba(0,255,255,0.3)) drop-shadow(0 0 14px rgba(160,32,240,0.2));}to{filter:drop-shadow(0 0 14px rgba(0,255,255,0.65)) drop-shadow(0 0 28px rgba(160,32,240,0.4));}}
         .spl-eye-blink{transform-origin:60px 60px;animation:splBlink 3.5s ease-in-out infinite;}
         @keyframes splBlink{0%,35%,55%,88%,100%{transform:scaleY(1);}45%{transform:scaleY(0.05);}93%{transform:scaleY(0.05);}}
+
+        html.theme-light {
+            --bg-dark: #f6f7f9;
+            --bg-panel: rgba(255, 255, 255, 0.75);
+            --border-glass: rgba(20, 20, 30, 0.08);
+            --text-main: #15161a;
+            --text-muted: #82828c;
+            --accent-glow: rgba(0, 145, 200, 0.12);
+            --accent-light: #0091c8;
+            --neon-blue: #0091c8;
+        }
+        html.theme-light body.lp-body {
+            background: linear-gradient(180deg, #fbfcfd 0%, #eef0f3 100%) fixed;
+        }
+        html.theme-light #sp-loader {
+            background: #fbfcfd;
+        }
+        html.theme-light .lp-nav {
+            background: rgba(255, 255, 255, 0.85);
+            border-bottom-color: rgba(0, 0, 0, 0.06);
+        }
+        html.theme-light .lp-logo-text,
+        html.theme-light .lp-h1,
+        html.theme-light .lp-h2 {
+            background: linear-gradient(160deg, #15161a 0%, #5a5a66 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        html.theme-light .lp-nav-link:hover,
+        html.theme-light .lp-back-btn:hover,
+        html.theme-light .lp-btn-ghost.auth-nav-btn:hover,
+        html.theme-light .lp-nav-dd-item:hover {
+            background: rgba(0, 0, 0, 0.04) !important;
+        }
+        html.theme-light .lp-back-btn,
+        html.theme-light .lp-btn-ghost.auth-nav-btn {
+            border-color: rgba(0, 0, 0, 0.08) !important;
+        }
+        html.theme-light .lp-nav-dd {
+            background: #fff;
+            border-color: rgba(0, 0, 0, 0.08);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+        }
+        html.theme-light .lp-nav-dd-item {
+            border-bottom-color: rgba(0, 0, 0, 0.05);
+        }
+        html.theme-light .lp-nav-dd-item:hover,
+        html.theme-light .lp-nav-dd-item:hover svg {
+            color: var(--text-main) !important;
+        }
+        html.theme-light .lp-stat-value,
+        html.theme-light .lp-step-title,
+        html.theme-light .lp-plan-amount,
+        html.theme-light .lp-plan-amount-custom,
+        html.theme-light .lp-usecase-title,
+        html.theme-light .lp-how-title {
+            color: var(--text-main);
+        }
+        html.theme-light .lp-status-pill {
+            background: rgba(0, 0, 0, 0.03);
+            border-color: rgba(0, 0, 0, 0.08);
+        }
+        html.theme-light .lp-status-pill:hover {
+            background: rgba(0, 0, 0, 0.05);
+            border-color: rgba(0, 0, 0, 0.13);
+        }
+        html.theme-light .lp-status-label {
+            color: rgba(0, 0, 0, 0.45);
+        }
+        html.theme-light .lp-status-arrow {
+            color: rgba(0, 0, 0, 0.25);
+        }
+        html.theme-light .lp-status-pill:hover .lp-status-label,
+        html.theme-light .lp-status-pill:hover .lp-status-arrow {
+            color: rgba(0, 0, 0, 0.65);
+        }
+        html.theme-light .lp-cta-primary {
+            background: #1a1a1c !important;
+            color: #fff !important;
+        }
+        html.theme-light .lp-cta-primary:hover {
+            background: #34343a !important;
+            box-shadow: 0 0 24px rgba(0, 0, 0, 0.12) !important;
+        }
+        html.theme-light .lp-btn-solid.auth-nav-btn,
+        html.theme-light .lp-btn-solid {
+            background: #1a1a1c !important;
+            border-color: #1a1a1c !important;
+            color: #fff !important;
+        }
+        html.theme-light .lp-btn-solid.auth-nav-btn:hover,
+        html.theme-light .lp-btn-solid:hover {
+            background: #34343a !important;
+            box-shadow: 0 0 24px rgba(0, 0, 0, 0.12) !important;
+        }
+        html.theme-light .lp-btn-ghost.auth-nav-btn {
+            color: var(--text-muted) !important;
+            border: 1px solid rgba(0, 0, 0, 0.1) !important;
+        }
+        html.theme-light .auth-nav-btn:not(.lp-btn-ghost):not(.lp-btn-solid) {
+            background: rgba(0, 0, 0, 0.03);
+            border-color: rgba(0, 0, 0, 0.1);
+            color: var(--text-main);
+            box-shadow: none;
+        }
+        html.theme-light .auth-nav-btn:not(.lp-btn-ghost):not(.lp-btn-solid):hover {
+            background: rgba(0, 0, 0, 0.06);
+            border-color: rgba(0, 0, 0, 0.18);
+            box-shadow: none;
+        }
+        html.theme-light .lp-glow-orb {
+            opacity: 0.35;
+        }
+        html.theme-light .lp-snap-pip::after {
+            background: rgba(0, 0, 0, 0.18);
+        }
+        html.theme-light .lp-snap-pip:hover::after {
+            background: rgba(0, 0, 0, 0.35);
+        }
+        html.theme-light .lp-snap-pip.lp-pip-active::after,
+        html.theme-light .lp-snap-pip.lp-pip-active:hover::after {
+            background: var(--accent-light);
+            box-shadow:
+                0 0 10px rgba(0, 145, 200, 0.4),
+                0 0 24px rgba(0, 145, 200, 0.15);
+        }
+        html.theme-light .lp-snap-ind:hover .lp-snap-pip::before {
+            color: rgba(0, 0, 0, 0.35);
+        }
+        html.theme-light .lp-snap-ind:hover .lp-snap-pip.lp-pip-active::before {
+            color: var(--accent-light);
+        }
+        html.theme-light .lp-terminal,
+        html.theme-light .lp-monitor-log {
+            background: rgba(255, 255, 255, 0.85);
+            border-color: rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.1);
+        }
+        html.theme-light .lp-terminal-bar {
+            background: rgba(0, 0, 0, 0.035);
+            border-bottom-color: rgba(0, 0, 0, 0.07);
+        }
+        html.theme-light .lp-c-comment { color: rgba(0, 0, 0, 0.32); }
+        html.theme-light .lp-c-val { color: #50a14f; }
+        html.theme-light .lp-c-num { color: #c18401; }
+        html.theme-light .lp-c-bool { color: #a626a4; }
+        html.theme-light .lp-log-ts { color: rgba(0, 0, 0, 0.3); }
+        html.theme-light .lp-log-ok,
+        html.theme-light .lp-log-green { color: #50a14f; }
+        html.theme-light .lp-log-warn,
+        html.theme-light .lp-log-yellow { color: #c18401; }
+        html.theme-light .lp-log-red,
+        html.theme-light .lp-log-danger { color: #d32f2f; }
+        html.theme-light .lp-log-line-danger { color: rgba(211, 47, 47, 0.85); }
+        html.theme-light .lp-connected-bar-wrap { background: rgba(0, 0, 0, 0.06); }
+        html.theme-light .lp-connected-bar {
+            background: linear-gradient(90deg, #50a14f, rgba(80, 161, 79, 0.5));
+        }
+        html.theme-light .lp-connected-label { color: #50a14f; }
+        html.theme-light .lp-cursor-blink { color: #50a14f; }
+        html.theme-light .lp-alert-score-max { color: rgba(0, 0, 0, 0.3); }
+        html.theme-light .lp-alert-meta {
+            color: rgba(0, 0, 0, 0.38);
+            border-top-color: rgba(0, 0, 0, 0.07);
+        }
+        html.theme-light .lp-scanner {
+            background: rgba(255, 255, 255, 0.85);
+            border-color: rgba(0, 0, 0, 0.08);
+            box-shadow: none;
+        }
+        html.theme-light .lp-scn-header {
+            background: rgba(0, 0, 0, 0.025);
+            border-bottom-color: rgba(0, 0, 0, 0.06);
+        }
+        html.theme-light .lp-scn-live-text {
+            color: rgba(0, 0, 0, 0.4);
+        }
+        html.theme-light .lp-scn-live-dot {
+            background: #27a345;
+        }
+        html.theme-light .lp-scn-row {
+            border-bottom-color: rgba(0, 0, 0, 0.045);
+        }
+        html.theme-light .lp-scn-chain {
+            border-right-color: rgba(0, 0, 0, 0.06);
+        }
+        html.theme-light .lp-scn-name {
+            color: rgba(0, 0, 0, 0.5);
+        }
+        html.theme-light .lp-scn-beam {
+            background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.1), transparent);
+        }
+        html.theme-light .lp-scn-particle {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18), 0 0 0 1px rgba(0, 0, 0, 0.08);
+        }
+        html.theme-light .lp-chain-pill {
+            background: rgba(0, 0, 0, 0.025);
+            border-color: rgba(0, 0, 0, 0.09);
+        }
+        html.theme-light .lp-chain-pill:hover {
+            background: rgba(0, 0, 0, 0.05);
+            border-color: rgba(0, 0, 0, 0.16);
+        }
+        html.theme-light .lp-chain-pill-more {
+            color: var(--accent-light);
+            border-color: rgba(0, 145, 200, 0.25);
+            background: rgba(0, 145, 200, 0.05);
+        }
+        html.theme-light .lp-chain-pill-more:hover {
+            background: rgba(0, 145, 200, 0.09);
+            border-color: rgba(0, 145, 200, 0.4);
+            color: var(--accent-light);
+        }
+        html.theme-light,
+        html.theme-light * {
+            scrollbar-color: rgba(0, 145, 200, 0.25) #f0f0f2;
+        }
+        html.theme-light::-webkit-scrollbar-track,
+        html.theme-light ::-webkit-scrollbar-track {
+            background: #f0f0f2;
+        }
+        html.theme-light::-webkit-scrollbar-thumb,
+        html.theme-light ::-webkit-scrollbar-thumb {
+            background: rgba(0, 145, 200, 0.25);
+            border: 1px solid rgba(0, 145, 200, 0.15);
+        }
+        html.theme-light::-webkit-scrollbar-thumb:hover,
+        html.theme-light ::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 145, 200, 0.5);
+            box-shadow: 0 0 10px rgba(0, 145, 200, 0.3);
+        }
+        html.theme-light .lp-mobile-menu {
+            background: rgba(255, 255, 255, 0.99);
+        }
+        html.theme-light .lp-mobile-link:active,
+        html.theme-light .lp-mm-acc-btn:active {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        html.theme-light .lp-mobile-sub-link:active {
+            color: var(--text-main);
+            background: rgba(0, 0, 0, 0.04);
+        }
+        html.theme-light .lp-mm-btn-ghost {
+            border-color: rgba(0, 0, 0, 0.12);
+            color: var(--text-muted);
+        }
+        html.theme-light .lp-mm-btn-ghost:hover {
+            background: rgba(0, 0, 0, 0.04);
+            border-color: rgba(0, 0, 0, 0.2);
+            color: var(--text-main);
+        }
+        html.theme-light .lp-mm-btn-ghost:active {
+            background: rgba(0, 0, 0, 0.08);
+            border-color: rgba(0, 0, 0, 0.28);
+            color: #000;
+        }
+        html.theme-light .lp-mm-btn-solid {
+            background: #1a1a1c;
+            color: #fff;
+        }
+        html.theme-light .lp-mm-btn-solid:active {
+            filter: brightness(1.3);
+        }
+        html.theme-light .lp-plan-cta-solid {
+            background: #1a1a1c;
+            border-color: #1a1a1c;
+            color: #fff;
+        }
+        html.theme-light .lp-plan-cta-solid:hover {
+            background: #34343a;
+            box-shadow: 0 0 24px rgba(0, 0, 0, 0.15);
+        }
+        html.theme-light .lp-usecase-card.glass-panel {
+            box-shadow: none;
+        }
+        html.theme-light .lp-plan-card.glass-panel {
+            box-shadow: none;
+        }
+        html.theme-light .lp-plan-featured {
+            box-shadow: 0 0 40px rgba(0, 145, 200, 0.08);
+        }
+        html.theme-light .lp-plan-featured.lp-plan-featured {
+            animation: none;
+        }
+        html.theme-light .lp-how-col-divider {
+            background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.1) 20%, rgba(0,0,0,0.1) 80%, transparent);
+        }
+        html.theme-light .cyber-grid {
+            background-image:
+                linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+        }
+        html.theme-light .lp-footer {
+            background: rgba(0, 0, 0, 0.02);
+            border-top-color: rgba(0, 0, 0, 0.06);
+        }
+        html.theme-light .lp-section-card,
+        html.theme-light [class$="-card"],
+        html.theme-light [class*="-card-"] {
+            background: rgba(255, 255, 255, 0.6);
+            border-color: rgba(0, 0, 0, 0.06);
+        }
+        html.theme-light #sp-chat-btn {
+            background: rgba(255, 255, 255, 0.85);
+            border-color: rgba(0, 145, 200, 0.25);
+            box-shadow: 0 0 20px rgba(0, 145, 200, 0.08), 0 8px 32px rgba(0, 0, 0, 0.08);
+            color: var(--accent-light);
+        }
+        html.theme-light #sp-chat-btn:hover {
+            border-color: rgba(0, 145, 200, 0.45);
+            box-shadow: 0 0 28px rgba(0, 145, 200, 0.16), 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        html.theme-light #sp-chat-badge {
+            background: var(--accent-light);
+            box-shadow: 0 0 8px rgba(0, 145, 200, 0.6);
+            border-color: rgba(255, 255, 255, 1);
+        }
     </style>
+    <link rel="stylesheet" href="/corp.css?v=125">
 </head>
 <body class="lp-body">
     <div id="sp-loader"><svg class="spl-logo-svg" viewBox="0 0 120 120" fill="none"><defs><linearGradient id="spl-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00ffff"/><stop offset="100%" stop-color="#a020f0"/></linearGradient><filter id="spl-glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3.5" result="coloredBlur"/><feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g filter="url(#spl-glow)" fill="none" stroke="url(#spl-grad)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z"/><g class="spl-eye-blink"><path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z"/><circle cx="60" cy="60" r="6"/><circle cx="60" cy="60" r="2" fill="url(#spl-grad)" stroke="none"/></g><path d="M60 15 V 30" stroke-width="2" opacity="0.6"/><path d="M60 90 V 105" stroke-width="2" opacity="0.6"/></g></svg></div>
@@ -107,39 +429,143 @@
             </a>
             <div class="lp-nav-links">
                 <div class="lp-nav-dd-wrap">
-                    <button class="lp-nav-link lp-nav-dd-btn">enterprise<svg class="lp-nav-chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
-                    <div class="lp-nav-dd">
-                        <a href="#pricing" class="lp-nav-dd-item">enterprise plans</a>
-                        <a href="/auth#register" class="lp-nav-dd-item">custom integrations</a>
-                        <a href="/auth#register" class="lp-nav-dd-item">dedicated support</a>
-                        <a href="mailto:support@sentinelpay.org" class="lp-nav-dd-item">contact sales</a>
+                    <button class="lp-nav-link lp-nav-dd-btn">solutions<svg class="lp-nav-chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+                    <div class="lp-nav-dd lp-mega">
+                        <div class="lp-mega-inner">
+                            <div class="lp-mega-rail">
+                                <span class="lp-mega-eyebrow">solutions</span>
+                                <h4 class="lp-mega-heading">everything you need to screen crypto risk</h4>
+                                <p class="lp-mega-rail-desc">real-time risk analytics across the full compliance lifecycle.</p>
+                                <a href="#solutions" class="lp-mega-rail-cta">explore all solutions<span class="lp-mega-cta-arrow">→</span></a>
+                            </div>
+                            <div class="lp-mega-grid">
+                                <a href="#solutions" class="lp-mega-item"><span class="lp-mega-title">crypto compliance</span><span class="lp-mega-desc">risk management for every stage of the lifecycle</span></a>
+                                <a href="#solutions" class="lp-mega-item"><span class="lp-mega-title">transaction screening</span><span class="lp-mega-desc">every transaction scored before funds settle</span></a>
+                                <a href="#solutions" class="lp-mega-item"><span class="lp-mega-title">wallet investigations</span><span class="lp-mega-desc">from suspicion to attribution with on-demand scans</span></a>
+                                <a href="#solutions" class="lp-mega-item"><span class="lp-mega-title">threat intelligence</span><span class="lp-mega-desc">emerging typologies with flag-level context</span></a>
+                                <a href="#solutions" class="lp-mega-item"><span class="lp-mega-title">real-time alerting</span><span class="lp-mega-desc">instant email alerts with score and flags</span></a>
+                                <a href="#demo" class="lp-mega-item"><span class="lp-mega-title">pricing</span><span class="lp-mega-desc">talk to us. plans shaped around your volume</span></a>
+                            </div>
+                            <a href="#demo" class="lp-mega-promo">
+                                <div class="lp-mega-promo-visual"><svg viewBox="0 0 120 120" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"><path d="M60 16 L26 30 V56 C26 80 50 99 60 104 C70 99 94 80 94 56 V30 Z"/><path d="M40 60 Q60 42 80 60 Q60 78 40 60 Z"/><circle cx="60" cy="60" r="6" fill="#fff" stroke="none"/></svg></div>
+                                <span class="lp-mega-promo-title">try a live wallet scan</span>
+                                <span class="lp-mega-promo-desc">score any wallet against known threats in seconds.</span>
+                                <span class="lp-mega-promo-cta">learn more<span class="lp-mega-cta-arrow">→</span></span>
+                            </a>
+                        </div>
                     </div>
                 </div>
-                <a href="#pricing" class="lp-nav-link">pricing</a>
-                <a href="https://help.sentinelpay.org" class="lp-nav-link">docs</a>
+                <div class="lp-nav-dd-wrap">
+                    <button class="lp-nav-link lp-nav-dd-btn">industries<svg class="lp-nav-chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+                    <div class="lp-nav-dd lp-mega">
+                        <div class="lp-mega-inner">
+                            <div class="lp-mega-rail">
+                                <span class="lp-mega-eyebrow">industries</span>
+                                <h4 class="lp-mega-heading">built for every team moving digital assets</h4>
+                                <p class="lp-mega-rail-desc">from banks to exchanges to law enforcement. one platform.</p>
+                                <a href="#who-its-for" class="lp-mega-rail-cta">see who it's for<span class="lp-mega-cta-arrow">→</span></a>
+                            </div>
+                            <div class="lp-mega-grid">
+                                <a href="#who-its-for" class="lp-mega-item"><span class="lp-mega-title">financial institutions</span><span class="lp-mega-desc">onboard and monitor without new exposure</span></a>
+                                <a href="#who-its-for" class="lp-mega-item"><span class="lp-mega-title">centralized exchanges</span><span class="lp-mega-desc">compliance at scale with fewer false positives</span></a>
+                                <a href="#who-its-for" class="lp-mega-item"><span class="lp-mega-title">payment services</span><span class="lp-mega-desc">crypto acceptance with real-time screening</span></a>
+                                <a href="#who-its-for" class="lp-mega-item"><span class="lp-mega-title">stablecoin &amp; token issuers</span><span class="lp-mega-desc">protect your brand and ecosystem trust</span></a>
+                                <a href="#who-its-for" class="lp-mega-item"><span class="lp-mega-title">network operators</span><span class="lp-mega-desc">a safer network for every participant</span></a>
+                                <a href="#who-its-for" class="lp-mega-item"><span class="lp-mega-title">law enforcement &amp; regulators</span><span class="lp-mega-desc">faster investigations, defensible decisions</span></a>
+                            </div>
+                            <a href="mailto:support@sentinelpay.org" class="lp-mega-promo">
+                                <div class="lp-mega-promo-visual"><svg viewBox="0 0 120 120" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"><path d="M60 16 L26 30 V56 C26 80 50 99 60 104 C70 99 94 80 94 56 V30 Z"/><path d="M40 60 Q60 42 80 60 Q60 78 40 60 Z"/><circle cx="60" cy="60" r="6" fill="#fff" stroke="none"/></svg></div>
+                                <span class="lp-mega-promo-title">not sure where you fit?</span>
+                                <span class="lp-mega-promo-desc">talk to our team and we'll map it to your workflow.</span>
+                                <span class="lp-mega-promo-cta">learn more<span class="lp-mega-cta-arrow">→</span></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="lp-nav-dd-wrap">
+                    <button class="lp-nav-link lp-nav-dd-btn">platform<svg class="lp-nav-chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+                    <div class="lp-nav-dd lp-mega">
+                        <div class="lp-mega-inner">
+                            <div class="lp-mega-rail">
+                                <span class="lp-mega-eyebrow">platform</span>
+                                <h4 class="lp-mega-heading">one integration, total coverage</h4>
+                                <p class="lp-mega-rail-desc">connect an rpc endpoint and monitor 10+ chains instantly.</p>
+                                <a href="#" class="lp-mega-rail-cta">read the docs<span class="lp-mega-cta-arrow">→</span></a>
+                            </div>
+                            <div class="lp-mega-grid">
+                                <a href="#" class="lp-mega-item"><span class="lp-mega-title">documentation</span><span class="lp-mega-desc">everything you need to integrate and operate</span></a>
+                                <a href="#" class="lp-mega-item"><span class="lp-mega-title">api reference</span><span class="lp-mega-desc">endpoints, payloads and examples</span></a>
+                                <a href="#" class="lp-mega-item"><span class="lp-mega-title">quickstart</span><span class="lp-mega-desc">up and running in minutes</span></a>
+                                <a href="#solutions" class="lp-mega-item"><span class="lp-mega-title">risk scoring</span><span class="lp-mega-desc">explainable scores built from named heuristics</span></a>
+                                <a href="#solutions" class="lp-mega-item"><span class="lp-mega-title">network coverage</span><span class="lp-mega-desc">10+ chains from a single integration</span></a>
+                                <a href="#solutions" class="lp-mega-item"><span class="lp-mega-title">configurable thresholds</span><span class="lp-mega-desc">tune risk rules to your appetite</span></a>
+                            </div>
+                            <a href="#" class="lp-mega-promo">
+                                <div class="lp-mega-promo-visual"><svg viewBox="0 0 120 120" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"><path d="M60 16 L26 30 V56 C26 80 50 99 60 104 C70 99 94 80 94 56 V30 Z"/><path d="M40 60 Q60 42 80 60 Q60 78 40 60 Z"/><circle cx="60" cy="60" r="6" fill="#fff" stroke="none"/></svg></div>
+                                <span class="lp-mega-promo-title">build in minutes</span>
+                                <span class="lp-mega-promo-desc">clean json api. no sdk, no infrastructure to run.</span>
+                                <span class="lp-mega-promo-cta">learn more<span class="lp-mega-cta-arrow">→</span></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
                 <div class="lp-nav-dd-wrap">
                     <button class="lp-nav-link lp-nav-dd-btn">resources<svg class="lp-nav-chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
-                    <div class="lp-nav-dd">
-                        <a href="https://help.sentinelpay.org" class="lp-nav-dd-item">documentation</a>
-                        <a href="https://help.sentinelpay.org/api-integration" class="lp-nav-dd-item">api reference</a>
-                        <a href="https://help.sentinelpay.org/getting-started" class="lp-nav-dd-item">quickstart</a>
-                        <a href="#" class="lp-nav-dd-item">blog</a>
+                    <div class="lp-nav-dd lp-mega">
+                        <div class="lp-mega-inner">
+                            <div class="lp-mega-rail">
+                                <span class="lp-mega-eyebrow">resources</span>
+                                <h4 class="lp-mega-heading">learn the language of crypto risk</h4>
+                                <p class="lp-mega-rail-desc">analysis, guides and updates from the frontline of blockchain risk.</p>
+                                <a href="#" class="lp-mega-rail-cta">visit the blog<span class="lp-mega-cta-arrow">→</span></a>
+                            </div>
+                            <div class="lp-mega-grid">
+                                <a href="#" class="lp-mega-item"><span class="lp-mega-title">blog</span><span class="lp-mega-desc">expert analysis and regulatory updates</span></a>
+                                <a href="#" class="lp-mega-item"><span class="lp-mega-title">reports &amp; guides</span><span class="lp-mega-desc">practical guidance for compliance teams</span></a>
+                                <a href="#" class="lp-mega-item"><span class="lp-mega-title">documentation</span><span class="lp-mega-desc">product docs and how-tos</span></a>
+                                <a href="#" class="lp-mega-item"><span class="lp-mega-title">newsletter</span><span class="lp-mega-desc">the latest insights in your inbox</span></a>
+                                <a href="#" class="lp-mega-item"><span class="lp-mega-title">crypto glossary</span><span class="lp-mega-desc">the language of digital asset risk</span></a>
+                                <a href="#" class="lp-mega-item"><span class="lp-mega-title">help center</span><span class="lp-mega-desc">answers and troubleshooting</span></a>
+                            </div>
+                            <a href="#" class="lp-mega-promo">
+                                <div class="lp-mega-promo-visual"><svg viewBox="0 0 120 120" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"><path d="M60 16 L26 30 V56 C26 80 50 99 60 104 C70 99 94 80 94 56 V30 Z"/><path d="M40 60 Q60 42 80 60 Q60 78 40 60 Z"/><circle cx="60" cy="60" r="6" fill="#fff" stroke="none"/></svg></div>
+                                <span class="lp-mega-promo-title">the latest insights</span>
+                                <span class="lp-mega-promo-desc">regulatory updates and new typologies in your inbox.</span>
+                                <span class="lp-mega-promo-cta">learn more<span class="lp-mega-cta-arrow">→</span></span>
+                            </a>
+                        </div>
                     </div>
                 </div>
                 <div class="lp-nav-dd-wrap">
                     <button class="lp-nav-link lp-nav-dd-btn">company<svg class="lp-nav-chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
-                    <div class="lp-nav-dd">
-                        <a href="#" class="lp-nav-dd-item">about</a>
-                        <a href="#" class="lp-nav-dd-item">careers</a>
-                        <a href="mailto:support@sentinelpay.org" class="lp-nav-dd-item">contact</a>
-                        <a href="#" class="lp-nav-dd-item">legal</a>
+                    <div class="lp-nav-dd lp-mega">
+                        <div class="lp-mega-inner">
+                            <div class="lp-mega-rail">
+                                <span class="lp-mega-eyebrow">company</span>
+                                <h4 class="lp-mega-heading">the team securing crypto payments</h4>
+                                <p class="lp-mega-rail-desc">who we are, how we protect you, and how to reach us.</p>
+                                <a href="mailto:support@sentinelpay.org" class="lp-mega-rail-cta">get in touch<span class="lp-mega-cta-arrow">→</span></a>
+                            </div>
+                            <div class="lp-mega-grid">
+                                <a href="#" class="lp-mega-item"><span class="lp-mega-title">who we are</span><span class="lp-mega-desc">the team behind sentinelpay</span></a>
+                                <a href="#" class="lp-mega-item"><span class="lp-mega-title">security</span><span class="lp-mega-desc">how we protect your data</span></a>
+                                <a href="#" class="lp-mega-item"><span class="lp-mega-title">careers</span><span class="lp-mega-desc">help build safer digital asset rails</span></a>
+                                <a href="mailto:support@sentinelpay.org" class="lp-mega-item"><span class="lp-mega-title">contact us</span><span class="lp-mega-desc">talk to our team</span></a>
+                                <a href="#" class="lp-mega-item"><span class="lp-mega-title">partner program</span><span class="lp-mega-desc">grow with us</span></a>
+                            </div>
+                            <a href="#" class="lp-mega-promo">
+                                <div class="lp-mega-promo-visual"><svg viewBox="0 0 120 120" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"><path d="M60 16 L26 30 V56 C26 80 50 99 60 104 C70 99 94 80 94 56 V30 Z"/><path d="M40 60 Q60 42 80 60 Q60 78 40 60 Z"/><circle cx="60" cy="60" r="6" fill="#fff" stroke="none"/></svg></div>
+                                <span class="lp-mega-promo-title">join the team</span>
+                                <span class="lp-mega-promo-desc">help build safer rails for digital asset payments.</span>
+                                <span class="lp-mega-promo-cta">learn more<span class="lp-mega-cta-arrow">→</span></span>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
             <div id="auth-nav-container" style="display: flex; gap: 0.5rem; align-items: center;">
-                <a href="/auth#login" id="nav-login-btn" class="auth-nav-btn lp-btn-ghost lp-desktop-auth">login</a>
-                <a href="/auth#register" id="nav-register-btn" class="auth-nav-btn lp-btn-solid lp-desktop-auth">get started</a>
-                <a href="/dashboard/organizations" id="nav-dashboard-btn" class="auth-nav-btn lp-desktop-auth" style="display: none;">dashboard</a>
+                <a href="#demo" id="nav-login-btn" class="auth-nav-btn lp-btn-ghost lp-desktop-auth">log in</a>
+                <a href="#demo" id="nav-register-btn" class="auth-nav-btn lp-btn-solid lp-desktop-auth">get started</a>
                 <button class="lp-hamburger" id="lp-hamburger" aria-label="menu">
                     <span class="lp-hb-line"></span>
                     <span class="lp-hb-line"></span>
@@ -152,498 +578,542 @@
     <div class="lp-mobile-menu" id="lp-mobile-menu">
         <div class="lp-mobile-menu-inner">
             <div class="lp-mm-acc">
-                <button class="lp-mm-acc-btn">enterprise<svg class="lp-mm-acc-chev" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+                <button class="lp-mm-acc-btn">solutions<svg class="lp-mm-acc-chev" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
                 <div class="lp-mm-acc-body">
-                    <a href="#pricing" class="lp-mobile-sub-link">enterprise plans</a>
-                    <a href="/auth#register" class="lp-mobile-sub-link">custom integrations</a>
-                    <a href="/auth#register" class="lp-mobile-sub-link">dedicated support</a>
+                    <a href="#solutions" class="lp-mobile-sub-link">crypto compliance</a>
+                    <a href="#solutions" class="lp-mobile-sub-link">transaction screening</a>
+                    <a href="#solutions" class="lp-mobile-sub-link">wallet investigations</a>
+                    <a href="#solutions" class="lp-mobile-sub-link">threat intelligence</a>
+                    <a href="#demo" class="lp-mobile-sub-link">pricing</a>
                 </div>
             </div>
-            <div class="lp-mobile-divider"></div>
-            <a href="#pricing" class="lp-mobile-link">pricing</a>
-            <a href="https://help.sentinelpay.org" class="lp-mobile-link">docs</a>
-            <div class="lp-mobile-divider"></div>
+            <div class="lp-mm-acc">
+                <button class="lp-mm-acc-btn">industries<svg class="lp-mm-acc-chev" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+                <div class="lp-mm-acc-body">
+                    <a href="#who-its-for" class="lp-mobile-sub-link">financial institutions</a>
+                    <a href="#who-its-for" class="lp-mobile-sub-link">centralized exchanges</a>
+                    <a href="#who-its-for" class="lp-mobile-sub-link">payment services</a>
+                    <a href="#who-its-for" class="lp-mobile-sub-link">stablecoin &amp; token issuers</a>
+                    <a href="#who-its-for" class="lp-mobile-sub-link">network operators</a>
+                </div>
+            </div>
+            <div class="lp-mm-acc">
+                <button class="lp-mm-acc-btn">platform<svg class="lp-mm-acc-chev" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+                <div class="lp-mm-acc-body">
+                    <a href="#" class="lp-mobile-sub-link">documentation</a>
+                    <a href="#" class="lp-mobile-sub-link">api reference</a>
+                    <a href="#" class="lp-mobile-sub-link">quickstart</a>
+                </div>
+            </div>
             <div class="lp-mm-acc">
                 <button class="lp-mm-acc-btn">resources<svg class="lp-mm-acc-chev" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
                 <div class="lp-mm-acc-body">
-                    <a href="https://help.sentinelpay.org" class="lp-mobile-sub-link">documentation</a>
-                    <a href="https://help.sentinelpay.org/api-integration" class="lp-mobile-sub-link">api reference</a>
-                    <a href="https://help.sentinelpay.org/getting-started" class="lp-mobile-sub-link">quickstart</a>
+                    <a href="#" class="lp-mobile-sub-link">blog</a>
+                    <a href="#" class="lp-mobile-sub-link">reports &amp; guides</a>
+                    <a href="#" class="lp-mobile-sub-link">documentation</a>
                 </div>
             </div>
             <div class="lp-mm-acc">
                 <button class="lp-mm-acc-btn">company<svg class="lp-mm-acc-chev" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
                 <div class="lp-mm-acc-body">
-                    <a href="#" class="lp-mobile-sub-link">about</a>
+                    <a href="#" class="lp-mobile-sub-link">who we are</a>
                     <a href="#" class="lp-mobile-sub-link">careers</a>
-                    <a href="mailto:support@sentinelpay.org" class="lp-mobile-sub-link">contact</a>
+                    <a href="mailto:support@sentinelpay.org" class="lp-mobile-sub-link">contact us</a>
                 </div>
             </div>
             <div class="lp-mobile-divider"></div>
             <div class="lp-mobile-ctas">
                 <a href="#" id="lp-mm-livechat" class="lp-mm-btn-ghost">live chat</a>
                 <div class="lp-mm-ctas-row">
-                    <a href="/auth#login" id="lp-mm-login" class="lp-mm-btn-ghost">login</a>
-                    <a href="/auth#register" id="lp-mm-register" class="lp-mm-btn-solid">get started</a>
-                    <a href="/dashboard/organizations" id="lp-mm-dashboard" class="lp-mm-btn-solid" style="display: none;">dashboard</a>
+                    <a href="#demo" id="lp-mm-login" class="lp-mm-btn-ghost">log in</a>
+                    <a href="#demo" id="lp-mm-register" class="lp-mm-btn-solid">get started</a>
                 </div>
             </div>
         </div>
     </div>
 
     <section class="lp-hero">
+        <div class="lp-hero-fx" aria-hidden="true">
+            <span class="lp-fx-orb lp-fx-o1"></span>
+            <span class="lp-fx-orb lp-fx-o2"></span>
+            <span class="lp-fx-orb lp-fx-o3"></span>
+            <span class="lp-fx-orb lp-fx-o4"></span>
+        </div>
         <div class="lp-hero-inner">
-            <a href="https://sentinelpay.org" class="lp-status-pill">
-                <span class="lp-status-dot"></span>
-                <span class="lp-status-label">all systems operational</span>
-                <svg class="lp-status-arrow" xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-            </a>
-            <h1 class="lp-h1">monitor every transaction.<br>get alerted instantly.</h1>
-            <p class="lp-hero-sub">connect your rpc endpoint. sentinelpay monitors every transaction across 10+ blockchain networks 24/7 and emails your team the moment a high-risk wallet is detected.</p>
-
-            <div class="lp-diagram">
-                <div class="lp-diag-node lp-diag-source">
-                    <div class="lp-diag-icon-wrap">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
-                    </div>
-                    <div class="lp-diag-node-name">your rpc node</div>
-                    <div class="lp-diag-node-sub">custom blockchain endpoint</div>
-                </div>
-
-                <div class="lp-diag-pipe">
-                    <div class="lp-diag-pipe-label">live transactions</div>
-                    <div class="lp-diag-pipe-track">
-                        <div class="lp-diag-track-line"></div>
-                        <div class="lp-diag-packet" style="--pd: 0s"></div>
-                        <div class="lp-diag-packet" style="--pd: 0.9s"></div>
-                        <div class="lp-diag-packet" style="--pd: 1.8s"></div>
-                        <div class="lp-diag-track-arrow">›</div>
-                    </div>
-                </div>
-
-                <div class="lp-diag-node lp-diag-engine">
-                    <div class="lp-diag-engine-ring"></div>
-                    <div class="lp-diag-icon-wrap lp-diag-icon-engine">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" style="width:100%;height:100%;">
-                          <defs>
-                            <linearGradient id="dGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                              <stop offset="0%" stop-color="#00ffff"/>
-                              <stop offset="100%" stop-color="#a020f0"/>
-                            </linearGradient>
-                            <filter id="dGlow" x="-50%" y="-50%" width="200%" height="200%">
-                              <feGaussianBlur stdDeviation="2.5" result="blur"/>
-                              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-                            </filter>
-                          </defs>
-                          <g filter="url(#dGlow)" fill="none" stroke="url(#dGrad)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z"/>
-                            <path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z"/>
-                            <circle cx="60" cy="60" r="6"/>
-                            <circle cx="60" cy="60" r="2" fill="url(#dGrad)" stroke="none"/>
-                          </g>
-                        </svg>
-                    </div>
-                    <div class="lp-diag-node-name">sentinelpay engine</div>
-                    <div class="lp-diag-node-sub">24/7 risk analysis</div>
-                    <div class="lp-diag-score-badge lp-risk-high" id="diag-score-badge">
-                        <span class="lp-diag-score-num" id="diag-score-num">72</span>
-                        <span class="lp-diag-score-sep">/</span>
-                        <span class="lp-diag-score-cat" id="diag-score-cat">high risk</span>
-                    </div>
-                </div>
-
-                <div class="lp-diag-pipe lp-diag-pipe-right">
-                    <div class="lp-diag-pipe-label">alert dispatched</div>
-                    <div class="lp-diag-pipe-track">
-                        <div class="lp-diag-track-line lp-track-alert"></div>
-                        <div class="lp-diag-packet lp-diag-packet-alert" style="--pd: 0s"></div>
-                        <div class="lp-diag-packet lp-diag-packet-alert" style="--pd: 2.4s"></div>
-                        <div class="lp-diag-track-arrow lp-arrow-alert">›</div>
-                    </div>
-                </div>
-
-                <div class="lp-diag-node lp-diag-alert-node">
-                    <div class="lp-diag-icon-wrap lp-diag-icon-alert">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                    </div>
-                    <div class="lp-diag-node-name">email alert</div>
-                    <div class="lp-diag-node-sub">instant notification</div>
-                    <div class="lp-diag-email-toast lp-risk-high" id="diag-email-toast">high risk · score 72</div>
-                </div>
-            </div>
+            <h1 class="lp-h1"><span class="lp-h1-grad">see risk coming.</span><br>stop it before it settles.</h1>
+            <p class="lp-hero-sub">sentinelpay screens every transaction on 10+ blockchains in real time. dirty money gets flagged, your team gets alerted, and bad funds never touch your business.</p>
 
             <div class="lp-hero-ctas">
-                <a href="/auth#register" class="lp-cta-primary">get started</a>
-                <a href="#how-it-works" class="lp-cta-ghost">explore features</a>
+                <a href="mailto:support@sentinelpay.org" class="lp-cta-primary">book a demo</a>
+                <a href="#demo" class="lp-cta-ghost">start free trial</a>
             </div>
         </div>
     </section>
-
-
-    <section class="lp-section lp-how" id="how-it-works">
-        <div class="lp-section-inner">
-            <p class="lp-eyebrow lp-reveal">integration</p>
-            <h2 class="lp-h2 lp-reveal">up and running in minutes</h2>
-
-            <div class="lp-how-cols lp-reveal">
-
-                <div class="lp-how-col">
-                    <div class="lp-how-step-num">01</div>
-                    <h3 class="lp-how-title">connect your rpc</h3>
-                    <p class="lp-how-desc">paste your blockchain rpc endpoint into the sentinelpay dashboard. we support ethereum, bnb chain, polygon, avalanche, arbitrum, optimism, base, solana, tron and more.</p>
-                    <div class="lp-terminal">
-                        <div class="lp-terminal-bar">
-                            <span class="lp-dot lp-dot-red"></span>
-                            <span class="lp-dot lp-dot-yellow"></span>
-                            <span class="lp-dot lp-dot-green"></span>
-                            <span class="lp-terminal-title">dashboard · rpc config</span>
-                        </div>
-                        <pre class="lp-terminal-code"><code>{
-  <span class="lp-c-key">"name"</span>: <span class="lp-c-val">"mainnet-node"</span>,
-  <span class="lp-c-key">"rpc_url"</span>: <span class="lp-c-val">"https://eth.node.io/..."</span>,
-  <span class="lp-c-key">"alert_email"</span>: <span class="lp-c-val">"ops@yourco.com"</span>,
-  <span class="lp-c-key">"risk_threshold"</span>: <span class="lp-c-num">60</span>
-  <span class="lp-c-comment">// → monitoring active</span>
-}</code></pre>
-                    </div>
-                </div>
-
-                <div class="lp-how-col-divider"></div>
-
-                <div class="lp-how-col">
-                    <div class="lp-how-step-num">02</div>
-                    <h3 class="lp-how-title">we listen 24/7</h3>
-                    <p class="lp-how-desc">sentinelpay subscribes to your chain and runs every transaction through 5 on-chain risk heuristics in real-time. zero manual work required.</p>
-                    <div class="lp-monitor-log">
-                        <div class="lp-terminal-bar">
-                            <span class="lp-dot lp-dot-red"></span>
-                            <span class="lp-dot lp-dot-yellow"></span>
-                            <span class="lp-dot lp-dot-green"></span>
-                            <span class="lp-terminal-title">sentinel · live scan</span>
-                        </div>
-                        <div class="lp-log-lines">
-                            <div class="lp-log-line"><span class="lp-log-ts" id="lpts0"></span><span class="lp-log-ok"> ✓ </span>0x4f3a...d8c1 score=<span class="lp-log-green">12</span></div>
-                            <div class="lp-log-line"><span class="lp-log-ts" id="lpts1"></span><span class="lp-log-ok"> ✓ </span>0xa1b2...9e3f score=<span class="lp-log-green">08</span></div>
-                            <div class="lp-log-line"><span class="lp-log-ts" id="lpts2"></span><span class="lp-log-warn"> ⚠ </span>0x9c7d...3b2a score=<span class="lp-log-yellow">45</span></div>
-                            <div class="lp-log-line"><span class="lp-log-ts" id="lpts3"></span><span class="lp-log-ok"> ✓ </span>0x2e8f...c5a7 score=<span class="lp-log-green">03</span></div>
-                            <div class="lp-log-line lp-log-line-danger"><span class="lp-log-ts" id="lpts4"></span><span class="lp-log-danger"> ✕ </span>0x7f1e...9d04 score=<span class="lp-log-red">78</span></div>
-                            <div class="lp-log-line lp-log-line-blink"><span class="lp-log-ts" id="lpts5"></span><span class="lp-log-danger"> → </span><span class="lp-log-alert">alert dispatched</span></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="lp-how-col-divider"></div>
-
-                <div class="lp-how-col">
-                    <div class="lp-how-step-num">03</div>
-                    <h3 class="lp-how-title">get the alert</h3>
-                    <p class="lp-how-desc">the moment a wallet scores above your configured threshold, we send an email to your team with the score, flags, and transaction details.</p>
-                    <div class="lp-alert-card">
-                        <div class="lp-alert-header">
-                            <div class="lp-alert-badge">high risk</div>
-                            <div class="lp-alert-score">78<span class="lp-alert-score-max">/100</span></div>
-                        </div>
-                        <div class="lp-alert-wallet">0x7f1e...9d04</div>
-                        <div class="lp-alert-flags">
-                            <span class="lp-alert-flag">mixer_interaction</span>
-                            <span class="lp-alert-flag">high_velocity</span>
-                        </div>
-                        <div class="lp-alert-meta">
-                            <span>tx: 0xabc123...</span>
-                            <span id="lp-alert-meta-ts"></span>
-                        </div>
-                    </div>
-                </div>
-
+    <div class="lp-logo-bar">
+        <div class="lp-net-marquee" aria-hidden="false">
+            <div class="lp-net-track" id="lp-marquee-track">
+                <span class="lp-net-mark"><img src="/chain-logos/eth.png" alt="ethereum">ethereum</span>
+                <span class="lp-net-mark"><img src="/chain-logos/btc.png" alt="bitcoin">bitcoin</span>
+                <span class="lp-net-mark"><img src="/chain-logos/sol.png" alt="solana">solana</span>
+                <span class="lp-net-mark"><img src="/chain-logos/bnb.png" alt="bnb chain">bnb chain</span>
+                <span class="lp-net-mark"><img src="/chain-logos/matic.png" alt="polygon">polygon</span>
+                <span class="lp-net-mark"><img src="/chain-logos/avax.png" alt="avalanche">avalanche</span>
+                <span class="lp-net-mark"><img src="/chain-logos/arbitrum.png" alt="arbitrum">arbitrum</span>
+                <span class="lp-net-mark"><img src="/chain-logos/optimism.png" alt="optimism">optimism</span>
+                <span class="lp-net-mark"><img src="/chain-logos/base.svg" alt="base">base</span>
+                <span class="lp-net-mark"><img src="/chain-logos/tron.png" alt="tron">tron</span>
+                <span class="lp-net-mark"><img src="/chain-logos/eth.png" alt="ethereum">ethereum</span>
+                <span class="lp-net-mark"><img src="/chain-logos/btc.png" alt="bitcoin">bitcoin</span>
+                <span class="lp-net-mark"><img src="/chain-logos/sol.png" alt="solana">solana</span>
+                <span class="lp-net-mark"><img src="/chain-logos/bnb.png" alt="bnb chain">bnb chain</span>
+                <span class="lp-net-mark"><img src="/chain-logos/matic.png" alt="polygon">polygon</span>
+                <span class="lp-net-mark"><img src="/chain-logos/avax.png" alt="avalanche">avalanche</span>
+                <span class="lp-net-mark"><img src="/chain-logos/arbitrum.png" alt="arbitrum">arbitrum</span>
+                <span class="lp-net-mark"><img src="/chain-logos/optimism.png" alt="optimism">optimism</span>
+                <span class="lp-net-mark"><img src="/chain-logos/base.svg" alt="base">base</span>
+                <span class="lp-net-mark"><img src="/chain-logos/tron.png" alt="tron">tron</span>
+                <span class="lp-net-mark"><img src="/chain-logos/eth.png" alt="ethereum">ethereum</span>
+                <span class="lp-net-mark"><img src="/chain-logos/btc.png" alt="bitcoin">bitcoin</span>
+                <span class="lp-net-mark"><img src="/chain-logos/sol.png" alt="solana">solana</span>
+                <span class="lp-net-mark"><img src="/chain-logos/bnb.png" alt="bnb chain">bnb chain</span>
+                <span class="lp-net-mark"><img src="/chain-logos/matic.png" alt="polygon">polygon</span>
+                <span class="lp-net-mark"><img src="/chain-logos/avax.png" alt="avalanche">avalanche</span>
+                <span class="lp-net-mark"><img src="/chain-logos/arbitrum.png" alt="arbitrum">arbitrum</span>
+                <span class="lp-net-mark"><img src="/chain-logos/optimism.png" alt="optimism">optimism</span>
+                <span class="lp-net-mark"><img src="/chain-logos/base.svg" alt="base">base</span>
+                <span class="lp-net-mark"><img src="/chain-logos/tron.png" alt="tron">tron</span>
+                <span class="lp-net-mark"><img src="/chain-logos/eth.png" alt="ethereum">ethereum</span>
+                <span class="lp-net-mark"><img src="/chain-logos/btc.png" alt="bitcoin">bitcoin</span>
+                <span class="lp-net-mark"><img src="/chain-logos/sol.png" alt="solana">solana</span>
+                <span class="lp-net-mark"><img src="/chain-logos/bnb.png" alt="bnb chain">bnb chain</span>
+                <span class="lp-net-mark"><img src="/chain-logos/matic.png" alt="polygon">polygon</span>
+                <span class="lp-net-mark"><img src="/chain-logos/avax.png" alt="avalanche">avalanche</span>
+                <span class="lp-net-mark"><img src="/chain-logos/arbitrum.png" alt="arbitrum">arbitrum</span>
+                <span class="lp-net-mark"><img src="/chain-logos/optimism.png" alt="optimism">optimism</span>
+                <span class="lp-net-mark"><img src="/chain-logos/base.svg" alt="base">base</span>
+                <span class="lp-net-mark"><img src="/chain-logos/tron.png" alt="tron">tron</span>
             </div>
         </div>
-    </section>
+    </div>
 
-    <section class="lp-section lp-signals">
+    <section class="lp-section lp-roles" id="who-its-for">
         <div class="lp-section-inner">
-            <p class="lp-eyebrow lp-reveal">heuristics</p>
-            <h2 class="lp-h2 lp-reveal">what triggers an alert</h2>
-            <div class="lp-signals-grid lp-reveal">
-                <div class="lp-signal-card lp-signal-critical">
-                    <div class="lp-signal-scanline"></div>
-                    <div class="lp-signal-header">
-                        <code class="lp-signal-flag">mixer_interaction</code>
-                        <span class="lp-signal-score lp-score-red">+50</span>
+            <p class="lp-eyebrow">built for you</p>
+            <h2 class="lp-h2"><span class="lp-hl">one platform</span> for every team <br>that touches crypto risk</h2>
+            <div class="lp-roles-selector">
+                <span class="lp-roles-selector-label">sentinelpay for</span>
+                <div class="lp-roles-dd" id="lp-roles-dd">
+                    <button class="lp-roles-dd-btn" id="lp-roles-dd-btn"><span class="lp-roles-dd-label">financial institutions</span><svg class="lp-roles-dd-chev" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+                    <div class="lp-roles-dd-menu" id="lp-roles-dd-menu">
+                        <button class="lp-roles-dd-opt active" data-role="fi">financial institutions</button>
+                        <button class="lp-roles-dd-opt" data-role="issuers">stablecoin &amp; token issuers</button>
+                        <button class="lp-roles-dd-opt" data-role="cex">centralized exchanges</button>
+                        <button class="lp-roles-dd-opt" data-role="psp">payment services</button>
+                        <button class="lp-roles-dd-opt" data-role="defi">decentralized finance</button>
+                        <button class="lp-roles-dd-opt" data-role="network">network operators</button>
+                        <button class="lp-roles-dd-opt" data-role="law">law enforcement</button>
+                        <button class="lp-roles-dd-opt" data-role="reg">regulators</button>
                     </div>
-                    <p class="lp-signal-desc">direct inbound transfers above 0.001 eth from a known mixing service such as tornado cash.</p>
-                    <div class="lp-signal-meter"><div class="lp-signal-meter-fill lp-meter-red" style="--meter-w:90%"></div></div>
-                </div>
-                <div class="lp-signal-card lp-signal-critical">
-                    <div class="lp-signal-scanline"></div>
-                    <div class="lp-signal-header">
-                        <code class="lp-signal-flag">sanctioned_entity</code>
-                        <span class="lp-signal-score lp-score-red">→ 100</span>
-                    </div>
-                    <p class="lp-signal-desc">wallet address matched against a known high-risk entity set. triggers maximum risk score immediately.</p>
-                    <div class="lp-signal-meter"><div class="lp-signal-meter-fill lp-meter-red" style="--meter-w:100%"></div></div>
-                </div>
-                <div class="lp-signal-card lp-signal-medium">
-                    <div class="lp-signal-scanline"></div>
-                    <div class="lp-signal-header">
-                        <code class="lp-signal-flag">new_wallet</code>
-                        <span class="lp-signal-score lp-score-yellow">+20</span>
-                    </div>
-                    <p class="lp-signal-desc">wallet is less than 30 days old with limited on-chain history to establish trust.</p>
-                    <div class="lp-signal-meter"><div class="lp-signal-meter-fill lp-meter-yellow" style="--meter-w:40%"></div></div>
-                </div>
-                <div class="lp-signal-card lp-signal-medium">
-                    <div class="lp-signal-scanline"></div>
-                    <div class="lp-signal-header">
-                        <code class="lp-signal-flag">high_velocity</code>
-                        <span class="lp-signal-score lp-score-yellow">+20</span>
-                    </div>
-                    <p class="lp-signal-desc">more than 50 transactions in the last 24 hours — indicative of automated or layering behavior.</p>
-                    <div class="lp-signal-meter"><div class="lp-signal-meter-fill lp-meter-yellow" style="--meter-w:40%"></div></div>
-                </div>
-                <div class="lp-signal-card lp-signal-low">
-                    <div class="lp-signal-scanline"></div>
-                    <div class="lp-signal-header">
-                        <code class="lp-signal-flag">io_imbalance</code>
-                        <span class="lp-signal-score lp-score-blue">+10</span>
-                    </div>
-                    <p class="lp-signal-desc">output-to-input value ratio exceeds 10:1 across a minimum of 10 transactions.</p>
-                    <div class="lp-signal-meter"><div class="lp-signal-meter-fill lp-meter-blue" style="--meter-w:20%"></div></div>
                 </div>
             </div>
-        </div>
-    </section>
-
-    <section class="lp-section lp-chains-section">
-        <div class="lp-section-inner">
-            <p class="lp-eyebrow lp-reveal">multi-chain coverage</p>
-            <h2 class="lp-h2 lp-reveal">every chain. one sentinel.</h2>
-            <p class="lp-chains-desc lp-reveal">sentinelpay monitors inbound transactions across the most critical blockchain networks. every wallet scored before funds settle.</p>
-
-            <div class="lp-scanner lp-reveal" id="lp-scanner">
-                <div class="lp-scn-header">
-                    <div class="lp-scn-live">
-                        <span class="lp-scn-live-dot"></span>
-                        <span class="lp-scn-live-text">sentinel scanner · live</span>
-                    </div>
-                    </div>
-                <div class="lp-scn-body" id="lp-scn-body"></div>
-            </div>
-
-            <div class="lp-chains-grid lp-reveal">
-                <div class="lp-chain-pill"><span class="lp-chain-dot" style="background:#627EEA"></span>ethereum</div>
-                <div class="lp-chain-pill"><span class="lp-chain-dot" style="background:#F7931A"></span>bitcoin</div>
-                <div class="lp-chain-pill"><span class="lp-chain-dot" style="background:#9945FF"></span>solana</div>
-                <div class="lp-chain-pill"><span class="lp-chain-dot" style="background:#F3BA2F"></span>bnb chain</div>
-                <div class="lp-chain-pill"><span class="lp-chain-dot" style="background:#8247E5"></span>polygon</div>
-                <div class="lp-chain-pill"><span class="lp-chain-dot" style="background:#E84142"></span>avalanche</div>
-                <div class="lp-chain-pill"><span class="lp-chain-dot" style="background:#12AAFF"></span>arbitrum</div>
-                <div class="lp-chain-pill"><span class="lp-chain-dot" style="background:#FF0420"></span>optimism</div>
-                <div class="lp-chain-pill"><span class="lp-chain-dot" style="background:#0052FF"></span>base</div>
-                <div class="lp-chain-pill"><span class="lp-chain-dot" style="background:#EB0029"></span>tron</div>
-                <div class="lp-chain-pill lp-chain-pill-more">+ more coming</div>
-            </div>
-        </div>
-    </section>
-
-    <section class="lp-section lp-code-section">
-        <div class="lp-section-inner">
-            <p class="lp-eyebrow lp-reveal">alert format</p>
-            <h2 class="lp-h2 lp-reveal">everything you need, in one email.</h2>
-            <div class="lp-code-grid lp-reveal">
-                <div class="lp-terminal">
-                    <div class="lp-terminal-bar">
-                        <span class="lp-dot lp-dot-red"></span>
-                        <span class="lp-dot lp-dot-yellow"></span>
-                        <span class="lp-dot lp-dot-green"></span>
-                        <span class="lp-terminal-title">rpc connection · dashboard config</span>
-                    </div>
-                    <pre class="lp-terminal-code"><code>{
-  <span class="lp-c-key">"name"</span>: <span class="lp-c-val">"mainnet-node"</span>,
-  <span class="lp-c-key">"rpc_url"</span>: <span class="lp-c-val">"https://eth.yourprovider.com/..."</span>,
-  <span class="lp-c-key">"alert_email"</span>: <span class="lp-c-val">"ops@yourplatform.com"</span>,
-  <span class="lp-c-key">"risk_threshold"</span>: <span class="lp-c-num">60</span>
-}</code></pre>
-                </div>
-                <div class="lp-terminal">
-                    <div class="lp-terminal-bar">
-                        <span class="lp-dot lp-dot-red"></span>
-                        <span class="lp-dot lp-dot-yellow"></span>
-                        <span class="lp-dot lp-dot-green"></span>
-                        <span class="lp-terminal-title">alert payload · sent to your email</span>
-                    </div>
-                    <pre class="lp-terminal-code"><code>{
-  <span class="lp-c-key">"event"</span>: <span class="lp-c-val">"risk_detected"</span>,
-  <span class="lp-c-key">"score"</span>: <span class="lp-c-num">72</span>,
-  <span class="lp-c-key">"category"</span>: <span class="lp-c-val">"high"</span>,
-  <span class="lp-c-key">"wallet"</span>: <span class="lp-c-val">"0x742d35Cc..."</span>,
-  <span class="lp-c-key">"flags"</span>: [<span class="lp-c-val">"mixer_interaction"</span>],
-  <span class="lp-c-key">"tx_hash"</span>: <span class="lp-c-val">"0xabc123..."</span>,
-  <span class="lp-c-key">"timestamp"</span>: <span class="lp-c-val" id="lp-json-ts"></span>
-}</code></pre>
-                </div>
-            </div>
-            <p class="lp-code-note lp-reveal">also included: on-demand wallet scans via <code>/v1/score</code> for manual checks at any time.</p>
-        </div>
-    </section>
-
-    <section class="lp-section lp-usecases">
-        <div class="lp-section-inner">
-            <p class="lp-eyebrow lp-reveal">use cases</p>
-            <h2 class="lp-h2 lp-reveal">built for high-stakes payment flows</h2>
-            <div class="lp-usecase-grid lp-reveal">
-                <div class="lp-usecase-card glass-panel">
-                    <div class="lp-usecase-bg-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.75"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-                    </div>
-                    <div class="lp-usecase-content">
-                        <div class="lp-usecase-tag">high volume</div>
-                        <h3 class="lp-usecase-title">crypto casinos & igaming</h3>
-                        <p class="lp-usecase-desc">get alerted before laundered funds clear. protect your license without slowing down your deposit flow. real-time scoring on every incoming wallet.</p>
+            <div class="lp-roles-panels" id="lp-roles-panels">
+                <div class="lp-role-panel active" data-role="fi">
+                    <div class="lp-role-feature">
+                        <div class="lp-role-feature-body">
+                            <h3 class="lp-role-title">financial institutions</h3>
+                            <p class="lp-role-desc">adopt digital assets without inheriting their risk. every wallet is screened in real time, so your desks make consistent, audit-ready calls instead of guesses.</p>
+                            <a href="#demo" class="lp-role-cta-btn">learn more</a>
+                        </div>
+                        <div class="lp-role-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M4 21V10l8-5.5 8 5.5V21"/><path d="M4 10h16"/><line x1="8" y1="13" x2="8" y2="18"/><line x1="12" y1="13" x2="12" y2="18"/><line x1="16" y1="13" x2="16" y2="18"/></svg></div>
                     </div>
                 </div>
-                <div class="lp-usecase-card glass-panel">
-                    <div class="lp-usecase-bg-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.75"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-                    </div>
-                    <div class="lp-usecase-content">
-                        <div class="lp-usecase-tag">payment rails</div>
-                        <h3 class="lp-usecase-title">payment gateways</h3>
-                        <p class="lp-usecase-desc">monitor every incoming transaction across your payment rails. act on risky wallets before funds settle.</p>
-                    </div>
-                </div>
-                <div class="lp-usecase-card glass-panel">
-                    <div class="lp-usecase-bg-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.75"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-                    </div>
-                    <div class="lp-usecase-content">
-                        <div class="lp-usecase-tag">block settlements</div>
-                        <h3 class="lp-usecase-title">otc & exchange desks</h3>
-                        <p class="lp-usecase-desc">catch high-risk counterparties the moment they initiate a trade. real-time intelligence before block settlements.</p>
+                <div class="lp-role-panel" data-role="issuers">
+                    <div class="lp-role-feature">
+                        <div class="lp-role-feature-body">
+                            <h3 class="lp-role-title">stablecoin &amp; token issuers</h3>
+                            <p class="lp-role-desc">launch tokens the market can trust. catch tainted flows the moment they touch your contracts, and protect your brand before a headline does it for you.</p>
+                            <a href="#demo" class="lp-role-cta-btn">learn more</a>
+                        </div>
+                        <div class="lp-role-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 6.8v10.4"/><path d="M14.6 9.1c-.55-1-1.6-1.5-2.9-1.5-1.6 0-2.7.85-2.7 2.1 0 2.85 5.9 1.35 5.9 4.3 0 1.35-1.25 2.2-2.95 2.2-1.5 0-2.65-.65-3.15-1.7"/></svg></div>
                     </div>
                 </div>
-                <div class="lp-usecase-card glass-panel">
-                    <div class="lp-usecase-bg-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.75"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                <div class="lp-role-panel" data-role="cex">
+                    <div class="lp-role-feature">
+                        <div class="lp-role-feature-body">
+                            <h3 class="lp-role-title">centralized exchanges</h3>
+                            <p class="lp-role-desc">screen every deposit before it settles, not after it becomes a problem. cut false positives and review time so compliance scales with your volume, not against it.</p>
+                            <a href="#demo" class="lp-role-cta-btn">learn more</a>
+                        </div>
+                        <div class="lp-role-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8.5h13"/><path d="M14 5.5l3 3-3 3"/><path d="M20 15.5H7"/><path d="M10 12.5l-3 3 3 3"/></svg></div>
                     </div>
-                    <div class="lp-usecase-content">
-                        <div class="lp-usecase-tag">compliance</div>
-                        <h3 class="lp-usecase-title">aml compliance teams</h3>
-                        <p class="lp-usecase-desc">automate your first line of defense. route risk alerts directly into your case management workflow.</p>
+                </div>
+                <div class="lp-role-panel" data-role="psp">
+                    <div class="lp-role-feature">
+                        <div class="lp-role-feature-body">
+                            <h3 class="lp-role-title">payment services &amp; fintechs</h3>
+                            <p class="lp-role-desc">accept crypto without accepting the risk. real-time screening on every payment means clean funds settle fast and dirty ones never reach your books.</p>
+                            <a href="#demo" class="lp-role-cta-btn">learn more</a>
+                        </div>
+                        <div class="lp-role-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><line x1="2.5" y1="10" x2="21.5" y2="10"/><line x1="6" y1="15" x2="10" y2="15"/></svg></div>
+                    </div>
+                </div>
+                <div class="lp-role-panel" data-role="defi">
+                    <div class="lp-role-feature">
+                        <div class="lp-role-feature-body">
+                            <h3 class="lp-role-title">decentralized finance</h3>
+                            <p class="lp-role-desc">ship fast without flying blind. monitor contract inflows the way you would any wallet, and keep regulatory exposure under control as you grow.</p>
+                            <a href="#demo" class="lp-role-cta-btn">learn more</a>
+                        </div>
+                        <div class="lp-role-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2.5 20 7 20 17 12 21.5 4 17 4 7"/><circle cx="12" cy="12" r="3"/><path d="M12 2.5V9M20 7l-5.5 3.2M20 17l-5.5-3.2M12 21.5V15M4 17l5.5-3.2M4 7l5.5 3.2"/></svg></div>
+                    </div>
+                </div>
+                <div class="lp-role-panel" data-role="network">
+                    <div class="lp-role-feature">
+                        <div class="lp-role-feature-body">
+                            <h3 class="lp-role-title">network operators</h3>
+                            <p class="lp-role-desc">make your chain the safe place to build. give institutions and developers confidence that bad actors get caught, from block one.</p>
+                            <a href="#demo" class="lp-role-cta-btn">learn more</a>
+                        </div>
+                        <div class="lp-role-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2.4"/><circle cx="18" cy="6" r="2.4"/><circle cx="12" cy="18" r="2.4"/><path d="M7.7 7.7l3 8.1M16.3 7.7l-3 8.1M8.4 6h7.2"/></svg></div>
+                    </div>
+                </div>
+                <div class="lp-role-panel" data-role="law">
+                    <div class="lp-role-feature">
+                        <div class="lp-role-feature-body">
+                            <h3 class="lp-role-title">law enforcement</h3>
+                            <p class="lp-role-desc">turn a wallet address into a lead. trace funds across chains in seconds, surface who is behind them, and build cases that hold up in court.</p>
+                            <a href="mailto:support@sentinelpay.org" class="lp-role-cta-btn">learn more</a>
+                        </div>
+                        <div class="lp-role-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="20.5" y1="20.5" x2="15.5" y2="15.5"/><path d="M7.8 10.6l1.9 1.9 3.4-3.4"/></svg></div>
+                    </div>
+                </div>
+                <div class="lp-role-panel" data-role="reg">
+                    <div class="lp-role-feature">
+                        <div class="lp-role-feature-body">
+                            <h3 class="lp-role-title">regulators</h3>
+                            <p class="lp-role-desc">see the market clearly. stronger detection, faster investigations and explainable scoring you can defend, so enforcement decisions actually stick.</p>
+                            <a href="mailto:support@sentinelpay.org" class="lp-role-cta-btn">learn more</a>
+                        </div>
+                        <div class="lp-role-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5l7.5 3.2v5.3c0 4.7-3.2 7.9-7.5 9-4.3-1.1-7.5-4.3-7.5-9V5.7z"/><path d="M8.6 12l2.3 2.3 4.5-4.6"/></svg></div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="lp-section lp-pricing" id="pricing">
+    <section class="lp-section lp-statsx" id="stats">
+        <div class="lp-statsx-bg" aria-hidden="true"></div>
+        <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="statGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00f0ff"/><stop offset="100%" stop-color="#a020f0"/></linearGradient></defs></svg>
         <div class="lp-section-inner">
-            <p class="lp-eyebrow lp-reveal">pricing</p>
-            <h2 class="lp-h2 lp-reveal">simple, transparent pricing</h2>
-            <div class="lp-pricing-grid lp-reveal">
-                <div class="lp-plan-card glass-panel">
-                    <div class="lp-plan-name">starter</div>
-                    <div class="lp-plan-price">
-                        <span class="lp-plan-currency">$</span>
-                        <span class="lp-plan-amount">99</span>
-                        <span class="lp-plan-period">/mo</span>
-                    </div>
-                    <p class="lp-plan-desc">for teams getting started with automated risk monitoring.</p>
-                    <ul class="lp-plan-features">
-                        <li class="lp-plan-feature">
-                            <span class="lp-feat-check">✓</span>
-                            1 rpc endpoint
-                        </li>
-                        <li class="lp-plan-feature">
-                            <span class="lp-feat-check">✓</span>
-                            up to 250 monitored addresses
-                        </li>
-                        <li class="lp-plan-feature">
-                            <span class="lp-feat-check">✓</span>
-                            real-time email alerts
-                        </li>
-                        <li class="lp-plan-feature">
-                            <span class="lp-feat-check">✓</span>
-                            on-demand api scan access
-                        </li>
-                        <li class="lp-plan-feature">
-                            <span class="lp-feat-check">✓</span>
-                            standard support
-                        </li>
-                    </ul>
-                    <a href="/auth#register" class="lp-plan-cta lp-plan-cta-ghost">get started</a>
+            <h2 class="lp-statsx-heading"><span class="lp-statsx-hl">dirty money never sleeps.</span> neither do we. we watch every chain, every second, so nothing slips past you.</h2>
+            <div class="lp-statsx-grid" id="lp-statsx-grid">
+                <div class="lp-statsx-card">
+                    <div class="lp-statsx-icon"><svg viewBox="0 0 24 24" fill="none" stroke="url(#statGrad)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="6" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="12" cy="18" r="2"/><path d="M6.7 7.3l4.3 8.5M17.3 7.3l-4.3 8.5M7 6h10"/></svg></div>
+                    <div class="lp-statsx-num" data-target="10" data-suffix="+">0+</div>
+                    <div class="lp-statsx-label">blockchain networks covered</div>
                 </div>
-
-                <div class="lp-plan-card lp-plan-featured glass-panel">
-                    <div class="lp-plan-popular">most popular</div>
-                    <div class="lp-plan-name">pro</div>
-                    <div class="lp-plan-price">
-                        <span class="lp-plan-currency">$</span>
-                        <span class="lp-plan-amount">399</span>
-                        <span class="lp-plan-period">/mo</span>
-                    </div>
-                    <p class="lp-plan-desc">for platforms with high transaction volume and compliance requirements.</p>
-                    <ul class="lp-plan-features">
-                        <li class="lp-plan-feature">
-                            <span class="lp-feat-check">✓</span>
-                            up to 5 rpc endpoints
-                        </li>
-                        <li class="lp-plan-feature">
-                            <span class="lp-feat-check">✓</span>
-                            up to 2,500 monitored addresses
-                        </li>
-                        <li class="lp-plan-feature">
-                            <span class="lp-feat-check">✓</span>
-                            real-time email + webhook alerts
-                        </li>
-                        <li class="lp-plan-feature">
-                            <span class="lp-feat-check">✓</span>
-                            custom risk thresholds per endpoint
-                        </li>
-                        <li class="lp-plan-feature">
-                            <span class="lp-feat-check">✓</span>
-                            on-demand api scan access
-                        </li>
-                        <li class="lp-plan-feature">
-                            <span class="lp-feat-check">✓</span>
-                            priority support
-                        </li>
-                    </ul>
-                    <a href="/auth#register" class="lp-plan-cta lp-plan-cta-solid">get started</a>
+                <div class="lp-statsx-card">
+                    <div class="lp-statsx-icon"><svg viewBox="0 0 24 24" fill="none" stroke="url(#statGrad)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a5 5 0 0 0-5 5c0 4-2 5-2 5h14s-2-1-2-5a5 5 0 0 0-5-5z"/><path d="M10.3 20a2 2 0 0 0 3.4 0"/></svg></div>
+                    <div class="lp-statsx-num" data-target="1" data-prefix="&lt;" data-suffix="s">&lt;0s</div>
+                    <div class="lp-statsx-label">from detection to alert</div>
                 </div>
+                <div class="lp-statsx-card">
+                    <div class="lp-statsx-icon"><svg viewBox="0 0 24 24" fill="none" stroke="url(#statGrad)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></div>
+                    <div class="lp-statsx-num" data-target="24" data-suffix="/7">0/7</div>
+                    <div class="lp-statsx-label">monitoring that never clocks out</div>
+                </div>
+                <div class="lp-statsx-card">
+                    <div class="lp-statsx-icon"><svg viewBox="0 0 24 24" fill="none" stroke="url(#statGrad)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 8-6-16-3 8H2"/></svg></div>
+                    <div class="lp-statsx-num" data-target="99.9" data-decimals="1" data-suffix="%">0.0%</div>
+                    <div class="lp-statsx-label">uptime, measured not promised</div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-                <div class="lp-plan-card glass-panel">
-                    <div class="lp-plan-name">enterprise</div>
-                    <div class="lp-plan-price lp-plan-price-custom">
-                        <span class="lp-plan-amount-custom">custom</span>
+    <section class="lp-section lp-intel">
+        <div class="lp-section-inner">
+            <p class="lp-eyebrow">guides &amp; playbooks</p>
+            <h2 class="lp-h2"><span class="lp-hl">move faster</span> when the <br>rules change</h2>
+            <p class="lp-intel-sub">regulators rewrite the playbook every quarter. our guides tell you what changed, what it costs you, and what to do about it before your next audit asks.</p>
+            <div class="lp-intel-banner">
+                <div class="lp-intel-dots" aria-hidden="true"></div>
+                <div class="lp-intel-copy">
+                    <h3 class="lp-intel-banner-title">stay one step ahead of crypto crime. every playbook and guide, in one hub.</h3>
+                    <a href="#" class="lp-intel-btn">explore the hub</a>
+                </div>
+                <div class="lp-intel-visual" aria-hidden="true">
+                    <span class="lp-intel-glow"></span>
+                    <div class="lp-intel-guide" id="lp-guide-card">
+                        <div class="lp-intel-guide-icon" id="lp-guide-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h11l5 5v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/><path d="M14 4v5h5"/><path d="M8 13h8M8 17h5"/></svg>
+                        </div>
+                        <div class="lp-intel-guide-body" id="lp-guide-body">
+                            <span class="lp-intel-guide-kicker" id="lp-guide-kicker">free compliance guide</span>
+                            <h4 class="lp-intel-guide-title" id="lp-guide-title">the crypto risk playbook</h4>
+                            <span class="lp-intel-guide-accent"></span>
+                            <div class="lp-intel-guide-meta"><span id="lp-guide-pages">48 pages</span><span class="lp-intel-guide-read">read now</span></div>
+                        </div>
                     </div>
-                    <p class="lp-plan-desc">for exchanges, large-scale processors, and compliance-heavy environments.</p>
-                    <ul class="lp-plan-features">
-                        <li class="lp-plan-feature">
-                            <span class="lp-feat-check">✓</span>
-                            unlimited rpc endpoints
-                        </li>
-                        <li class="lp-plan-feature">
-                            <span class="lp-feat-check">✓</span>
-                            unlimited monitored addresses
-                        </li>
-                        <li class="lp-plan-feature">
-                            <span class="lp-feat-check">✓</span>
-                            dedicated infrastructure
-                        </li>
-                        <li class="lp-plan-feature">
-                            <span class="lp-feat-check">✓</span>
-                            custom alert integrations
-                        </li>
-                        <li class="lp-plan-feature">
-                            <span class="lp-feat-check">✓</span>
-                            sla + dedicated support
-                        </li>
-                        <li class="lp-plan-feature">
-                            <span class="lp-feat-check">✓</span>
-                            on-demand api scan access
-                        </li>
-                    </ul>
-                    <a href="mailto:support@sentinelpay.org" class="lp-plan-cta lp-plan-cta-ghost">contact sales</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="lp-section lp-solutions" id="solutions">
+        <div class="lp-section-inner">
+            <p class="lp-eyebrow">nine tools, one platform</p>
+            <h2 class="lp-h2"><span class="lp-hl">everything you need</span> to see, <br>score and stop crypto risk</h2>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="solGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00c8e6"/><stop offset="100%" stop-color="#a020f0"/></linearGradient></defs></svg>
+            <div class="lp-sol-grid">
+                <a href="#demo" class="lp-sol-card">
+                    <div class="lp-sol-icon"><svg viewBox="0 0 24 24" fill="none" stroke="url(#solGrad)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><path d="M9 15l2 2 4-4"/></svg></div>
+                    <h3 class="lp-sol-title">crypto compliance</h3>
+                    <p class="lp-sol-desc">stay ahead of every regulation as your crypto exposure grows. smarter onboarding and monitoring, with far fewer false positives to chase.</p>
+                    <span class="lp-sol-cta">learn more</span>
+                </a>
+                <a href="#demo" class="lp-sol-card">
+                    <div class="lp-sol-icon"><svg viewBox="0 0 24 24" fill="none" stroke="url(#solGrad)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16l-6.2 8.2V19l-3.6 1.8v-8.6z"/></svg></div>
+                    <h3 class="lp-sol-title">transaction screening</h3>
+                    <p class="lp-sol-desc">score every inbound transaction in real time against mixers, sanctioned wallets and velocity red flags, before a single cent settles.</p>
+                    <span class="lp-sol-cta">learn more</span>
+                </a>
+                <a href="#demo" class="lp-sol-card">
+                    <div class="lp-sol-icon"><svg viewBox="0 0 24 24" fill="none" stroke="url(#solGrad)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></div>
+                    <h3 class="lp-sol-title">wallet investigations</h3>
+                    <p class="lp-sol-desc">turn any wallet address into a clear, defensible answer. go from suspicion to attribution in seconds, not days of manual work.</p>
+                    <span class="lp-sol-cta">learn more</span>
+                </a>
+                <a href="#demo" class="lp-sol-card">
+                    <div class="lp-sol-icon"><svg viewBox="0 0 24 24" fill="none" stroke="url(#solGrad)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3.5v5c0 5-3.5 8.2-8 9.3-4.5-1.1-8-4.3-8-9.3v-5z"/><path d="M12 8.5v4.5M12 16v.5"/></svg></div>
+                    <h3 class="lp-sol-title">threat intelligence</h3>
+                    <p class="lp-sol-desc">spot emerging laundering typologies before they reach you, with broad chain coverage and flag-level context on every alert.</p>
+                    <span class="lp-sol-cta">learn more</span>
+                </a>
+                <a href="#" class="lp-sol-card">
+                    <div class="lp-sol-icon"><svg viewBox="0 0 24 24" fill="none" stroke="url(#solGrad)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5.5" rx="7.5" ry="3"/><path d="M4.5 5.5v6c0 1.66 3.36 3 7.5 3s7.5-1.34 7.5-3v-6"/><path d="M4.5 11.5v6c0 1.66 3.36 3 7.5 3s7.5-1.34 7.5-3v-6"/></svg></div>
+                    <h3 class="lp-sol-title">data &amp; apis</h3>
+                    <p class="lp-sol-desc">drop our risk engine straight into your stack with one clean json api. no sdk, no infrastructure, no maintenance headaches.</p>
+                    <span class="lp-sol-cta">learn more</span>
+                </a>
+                <a href="#demo" class="lp-sol-card">
+                    <div class="lp-sol-icon"><svg viewBox="0 0 24 24" fill="none" stroke="url(#solGrad)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a5 5 0 0 0-5 5c0 4-2 5-2 5h14s-2-1-2-5a5 5 0 0 0-5-5z"/><path d="M10.3 20a2 2 0 0 0 3.4 0"/></svg></div>
+                    <h3 class="lp-sol-title">real-time alerting</h3>
+                    <p class="lp-sol-desc">the second a high-risk wallet touches you, your team gets an email with the score, the flags and the full transaction trail.</p>
+                    <span class="lp-sol-cta">learn more</span>
+                </a>
+                <a href="#" class="lp-sol-card">
+                    <div class="lp-sol-icon"><svg viewBox="0 0 24 24" fill="none" stroke="url(#solGrad)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="12" r="2.4"/><circle cx="18" cy="6" r="2.4"/><circle cx="18" cy="18" r="2.4"/><path d="M8.1 10.9l7.8-3.7M8.1 13.1l7.8 3.7"/></svg></div>
+                    <h3 class="lp-sol-title">network integrations</h3>
+                    <p class="lp-sol-desc">one integration, 10+ chains. ethereum, bitcoin, solana, bnb chain, polygon, avalanche, arbitrum, optimism, base, tron and growing.</p>
+                    <span class="lp-sol-cta">learn more</span>
+                </a>
+                <a href="mailto:support@sentinelpay.org" class="lp-sol-card">
+                    <div class="lp-sol-icon"><svg viewBox="0 0 24 24" fill="none" stroke="url(#solGrad)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1.1 2.7 2 6 2s6-.9 6-2v-5"/></svg></div>
+                    <h3 class="lp-sol-title">education &amp; training</h3>
+                    <p class="lp-sol-desc">train the whole team to call risk the same way. three analysts should never mean three different verdicts.</p>
+                    <span class="lp-sol-cta">learn more</span>
+                </a>
+                <a href="mailto:support@sentinelpay.org" class="lp-sol-card lp-sol-card-cta">
+                    <div class="lp-sol-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#7bdcff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 12h7M12.5 8.5l3.5 3.5-3.5 3.5"/></svg></div>
+                    <h3 class="lp-sol-title">get started</h3>
+                    <p class="lp-sol-desc">bring us your messiest flows. we’ll wire sentinelpay around your risk appetite, not the other way around.</p>
+                    <span class="lp-sol-cta">chat now</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section class="lp-section lp-insights" id="insights">
+        <div class="lp-section-inner">
+            <p class="lp-eyebrow">from the blog</p>
+            <h2 class="lp-h2"><span class="lp-hl">the latest</span> typologies, takedowns <br>and rule changes</h2>
+            <a class="lp-ins-featured" href="https://blog.sentinelpay.org/article/why-criminals-target-small-businesses" style="text-decoration:none; color:inherit;">
+                <div class="lp-ins-img lp-ins-img-lg has-cover">
+                    <img class="lp-ins-cover-img" src="/covers/why-criminals.png" alt="why criminals target small businesses" loading="lazy" decoding="async" onerror="this.remove()">
+                </div>
+                <div class="lp-ins-meta">
+                    <span class="lp-ins-date">july 22, 2026</span>
+                    <h3 class="lp-ins-title">why criminals target small businesses (and exactly how they do it)</h3>
+                    <p class="lp-ins-excerpt">"we're too small to be worth targeting." i thought that too, then i went through the case files. criminals don't chase the big players with whole aml departments, they chase the easy path. here is exactly how they do it, with three real cases, and what actually stops it.</p>
+                </div>
+            </a>
+            <div class="lp-ins-grid">
+                <div class="lp-ins-card">
+                    <div class="lp-ins-img" aria-hidden="true"><span class="lp-ins-img-mark"></span></div>
+                    <span class="lp-ins-date">july 16, 2026</span>
+                    <h3 class="lp-ins-title-sm">lorem ipsum dolor sit amet consectetur adipiscing</h3>
+                </div>
+                <div class="lp-ins-card">
+                    <div class="lp-ins-img" aria-hidden="true"><span class="lp-ins-img-mark"></span></div>
+                    <span class="lp-ins-date">july 7, 2026</span>
+                    <h3 class="lp-ins-title-sm">sed do eiusmod tempor incididunt ut labore et dolore</h3>
+                </div>
+                <div class="lp-ins-card">
+                    <div class="lp-ins-img" aria-hidden="true"><span class="lp-ins-img-mark"></span></div>
+                    <span class="lp-ins-date">july 6, 2026</span>
+                    <h3 class="lp-ins-title-sm">ut enim ad minim veniam quis nostrud exercitation</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="lp-section lp-demo" id="demo">
+        <div class="lp-section-inner">
+            <div class="lp-demo-card">
+                <span class="lp-demo-dots" aria-hidden="true"></span>
+                <span class="lp-demo-edge" aria-hidden="true"></span>
+                <div class="lp-demo-left">
+                    <h2 class="lp-demo-title">ready to take a<br>closer look?</h2>
+                    <p class="lp-demo-sub">tell us how money moves through your business. we’ll show you where the risk hides. on your real flows, not a canned demo.</p>
+                </div>
+                <div class="lp-demo-right">
+                    <form class="lp-demo-form" id="lp-demo-form" novalidate>
+                        <div class="lp-demo-hp" aria-hidden="true"><label>company url<input type="text" name="company_url" tabindex="-1" autocomplete="off"></label></div>
+                        <div class="lp-demo-formhead" id="lp-demo-formhead">tell us about yourself</div>
+
+                        <div class="lp-demo-step" data-step="1">
+                            <div class="lp-demo-grid">
+                                <div class="lp-demo-field"><label>first name<i>*</i></label><input name="firstName" type="text" autocomplete="given-name"></div>
+                                <div class="lp-demo-field"><label>last name<i>*</i></label><input name="lastName" type="text" autocomplete="family-name"></div>
+                                <div class="lp-demo-field"><label>job title<i>*</i></label><input name="jobTitle" type="text" autocomplete="organization-title"></div>
+                                <div class="lp-demo-field"><label>work email<i>*</i></label><input name="email" type="email" autocomplete="email"></div>
+                            </div>
+                        </div>
+
+                        <div class="lp-demo-step" data-step="2" hidden>
+                            <div class="lp-demo-grid">
+                                <div class="lp-demo-field lp-demo-field-full"><label>registered company name<i>*</i></label><input name="company" type="text" autocomplete="organization" placeholder="e.g. sentinelpay ltd"></div>
+                                <div class="lp-demo-field lp-demo-field-full">
+                                    <label>company website<i>*</i></label>
+                                    <span class="lp-demo-note">only domains that match your work email will be contacted.</span>
+                                    <input name="website" type="text" autocomplete="url" placeholder="yourcompany.com">
+                                </div>
+                                <div class="lp-demo-field">
+                                    <label>which industry<i>*</i></label>
+                                    <div class="lp-demo-select">
+                                        <button type="button" class="lp-demo-select-btn" aria-haspopup="listbox" aria-expanded="false">
+                                            <span class="lp-demo-select-val is-placeholder">select industry…</span>
+                                            <svg class="lp-demo-select-caret" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                        </button>
+                                        <div class="lp-demo-select-menu" role="listbox" hidden>
+                                            <ul class="lp-demo-select-list">
+                                                <li class="lp-demo-select-opt" role="option" data-value="Crypto Exchange">Crypto Exchange</li>
+                                                <li class="lp-demo-select-opt" role="option" data-value="Payments / PSP">Payments / PSP</li>
+                                                <li class="lp-demo-select-opt" role="option" data-value="Banking &amp; Finance">Banking &amp; Finance</li>
+                                                <li class="lp-demo-select-opt" role="option" data-value="Fintech">Fintech</li>
+                                                <li class="lp-demo-select-opt" role="option" data-value="Web3 / DeFi">Web3 / DeFi</li>
+                                                <li class="lp-demo-select-opt" role="option" data-value="OTC / Trading Desk">OTC / Trading Desk</li>
+                                                <li class="lp-demo-select-opt" role="option" data-value="Asset Management / Fund">Asset Management / Fund</li>
+                                                <li class="lp-demo-select-opt" role="option" data-value="Gambling / iGaming">Gambling / iGaming</li>
+                                                <li class="lp-demo-select-opt" role="option" data-value="Marketplace / NFT">Marketplace / NFT</li>
+                                                <li class="lp-demo-select-opt" role="option" data-value="Government / Regulator">Government / Regulator</li>
+                                                <li class="lp-demo-select-opt" role="option" data-value="Law Enforcement">Law Enforcement</li>
+                                                <li class="lp-demo-select-opt" role="option" data-value="Other">Other</li>
+                                            </ul>
+                                        </div>
+                                        <input type="hidden" name="industry">
+                                    </div>
+                                </div>
+                                <div class="lp-demo-field">
+                                    <label>where are you based<i>*</i></label>
+                                    <div class="lp-demo-select" data-select="country">
+                                        <button type="button" class="lp-demo-select-btn" aria-haspopup="listbox" aria-expanded="false">
+                                            <span class="lp-demo-select-val is-placeholder">select country…</span>
+                                            <svg class="lp-demo-select-caret" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                        </button>
+                                        <div class="lp-demo-select-menu" role="listbox" hidden>
+                                            <ul class="lp-demo-select-list"></ul>
+                                        </div>
+                                        <input type="hidden" name="country">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="lp-demo-step" data-step="3" hidden>
+                            <div class="lp-demo-grid">
+                                <div class="lp-demo-field">
+                                    <label>company size<i>*</i></label>
+                                    <div class="lp-demo-select">
+                                        <button type="button" class="lp-demo-select-btn" aria-haspopup="listbox" aria-expanded="false">
+                                            <span class="lp-demo-select-val is-placeholder">employees…</span>
+                                            <svg class="lp-demo-select-caret" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                        </button>
+                                        <ul class="lp-demo-select-menu" role="listbox" hidden>
+                                            <li class="lp-demo-select-opt" role="option" data-value="1–10">1–10</li>
+                                            <li class="lp-demo-select-opt" role="option" data-value="11–50">11–50</li>
+                                            <li class="lp-demo-select-opt" role="option" data-value="51–200">51–200</li>
+                                            <li class="lp-demo-select-opt" role="option" data-value="201–1000">201–1000</li>
+                                            <li class="lp-demo-select-opt" role="option" data-value="1000+">1000+</li>
+                                        </ul>
+                                        <input type="hidden" name="size">
+                                    </div>
+                                </div>
+                                <div class="lp-demo-field">
+                                    <label>wallets<i>*</i></label>
+                                    <div class="lp-demo-select">
+                                        <button type="button" class="lp-demo-select-btn" aria-haspopup="listbox" aria-expanded="false">
+                                            <span class="lp-demo-select-val is-placeholder">expected volume…</span>
+                                            <svg class="lp-demo-select-caret" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                        </button>
+                                        <ul class="lp-demo-select-menu" role="listbox" hidden>
+                                            <li class="lp-demo-select-opt" role="option" data-value="under 1k">under 1k</li>
+                                            <li class="lp-demo-select-opt" role="option" data-value="1k – 10k">1k – 10k</li>
+                                            <li class="lp-demo-select-opt" role="option" data-value="10k – 100k">10k – 100k</li>
+                                            <li class="lp-demo-select-opt" role="option" data-value="100k – 1m">100k – 1m</li>
+                                            <li class="lp-demo-select-opt" role="option" data-value="1m+">1m+</li>
+                                        </ul>
+                                        <input type="hidden" name="volume">
+                                    </div>
+                                </div>
+                                <div class="lp-demo-field lp-demo-field-full">
+                                    <label>which solutions interest you <span class="lp-demo-note-inline">(select all that apply)</span><i>*</i></label>
+                                    <div class="lp-demo-checks">
+                                        <label class="lp-demo-check"><input type="checkbox" name="solutions" value="transaction screening"><span>transaction screening</span></label>
+                                        <label class="lp-demo-check"><input type="checkbox" name="solutions" value="wallet investigations"><span>wallet investigations</span></label>
+                                        <label class="lp-demo-check"><input type="checkbox" name="solutions" value="risk scoring & kyt"><span>risk scoring &amp; kyt</span></label>
+                                        <label class="lp-demo-check"><input type="checkbox" name="solutions" value="travel rule / vasp"><span>travel rule / vasp</span></label>
+                                        <label class="lp-demo-check"><input type="checkbox" name="solutions" value="stablecoin monitoring"><span>stablecoin monitoring</span></label>
+                                        <label class="lp-demo-check"><input type="checkbox" name="solutions" value="api & data feeds"><span>api &amp; data feeds</span></label>
+                                        <label class="lp-demo-check"><input type="checkbox" name="solutions" value="reporting & audit"><span>reporting &amp; audit</span></label>
+                                        <label class="lp-demo-check"><input type="checkbox" name="solutions" value="not sure yet"><span>not sure yet</span></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="lp-demo-step" data-step="4" hidden>
+                            <div class="lp-demo-field lp-demo-field-full">
+                                <label>anything specific you want to solve?<i>*</i></label>
+                                <textarea name="message" rows="3" maxlength="250" placeholder="e.g. we settle stablecoin payouts to 40+ countries and need to screen every counterparty wallet before funds move…"></textarea>
+                                <div class="lp-demo-count"><span id="lp-demo-msg-count">0</span> / 250 · min 50</div>
+                            </div>
+                            <label class="lp-demo-consent"><input type="checkbox" name="consent"><span>i agree to be contacted about sentinelpay.</span></label>
+                            <div class="lp-demo-turnstile" id="lp-demo-turnstile"></div>
+                        </div>
+
+                        <div class="lp-demo-progress">
+                            <span class="lp-demo-pct" id="lp-demo-pct">25%</span>
+                            <div class="lp-demo-track"><div class="lp-demo-fill" id="lp-demo-fill"></div></div>
+                        </div>
+
+                        <div class="lp-demo-actions">
+                            <button type="button" class="lp-demo-back" id="lp-demo-back" hidden>back</button>
+                            <button type="button" class="lp-demo-next" id="lp-demo-next">next</button>
+                            <button type="submit" class="lp-demo-submit" id="lp-demo-submit" hidden>request a demo</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="lp-demo-success" id="lp-demo-success" hidden>
+                    <div class="lp-demo-success-badge">
+                        <svg viewBox="0 0 52 52" class="lp-demo-success-svg" aria-hidden="true">
+                            <circle class="lp-demo-success-ring" cx="26" cy="26" r="24"/>
+                            <path class="lp-demo-success-tick" d="M15 27 l7.5 7.5 L38 18"/>
+                        </svg>
+                    </div>
+                    <h3>request received</h3>
+                    <p>your request just landed on our <em>chief compliance officer's</em> desk. you'll get a reply within one business day, from someone who actually read what you wrote. bring your hardest questions to the call.</p>
                 </div>
             </div>
         </div>
@@ -651,16 +1121,6 @@
 
     <footer class="lp-footer">
         <div class="lp-section-inner">
-            <div class="lp-footer-cta">
-                <div class="lp-cta-label">get started today</div>
-                <h2 class="lp-h2 lp-cta-h2 lp-cta-h2-gradient">your chain is live.<br>are you watching it?</h2>
-                <p class="lp-cta-sub">connect your rpc and start receiving risk alerts today.</p>
-                <div class="lp-hero-ctas">
-                    <a href="/auth#login" id="lp-cta-login" class="lp-cta-ghost">login</a>
-                    <a href="/auth#register" id="lp-cta-register" class="lp-cta-primary lp-cta-pulse">register</a>
-                    <a href="/dashboard/organizations" id="lp-cta-dashboard" class="lp-cta-primary lp-cta-pulse" style="display:none;">dashboard</a>
-                </div>
-            </div>
             <div class="lp-footer-top">
                 <div class="lp-footer-brand">
                     <div class="lp-footer-brand-row">
@@ -695,36 +1155,50 @@
                 </div>
                 <div class="lp-footer-links">
                     <div class="lp-footer-col">
-                        <span class="lp-footer-col-title">enterprise</span>
-                        <a href="#pricing" class="lp-footer-link">enterprise plans</a>
-                        <a href="/auth#register" class="lp-footer-link">custom integrations</a>
-                        <a href="/auth#register" class="lp-footer-link">dedicated support</a>
-                        <a href="mailto:support@sentinelpay.org" class="lp-footer-link">contact sales</a>
+                        <span class="lp-footer-col-title">solutions</span>
+                        <a href="#solutions" class="lp-footer-link">crypto compliance</a>
+                        <a href="#solutions" class="lp-footer-link">transaction screening</a>
+                        <a href="#solutions" class="lp-footer-link">wallet investigations</a>
+                        <a href="#solutions" class="lp-footer-link">threat intelligence</a>
+                        <a href="#solutions" class="lp-footer-link">real-time alerting</a>
+                        <a href="#solutions" class="lp-footer-link">configurable thresholds</a>
+                        <a href="#demo" class="lp-footer-link">pricing</a>
                     </div>
                     <div class="lp-footer-col">
-                        <span class="lp-footer-col-title">pricing</span>
-                        <a href="#pricing" class="lp-footer-link">plans</a>
-                        <a href="#pricing" class="lp-footer-link">compare tiers</a>
-                        <a href="mailto:support@sentinelpay.org" class="lp-footer-link">custom quote</a>
+                        <span class="lp-footer-col-title">industries</span>
+                        <a href="#who-its-for" class="lp-footer-link">financial institutions</a>
+                        <a href="#who-its-for" class="lp-footer-link">centralized exchanges</a>
+                        <a href="#who-its-for" class="lp-footer-link">payment services</a>
+                        <a href="#who-its-for" class="lp-footer-link">stablecoin &amp; token issuers</a>
+                        <a href="#who-its-for" class="lp-footer-link">network operators</a>
+                        <a href="#who-its-for" class="lp-footer-link">law enforcement</a>
+                        <a href="#who-its-for" class="lp-footer-link">regulators</a>
                     </div>
                     <div class="lp-footer-col">
-                        <span class="lp-footer-col-title">docs</span>
-                        <a href="https://help.sentinelpay.org" class="lp-footer-link">documentation</a>
-                        <a href="https://help.sentinelpay.org/api-integration" class="lp-footer-link">api reference</a>
-                        <a href="https://help.sentinelpay.org/getting-started" class="lp-footer-link">quickstart</a>
+                        <span class="lp-footer-col-title">platform</span>
+                        <a href="#" class="lp-footer-link">data &amp; apis</a>
+                        <a href="#" class="lp-footer-link">api documentation</a>
+                        <a href="#solutions" class="lp-footer-link">risk scoring</a>
+                        <a href="#solutions" class="lp-footer-link">coverage</a>
+                        <a href="#solutions" class="lp-footer-link">scalability</a>
+                        <a href="#solutions" class="lp-footer-link">configurability</a>
                     </div>
                     <div class="lp-footer-col">
                         <span class="lp-footer-col-title">resources</span>
-                        <a href="https://help.sentinelpay.org" class="lp-footer-link">documentation</a>
-                        <a href="https://help.sentinelpay.org/api-integration" class="lp-footer-link">api reference</a>
-                        <a href="https://help.sentinelpay.org/getting-started" class="lp-footer-link">quickstart</a>
                         <a href="#" class="lp-footer-link">blog</a>
+                        <a href="#" class="lp-footer-link">reports &amp; guides</a>
+                        <a href="#" class="lp-footer-link">documentation</a>
+                        <a href="#" class="lp-footer-link">quickstart</a>
+                        <a href="#" class="lp-footer-link">newsletter</a>
+                        <a href="#" class="lp-footer-link">crypto glossary</a>
                     </div>
                     <div class="lp-footer-col">
                         <span class="lp-footer-col-title">company</span>
-                        <a href="#" class="lp-footer-link">about</a>
+                        <a href="#" class="lp-footer-link">who we are</a>
+                        <a href="#" class="lp-footer-link">security</a>
                         <a href="#" class="lp-footer-link">careers</a>
-                        <a href="mailto:support@sentinelpay.org" class="lp-footer-link">contact</a>
+                        <a href="mailto:support@sentinelpay.org" class="lp-footer-link">contact us</a>
+                        <a href="#" class="lp-footer-link">partner program</a>
                         <a href="/privacy" class="lp-footer-link">privacy policy</a>
                         <a href="/tos" class="lp-footer-link">terms of service</a>
                     </div>
@@ -885,7 +1359,6 @@
         })();
     </script>
     <script src="toast.js"></script>
-    <script src="app.js"></script>
     <script>
         (function () {
             var CHAINS = [
@@ -990,6 +1463,109 @@
             }, { threshold: 0.3 });
             meters.forEach(function(el) { meterObs.observe(el); });
 
+            var rolesDd = document.getElementById('lp-roles-dd');
+            var rolesDdBtn = document.getElementById('lp-roles-dd-btn');
+            var rolesDdMenu = document.getElementById('lp-roles-dd-menu');
+            if (rolesDd && rolesDdBtn && rolesDdMenu) {
+                var rolesLabel = rolesDdBtn.querySelector('.lp-roles-dd-label');
+                rolesDdBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    rolesDd.classList.toggle('open');
+                });
+                document.addEventListener('click', function() { rolesDd.classList.remove('open'); });
+                rolesDdMenu.querySelectorAll('.lp-roles-dd-opt').forEach(function(opt) {
+                    opt.addEventListener('click', function() {
+                        var role = opt.getAttribute('data-role');
+                        if (rolesLabel) rolesLabel.innerHTML = opt.innerHTML;
+                        rolesDdMenu.querySelectorAll('.lp-roles-dd-opt').forEach(function(o) { o.classList.toggle('active', o === opt); });
+                        document.querySelectorAll('.lp-role-panel').forEach(function(p) {
+                            p.classList.toggle('active', p.getAttribute('data-role') === role);
+                        });
+                        rolesDd.classList.remove('open');
+                    });
+                });
+            }
+
+            var guideCard = document.getElementById('lp-guide-card');
+            var guideBody = document.getElementById('lp-guide-body');
+            if (guideCard && guideBody) {
+                var GUIDES = [
+                    { kicker: 'free compliance guide',   title: 'the crypto risk playbook',            pages: '48 pages' },
+                    { kicker: 'threat intelligence',     title: 'detecting mixers & tumblers',         pages: '32 pages' },
+                    { kicker: 'annual report',           title: 'the 2026 crypto typologies report',   pages: '60 pages' },
+                    { kicker: 'compliance guide',        title: 'sanctions screening for digital assets', pages: '28 pages' },
+                    { kicker: 'product guide',           title: 'wallet risk scoring, explained',      pages: '24 pages' },
+                    { kicker: 'compliance handbook',     title: 'the stablecoin compliance handbook',  pages: '40 pages' },
+                    { kicker: 'investigations guide',    title: 'tracing cross-chain fund flows',      pages: '36 pages' },
+                    { kicker: 'regulatory checklist',    title: 'the travel rule readiness checklist', pages: '18 pages' },
+                    { kicker: 'compliance guide',        title: 'onboarding crypto customers safely',  pages: '30 pages' },
+                    { kicker: 'threat report',           title: 'inside the top laundering typologies', pages: '44 pages' }
+                ];
+                for (var gi = GUIDES.length - 1; gi > 0; gi--) {
+                    var gj = Math.floor(Math.random() * (gi + 1));
+                    var gt = GUIDES[gi]; GUIDES[gi] = GUIDES[gj]; GUIDES[gj] = gt;
+                }
+                var gKicker = document.getElementById('lp-guide-kicker');
+                var gTitle = document.getElementById('lp-guide-title');
+                var gPages = document.getElementById('lp-guide-pages');
+                var gIcon = document.getElementById('lp-guide-icon');
+                var gIdx = 0;
+                var renderGuide = function(g) {
+                    gKicker.textContent = g.kicker;
+                    gTitle.textContent = g.title;
+                    gPages.textContent = g.pages;
+                };
+                renderGuide(GUIDES[0]);
+                var swapGuide = function() {
+                    if (guideCard.matches(':hover')) return;
+                    guideBody.style.transition = 'opacity 0.34s ease, transform 0.34s ease';
+                    guideBody.style.opacity = '0';
+                    guideBody.style.transform = 'translateY(-14px)';
+                    if (gIcon) { gIcon.style.transition = 'transform 0.34s ease'; gIcon.style.transform = 'scale(0.82) rotate(-6deg)'; }
+                    setTimeout(function() {
+                        gIdx = (gIdx + 1) % GUIDES.length;
+                        renderGuide(GUIDES[gIdx]);
+                        guideBody.style.transition = 'none';
+                        guideBody.style.transform = 'translateY(16px)';
+                        void guideBody.offsetWidth;
+                        guideBody.style.transition = 'opacity 0.4s ease, transform 0.4s cubic-bezier(0.22, 1, 0.36, 1)';
+                        guideBody.style.opacity = '1';
+                        guideBody.style.transform = 'translateY(0)';
+                        if (gIcon) { gIcon.style.transform = 'scale(1) rotate(0deg)'; }
+                    }, 340);
+                };
+                setInterval(swapGuide, 3200);
+            }
+
+            var statsxGrid = document.getElementById('lp-statsx-grid');
+            if (statsxGrid) {
+                var animateStatNum = function(el) {
+                    var target = parseFloat(el.getAttribute('data-target')) || 0;
+                    var decimals = parseInt(el.getAttribute('data-decimals') || '0', 10);
+                    var prefix = el.getAttribute('data-prefix') || '';
+                    var suffix = el.getAttribute('data-suffix') || '';
+                    var dur = 1700, startTs = null;
+                    var ease = function(t) { return 1 - Math.pow(1 - t, 3); };
+                    var frame = function(ts) {
+                        if (!startTs) startTs = ts;
+                        var p = Math.min((ts - startTs) / dur, 1);
+                        el.textContent = prefix + (target * ease(p)).toFixed(decimals) + suffix;
+                        if (p < 1) requestAnimationFrame(frame);
+                        else el.textContent = prefix + target.toFixed(decimals) + suffix;
+                    };
+                    requestAnimationFrame(frame);
+                };
+                var statsxObs = new IntersectionObserver(function(entries) {
+                    entries.forEach(function(e) {
+                        if (e.isIntersecting) {
+                            statsxGrid.querySelectorAll('.lp-statsx-num').forEach(animateStatNum);
+                            statsxObs.unobserve(statsxGrid);
+                        }
+                    });
+                }, { threshold: 0.4 });
+                statsxObs.observe(statsxGrid);
+            }
+
             var MAX_WAIT = 2200;
             var fallbackTimer = setTimeout(function() {
                 document.querySelectorAll('.lp-reveal:not(.lp-visible)').forEach(function(el) {
@@ -1002,224 +1578,6 @@
             window.addEventListener('load', function() {
                 clearTimeout(fallbackTimer);
             }, { once: true });
-        })();
-    </script>
-    <script>
-        (function () {
-            if (window.innerWidth < 1281) return;
-
-            var BASE_DPR = window.devicePixelRatio;
-
-            var SECTIONS = Array.from(document.querySelectorAll(
-                '.lp-hero, .lp-section, .lp-footer'
-            ));
-
-            var LABELS = [
-                'sentinel', 'how it works', 'risk signals', 'multi-chain',
-                'alert format', 'use cases', 'pricing', 'contact'
-            ];
-
-            var cur = 0, animToken = 0, lastJump = 0, snapActive = false;
-            var isAnimating = false, pendingDelta = 0;
-            var DUR = 500;
-
-            function ease(t) {
-                return t === 0 ? 0 : t === 1 ? 1
-                    : t < 0.5 ? Math.pow(2, 20 * t - 10) / 2
-                    : (2 - Math.pow(2, -20 * t + 10)) / 2;
-            }
-
-            function shouldSnap() {
-                return window.innerWidth >= 1281 && window.devicePixelRatio <= BASE_DPR * 1.01;
-            }
-
-            function setVis(fromIdx, toIdx) {
-                SECTIONS.forEach(function (s, i) {
-                    var show = (i === fromIdx || i === toIdx);
-                    s.style.opacity = show ? '' : '0';
-                    s.style.pointerEvents = show ? '' : 'none';
-                });
-            }
-
-            function clearVis() {
-                SECTIONS.forEach(function (s) {
-                    s.style.opacity = '';
-                    s.style.pointerEvents = '';
-                });
-            }
-
-            function flushPending() {
-                if (pendingDelta === 0) return;
-                var d = pendingDelta;
-                pendingDelta = 0;
-                goTo(cur + d);
-            }
-
-            function goTo(idx) {
-                idx = Math.max(0, Math.min(idx, SECTIONS.length - 1));
-                if (idx === cur && !isAnimating) return;
-                var from = cur;
-                cur = idx;
-                pendingDelta = 0;
-                var myToken = ++animToken;
-                lastJump = Date.now();
-                isAnimating = true;
-                syncInd();
-                setVis(from, cur);
-
-                var fromPos = window.pageYOffset;
-                var to = SECTIONS[cur].getBoundingClientRect().top + window.pageYOffset;
-                var dist = to - fromPos;
-                if (Math.abs(dist) < 2) { clearVis(); isAnimating = false; flushPending(); return; }
-
-                var t0 = performance.now();
-                function tick(ts) {
-                    if (myToken !== animToken) return;
-                    var p = Math.min((ts - t0) / DUR, 1);
-                    window.scrollTo(0, fromPos + dist * ease(p));
-                    if (p < 1) requestAnimationFrame(tick);
-                    else { clearVis(); isAnimating = false; flushPending(); }
-                }
-                requestAnimationFrame(tick);
-            }
-
-            function curIdx() {
-                var best = 0;
-                SECTIONS.forEach(function (s, i) {
-                    if (s.getBoundingClientRect().top <= 10) best = i;
-                });
-                return best;
-            }
-
-            var ind = document.createElement('nav');
-            ind.className = 'lp-snap-ind';
-            ind.setAttribute('aria-label', 'page sections');
-            SECTIONS.forEach(function (s, i) {
-                var btn = document.createElement('button');
-                btn.className = 'lp-snap-pip' + (i === 0 ? ' lp-pip-active' : '');
-                btn.setAttribute('data-label', LABELS[i] || '');
-                btn.setAttribute('aria-label', 'go to ' + (LABELS[i] || 'section'));
-                btn.addEventListener('click', function () { if (snapActive) goTo(i); });
-                ind.appendChild(btn);
-            });
-            document.body.appendChild(ind);
-
-            function syncInd() {
-                ind.querySelectorAll('.lp-snap-pip').forEach(function (b, i) {
-                    b.classList.toggle('lp-pip-active', i === cur);
-                });
-            }
-
-            window._sentinelSnap = { active: false };
-
-            function activateSnap() {
-                if (snapActive) return;
-                snapActive = true;
-                window._sentinelSnap.active = true;
-                document.documentElement.classList.add('snap-mode');
-                cur = curIdx();
-                window.scrollTo(0, SECTIONS[cur].offsetTop);
-                setVis(cur, cur);
-                ind.style.display = '';
-                syncInd();
-            }
-
-            function deactivateSnap() {
-                if (!snapActive) return;
-                snapActive = false;
-                window._sentinelSnap.active = false;
-                ++animToken;
-                document.documentElement.classList.remove('snap-mode');
-                clearVis();
-                ind.style.display = 'none';
-            }
-
-            if (shouldSnap()) {
-                activateSnap();
-            } else {
-                ind.style.display = 'none';
-            }
-
-            window.addEventListener('wheel', function (e) {
-                if (!snapActive) return;
-                if (e.ctrlKey) return;
-                var checkIdx = isAnimating ? cur : curIdx();
-                var inner = SECTIONS[checkIdx].querySelector('.lp-section-inner');
-                if (inner) {
-                    var atTop = inner.scrollTop <= 0;
-                    var atBot = inner.scrollTop + inner.clientHeight >= inner.scrollHeight - 12;
-                    if ((e.deltaY < 0 && !atTop) || (e.deltaY > 0 && !atBot)) return;
-                }
-                e.preventDefault();
-                var dir = e.deltaY > 0 ? 1 : -1;
-                if (isAnimating) {
-                    pendingDelta = dir;
-                    return;
-                }
-                if (Date.now() - lastJump < 100) return;
-                cur = curIdx();
-                goTo(cur + dir);
-            }, { passive: false });
-
-            document.addEventListener('keydown', function (e) {
-                if (!snapActive) return;
-                if (['INPUT', 'TEXTAREA', 'SELECT'].indexOf(e.target.tagName) !== -1) return;
-                if (e.key === 'ArrowDown' || e.key === 'PageDown') {
-                    e.preventDefault();
-                    cur = curIdx(); goTo(cur + 1);
-                } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
-                    e.preventDefault();
-                    cur = curIdx(); goTo(cur - 1);
-                }
-            });
-
-            var rafPending = false;
-            window.addEventListener('scroll', function () {
-                if (rafPending) return;
-                rafPending = true;
-                requestAnimationFrame(function () {
-                    cur = curIdx();
-                    syncInd();
-                    rafPending = false;
-                });
-            }, { passive: true });
-
-            document.querySelectorAll('a[href^="#"]').forEach(function (a) {
-                a.addEventListener('click', function (e) {
-                    if (!snapActive) return;
-                    var target = document.querySelector(this.getAttribute('href'));
-                    if (!target) return;
-                    e.preventDefault();
-                    var idx = SECTIONS.indexOf(target);
-                    if (idx !== -1) { goTo(idx); return; }
-                    clearVis();
-                    var from = window.pageYOffset;
-                    var to = target.getBoundingClientRect().top + from;
-                    var dist = to - from;
-                    var myToken = ++animToken;
-                    var t0 = performance.now();
-                    function tick(ts) {
-                        if (myToken !== animToken) return;
-                        var p = Math.min((ts - t0) / DUR, 1);
-                        window.scrollTo(0, from + dist * ease(p));
-                        if (p < 1) requestAnimationFrame(tick);
-                        else { cur = curIdx(); syncInd(); }
-                    }
-                    requestAnimationFrame(tick);
-                });
-            });
-
-            var resizeTimer;
-            window.addEventListener('resize', function () {
-                clearTimeout(resizeTimer);
-                resizeTimer = setTimeout(function () {
-                    if (shouldSnap()) {
-                        activateSnap();
-                    } else {
-                        deactivateSnap();
-                    }
-                }, 150);
-            });
         })();
     </script>
 
@@ -1389,6 +1747,363 @@
             }, { threshold: 0.4 });
             var alertCard = document.getElementById('lp-alert-card');
             if (alertCard) scoreObs.observe(alertCard);
+        })();
+    </script>
+    <script>
+        (function() {
+            var form = document.getElementById('lp-demo-form');
+            if (!form) return;
+            var steps = form.querySelectorAll('.lp-demo-step');
+            var total = steps.length;
+            var cur = 0;
+            var fill = document.getElementById('lp-demo-fill');
+            var pct = document.getElementById('lp-demo-pct');
+            var backBtn = document.getElementById('lp-demo-back');
+            var nextBtn = document.getElementById('lp-demo-next');
+            var submitBtn = document.getElementById('lp-demo-submit');
+            var successBox = document.getElementById('lp-demo-success');
+            var emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            var nameRe = /^[a-zA-ZÀ-ɏ'’.\- ]+$/;
+            var letterRe = /[a-zA-ZÀ-ɏ]/;
+            var alnumRe = /[a-zA-Z0-9À-ɏ]/;
+            var heads = { 1: 'tell us about yourself', 2: 'help us understand your business', 3: 'your crypto exposure & needs', 4: 'one last thing' };
+            var domainRe = /^([a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,}$/i;
+            var headEl = document.getElementById('lp-demo-formhead');
+            function setError(input, msg) {
+                var field = input.closest('.lp-demo-field');
+                if (!field) return;
+                field.classList.toggle('lp-demo-invalid', !!msg);
+                var err = field.querySelector('.lp-demo-error');
+                if (msg) {
+                    if (!err) { err = document.createElement('span'); err.className = 'lp-demo-error'; field.appendChild(err); }
+                    err.textContent = msg;
+                } else if (err) { err.remove(); }
+            }
+            function fieldError(inp) {
+                var v = inp.value.trim();
+                switch (inp.name) {
+                    case 'firstName':
+                    case 'lastName':
+                        if (!v) return 'this field is required';
+                        if (v.length < 2) return 'that looks too short';
+                        if (!nameRe.test(v)) return 'letters only, no numbers or symbols';
+                        return '';
+                    case 'jobTitle':
+                        if (!v) return 'this field is required';
+                        if (v.length < 2) return 'that looks too short';
+                        if (!letterRe.test(v)) return 'enter a real job title';
+                        return '';
+                    case 'company':
+                        if (!v) return 'this field is required';
+                        if (v.length < 2) return 'that looks too short';
+                        if (!alnumRe.test(v)) return 'enter a real company name';
+                        return '';
+                    case 'website':
+                        if (!v) return 'this field is required';
+                        var host = v.replace(/^https?:\/\//i, '').replace(/\/.*$/, '').replace(/^www\./i, '').trim().toLowerCase();
+                        if (!domainRe.test(host)) return 'enter a valid domain, e.g. company.com';
+                        var emailInp = form.querySelector('input[name="email"]');
+                        var emailDomain = emailInp && emailInp.value.indexOf('@') !== -1 ? emailInp.value.trim().split('@').pop().toLowerCase() : '';
+                        if (emailDomain && host !== emailDomain && host.slice(-(emailDomain.length + 1)) !== '.' + emailDomain && emailDomain.slice(-(host.length + 1)) !== '.' + host) {
+                            return 'must match your work email domain (@' + emailDomain + ')';
+                        }
+                        return '';
+                    case 'size':
+                        if (!v) return 'please select company size';
+                        return '';
+                    case 'industry':
+                        if (!v) return 'please pick an industry';
+                        return '';
+                    case 'country':
+                        if (!v) return 'please pick your country';
+                        return '';
+                    case 'volume':
+                        if (!v) return 'please pick an expected volume';
+                        return '';
+                    case 'message':
+                        if (!v) return 'this field is required';
+                        if (v.length < 50) return 'a little more detail, at least 50 characters';
+                        if (v.length > 250) return 'keep it under 250 characters';
+                        return '';
+                    case 'email':
+                        if (!v) return 'this field is required';
+                        if (/\s/.test(v)) return 'email cannot contain spaces';
+                        if (!emailRe.test(v)) return 'enter a valid email address';
+                        if (/\.\./.test(v) || /@\./.test(v) || /\.$/.test(v)) return 'enter a valid email address';
+                        return '';
+                }
+                return '';
+            }
+            function validateStep(i) {
+                var ok = true;
+                var required = { 1: ['firstName','lastName','jobTitle','email'], 2: ['company','website','industry','country'], 3: ['size','volume'], 4: ['message'] };
+                var stepEl = steps[i];
+                var stepNo = parseInt(stepEl.getAttribute('data-step'), 10);
+                var names = required[stepNo] || [];
+                names.forEach(function(nm) {
+                    var inp = stepEl.querySelector('[name="' + nm + '"]');
+                    if (!inp) return;
+                    var msg = fieldError(inp);
+                    setError(inp, msg);
+                    if (msg) ok = false;
+                });
+                var checks = stepEl.querySelectorAll('input[name="solutions"]');
+                if (checks.length) {
+                    var anyChecked = Array.prototype.some.call(checks, function(c) { return c.checked; });
+                    var checkField = checks[0].closest('.lp-demo-field');
+                    if (checkField) {
+                        checkField.classList.toggle('lp-demo-invalid', !anyChecked);
+                        var cerr = checkField.querySelector('.lp-demo-error');
+                        if (!anyChecked) {
+                            if (!cerr) { cerr = document.createElement('span'); cerr.className = 'lp-demo-error'; checkField.appendChild(cerr); }
+                            cerr.textContent = 'pick at least one';
+                            ok = false;
+                        } else if (cerr) { cerr.remove(); }
+                    }
+                }
+                if (i === total - 1) {
+                    var consent = form.querySelector('input[name="consent"]');
+                    if (consent && !consent.checked) { ok = false; consent.closest('.lp-demo-consent').classList.add('lp-demo-consent-err'); }
+                    else if (consent) { consent.closest('.lp-demo-consent').classList.remove('lp-demo-consent-err'); }
+                }
+                return ok;
+            }
+            function render() {
+                // any open dropdown belongs to the outgoing step, so close them all
+                form.querySelectorAll('.lp-demo-select-menu:not([hidden])').forEach(function(m) {
+                    m.hidden = true;
+                    var w = m.closest('.lp-demo-select');
+                    if (w) { w.classList.remove('is-open'); w.querySelector('.lp-demo-select-btn').setAttribute('aria-expanded', 'false'); }
+                });
+                steps.forEach(function(s, i) { s.hidden = i !== cur; });
+                var active = steps[cur];
+                active.style.animation = 'none'; void active.offsetWidth; active.style.animation = '';
+                var p = Math.round(((cur + 1) / total) * 100);
+                if (fill) fill.style.width = p + '%';
+                if (pct) pct.textContent = p + '%';
+                backBtn.hidden = cur === 0;
+                nextBtn.hidden = cur === total - 1;
+                submitBtn.hidden = cur !== total - 1;
+                if (headEl) { var no = parseInt(active.getAttribute('data-step'), 10); if (heads[no]) headEl.textContent = heads[no]; }
+            }
+            render();
+
+            var COUNTRIES = ["Afghanistan","Albania","Algeria","Andorra","Angola","Antigua & Barbuda","Argentina","Armenia","Australia","Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados","Belarus","Belgium","Belize","Benin","Bhutan","Bolivia","Bosnia & Herzegovina","Botswana","Brazil","Brunei","Bulgaria","Burkina Faso","Burundi","Cambodia","Cameroon","Canada","Cape Verde","Central African Republic","Chad","Chile","China","Colombia","Comoros","Congo (Brazzaville)","Congo (Kinshasa)","Costa Rica","Côte d’Ivoire","Croatia","Cuba","Cyprus","Czechia","Denmark","Djibouti","Dominica","Dominican Republic","Ecuador","Egypt","El Salvador","Equatorial Guinea","Eritrea","Estonia","Eswatini","Ethiopia","Fiji","Finland","France","Gabon","Gambia","Georgia","Germany","Ghana","Greece","Grenada","Guatemala","Guinea","Guinea-Bissau","Guyana","Haiti","Honduras","Hong Kong","Hungary","Iceland","India","Indonesia","Iran","Iraq","Ireland","Israel","Italy","Jamaica","Japan","Jordan","Kazakhstan","Kenya","Kiribati","Kosovo","Kuwait","Kyrgyzstan","Laos","Latvia","Lebanon","Lesotho","Liberia","Libya","Liechtenstein","Lithuania","Luxembourg","Macau","Madagascar","Malawi","Malaysia","Maldives","Mali","Malta","Marshall Islands","Mauritania","Mauritius","Mexico","Micronesia","Moldova","Monaco","Mongolia","Montenegro","Morocco","Mozambique","Myanmar","Namibia","Nauru","Nepal","Netherlands","New Zealand","Nicaragua","Niger","Nigeria","North Korea","North Macedonia","Norway","Oman","Pakistan","Palau","Palestine","Panama","Papua New Guinea","Paraguay","Peru","Philippines","Poland","Portugal","Qatar","Romania","Russia","Rwanda","Saint Kitts & Nevis","Saint Lucia","Saint Vincent & the Grenadines","Samoa","San Marino","São Tomé & Príncipe","Saudi Arabia","Senegal","Serbia","Seychelles","Sierra Leone","Singapore","Slovakia","Slovenia","Solomon Islands","Somalia","South Africa","South Korea","South Sudan","Spain","Sri Lanka","Sudan","Suriname","Sweden","Switzerland","Syria","Taiwan","Tajikistan","Tanzania","Thailand","Timor-Leste","Togo","Tonga","Trinidad & Tobago","Tunisia","Turkey","Turkmenistan","Tuvalu","Uganda","Ukraine","United Arab Emirates","United Kingdom","United States","Uruguay","Uzbekistan","Vanuatu","Vatican City","Venezuela","Vietnam","Yemen","Zambia","Zimbabwe"];
+            (function() {
+                var cList = form.querySelector('.lp-demo-select[data-select="country"] .lp-demo-select-list');
+                if (cList) {
+                    var frag = document.createDocumentFragment();
+                    COUNTRIES.forEach(function(c) {
+                        var li = document.createElement('li');
+                        li.className = 'lp-demo-select-opt';
+                        li.setAttribute('role', 'option');
+                        li.setAttribute('data-value', c);
+                        li.textContent = c;
+                        frag.appendChild(li);
+                    });
+                    cList.appendChild(frag);
+                }
+            })();
+
+            var allSelects = form.querySelectorAll('.lp-demo-select');
+            var closeAllSelects = function(except) {
+                allSelects.forEach(function(w) {
+                    if (w === except) return;
+                    var m = w.querySelector('.lp-demo-select-menu');
+                    if (m && !m.hidden) { m.hidden = true; w.classList.remove('is-open'); w.querySelector('.lp-demo-select-btn').setAttribute('aria-expanded', 'false'); }
+                });
+            };
+            allSelects.forEach(function(wrap) {
+                var input = wrap.querySelector('input[type="hidden"]');
+                var btn = wrap.querySelector('.lp-demo-select-btn');
+                var menu = wrap.querySelector('.lp-demo-select-menu');
+                var val = wrap.querySelector('.lp-demo-select-val');
+                var place = function() {
+                    var r = btn.getBoundingClientRect();
+                    menu.style.left = r.left + 'px';
+                    menu.style.width = r.width + 'px';
+                    // cap to the CSS max-height (which may be a vh value on mobile)
+                    var capPx = parseFloat(getComputedStyle(menu).maxHeight) || 200;
+                    var mh = Math.min(menu.scrollHeight, capPx);
+                    var below = window.innerHeight - r.bottom - 12;
+                    // open upward when it would poke past the bottom and there's room above
+                    if (below < mh && r.top - 12 > mh) {
+                        menu.style.top = (r.top - 6 - mh) + 'px';
+                    } else {
+                        menu.style.top = (r.bottom + 6) + 'px';
+                    }
+                };
+                var search = wrap.querySelector('.lp-demo-select-search');
+                var emptyMsg = wrap.querySelector('.lp-demo-select-empty');
+                var runFilter = function() {
+                    if (!search) return;
+                    var q = search.value.trim().toLowerCase();
+                    var shown = 0;
+                    wrap.querySelectorAll('.lp-demo-select-opt').forEach(function(o) {
+                        var match = o.textContent.toLowerCase().indexOf(q) !== -1;
+                        o.hidden = !match;
+                        if (match) shown++;
+                    });
+                    if (emptyMsg) emptyMsg.hidden = shown !== 0;
+                };
+                var open = function(o) {
+                    menu.hidden = !o;
+                    wrap.classList.toggle('is-open', o);
+                    btn.setAttribute('aria-expanded', o ? 'true' : 'false');
+                    if (o) {
+                        place();
+                        if (search) { search.value = ''; runFilter(); setTimeout(function() { search.focus({ preventScroll: true }); }, 0); }
+                    }
+                };
+                if (search) {
+                    search.addEventListener('input', runFilter);
+                    search.addEventListener('click', function(e) { e.stopPropagation(); });
+                }
+                window.addEventListener('resize', function() { if (!menu.hidden) place(); });
+                window.addEventListener('scroll', function(e) {
+                    // page scrolls: keep the fixed-position menu glued to its button
+                    if (!menu.hidden && !(e.target instanceof Node && menu.contains(e.target))) place();
+                }, true);
+                btn.addEventListener('click', function(e) { e.stopPropagation(); var willOpen = menu.hidden; closeAllSelects(wrap); open(willOpen); });
+                btn.addEventListener('keydown', function(e) { if (e.key === 'Escape') open(false); });
+                menu.addEventListener('keydown', function(e) { if (e.key === 'Escape') { open(false); btn.focus(); } });
+                wrap.querySelectorAll('.lp-demo-select-opt').forEach(function(opt) {
+                    opt.addEventListener('click', function() {
+                        wrap.querySelectorAll('.lp-demo-select-opt').forEach(function(o) { o.classList.remove('is-active'); });
+                        opt.classList.add('is-active');
+                        input.value = opt.getAttribute('data-value');
+                        val.textContent = opt.textContent;
+                        val.classList.remove('is-placeholder');
+                        setError(input, '');
+                        open(false);
+                    });
+                });
+                document.addEventListener('click', function(e) { if (!wrap.contains(e.target)) open(false); });
+            });
+
+            form.querySelectorAll('input[name="solutions"]').forEach(function(cb) {
+                cb.addEventListener('change', function() {
+                    if (cb.checked) {
+                        var isNotSure = cb.value === 'not sure yet';
+                        form.querySelectorAll('input[name="solutions"]').forEach(function(other) {
+                            if (other === cb) return;
+                            var otherIsNotSure = other.value === 'not sure yet';
+                            // checking "not sure yet" clears all others; checking any other clears "not sure yet"
+                            if ((isNotSure && !otherIsNotSure) || (!isNotSure && otherIsNotSure)) other.checked = false;
+                        });
+                    }
+                    var field = cb.closest('.lp-demo-field');
+                    if (field && field.classList.contains('lp-demo-invalid') && form.querySelector('input[name="solutions"]:checked')) {
+                        field.classList.remove('lp-demo-invalid');
+                        var e = field.querySelector('.lp-demo-error');
+                        if (e) e.remove();
+                    }
+                });
+            });
+
+            var msgArea = form.querySelector('textarea[name="message"]');
+            var msgCount = document.getElementById('lp-demo-msg-count');
+            if (msgArea) {
+                var autoGrow = function() {
+                    msgArea.style.height = 'auto';
+                    msgArea.style.height = Math.min(msgArea.scrollHeight, 116) + 'px';
+                };
+                msgArea.addEventListener('input', function() {
+                    autoGrow();
+                    if (msgCount) msgCount.textContent = msgArea.value.length;
+                });
+                autoGrow();
+            }
+
+            var validatedNames = ['firstName','lastName','jobTitle','company','website','email','message'];
+            form.querySelectorAll('input[name], select[name], textarea[name]').forEach(function(inp) {
+                if (validatedNames.indexOf(inp.name) === -1) return;
+                inp.addEventListener('blur', function() { setError(inp, fieldError(inp)); });
+                inp.addEventListener('input', function() {
+                    var field = inp.closest('.lp-demo-field');
+                    if (field && field.classList.contains('lp-demo-invalid')) setError(inp, fieldError(inp));
+                });
+            });
+            var consentInp = form.querySelector('input[name="consent"]');
+            if (consentInp) consentInp.addEventListener('change', function() {
+                if (consentInp.checked) consentInp.closest('.lp-demo-consent').classList.remove('lp-demo-consent-err');
+            });
+
+            nextBtn.addEventListener('click', function() {
+                if (!validateStep(cur)) return;
+                if (cur < total - 1) { cur++; render(); }
+            });
+            backBtn.addEventListener('click', function() {
+                if (cur > 0) { cur--; render(); }
+            });
+
+            // Cloudflare Turnstile — activates only when window.__TURNSTILE_SITEKEY is set.
+            var turnstileToken = '';
+            var turnstileEnabled = false;
+            (function initTurnstile() {
+                var siteKey = window.__TURNSTILE_SITEKEY;
+                var holder = document.getElementById('lp-demo-turnstile');
+                if (!siteKey || !holder) return;
+                turnstileEnabled = true;
+                function renderWidget() {
+                    if (!window.turnstile) return;
+                    window.turnstile.render(holder, {
+                        sitekey: siteKey,
+                        theme: 'dark',
+                        callback: function(t) { turnstileToken = t; },
+                        'expired-callback': function() { turnstileToken = ''; },
+                        'error-callback': function() { turnstileToken = ''; }
+                    });
+                }
+                if (window.turnstile) { renderWidget(); }
+                else {
+                    var s = document.createElement('script');
+                    s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+                    s.async = true; s.defer = true;
+                    s.onload = renderWidget;
+                    document.head.appendChild(s);
+                }
+            })();
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                if (!validateStep(cur)) return;
+                if (turnstileEnabled && !turnstileToken) {
+                    if (window.SentinelToast) window.SentinelToast.show('please complete the verification below.', 'warning');
+                    return;
+                }
+                var data = {};
+                new FormData(form).forEach(function(v, k) { if (k !== 'solutions') data[k] = typeof v === 'string' ? v.trim() : v; });
+                data.solutions = Array.prototype.map.call(form.querySelectorAll('input[name="solutions"]:checked'), function(c) { return c.value; });
+                data.consent = !!form.querySelector('input[name="consent"]').checked;
+                if (turnstileToken) data['cf-turnstile-response'] = turnstileToken;
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'sending…';
+                fetch('/v1/demo-request', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                }).then(function(r) {
+                    return r.ok ? r.json().catch(function(){ return {}; }) : Promise.reject(r);
+                }).then(function() {
+                    var card = form.closest('.lp-demo-card');
+                    if (card) {
+                        var left = card.querySelector('.lp-demo-left');
+                        var right = card.querySelector('.lp-demo-right');
+                        if (left) left.style.display = 'none';
+                        if (right) right.style.display = 'none';
+                    }
+                    if (successBox) successBox.hidden = false;
+                }).catch(function() {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'request a demo';
+                    turnstileToken = '';
+                    if (turnstileEnabled && window.turnstile) { try { window.turnstile.reset(); } catch (e) {} }
+                    if (window.SentinelToast) window.SentinelToast.show('could not send. email us at support@sentinelpay.org', 'error');
+                    else alert('could not send right now. please email support@sentinelpay.org');
+                });
+            });
         })();
     </script>
 </body>
