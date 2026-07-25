@@ -1240,7 +1240,9 @@ html.theme-light .lp-role-feature .lp-role-desc {
 
 /* fit correction: keep enhanced look but guarantee content fits the fixed card */
 @media (min-width: 861px) {
-    .lp-role-feature { height: 366px !important; grid-template-columns: 1fr 230px !important; }
+    /* baseline height keeps the card stable across industries, but min-height (not a
+       hard height) lets it grow instead of clipping the cta if text wraps taller */
+    .lp-role-feature { height: auto !important; min-height: 366px !important; grid-template-columns: 1fr 230px !important; }
 }
 html.theme-light .lp-role-feature .lp-role-title { font-size: 1.5rem !important; margin: 0 0 0.85rem !important; }
 html.theme-light .lp-role-feature .lp-role-desc {
