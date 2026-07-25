@@ -1509,43 +1509,53 @@ html.lp-scroll-lock body {
 .lp-mm-btn-ghost,
 .lp-mm-btn-solid {
     flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     text-align: center;
-    padding: 0.7rem 1rem;
-    border-radius: 8px;
+    padding: 0.85rem 1.3rem;
+    border-radius: 999px;
     font-family: 'Inter', sans-serif;
-    font-size: 0.82rem;
+    font-size: 0.92rem;
+    font-weight: 600;
     text-decoration: none;
     text-transform: lowercase;
-    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
 }
 
 .lp-mm-btn-ghost {
-    background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    color: var(--text-muted);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: #fff;
 }
 
 .lp-mm-btn-ghost:hover {
-    background: rgba(255, 255, 255, 0.04);
-    border-color: rgba(255, 255, 255, 0.14);
-    color: var(--text-main);
+    background: rgba(255, 255, 255, 0.09);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: #fff;
 }
 
 .lp-mm-btn-ghost:active {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 255, 255, 0.36);
     color: #fff;
 }
 
 .lp-mm-btn-solid {
     background: #fff;
-    color: #000;
+    color: #0a0a0f;
     border: 1px solid transparent;
-    font-weight: 500;
+    font-weight: 700;
+    box-shadow: 0 8px 22px -8px rgba(0, 0, 0, 0.45);
+}
+
+.lp-mm-btn-solid:hover {
+    background: #f0f0f2;
+    box-shadow: 0 10px 26px -8px rgba(0, 0, 0, 0.5);
 }
 
 .lp-mm-btn-solid:active {
-    filter: brightness(0.92);
+    filter: brightness(0.94);
 }
 
 
