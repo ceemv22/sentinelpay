@@ -174,7 +174,21 @@ app.use((req, res, next) => {
 });
 
 // Serve the static marketing site (/, /privacy, /tos, assets).
-app.use(express.static(path.join(__dirname, 'public'), { extensions: ['html'] }));
+// Long-lived, immutable caching for media/fonts so Cloudflare's edge and the
+// browser both keep them (images update via a new filename or ?v= query).
+// html is never cached hard, so page edits always go live immediately.
+app.use(express.static(path.join(__dirname, 'public'), {
+    extensions: ['html'],
+    setHeaders: (res, filePath) => {
+        if (/\.(png|jpe?g|webp|gif|svg|ico|avif|woff2?)$/i.test(filePath)) {
+            res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+        } else if (/\.(css|js)$/i.test(filePath)) {
+            res.setHeader('Cache-Control', 'public, max-age=86400');
+        } else if (/\.html$/i.test(filePath)) {
+            res.setHeader('Cache-Control', 'no-cache');
+        }
+    }
+}));
 
 // Rate-limit the demo form: 5 submissions / hour / IP (in-memory store).
 const demoRequestLimiter = rateLimit({
