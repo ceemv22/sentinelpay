@@ -52,6 +52,12 @@
         }
         .lp-ins-featured { margin-top: 5.5rem; text-decoration: none; color: inherit; }
         a.lp-ins-featured, a.lp-ins-featured * { text-decoration: none; }
+        /* grid of smaller article cards below the featured one */
+        .lp-ins-grid { margin-top: 3rem; }
+        a.lp-ins-card { text-decoration: none; color: inherit; display: block; }
+        a.lp-ins-card * { text-decoration: none; }
+        .lp-ins-card .lp-ins-date { margin-top: 0.9rem; }
+        .lp-ins-card .lp-ins-title-sm { margin-top: 0.15rem; }
         @media (max-width: 640px) {
             .lp-insights { padding-top: 7rem; }
             .lp-ins-featured { margin-top: 3rem; }
@@ -59,7 +65,8 @@
         }
         .lp-ins-card-ex { margin: 0.55rem 0 0; font-size: 0.9rem; line-height: 1.6; color: rgba(14,35,88,0.6); }
         .lp-ins-by { display: flex; align-items: center; gap: 0.6rem; margin-top: 1rem; padding-top: 0.9rem; border-top: 1px solid rgba(14,35,88,0.1); }
-        .lp-ins-avatar { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: rgba(0,145,200,0.08); border: 1px solid rgba(14,35,88,0.1); }
+        .lp-ins-avatar { position: relative; overflow: hidden; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: rgba(0,145,200,0.08); border: 1px solid rgba(14,35,88,0.1); }
+        .lp-ins-avatar img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 2; }
         .lp-ins-avatar svg { width: 18px; height: 18px; }
         .lp-ins-by b { font-size: 0.82rem; font-weight: 600; color: #0e2358; }
         .lp-ins-by small { display: block; font-size: 0.74rem; color: rgba(14,35,88,0.5); }
@@ -130,21 +137,25 @@
                 <div class="lp-ins-img lp-ins-img-lg" aria-hidden="true"><span class="lp-ins-img-mark"></span></div>
                 <div class="lp-ins-meta">
                     <span class="lp-ins-date">july 27, 2026</span>
-                    <h3 class="lp-ins-title">the biggest problem in aml isn't spotting suspicious activity. it's spotting it too late</h3>
+                    <h3 class="lp-ins-title">you don't have an aml problem, you have a speed problem</h3>
                     <p class="lp-ins-excerpt">everyone pictures aml as detection: spotting the one bad transaction in a sea of good ones. that is half the job. the half nobody talks about is timing, and in crypto, finding suspicious activity too late is the same as not finding it. here is why real-time changes everything.</p>
                 </div>
             </a>
 
-            <a class="lp-ins-featured" href="/article/why-criminals-target-small-businesses">
-                <div class="lp-ins-img lp-ins-img-lg has-cover">
-                    <img class="lp-ins-cover-img" src="/covers/why-criminals.webp" alt="why criminals target small businesses" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/covers/why-criminals.png'">
-                </div>
-                <div class="lp-ins-meta">
+            <div class="lp-ins-grid">
+                <a class="lp-ins-card" href="/article/why-criminals-target-small-businesses">
+                    <div class="lp-ins-img has-cover">
+                        <img class="lp-ins-cover-img" src="/covers/why-criminals.webp" alt="why criminals target small businesses" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/covers/why-criminals.png'">
+                    </div>
                     <span class="lp-ins-date">july 22, 2026</span>
-                    <h3 class="lp-ins-title">why criminals target small businesses (and exactly how they do it)</h3>
-                    <p class="lp-ins-excerpt">"we're too small to be worth targeting." i thought that too, then i went through the case files. criminals don't chase the big players with whole aml departments. they chase the easy path. here is exactly how they do it, with three real cases, and what actually stops it.</p>
-                </div>
-            </a>
+                    <h3 class="lp-ins-title-sm">why criminals target small businesses (and exactly how they do it)</h3>
+                    <p class="lp-ins-card-ex">criminals don't chase the big players with whole aml departments. they chase the easy path. here is exactly how they do it, with three real cases, and what actually stops it.</p>
+                    <div class="lp-ins-by">
+                        <span class="lp-ins-avatar"><img src="/authors/chibby.png" alt="chibby" decoding="async" onerror="this.remove()"><svg viewBox="0 0 120 120"><g fill="none" stroke="#0091c8" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"><path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z"/><circle cx="60" cy="60" r="7"/></g></svg></span>
+                        <div><b>chibby</b><small>july 22, 2026 · 5 min read</small></div>
+                    </div>
+                </a>
+            </div>
 
             <div class="lp-blog-pager">
                 <button disabled>prev</button>
