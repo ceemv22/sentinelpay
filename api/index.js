@@ -161,7 +161,15 @@ app.use((req, res, next) => {
         // fall through to express.static so the shared homepage styles load.
         if (req.method === 'GET' && !path.extname(req.path)) {
             res.set('X-Robots-Tag', 'noindex, nofollow');
-            const page = req.path.startsWith('/article/') ? 'blog-article.html' : 'blog.html';
+            let page = 'blog.html';
+            if (req.path.startsWith('/article/')) {
+                const slug = req.path.replace(/^\/article\//, '').replace(/\/+$/, '');
+                const articles = {
+                    'why-criminals-target-small-businesses': 'blog-article.html',
+                    'real-time-aml-why-timing-matters': 'blog-article-2.html',
+                };
+                page = articles[slug] || 'blog-article.html';
+            }
             return res.status(200).sendFile(path.join(__dirname, 'public', page));
         }
         return next();
