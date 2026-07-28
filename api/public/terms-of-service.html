@@ -67,6 +67,8 @@
         #sp-chat-btn .sp-chat-ico-close { opacity: 0; transform: rotate(-90deg) scale(0.5); }
         #sp-chat-btn.chat-open .sp-chat-ico-open { opacity: 0; transform: rotate(90deg) scale(0.5); }
         #sp-chat-btn.chat-open .sp-chat-ico-close { opacity: 1; transform: rotate(0) scale(1); }
+        /* we use our own #sp-chat-btn; never show intercom's default launcher */
+        .intercom-lightweight-app-launcher, .intercom-launcher-frame, .intercom-launcher { display: none !important; }
         #sp-chat-badge { position: absolute; top: 5px; right: 5px; width: 9px; height: 9px; border-radius: 50%; background: #00f0ff; box-shadow: 0 0 8px rgba(0,240,255,0.8); display: none; border: 1.5px solid rgba(5,5,8,1); pointer-events: none; }
         html.theme-light #sp-chat-btn { background: rgba(255,255,255,0.85); border-color: rgba(0,145,200,0.25); box-shadow: 0 0 20px rgba(0,145,200,0.08), 0 8px 32px rgba(0,0,0,0.08); color: var(--accent-light); }
         html.theme-light #sp-chat-btn:hover { border-color: rgba(0,145,200,0.45); box-shadow: 0 0 28px rgba(0,145,200,0.16), 0 8px 32px rgba(0,0,0,0.1); }

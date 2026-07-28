@@ -1624,6 +1624,8 @@
         #sp-chat-btn .sp-chat-ico-close { opacity: 0; transform: rotate(-90deg) scale(0.5); }
         #sp-chat-btn.chat-open .sp-chat-ico-open { opacity: 0; transform: rotate(90deg) scale(0.5); }
         #sp-chat-btn.chat-open .sp-chat-ico-close { opacity: 1; transform: rotate(0) scale(1); }
+        /* we use our own #sp-chat-btn; never show intercom's default launcher */
+        .intercom-lightweight-app-launcher, .intercom-launcher-frame, .intercom-launcher { display: none !important; }
         #sp-chat-badge {
             position: absolute;
             top: 5px;
