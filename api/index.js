@@ -165,6 +165,9 @@ app.use((req, res, next) => {
             if (req.path.startsWith('/article/')) {
                 const slug = req.path.replace(/^\/article\//, '').replace(/\/+$/, '');
                 const articles = {
+                    '01': 'blog-article.html',
+                    '02': 'blog-article-2.html',
+                    // legacy slug aliases (keep old links working)
                     'why-criminals-target-small-businesses': 'blog-article.html',
                     'real-time-aml-why-timing-matters': 'blog-article-2.html',
                 };
