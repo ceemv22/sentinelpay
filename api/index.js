@@ -171,7 +171,7 @@ app.use((req, res, next) => {
                     // legacy slug aliases (keep old links working)
                     'why-criminals-target-small-businesses': 'blog-article.html',
                     'real-time-aml-why-timing-matters': 'blog-article-2.html',
-                    'why-manual-checks-fail': 'blog-article-3.html',
+                    'compliance-without-becoming-a-bank': 'blog-article-3.html',
                 };
                 page = articles[slug] || 'blog-article.html';
             }
