@@ -63,6 +63,10 @@
         #sp-chat-btn { position: fixed; bottom: 24px; right: 24px; width: 52px; height: 52px; border-radius: 50%; background: rgba(5,5,8,0.92); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(0,240,255,0.25); box-shadow: 0 0 20px rgba(0,240,255,0.1), 0 8px 32px rgba(0,0,0,0.5); cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 99998; transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease; color: #00f0ff; padding: 0; }
         #sp-chat-btn:hover { border-color: rgba(0,240,255,0.55); box-shadow: 0 0 28px rgba(0,240,255,0.22), 0 8px 32px rgba(0,0,0,0.6); transform: translateY(-2px); }
         #sp-chat-btn:active { transform: translateY(0) scale(0.95); }
+        #sp-chat-btn .sp-chat-ico { position: absolute; inset: 0; margin: auto; width: 21px; height: 21px; transition: opacity 0.24s ease, transform 0.34s cubic-bezier(0.22, 1, 0.36, 1); }
+        #sp-chat-btn .sp-chat-ico-close { opacity: 0; transform: rotate(-90deg) scale(0.5); }
+        #sp-chat-btn.chat-open .sp-chat-ico-open { opacity: 0; transform: rotate(90deg) scale(0.5); }
+        #sp-chat-btn.chat-open .sp-chat-ico-close { opacity: 1; transform: rotate(0) scale(1); }
         #sp-chat-badge { position: absolute; top: 5px; right: 5px; width: 9px; height: 9px; border-radius: 50%; background: #00f0ff; box-shadow: 0 0 8px rgba(0,240,255,0.8); display: none; border: 1.5px solid rgba(5,5,8,1); pointer-events: none; }
         html.theme-light #sp-chat-btn { background: rgba(255,255,255,0.85); border-color: rgba(0,145,200,0.25); box-shadow: 0 0 20px rgba(0,145,200,0.08), 0 8px 32px rgba(0,0,0,0.08); color: var(--accent-light); }
         html.theme-light #sp-chat-btn:hover { border-color: rgba(0,145,200,0.45); box-shadow: 0 0 28px rgba(0,145,200,0.16), 0 8px 32px rgba(0,0,0,0.1); }
@@ -562,14 +566,21 @@
         })();
     </script>
     <button id="sp-chat-btn" aria-label="open live chat">
-        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <svg class="sp-chat-ico sp-chat-ico-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <svg class="sp-chat-ico sp-chat-ico-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
         <span id="sp-chat-badge"></span>
     </button>
     <script>
         (function(){
+            var btn = document.getElementById('sp-chat-btn');
+            function setOpen(o){ if (btn) btn.classList.toggle('chat-open', o); }
             function openChat(){ if (window.Intercom) window.Intercom('show'); }
-            if (window.Intercom) window.Intercom('onUnreadCountChange', function(count){ var b=document.getElementById('sp-chat-badge'); if(b) b.style.display = count>0 ? 'block' : 'none'; });
-            var cb = document.getElementById('sp-chat-btn'); if (cb) cb.addEventListener('click', openChat);
+            if (window.Intercom) {
+                window.Intercom('onUnreadCountChange', function(count){ var b=document.getElementById('sp-chat-badge'); if(b) b.style.display = count>0 ? 'block' : 'none'; });
+                window.Intercom('onShow', function(){ setOpen(true); });
+                window.Intercom('onHide', function(){ setOpen(false); });
+            }
+            if (btn) btn.addEventListener('click', function(){ if (!window.Intercom) return; if (btn.classList.contains('chat-open')) window.Intercom('hide'); else window.Intercom('show'); });
             var oc = document.getElementById('pp-open-chat'); if (oc) oc.addEventListener('click', function(e){ e.preventDefault(); openChat(); });
             var lc = document.getElementById('lp-mm-livechat');
             if (lc) lc.addEventListener('click', function(e){
