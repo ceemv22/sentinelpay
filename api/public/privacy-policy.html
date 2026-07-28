@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="/landing.css?v=4.3">
     <link rel="stylesheet" href="/corp.css?v=127">
     <style>
-        /* page loader: hold the page until everything is loaded (matches homepage) */
+        /* page loader */
         #sp-loader{position:fixed;inset:0;z-index:99999;background:#050505;display:flex;align-items:center;justify-content:center;transition:opacity 0.55s ease;}
         #sp-loader.spl-done{opacity:0;pointer-events:none;}
         html.theme-light #sp-loader{background:#fbfcfd;}
@@ -21,6 +21,8 @@
         @keyframes splPulse{from{filter:drop-shadow(0 0 6px rgba(0,255,255,0.3)) drop-shadow(0 0 14px rgba(160,32,240,0.2));}to{filter:drop-shadow(0 0 14px rgba(0,255,255,0.65)) drop-shadow(0 0 28px rgba(160,32,240,0.4));}}
         .spl-eye-blink{transform-origin:60px 60px;animation:splBlink 3.5s ease-in-out infinite;}
         @keyframes splBlink{0%,35%,55%,88%,100%{transform:scaleY(1);}45%{transform:scaleY(0.05);}93%{transform:scaleY(0.05);}}
+
+        /* theme-light base (mirrors the homepage) */
         html.theme-light {
             --bg-dark: #f6f7f9; --bg-panel: rgba(255,255,255,0.75);
             --border-glass: rgba(20,20,30,0.08); --text-main: #15161a; --text-muted: #82828c;
@@ -31,17 +33,46 @@
         html.theme-light::-webkit-scrollbar-track, html.theme-light ::-webkit-scrollbar-track { background: #f0f0f2; }
         html.theme-light::-webkit-scrollbar-thumb, html.theme-light ::-webkit-scrollbar-thumb { background: rgba(0,145,200,0.25); border: 1px solid rgba(0,145,200,0.15); }
         html.theme-light::-webkit-scrollbar-thumb:hover, html.theme-light ::-webkit-scrollbar-thumb:hover { background: rgba(0,145,200,0.5); box-shadow: 0 0 10px rgba(0,145,200,0.3); }
-        html.theme-light .lp-nav { background: rgba(255,255,255,0.85); border-bottom-color: rgba(0,0,0,0.06); }
-        html.theme-light .lp-btn-ghost.auth-nav-btn { border-color: rgba(0,0,0,0.08) !important; }
-        html.theme-light .lp-btn-ghost.auth-nav-btn:hover { background: rgba(0,0,0,0.04) !important; }
-        .lp-nav-inner { display: flex !important; justify-content: space-between; align-items: center; }
 
+        /* homepage nav in theme-light */
+        html.theme-light .lp-nav { background: rgba(255,255,255,0.85); border-bottom-color: rgba(0,0,0,0.06); }
+        html.theme-light .lp-logo-text, html.theme-light .lp-h1, html.theme-light .lp-h2 {
+            background: linear-gradient(160deg, #15161a 0%, #5a5a66 100%);
+            -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        html.theme-light .lp-nav-link:hover, html.theme-light .lp-btn-ghost.auth-nav-btn:hover, html.theme-light .lp-nav-dd-item:hover { background: rgba(0,0,0,0.04) !important; }
+        html.theme-light .lp-btn-ghost.auth-nav-btn { color: var(--text-muted) !important; border: 1px solid rgba(0,0,0,0.1) !important; }
+        html.theme-light .lp-nav-dd { background: #fff; border-color: rgba(0,0,0,0.08); box-shadow: 0 8px 32px rgba(0,0,0,0.12); }
+        html.theme-light .lp-nav-dd-item { border-bottom-color: rgba(0,0,0,0.05); }
+        html.theme-light .lp-nav-dd-item:hover, html.theme-light .lp-nav-dd-item:hover svg { color: var(--text-main) !important; }
+        html.theme-light .lp-btn-solid.auth-nav-btn, html.theme-light .lp-btn-solid { background: #1a1a1c !important; border-color: #1a1a1c !important; color: #fff !important; }
+        html.theme-light .lp-btn-solid.auth-nav-btn:hover, html.theme-light .lp-btn-solid:hover { background: #34343a !important; box-shadow: 0 0 24px rgba(0,0,0,0.12) !important; }
+        html.theme-light .lp-mobile-menu { background: rgba(255,255,255,0.99); }
+        html.theme-light .lp-mobile-link:active, html.theme-light .lp-mm-acc-btn:active { background: rgba(0,0,0,0.05); }
+        html.theme-light .lp-mobile-sub-link:active { color: var(--text-main); background: rgba(0,0,0,0.04); }
+        html.theme-light .lp-mm-btn-ghost { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.18); color: #fff; }
+        html.theme-light .lp-mm-btn-ghost:hover { background: rgba(255,255,255,0.09); border-color: rgba(255,255,255,0.3); color: #fff; }
+        html.theme-light .lp-mm-btn-solid { background: #fff; color: #0a0a0f; }
+        html.theme-light .lp-mm-btn-solid:hover { background: #f0f0f2; }
+        /* whenever the hamburger shows, hide the desktop auth buttons */
+        @media (max-width: 1280px) { #auth-nav-container .lp-desktop-auth { display: none !important; } }
+
+        /* privacy content */
         .pp-shell { max-width: 820px; margin: 0 auto; padding: 0 1.4rem; }
-        .lp-section.pp { padding-top: 7rem; }
-        .pp-eyebrow { display: inline-block; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: #0091c8; margin-bottom: 0.9rem; }
+        .lp-section.pp { padding-top: 8rem; }
         .pp-title { margin: 0 0 0.8rem; font-size: 2.8rem; font-weight: 800; line-height: 1.1; letter-spacing: -0.02em; color: #0e2358; text-transform: lowercase; }
         .pp-meta { font-size: 0.9rem; color: rgba(14,35,88,0.5); }
         .pp-intro { margin: 2rem 0 0; font-size: 1.18rem; line-height: 1.7; font-weight: 500; color: #0e2358; }
+
+        /* "the short version" summary box */
+        .pp-tldr { margin: 2.2rem 0 0; padding: 1.5rem 1.7rem; border: 1px solid rgba(14,35,88,0.12); border-radius: 16px; background: rgba(255,255,255,0.6); }
+        .pp-tldr h2 { margin: 0 0 0.7rem; font-size: 0.78rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: #0091c8; }
+        .pp-tldr ul { margin: 0; padding: 0; list-style: none; }
+        .pp-tldr li { position: relative; padding-left: 1.5rem; margin-bottom: 0.55rem; font-size: 0.98rem; line-height: 1.6; color: #2a3550; }
+        .pp-tldr li:last-child { margin-bottom: 0; }
+        .pp-tldr li::before { content: ''; position: absolute; left: 0; top: 5px; width: 16px; height: 16px; border-radius: 50%; background: linear-gradient(135deg, #00f0ff, #a020f0);
+            -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") center / 10px no-repeat;
+            mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") center / 10px no-repeat; }
 
         .pp-body { margin-top: 1rem; padding-bottom: 1rem; }
         .pp-body h2 { margin: 3rem 0 1rem; font-size: 1.5rem; font-weight: 800; line-height: 1.3; letter-spacing: -0.01em; color: #0e2358; text-transform: lowercase; }
@@ -50,7 +81,6 @@
         .pp-body a { color: #0091c8; text-decoration: none; border-bottom: 1px solid rgba(0,145,200,0.35); }
         .pp-body a:hover { border-bottom-color: #0091c8; }
 
-        /* definition list for data categories */
         .pp-dl { margin: 1.3rem 0; display: grid; gap: 0.85rem; }
         .pp-dl-row { padding: 1rem 1.2rem; border: 1px solid rgba(14,35,88,0.1); border-radius: 12px; background: rgba(255,255,255,0.55); }
         .pp-dl-row b { display: block; font-size: 1rem; font-weight: 700; color: #0e2358; margin-bottom: 0.25rem; }
@@ -60,7 +90,6 @@
         .pp-body ul li { position: relative; padding-left: 1.4rem; margin-bottom: 0.65rem; font-size: 1.02rem; line-height: 1.65; color: #2a3550; }
         .pp-body ul li::before { content: ''; position: absolute; left: 0.15rem; top: 0.62em; width: 5px; height: 5px; border-radius: 50%; background: rgba(14,35,88,0.45); }
 
-        /* lawful basis table */
         .pp-table-wrap { overflow-x: auto; margin: 1.4rem 0; border: 1px solid rgba(14,35,88,0.12); border-radius: 12px; }
         .pp-table { width: 100%; border-collapse: collapse; min-width: 560px; font-size: 0.95rem; }
         .pp-table th { text-align: left; padding: 0.85rem 1rem; background: rgba(0,145,200,0.06); color: #0e2358; font-weight: 700; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em; border-bottom: 1px solid rgba(14,35,88,0.12); }
@@ -69,170 +98,472 @@
         .pp-table td:first-child { color: #0e2358; font-weight: 600; }
 
         .pp-callout { margin: 2rem 0; padding: 1.1rem 1.4rem; border-left: 3px solid rgba(0,145,200,0.4); background: linear-gradient(90deg, rgba(0,145,200,0.06), transparent); border-radius: 0 10px 10px 0; font-size: 0.98rem; line-height: 1.7; color: #0e2358; }
-
         .pp-contact { margin: 1.4rem 0; padding: 1.3rem 1.5rem; border: 1px solid rgba(14,35,88,0.12); border-radius: 14px; background: rgba(255,255,255,0.6); }
         .pp-contact p { margin: 0.4rem 0; font-size: 0.98rem; }
 
-        .lp-footer .pp-foot-links { display: flex; gap: 1.4rem; justify-content: center; flex-wrap: wrap; margin-bottom: 0.8rem; }
-        .lp-footer .pp-foot-links a { font-size: 0.82rem; font-weight: 600; color: rgba(14,35,88,0.6); text-decoration: none; }
-        .lp-footer .pp-foot-links a:hover { color: #0e2358; }
-
         @media (max-width: 640px) {
             .pp-title { font-size: 2rem; }
-            .lp-section.pp { padding-top: 6rem; }
+            .lp-section.pp { padding-top: 6.5rem; }
         }
     </style>
 </head>
 <body class="lp-body">
     <div id="sp-loader"><svg class="spl-logo-svg" viewBox="0 0 120 120" fill="none"><defs><linearGradient id="spl-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00ffff"/><stop offset="100%" stop-color="#a020f0"/></linearGradient><filter id="spl-glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3.5" result="coloredBlur"/><feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g filter="url(#spl-glow)" fill="none" stroke="url(#spl-grad)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z"/><g class="spl-eye-blink"><path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z"/><circle cx="60" cy="60" r="6"/><circle cx="60" cy="60" r="2" fill="url(#spl-grad)" stroke="none"/></g><path d="M60 15 V 30" stroke-width="2" opacity="0.6"/><path d="M60 90 V 105" stroke-width="2" opacity="0.6"/></g></svg></div>
+
     <nav class="lp-nav">
         <div class="lp-nav-inner">
             <a href="https://sentinelpay.org" class="lp-logo-link">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" class="lp-logo-svg">
-                    <defs>
-                        <linearGradient id="ng" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00ffff"/><stop offset="100%" stop-color="#a020f0"/></linearGradient>
-                        <filter id="ngGlow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3.5" result="coloredBlur"/><feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-                    </defs>
-                    <g filter="url(#ngGlow)" fill="none" stroke="url(#ng)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z"/>
-                        <path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z"/>
-                        <circle cx="60" cy="60" r="6"/><circle cx="60" cy="60" r="2" fill="url(#ng)" stroke="none"/>
-                        <path d="M60 15 V 30" stroke-width="2" opacity="0.6"/><path d="M60 90 V 105" stroke-width="2" opacity="0.6"/>
-                    </g>
+                  <defs>
+                    <linearGradient id="neonGradient" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00ffff" /><stop offset="100%" stop-color="#a020f0" /></linearGradient>
+                    <filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3.5" result="coloredBlur"/><feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+                  </defs>
+                  <g filter="url(#neonGlow)" fill="none" stroke="url(#neonGradient)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z" />
+                    <path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z" />
+                    <g><circle cx="60" cy="60" r="6" /><circle cx="60" cy="60" r="2" fill="url(#neonGradient)" stroke="none"/></g>
+                    <path d="M60 15 V 30" stroke-width="2" opacity="0.6"/><path d="M60 90 V 105" stroke-width="2" opacity="0.6"/>
+                  </g>
                 </svg>
             </a>
-            <div style="display:flex; align-items:center;">
-                <a href="https://sentinelpay.org" class="auth-nav-btn lp-btn-ghost">back to sentinelpay</a>
+            <div class="lp-nav-links">
+                <div class="lp-nav-dd-wrap">
+                    <button class="lp-nav-link lp-nav-dd-btn">solutions<svg class="lp-nav-chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+                    <div class="lp-nav-dd lp-mega">
+                        <div class="lp-mega-inner">
+                            <div class="lp-mega-rail">
+                                <span class="lp-mega-eyebrow">solutions</span>
+                                <h4 class="lp-mega-heading">everything you need to screen crypto risk</h4>
+                                <p class="lp-mega-rail-desc">real-time risk analytics across the full compliance lifecycle.</p>
+                                <a href="https://sentinelpay.org/#solutions" class="lp-mega-rail-cta">explore all solutions<span class="lp-mega-cta-arrow">→</span></a>
+                            </div>
+                            <div class="lp-mega-grid">
+                                <a href="https://sentinelpay.org/#solutions" class="lp-mega-item"><span class="lp-mega-title">crypto compliance</span><span class="lp-mega-desc">risk management for every stage of the lifecycle</span></a>
+                                <a href="https://sentinelpay.org/#solutions" class="lp-mega-item"><span class="lp-mega-title">transaction screening</span><span class="lp-mega-desc">every transaction scored before funds settle</span></a>
+                                <a href="https://sentinelpay.org/#solutions" class="lp-mega-item"><span class="lp-mega-title">wallet investigations</span><span class="lp-mega-desc">from suspicion to attribution with on-demand scans</span></a>
+                                <a href="https://sentinelpay.org/#solutions" class="lp-mega-item"><span class="lp-mega-title">threat intelligence</span><span class="lp-mega-desc">emerging typologies with flag-level context</span></a>
+                                <a href="https://sentinelpay.org/#solutions" class="lp-mega-item"><span class="lp-mega-title">real-time alerting</span><span class="lp-mega-desc">instant email alerts with score and flags</span></a>
+                                <a href="https://sentinelpay.org/#demo" class="lp-mega-item"><span class="lp-mega-title">pricing</span><span class="lp-mega-desc">talk to us. plans shaped around your volume</span></a>
+                            </div>
+                            <a href="https://sentinelpay.org/#demo" class="lp-mega-promo">
+                                <div class="lp-mega-promo-visual"><svg viewBox="0 0 120 120" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"><path d="M60 16 L26 30 V56 C26 80 50 99 60 104 C70 99 94 80 94 56 V30 Z"/><path d="M40 60 Q60 42 80 60 Q60 78 40 60 Z"/><circle cx="60" cy="60" r="6" fill="#fff" stroke="none"/></svg></div>
+                                <span class="lp-mega-promo-title">try a live wallet scan</span>
+                                <span class="lp-mega-promo-desc">score any wallet against known threats in seconds.</span>
+                                <span class="lp-mega-promo-cta">learn more<span class="lp-mega-cta-arrow">→</span></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="lp-nav-dd-wrap">
+                    <button class="lp-nav-link lp-nav-dd-btn">industries<svg class="lp-nav-chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+                    <div class="lp-nav-dd lp-mega">
+                        <div class="lp-mega-inner">
+                            <div class="lp-mega-rail">
+                                <span class="lp-mega-eyebrow">industries</span>
+                                <h4 class="lp-mega-heading">built for every team moving digital assets</h4>
+                                <p class="lp-mega-rail-desc">from banks to exchanges to law enforcement. one platform.</p>
+                                <a href="https://sentinelpay.org/#who-its-for" class="lp-mega-rail-cta">see who it's for<span class="lp-mega-cta-arrow">→</span></a>
+                            </div>
+                            <div class="lp-mega-grid">
+                                <a href="https://sentinelpay.org/#who-its-for" class="lp-mega-item"><span class="lp-mega-title">financial institutions</span><span class="lp-mega-desc">onboard and monitor without new exposure</span></a>
+                                <a href="https://sentinelpay.org/#who-its-for" class="lp-mega-item"><span class="lp-mega-title">centralized exchanges</span><span class="lp-mega-desc">compliance at scale with fewer false positives</span></a>
+                                <a href="https://sentinelpay.org/#who-its-for" class="lp-mega-item"><span class="lp-mega-title">payment services</span><span class="lp-mega-desc">crypto acceptance with real-time screening</span></a>
+                                <a href="https://sentinelpay.org/#who-its-for" class="lp-mega-item"><span class="lp-mega-title">stablecoin &amp; token issuers</span><span class="lp-mega-desc">protect your brand and ecosystem trust</span></a>
+                                <a href="https://sentinelpay.org/#who-its-for" class="lp-mega-item"><span class="lp-mega-title">network operators</span><span class="lp-mega-desc">a safer network for every participant</span></a>
+                                <a href="https://sentinelpay.org/#who-its-for" class="lp-mega-item"><span class="lp-mega-title">law enforcement &amp; regulators</span><span class="lp-mega-desc">faster investigations, defensible decisions</span></a>
+                            </div>
+                            <a href="mailto:support@sentinelpay.org" class="lp-mega-promo">
+                                <div class="lp-mega-promo-visual"><svg viewBox="0 0 120 120" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"><path d="M60 16 L26 30 V56 C26 80 50 99 60 104 C70 99 94 80 94 56 V30 Z"/><path d="M40 60 Q60 42 80 60 Q60 78 40 60 Z"/><circle cx="60" cy="60" r="6" fill="#fff" stroke="none"/></svg></div>
+                                <span class="lp-mega-promo-title">not sure where you fit?</span>
+                                <span class="lp-mega-promo-desc">talk to our team and we'll map it to your workflow.</span>
+                                <span class="lp-mega-promo-cta">learn more<span class="lp-mega-cta-arrow">→</span></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="lp-nav-dd-wrap">
+                    <button class="lp-nav-link lp-nav-dd-btn">platform<svg class="lp-nav-chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+                    <div class="lp-nav-dd lp-mega">
+                        <div class="lp-mega-inner">
+                            <div class="lp-mega-rail">
+                                <span class="lp-mega-eyebrow">platform</span>
+                                <h4 class="lp-mega-heading">one integration, total coverage</h4>
+                                <p class="lp-mega-rail-desc">connect an rpc endpoint and monitor 10+ chains instantly.</p>
+                                <a href="https://sentinelpay.org/" class="lp-mega-rail-cta">read the docs<span class="lp-mega-cta-arrow">→</span></a>
+                            </div>
+                            <div class="lp-mega-grid">
+                                <a href="https://sentinelpay.org/" class="lp-mega-item"><span class="lp-mega-title">documentation</span><span class="lp-mega-desc">everything you need to integrate and operate</span></a>
+                                <a href="https://sentinelpay.org/" class="lp-mega-item"><span class="lp-mega-title">api reference</span><span class="lp-mega-desc">endpoints, payloads and examples</span></a>
+                                <a href="https://sentinelpay.org/" class="lp-mega-item"><span class="lp-mega-title">quickstart</span><span class="lp-mega-desc">up and running in minutes</span></a>
+                                <a href="https://sentinelpay.org/#solutions" class="lp-mega-item"><span class="lp-mega-title">risk scoring</span><span class="lp-mega-desc">explainable scores built from named heuristics</span></a>
+                                <a href="https://sentinelpay.org/#solutions" class="lp-mega-item"><span class="lp-mega-title">network coverage</span><span class="lp-mega-desc">10+ chains from a single integration</span></a>
+                                <a href="https://sentinelpay.org/#solutions" class="lp-mega-item"><span class="lp-mega-title">configurable thresholds</span><span class="lp-mega-desc">tune risk rules to your appetite</span></a>
+                            </div>
+                            <a href="https://sentinelpay.org/" class="lp-mega-promo">
+                                <div class="lp-mega-promo-visual"><svg viewBox="0 0 120 120" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"><path d="M60 16 L26 30 V56 C26 80 50 99 60 104 C70 99 94 80 94 56 V30 Z"/><path d="M40 60 Q60 42 80 60 Q60 78 40 60 Z"/><circle cx="60" cy="60" r="6" fill="#fff" stroke="none"/></svg></div>
+                                <span class="lp-mega-promo-title">build in minutes</span>
+                                <span class="lp-mega-promo-desc">clean json api. no sdk, no infrastructure to run.</span>
+                                <span class="lp-mega-promo-cta">learn more<span class="lp-mega-cta-arrow">→</span></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="lp-nav-dd-wrap">
+                    <button class="lp-nav-link lp-nav-dd-btn">resources<svg class="lp-nav-chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+                    <div class="lp-nav-dd lp-mega">
+                        <div class="lp-mega-inner">
+                            <div class="lp-mega-rail">
+                                <span class="lp-mega-eyebrow">resources</span>
+                                <h4 class="lp-mega-heading">learn the language of crypto risk</h4>
+                                <p class="lp-mega-rail-desc">analysis, guides and updates from the frontline of blockchain risk.</p>
+                                <a href="https://blog.sentinelpay.org" class="lp-mega-rail-cta">visit the blog<span class="lp-mega-cta-arrow">→</span></a>
+                            </div>
+                            <div class="lp-mega-grid">
+                                <a href="https://blog.sentinelpay.org" class="lp-mega-item"><span class="lp-mega-title">blog</span><span class="lp-mega-desc">expert analysis and regulatory updates</span></a>
+                                <a href="https://blog.sentinelpay.org" class="lp-mega-item"><span class="lp-mega-title">reports &amp; guides</span><span class="lp-mega-desc">practical guidance for compliance teams</span></a>
+                                <a href="https://sentinelpay.org/" class="lp-mega-item"><span class="lp-mega-title">documentation</span><span class="lp-mega-desc">product docs and how-tos</span></a>
+                                <a href="https://sentinelpay.org/" class="lp-mega-item"><span class="lp-mega-title">newsletter</span><span class="lp-mega-desc">the latest insights in your inbox</span></a>
+                                <a href="https://sentinelpay.org/" class="lp-mega-item"><span class="lp-mega-title">crypto glossary</span><span class="lp-mega-desc">the language of digital asset risk</span></a>
+                                <a href="https://sentinelpay.org/" class="lp-mega-item"><span class="lp-mega-title">help center</span><span class="lp-mega-desc">answers and troubleshooting</span></a>
+                            </div>
+                            <a href="https://blog.sentinelpay.org" class="lp-mega-promo">
+                                <div class="lp-mega-promo-visual"><svg viewBox="0 0 120 120" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"><path d="M60 16 L26 30 V56 C26 80 50 99 60 104 C70 99 94 80 94 56 V30 Z"/><path d="M40 60 Q60 42 80 60 Q60 78 40 60 Z"/><circle cx="60" cy="60" r="6" fill="#fff" stroke="none"/></svg></div>
+                                <span class="lp-mega-promo-title">the latest insights</span>
+                                <span class="lp-mega-promo-desc">regulatory updates and new typologies in your inbox.</span>
+                                <span class="lp-mega-promo-cta">learn more<span class="lp-mega-cta-arrow">→</span></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="lp-nav-dd-wrap">
+                    <button class="lp-nav-link lp-nav-dd-btn">company<svg class="lp-nav-chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+                    <div class="lp-nav-dd lp-mega">
+                        <div class="lp-mega-inner">
+                            <div class="lp-mega-rail">
+                                <span class="lp-mega-eyebrow">company</span>
+                                <h4 class="lp-mega-heading">the team securing crypto payments</h4>
+                                <p class="lp-mega-rail-desc">who we are, how we protect you, and how to reach us.</p>
+                                <a href="mailto:support@sentinelpay.org" class="lp-mega-rail-cta">get in touch<span class="lp-mega-cta-arrow">→</span></a>
+                            </div>
+                            <div class="lp-mega-grid">
+                                <a href="https://sentinelpay.org/" class="lp-mega-item"><span class="lp-mega-title">who we are</span><span class="lp-mega-desc">the team behind sentinelpay</span></a>
+                                <a href="https://sentinelpay.org/" class="lp-mega-item"><span class="lp-mega-title">security</span><span class="lp-mega-desc">how we protect your data</span></a>
+                                <a href="https://sentinelpay.org/" class="lp-mega-item"><span class="lp-mega-title">careers</span><span class="lp-mega-desc">help build safer digital asset rails</span></a>
+                                <a href="mailto:support@sentinelpay.org" class="lp-mega-item"><span class="lp-mega-title">contact us</span><span class="lp-mega-desc">talk to our team</span></a>
+                                <a href="/privacy-policy" class="lp-mega-item"><span class="lp-mega-title">privacy policy</span><span class="lp-mega-desc">how we handle your data</span></a>
+                            </div>
+                            <a href="mailto:support@sentinelpay.org" class="lp-mega-promo">
+                                <div class="lp-mega-promo-visual"><svg viewBox="0 0 120 120" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"><path d="M60 16 L26 30 V56 C26 80 50 99 60 104 C70 99 94 80 94 56 V30 Z"/><path d="M40 60 Q60 42 80 60 Q60 78 40 60 Z"/><circle cx="60" cy="60" r="6" fill="#fff" stroke="none"/></svg></div>
+                                <span class="lp-mega-promo-title">join the team</span>
+                                <span class="lp-mega-promo-desc">help build safer rails for digital asset payments.</span>
+                                <span class="lp-mega-promo-cta">learn more<span class="lp-mega-cta-arrow">→</span></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="auth-nav-container" style="display: flex; gap: 0.5rem; align-items: center;">
+                <a href="https://sentinelpay.org/#demo" class="auth-nav-btn lp-btn-ghost lp-desktop-auth">log in</a>
+                <a href="https://sentinelpay.org/#demo" class="auth-nav-btn lp-btn-solid lp-desktop-auth">get started</a>
+                <button class="lp-hamburger" id="lp-hamburger" aria-label="menu">
+                    <span class="lp-hb-line"></span><span class="lp-hb-line"></span><span class="lp-hb-line"></span>
+                </button>
             </div>
         </div>
     </nav>
 
+    <div class="lp-mobile-menu" id="lp-mobile-menu">
+        <div class="lp-mobile-menu-inner">
+            <div class="lp-mm-acc">
+                <button class="lp-mm-acc-btn">solutions<svg class="lp-mm-acc-chev" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+                <div class="lp-mm-acc-body">
+                    <a href="https://sentinelpay.org/#solutions" class="lp-mobile-sub-link">crypto compliance</a>
+                    <a href="https://sentinelpay.org/#solutions" class="lp-mobile-sub-link">transaction screening</a>
+                    <a href="https://sentinelpay.org/#solutions" class="lp-mobile-sub-link">wallet investigations</a>
+                    <a href="https://sentinelpay.org/#solutions" class="lp-mobile-sub-link">threat intelligence</a>
+                    <a href="https://sentinelpay.org/#demo" class="lp-mobile-sub-link">pricing</a>
+                </div>
+            </div>
+            <div class="lp-mm-acc">
+                <button class="lp-mm-acc-btn">industries<svg class="lp-mm-acc-chev" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+                <div class="lp-mm-acc-body">
+                    <a href="https://sentinelpay.org/#who-its-for" class="lp-mobile-sub-link">financial institutions</a>
+                    <a href="https://sentinelpay.org/#who-its-for" class="lp-mobile-sub-link">centralized exchanges</a>
+                    <a href="https://sentinelpay.org/#who-its-for" class="lp-mobile-sub-link">payment services</a>
+                    <a href="https://sentinelpay.org/#who-its-for" class="lp-mobile-sub-link">stablecoin &amp; token issuers</a>
+                    <a href="https://sentinelpay.org/#who-its-for" class="lp-mobile-sub-link">network operators</a>
+                </div>
+            </div>
+            <div class="lp-mm-acc">
+                <button class="lp-mm-acc-btn">resources<svg class="lp-mm-acc-chev" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+                <div class="lp-mm-acc-body">
+                    <a href="https://blog.sentinelpay.org" class="lp-mobile-sub-link">blog</a>
+                    <a href="https://blog.sentinelpay.org" class="lp-mobile-sub-link">reports &amp; guides</a>
+                    <a href="https://sentinelpay.org/" class="lp-mobile-sub-link">documentation</a>
+                </div>
+            </div>
+            <div class="lp-mm-acc">
+                <button class="lp-mm-acc-btn">company<svg class="lp-mm-acc-chev" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+                <div class="lp-mm-acc-body">
+                    <a href="https://sentinelpay.org/" class="lp-mobile-sub-link">who we are</a>
+                    <a href="https://sentinelpay.org/" class="lp-mobile-sub-link">careers</a>
+                    <a href="mailto:support@sentinelpay.org" class="lp-mobile-sub-link">contact us</a>
+                    <a href="/privacy-policy" class="lp-mobile-sub-link">privacy policy</a>
+                </div>
+            </div>
+            <div class="lp-mobile-divider"></div>
+            <div class="lp-mobile-ctas">
+                <a href="mailto:support@sentinelpay.org" class="lp-mm-btn-ghost">contact</a>
+                <div class="lp-mm-ctas-row">
+                    <a href="https://sentinelpay.org/#demo" class="lp-mm-btn-ghost">log in</a>
+                    <a href="https://sentinelpay.org/#demo" class="lp-mm-btn-solid">get started</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <section class="lp-section pp">
         <div class="pp-shell">
-            <span class="pp-eyebrow">legal</span>
             <h1 class="pp-title">privacy policy</h1>
             <p class="pp-meta">last updated: july 2026</p>
-            <p class="pp-intro">sentinelpay has created this privacy policy to explain what personal data we collect, when we collect it, why we collect it, and how it is used.</p>
+            <p class="pp-intro">this policy explains, in plain terms, what personal data sentinelpay collects, why we collect it, how we use and protect it, and the rights you have over it. we wrote it to be read, not filed away.</p>
+            <div class="pp-tldr">
+                <h2>the short version</h2>
+                <ul>
+                    <li>we collect only what we need to run the service, bill for it, keep it secure, and meet our legal obligations.</li>
+                    <li>we never sell your personal data, and we never share it for anyone else's advertising.</li>
+                    <li>the wallet and transaction data we analyse is largely public blockchain data; we combine it with risk intelligence to produce a score you act on.</li>
+                    <li>a risk score is information, not a verdict. the decision to accept or decline a transaction always stays with you.</li>
+                    <li>you can ask to access, correct, or delete your personal data at any time by emailing <a href="mailto:privacy@sentinelpay.org">privacy@sentinelpay.org</a>.</li>
+                </ul>
+            </div>
         </div>
 
         <div class="pp-shell pp-body">
-            <h2>who is sentinelpay</h2>
+            <h2>who we are</h2>
             <p>sentinelpay is a crypto risk and compliance company. we provide a monitoring platform that helps crypto businesses screen wallets and transactions, detect exposure to financial crime, and decide whether to accept a payment before funds are released.</p>
-            <p>sentinelpay is the data controller for personal data processed in connection with our products and services. our full legal entity details, registration number and registered office will be published here before launch. if you have any question about how we handle your data in the meantime, you can reach us at <a href="mailto:privacy@sentinelpay.org">privacy@sentinelpay.org</a>.</p>
+            <p>sentinelpay is the "data controller" for the personal data described in this policy, which means we decide how and why it is processed. our full legal entity name, company registration number and registered office will be published here before we launch commercially. until then, any privacy question can go straight to <a href="mailto:privacy@sentinelpay.org">privacy@sentinelpay.org</a>.</p>
 
-            <h2>what personal data we collect</h2>
-            <p>we may collect, use, store and transfer different kinds of personal data:</p>
+            <h2>the data we collect</h2>
+            <p>depending on how you use sentinelpay, we may collect, use, store and transfer the following kinds of personal data:</p>
             <div class="pp-dl">
-                <div class="pp-dl-row"><b>identity data</b><span>first name, last name, and, where required to onboard you or verify your identity, identification documents and similar information.</span></div>
+                <div class="pp-dl-row"><b>identity data</b><span>first name, last name, job title, and, where we are legally required to verify you, identification documents and similar information.</span></div>
                 <div class="pp-dl-row"><b>contact data</b><span>email address, company name, telephone number and billing address.</span></div>
-                <div class="pp-dl-row"><b>payment data</b><span>billing details and crypto wallet addresses used to pay for our services.</span></div>
-                <div class="pp-dl-row"><b>crypto activity data</b><span>wallet addresses, transaction identifiers, on-chain history, sanctions and watchlist matches, and other records of activity that help us identify illicit crypto activity and produce a risk score.</span></div>
-                <div class="pp-dl-row"><b>technical data</b><span>ip address, browser type and version, time zone and location, operating system and platform, device identifiers and other technology on the devices you use to access our site and services.</span></div>
-                <div class="pp-dl-row"><b>usage data</b><span>information about how you log into, interact with and use our site and services.</span></div>
-                <div class="pp-dl-row"><b>marketing data</b><span>your preferences in receiving marketing and other communications from us.</span></div>
+                <div class="pp-dl-row"><b>payment data</b><span>billing details and the crypto wallet addresses used to pay for our services. we do not store full card numbers; card payments, if offered, are handled by a regulated payment processor.</span></div>
+                <div class="pp-dl-row"><b>crypto activity data</b><span>wallet addresses, transaction identifiers, on-chain history, sanctions and watchlist matches, mixer and darknet exposure, and other signals we use to identify illicit activity and produce a risk score. most of this originates from public blockchains.</span></div>
+                <div class="pp-dl-row"><b>technical data</b><span>ip address, browser type and version, time zone and location, operating system and platform, device identifiers and other technology on the devices you use to reach our site and services.</span></div>
+                <div class="pp-dl-row"><b>usage data</b><span>information about how you log into, navigate and use our site and product.</span></div>
+                <div class="pp-dl-row"><b>communications &amp; marketing data</b><span>the content of your messages to us, your support history, and your preferences for receiving updates and marketing.</span></div>
             </div>
+            <p>we do not intentionally collect special category data (such as health, religion or biometric data) in the ordinary course of providing the service. where crypto activity data reveals a person's association with suspected criminal activity, we handle it under the specific legal condition described further below.</p>
 
-            <h2>how personal data is collected</h2>
+            <h2>how we collect it</h2>
             <ul>
-                <li>when you visit our website, for example when you complete a form or when we place cookies.</li>
-                <li>when you apply to become a sentinelpay customer or join our newsletter or waitlist.</li>
-                <li>when you interact with us by email, phone or video call. calls may be recorded, and you will be told before any recording starts.</li>
-                <li>when you connect a public key and use the sentinelpay services.</li>
-                <li>when we collect information about prospective customers who may be interested in our services.</li>
-                <li>when we operate our services, for example when we compile sanctions lists or crypto intelligence.</li>
+                <li>directly from you, when you fill in a form, join our newsletter or waitlist, apply to become a customer, or contact us.</li>
+                <li>automatically, through cookies and similar technologies when you use our website.</li>
+                <li>when you connect a public key and use the product, so we can scan the wallets and transactions that touch your business.</li>
+                <li>from public and licensed sources, such as blockchains, sanctions lists and threat intelligence, when we build and maintain our risk database.</li>
+                <li>from interactions such as email, phone or video calls. calls may be recorded, and you will be told before any recording begins.</li>
             </ul>
 
-            <h2>how we use personal data</h2>
-            <p>we collect and process personal data only where we have a lawful basis to do so. we may process your personal data where you have given explicit consent, where it is necessary to perform a contract with you, where we have a legal obligation, or where we have a legitimate interest that does not materially override your rights, freedoms or interests.</p>
+            <h2>how we use it, and our legal basis</h2>
+            <p>we only process personal data where the law gives us a basis to do so: because you have consented, because it is necessary to perform a contract with you, because we have a legal obligation, or because we have a legitimate interest that does not override your rights.</p>
             <div class="pp-table-wrap">
                 <table class="pp-table">
-                    <thead>
-                        <tr><th>personal data</th><th>purpose</th><th>lawful basis</th></tr>
-                    </thead>
+                    <thead><tr><th>data</th><th>why we use it</th><th>legal basis</th></tr></thead>
                     <tbody>
-                        <tr><td>identity, contact</td><td>to onboard you as a customer or assess your suitability for onboarding</td><td>performance of a contract</td></tr>
-                        <tr><td>identity, contact, crypto activity</td><td>to provide the services you have contracted for and manage your account</td><td>performance of a contract</td></tr>
-                        <tr><td>contact, payment</td><td>to charge for the services you have contracted for</td><td>performance of a contract</td></tr>
-                        <tr><td>contact, marketing, technical, usage</td><td>to carry out sales and marketing, such as product updates, events and newsletters, some of it using cookies</td><td>legitimate interests</td></tr>
-                        <tr><td>contact</td><td>to send service messages about our product</td><td>legitimate interests</td></tr>
-                        <tr><td>crypto activity</td><td>to provide our services, which involve detecting and preventing potentially prohibited or illegal activity, including sanctions breaches</td><td>legitimate interests, with the appropriate substantial public interest condition</td></tr>
-                        <tr><td>crypto activity</td><td>to comply with court orders and warrants</td><td>legal obligation</td></tr>
-                        <tr><td>identity, contact</td><td>to bring or defend legal claims</td><td>legitimate interests</td></tr>
-                        <tr><td>contact</td><td>to comply with applicable laws and regulations</td><td>legal obligation</td></tr>
-                        <tr><td>technical, usage</td><td>to measure and improve our services and the content and layout of our site and applications</td><td>legitimate interests</td></tr>
+                        <tr><td>identity, contact</td><td>to onboard you and assess your suitability as a customer</td><td>performance of a contract</td></tr>
+                        <tr><td>identity, contact, crypto activity</td><td>to provide the service you signed up for and manage your account</td><td>performance of a contract</td></tr>
+                        <tr><td>contact, payment</td><td>to bill you for the service</td><td>performance of a contract</td></tr>
+                        <tr><td>crypto activity</td><td>to detect and prevent potentially illegal or prohibited activity, including sanctions exposure</td><td>legitimate interests, with a substantial public interest condition</td></tr>
+                        <tr><td>contact, marketing, technical, usage</td><td>product updates, events and newsletters, some of it using cookies</td><td>consent or legitimate interests</td></tr>
+                        <tr><td>contact</td><td>to send service and security messages about the product</td><td>legitimate interests</td></tr>
+                        <tr><td>technical, usage</td><td>to secure, measure and improve the service and the site</td><td>legitimate interests</td></tr>
+                        <tr><td>identity, contact, crypto activity</td><td>to comply with court orders, warrants, laws and regulations, or to bring or defend legal claims</td><td>legal obligation / legitimate interests</td></tr>
                     </tbody>
                 </table>
             </div>
+            <p>where we rely on consent, you can withdraw it at any time. where we rely on legitimate interests, you can object, and we will stop unless we have compelling grounds to continue.</p>
 
-            <h2>how personal data is stored and protected</h2>
-            <p>we store and process your personal data on cloud infrastructure with reputable providers. we protect it with physical, electronic and procedural safeguards, including encryption in transit and at rest, access controls, and least-privilege access so that only staff who need personal data to do their job can reach it.</p>
+            <h2>automated processing and ai</h2>
+            <p>sentinelpay uses automated analysis, including machine learning, to score wallets and flag risk. this is central to what the product does. it is not "solely automated decision-making" with legal or similarly significant effects on an individual: our system produces a risk score and context, and the decision to accept, hold or decline a transaction always remains with the human operator using the product. where an ai feature would process your voice, image or free-text inputs, we will ask for your consent first.</p>
 
-            <h2>how personal data is shared</h2>
+            <h2>how we keep it safe</h2>
+            <p>we host and process personal data on reputable cloud infrastructure and protect it with layered safeguards: encryption in transit and at rest, strict access controls, least-privilege access so only staff who need data can reach it, network protections, logging and monitoring. no system is perfectly secure, but we work to industry-standard practices and review them as we grow.</p>
+            <div class="pp-callout">if we ever suffer a personal data breach that is likely to put your rights at risk, we will notify the relevant regulator and, where required, affected individuals, without undue delay.</div>
+
+            <h2>who we share it with</h2>
             <ul>
-                <li>we share crypto activity data and our risk analysis of it with customers as part of the product.</li>
-                <li>we use trusted service providers to whom we may pass personal data under data processing agreements requiring them to protect it to at least our standards.</li>
-                <li>we may share personal data with law enforcement in connection with an investigation to help prevent unlawful activity, or where we are legally obliged to disclose it to a court or regulator.</li>
-                <li>with your permission, we may share event registration details with co-hosts, speakers or sponsors of an event.</li>
+                <li><strong>our customers</strong>, who receive the crypto activity data and risk analysis they are entitled to as part of the product.</li>
+                <li><strong>trusted service providers</strong> (for hosting, analytics, communications, payments and support), bound by data processing agreements to protect your data to at least our standard and to use it only on our instructions.</li>
+                <li><strong>authorities</strong>, where we are legally required to disclose data to a court, regulator or law enforcement, or where disclosure helps prevent serious unlawful activity.</li>
+                <li><strong>professional advisers and potential acquirers</strong>, in connection with legal advice or a corporate transaction, under appropriate confidentiality.</li>
             </ul>
-            <p>we do not sell your personal data, and we do not share it for any purpose other than those set out in this policy.</p>
+            <p>we do not sell your personal data, and we do not share it for third-party advertising.</p>
 
             <h2>international transfers</h2>
-            <p>we may need to transfer your personal data to countries outside your own, including to service providers located elsewhere. any such transfer will be carried out in compliance with applicable data protection law, using appropriate safeguards.</p>
+            <p>we may transfer personal data to countries outside your own, including to service providers located elsewhere. where we do, we use appropriate safeguards recognised under applicable data protection law, such as standard contractual clauses, so your data keeps a comparable level of protection.</p>
 
-            <h2>how we use artificial intelligence</h2>
-            <p>sentinelpay may process personal data using ai, for example to score risk, detect patterns, or support features you have enabled. our use of ai does not constitute solely automated decision-making with legal or similarly significant effects: a risk score is information you act on, and the decision to accept or reject a payment remains yours. where you enable an ai feature that processes your voice, image or inputs, we will ask for your consent; other ai processing is carried out under legitimate interests.</p>
-
-            <h2>how long we keep personal data</h2>
-            <p>we keep your personal data only as long as necessary for the purpose it was collected for. after that we either anonymise it if we still want it for analytics, pseudonymise it if we believe in good faith we may need it again for a legitimate purpose, or delete it. this does not apply to crypto activity data, which we have a legitimate need to retain to provide our services and maintain the integrity of our risk analysis.</p>
+            <h2>how long we keep it</h2>
+            <p>we keep personal data only as long as we need it for the purpose we collected it, plus any period required by law. after that we anonymise it (if we still want it for analytics), pseudonymise it (if we may need it again for a legitimate purpose), or delete it. crypto activity data is an exception: because the integrity of our risk analysis depends on historical context, we may retain it for as long as necessary to provide our services.</p>
 
             <h2>your rights</h2>
             <p>depending on where you live, you may have the right to:</p>
             <ul>
-                <li>request access to the personal data we hold about you, and check that we are processing it lawfully.</li>
-                <li>request correction of personal data you believe is inaccurate or incomplete.</li>
-                <li>request deletion of your personal data where we have no legitimate reason to keep processing it.</li>
-                <li>object to processing where we are relying on a legitimate interest.</li>
-                <li>request that we restrict processing, for example while its accuracy is checked.</li>
-                <li>request the transfer of your personal data to another party.</li>
-                <li>withdraw consent where you have given it.</li>
+                <li>access the personal data we hold about you and check we are processing it lawfully.</li>
+                <li>correct data that is inaccurate or incomplete.</li>
+                <li>ask us to delete your data where we have no overriding reason to keep it.</li>
+                <li>object to processing based on legitimate interests, including direct marketing.</li>
+                <li>ask us to restrict processing, for example while its accuracy is checked.</li>
+                <li>receive your data in a portable format, or ask us to transfer it.</li>
+                <li>withdraw consent where you previously gave it.</li>
             </ul>
-            <p>to exercise any of these rights, contact us at <a href="mailto:privacy@sentinelpay.org">privacy@sentinelpay.org</a>. we may need to confirm your identity first, as a security measure to make sure personal data is not disclosed to anyone who has no right to receive it.</p>
+            <p>to exercise any of these, email <a href="mailto:privacy@sentinelpay.org">privacy@sentinelpay.org</a>. we may first need to verify your identity, so that personal data is never disclosed to the wrong person. we will respond within the timeframe the law requires, and these rights are free to exercise in normal circumstances.</p>
+
+            <h2>cookies</h2>
+            <p>our website uses cookies, small text files stored on your device, in two main ways:</p>
+            <ul>
+                <li><strong>essential cookies</strong>, which make the site work, remember your preferences, and facilitate secure login to private areas.</li>
+                <li><strong>analytics cookies</strong>, which tell us in aggregate how the site is used (browser, operating system, pages viewed, paths taken, approximate location from ip) so we can improve it.</li>
+            </ul>
+            <p>most browsers let you delete or block cookies through their settings. disabling essential cookies may stop parts of the site from working.</p>
+
+            <h2>children</h2>
+            <p>sentinelpay is a business-to-business product and is not directed at children. we do not knowingly collect personal data from anyone under 18. if you believe a child has provided us with personal data, contact us and we will delete it.</p>
+
+            <h2>other sites</h2>
+            <p>our site and product may link to third-party websites and services we do not control. this policy does not cover them, and we encourage you to read their own privacy notices.</p>
+
+            <h2>our crypto activity database</h2>
+            <p>sentinelpay maintains a database built largely from publicly available cryptocurrency data, such as wallet addresses, transaction ledgers and blockchains. we combine this with information about a wallet's association with known or suspected criminal activity and with publicly available sanctions lists.</p>
+            <p>some of that information relates to a person's association with suspected criminal activity, which in some jurisdictions is treated as a special category of data. where that applies, we process it under a substantial public interest condition, such as the prevention or detection of unlawful acts. sentinelpay is the data controller for the personal data in this database.</p>
+            <p>customers may submit crypto information to us, such as wallet addresses or transaction hashes. we combine it with our database to assess how likely the activity is to involve crime or sanctioned parties, and we return that risk level to the customer, who decides how to proceed. where a high risk is identified, a customer may decline a transaction or request more information, and in serious cases relevant information may be shared with authorities working to prevent crime.</p>
 
             <h2>how to contact us</h2>
             <div class="pp-contact">
-                <p>for any privacy question or to exercise your rights, email <a href="mailto:privacy@sentinelpay.org">privacy@sentinelpay.org</a>.</p>
-                <p>if you have concerns about how we handle your personal data, you may also have the right to complain to your local data protection regulator.</p>
+                <p>for any privacy matter, or to exercise your rights, email <a href="mailto:privacy@sentinelpay.org">privacy@sentinelpay.org</a>.</p>
+                <p>if you are unhappy with how we have handled your data, you also have the right to complain to your local data protection authority. we would appreciate the chance to resolve it with you first.</p>
             </div>
 
-            <h2>sentinelpay's crypto activity data</h2>
-            <p>sentinelpay maintains a database of publicly available cryptocurrency data, such as wallet addresses, transaction ledgers and blockchains. we combine this with information about a wallet's association with known or suspected criminal activity, and with publicly available sanctions lists.</p>
-            <p>some of this information relates to a person's association with known or suspected criminal activity, which in some jurisdictions is a special category of data. where that is the case, our processing is carried out under a substantial public interest condition, such as the prevention or detection of unlawful acts. sentinelpay is a data controller of the personal data in this database.</p>
-            <p>customers may submit crypto information to us, such as wallet addresses or transaction hashes. we may combine this with the information in our database to assess the level of risk that the activity is involved with crime or sanctioned parties. we tell the customer that risk level, and the customer decides how to proceed. where our services identify a high risk, a customer may decline a transaction or request further information. in serious cases, information may be disclosed to law enforcement or other agencies working to prevent crime.</p>
-
-            <h2>cookie notice</h2>
-            <p>our website uses cookies, small text files stored on your device, in two ways:</p>
-            <ul>
-                <li>to collect system information such as browser and operating system, the site you arrived from, how long you view pages, the paths you take through the site, and your ip address. this is used for administration and to report aggregate statistics. on its own it does not usually identify a specific individual.</li>
-                <li>to facilitate the login process when registered users access private areas of our site.</li>
-            </ul>
-            <p>most browsers let you delete or disable cookies through their settings. please note that disabling cookies may stop you from accessing private areas of the site.</p>
-
             <h2>changes to this policy</h2>
-            <p>we may update this policy from time to time. where changes are significant, we will try to give customers reasonable advance notice, but you should check this page from time to time. the date at the top shows when it was last updated.</p>
+            <p>we may update this policy as our product and the law evolve. where a change is significant, we will make reasonable efforts to tell customers in advance, but please check back from time to time. the date at the top always shows when it was last updated.</p>
         </div>
     </section>
 
     <footer class="lp-footer">
-        <div class="lp-section-inner" style="text-align:center; padding: 1.5rem 0;">
-            <div class="pp-foot-links">
-                <a href="https://sentinelpay.org">home</a>
-                <a href="/tos">terms of service</a>
-                <a href="/privacy-policy">privacy policy</a>
+        <div class="lp-section-inner">
+            <div class="lp-footer-top">
+                <div class="lp-footer-brand">
+                    <div class="lp-footer-brand-row">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" class="lp-footer-icon">
+                          <defs>
+                            <linearGradient id="neonGradientFooter" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00ffff" /><stop offset="100%" stop-color="#a020f0" /></linearGradient>
+                            <filter id="neonGlowFooter" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3.5" result="coloredBlur"/><feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+                          </defs>
+                          <g filter="url(#neonGlowFooter)" fill="none" stroke="url(#neonGradientFooter)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z" />
+                            <path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z" />
+                            <g><circle cx="60" cy="60" r="6" /><circle cx="60" cy="60" r="2" fill="url(#neonGradientFooter)" stroke="none"/></g>
+                            <path d="M60 15 V 30" stroke-width="2" opacity="0.6"/><path d="M60 90 V 105" stroke-width="2" opacity="0.6"/>
+                          </g>
+                        </svg>
+                        <span class="lp-logo-text lp-footer-logo">sentinelpay</span>
+                    </div>
+                    <p class="lp-footer-tagline">real-time blockchain monitoring for crypto payment operators.</p>
+                </div>
+                <div class="lp-footer-links">
+                    <div class="lp-footer-col">
+                        <span class="lp-footer-col-title">solutions</span>
+                        <a href="https://sentinelpay.org/#solutions" class="lp-footer-link">crypto compliance</a>
+                        <a href="https://sentinelpay.org/#solutions" class="lp-footer-link">transaction screening</a>
+                        <a href="https://sentinelpay.org/#solutions" class="lp-footer-link">wallet investigations</a>
+                        <a href="https://sentinelpay.org/#solutions" class="lp-footer-link">threat intelligence</a>
+                        <a href="https://sentinelpay.org/#solutions" class="lp-footer-link">real-time alerting</a>
+                        <a href="https://sentinelpay.org/#demo" class="lp-footer-link">pricing</a>
+                    </div>
+                    <div class="lp-footer-col">
+                        <span class="lp-footer-col-title">industries</span>
+                        <a href="https://sentinelpay.org/#who-its-for" class="lp-footer-link">financial institutions</a>
+                        <a href="https://sentinelpay.org/#who-its-for" class="lp-footer-link">centralized exchanges</a>
+                        <a href="https://sentinelpay.org/#who-its-for" class="lp-footer-link">payment services</a>
+                        <a href="https://sentinelpay.org/#who-its-for" class="lp-footer-link">stablecoin &amp; token issuers</a>
+                        <a href="https://sentinelpay.org/#who-its-for" class="lp-footer-link">network operators</a>
+                        <a href="https://sentinelpay.org/#who-its-for" class="lp-footer-link">law enforcement</a>
+                    </div>
+                    <div class="lp-footer-col">
+                        <span class="lp-footer-col-title">resources</span>
+                        <a href="https://blog.sentinelpay.org" class="lp-footer-link">blog</a>
+                        <a href="https://blog.sentinelpay.org" class="lp-footer-link">reports &amp; guides</a>
+                        <a href="https://sentinelpay.org/" class="lp-footer-link">documentation</a>
+                        <a href="https://sentinelpay.org/" class="lp-footer-link">quickstart</a>
+                        <a href="https://sentinelpay.org/" class="lp-footer-link">newsletter</a>
+                    </div>
+                    <div class="lp-footer-col">
+                        <span class="lp-footer-col-title">company</span>
+                        <a href="https://sentinelpay.org/" class="lp-footer-link">who we are</a>
+                        <a href="https://sentinelpay.org/" class="lp-footer-link">security</a>
+                        <a href="https://sentinelpay.org/" class="lp-footer-link">careers</a>
+                        <a href="mailto:support@sentinelpay.org" class="lp-footer-link">contact us</a>
+                        <a href="/privacy-policy" class="lp-footer-link">privacy policy</a>
+                        <a href="/tos" class="lp-footer-link">terms of service</a>
+                    </div>
+                </div>
             </div>
-            <span style="color: rgba(14,35,88,0.5); font-size: 0.82rem;">© 2026 sentinelpay. all rights reserved.</span>
+            <div class="lp-footer-bottom">
+                <span class="lp-footer-copy">© 2026 sentinelpay. all rights reserved.</span>
+                <a href="mailto:support@sentinelpay.org" class="lp-footer-email">support@sentinelpay.org</a>
+            </div>
         </div>
     </footer>
 
+    <script>
+        (function() {
+            function closeAllDropdowns() {
+                document.querySelectorAll('.lp-nav-dd-wrap.lp-dd-open').forEach(function(w){ w.classList.remove('lp-dd-open'); });
+            }
+            document.querySelectorAll('.lp-nav-dd-btn').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    var wrap = this.closest('.lp-nav-dd-wrap');
+                    var isOpen = wrap.classList.contains('lp-dd-open');
+                    closeAllDropdowns();
+                    if (!isOpen) wrap.classList.add('lp-dd-open');
+                });
+            });
+            document.querySelectorAll('.lp-nav-dd a').forEach(function(a){ a.addEventListener('click', closeAllDropdowns); });
+            document.addEventListener('click', function(e){ if (!e.target.closest('.lp-nav-dd-wrap')) closeAllDropdowns(); });
+
+            var hamburger = document.getElementById('lp-hamburger');
+            var mobileMenu = document.getElementById('lp-mobile-menu');
+            if (hamburger && mobileMenu) {
+                function closeMobileMenu() {
+                    hamburger.classList.remove('lp-hb-open');
+                    mobileMenu.classList.remove('lp-mm-open');
+                    document.documentElement.classList.remove('lp-scroll-lock');
+                }
+                hamburger.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    if (hamburger.classList.contains('lp-hb-open')) { closeMobileMenu(); }
+                    else {
+                        hamburger.classList.add('lp-hb-open');
+                        mobileMenu.classList.add('lp-mm-open');
+                        document.documentElement.classList.add('lp-scroll-lock');
+                    }
+                });
+                mobileMenu.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', closeMobileMenu); });
+                document.addEventListener('click', function(e) {
+                    if (mobileMenu.classList.contains('lp-mm-open') && !mobileMenu.contains(e.target) && !hamburger.contains(e.target)) closeMobileMenu();
+                });
+                mobileMenu.querySelectorAll('.lp-mm-acc-btn').forEach(function(btn) {
+                    btn.addEventListener('click', function() {
+                        var acc = this.closest('.lp-mm-acc');
+                        var isOpen = acc.classList.contains('lp-acc-open');
+                        mobileMenu.querySelectorAll('.lp-mm-acc.lp-acc-open').forEach(function(a){ a.classList.remove('lp-acc-open'); });
+                        if (!isOpen) acc.classList.add('lp-acc-open');
+                    });
+                });
+            }
+        })();
+    </script>
     <script>window.addEventListener('load',function(){window.scrollTo(0,0);var l=document.getElementById('sp-loader');if(!l)return;l.classList.add('spl-done');setTimeout(function(){l.remove();},620);});</script>
 </body>
 </html>
