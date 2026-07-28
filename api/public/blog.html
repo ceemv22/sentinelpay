@@ -197,6 +197,22 @@
             <span style="color: rgba(14,35,88,0.5); font-size: 0.82rem;">© 2026 sentinelpay. all rights reserved.</span>
         </div>
     </footer>
+    <script>
+    (function(){
+        // reserve equal excerpt height across the grid (match the tallest) so every
+        // card's divider + author row sits at the same distance from the text
+        function equalizeExcerpts(){
+            var ex = [].slice.call(document.querySelectorAll('.lp-ins-grid .lp-ins-card-ex'));
+            if(!ex.length) return;
+            ex.forEach(function(e){ e.style.minHeight = '0px'; });
+            var max = 0;
+            ex.forEach(function(e){ if(e.offsetHeight > max) max = e.offsetHeight; });
+            ex.forEach(function(e){ e.style.minHeight = (max + 14) + 'px'; });
+        }
+        window.addEventListener('load', equalizeExcerpts);
+        var t; window.addEventListener('resize', function(){ clearTimeout(t); t = setTimeout(equalizeExcerpts, 120); });
+    })();
+    </script>
     <script>window.addEventListener('load',function(){window.scrollTo(0,0);var l=document.getElementById('sp-loader');if(!l)return;l.classList.add('spl-done');setTimeout(function(){l.remove();},620);});</script>
 </body>
 </html>
