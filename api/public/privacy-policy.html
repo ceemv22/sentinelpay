@@ -7,6 +7,8 @@
     <meta name="description" content="how sentinelpay collects, uses, stores and protects personal data.">
     <script>document.documentElement.classList.add('theme-light');</script>
     <script>if(history.scrollRestoration)history.scrollRestoration='manual';window.scrollTo(0,0);</script>
+    <script>window.intercomSettings={api_base:'https://api-iam.intercom.io',app_id:'obn3omwl',hide_default_launcher:true,language_override:'en'};</script>
+    <script>(function(){var w=window;var ic=w.Intercom;if(typeof ic==="function"){ic('reattach_activator');ic('update',w.intercomSettings);}else{var d=document;var i=function(){i.c(arguments);};i.q=[];i.c=function(a){i.q.push(a);};w.Intercom=i;var l=function(){var s=d.createElement('script');s.type='text/javascript';s.async=true;s.src='https://widget.intercom.io/widget/obn3omwl';var x=d.getElementsByTagName('script')[0];x.parentNode.insertBefore(s,x);};if(document.readyState==='complete'){l();}else if(w.attachEvent){w.attachEvent('onload',l);}else{w.addEventListener('load',l,false);}}})()</script>
     <link rel="icon" type="image/svg+xml" href="/logo.svg">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/style.css?v=23.0">
@@ -56,6 +58,19 @@
         html.theme-light .lp-mm-btn-solid:hover { background: #f0f0f2; }
         /* whenever the hamburger shows, hide the desktop auth buttons */
         @media (max-width: 1280px) { #auth-nav-container .lp-desktop-auth { display: none !important; } }
+
+        /* floating live-chat button (same as homepage) */
+        #sp-chat-btn { position: fixed; bottom: 24px; right: 24px; width: 52px; height: 52px; border-radius: 50%; background: rgba(5,5,8,0.92); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(0,240,255,0.25); box-shadow: 0 0 20px rgba(0,240,255,0.1), 0 8px 32px rgba(0,0,0,0.5); cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 99998; transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease; color: #00f0ff; padding: 0; }
+        #sp-chat-btn:hover { border-color: rgba(0,240,255,0.55); box-shadow: 0 0 28px rgba(0,240,255,0.22), 0 8px 32px rgba(0,0,0,0.6); transform: translateY(-2px); }
+        #sp-chat-btn:active { transform: translateY(0) scale(0.95); }
+        #sp-chat-badge { position: absolute; top: 5px; right: 5px; width: 9px; height: 9px; border-radius: 50%; background: #00f0ff; box-shadow: 0 0 8px rgba(0,240,255,0.8); display: none; border: 1.5px solid rgba(5,5,8,1); pointer-events: none; }
+        html.theme-light #sp-chat-btn { background: rgba(255,255,255,0.85); border-color: rgba(0,145,200,0.25); box-shadow: 0 0 20px rgba(0,145,200,0.08), 0 8px 32px rgba(0,0,0,0.08); color: var(--accent-light); }
+        html.theme-light #sp-chat-btn:hover { border-color: rgba(0,145,200,0.45); box-shadow: 0 0 28px rgba(0,145,200,0.16), 0 8px 32px rgba(0,0,0,0.1); }
+        html.theme-light #sp-chat-badge { background: var(--accent-light); box-shadow: 0 0 8px rgba(0,145,200,0.6); border-color: rgba(255,255,255,1); }
+        @media (max-width: 1280px) {
+            #sp-chat-btn { width: 44px !important; height: 44px !important; bottom: 16px !important; right: 16px !important; }
+            html.lp-scroll-lock #sp-chat-btn { display: none !important; }
+        }
 
         /* privacy content */
         .pp-shell { max-width: 820px; margin: 0 auto; padding: 0 1.4rem; }
@@ -313,7 +328,7 @@
             </div>
             <div class="lp-mobile-divider"></div>
             <div class="lp-mobile-ctas">
-                <a href="mailto:support@sentinelpay.org" class="lp-mm-btn-ghost">contact</a>
+                <a href="#" id="lp-mm-livechat" class="lp-mm-btn-ghost">live chat</a>
                 <div class="lp-mm-ctas-row">
                     <a href="https://sentinelpay.org/#demo" class="lp-mm-btn-ghost">log in</a>
                     <a href="https://sentinelpay.org/#demo" class="lp-mm-btn-solid">get started</a>
@@ -342,7 +357,7 @@
         <div class="pp-shell pp-body">
             <h2>who we are</h2>
             <p>sentinelpay is a crypto risk and compliance company. we provide a monitoring platform that helps crypto businesses screen wallets and transactions, detect exposure to financial crime, and decide whether to accept a payment before funds are released.</p>
-            <p>sentinelpay is the "data controller" for the personal data described in this policy, which means we decide how and why it is processed. our full legal entity name, company registration number and registered office will be published here before we launch commercially. until then, any privacy question can go straight to <a href="mailto:privacy@sentinelpay.org">privacy@sentinelpay.org</a>.</p>
+            <p>sentinelpay is the "data controller" for the personal data described in this policy, which means we decide how and why it is processed. our full legal entity name, company registration number and registered office will be published here before we launch commercially. in the meantime, all the ways to reach us, including live chat, are set out in <a href="#reach-us">how to reach us</a> at the end of this policy.</p>
 
             <h2>the data we collect</h2>
             <p>depending on how you use sentinelpay, we may collect, use, store and transfer the following kinds of personal data:</p>
@@ -439,10 +454,12 @@
             <p>some of that information relates to a person's association with suspected criminal activity, which in some jurisdictions is treated as a special category of data. where that applies, we process it under a substantial public interest condition, such as the prevention or detection of unlawful acts. sentinelpay is the data controller for the personal data in this database.</p>
             <p>customers may submit crypto information to us, such as wallet addresses or transaction hashes. we combine it with our database to assess how likely the activity is to involve crime or sanctioned parties, and we return that risk level to the customer, who decides how to proceed. where a high risk is identified, a customer may decline a transaction or request more information, and in serious cases relevant information may be shared with authorities working to prevent crime.</p>
 
-            <h2>how to contact us</h2>
-            <div class="pp-contact">
-                <p>for any privacy matter, or to exercise your rights, email <a href="mailto:privacy@sentinelpay.org">privacy@sentinelpay.org</a>.</p>
-                <p>if you are unhappy with how we have handled your data, you also have the right to complain to your local data protection authority. we would appreciate the chance to resolve it with you first.</p>
+            <h2 id="reach-us">how to reach us</h2>
+            <p>pick the lane that fits. a real person is on the other end, and we would rather answer early than have you guess.</p>
+            <div class="pp-dl">
+                <div class="pp-dl-row"><b>privacy &amp; your data</b><span>to access, correct or delete your data, or ask anything about how we handle it, email <a href="mailto:privacy@sentinelpay.org">privacy@sentinelpay.org</a>. once appointed, our data protection officer can be reached at the same address.</span></div>
+                <div class="pp-dl-row"><b>sales, product &amp; support</b><span>questions about the product, pricing, onboarding or your account? open a <a href="#" id="pp-open-chat">live chat</a> from the button in the bottom-right corner, or email <a href="mailto:support@sentinelpay.org">support@sentinelpay.org</a>. live chat is usually the fastest way to reach us.</span></div>
+                <div class="pp-dl-row"><b>complaints</b><span>if you are unhappy with how we have handled your data, you can complain to your local data protection authority. we would genuinely appreciate the chance to put it right first.</span></div>
             </div>
 
             <h2>changes to this policy</h2>
@@ -562,6 +579,26 @@
                     });
                 });
             }
+        })();
+    </script>
+    <button id="sp-chat-btn" aria-label="open live chat">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <span id="sp-chat-badge"></span>
+    </button>
+    <script>
+        (function(){
+            function openChat(){ if (window.Intercom) window.Intercom('show'); }
+            if (window.Intercom) window.Intercom('onUnreadCountChange', function(count){ var b=document.getElementById('sp-chat-badge'); if(b) b.style.display = count>0 ? 'block' : 'none'; });
+            var cb = document.getElementById('sp-chat-btn'); if (cb) cb.addEventListener('click', openChat);
+            var oc = document.getElementById('pp-open-chat'); if (oc) oc.addEventListener('click', function(e){ e.preventDefault(); openChat(); });
+            var lc = document.getElementById('lp-mm-livechat');
+            if (lc) lc.addEventListener('click', function(e){
+                e.preventDefault();
+                var menu = document.getElementById('lp-mobile-menu'); var hb = document.getElementById('lp-hamburger');
+                if (menu) menu.classList.remove('lp-mm-open'); if (hb) hb.classList.remove('lp-hb-open');
+                document.documentElement.classList.remove('lp-scroll-lock');
+                setTimeout(openChat, 220);
+            });
         })();
     </script>
     <script>window.addEventListener('load',function(){window.scrollTo(0,0);var l=document.getElementById('sp-loader');if(!l)return;l.classList.add('spl-done');setTimeout(function(){l.remove();},620);});</script>
