@@ -63,10 +63,13 @@
         a.lp-ins-featured, a.lp-ins-featured * { text-decoration: none; }
         /* grid of smaller article cards below the featured one */
         .lp-ins-grid { margin-top: 3rem; }
-        a.lp-ins-card { text-decoration: none; color: inherit; display: block; }
+        a.lp-ins-card { text-decoration: none; color: inherit; display: flex; flex-direction: column; height: 100%; }
         a.lp-ins-card * { text-decoration: none; }
+        .lp-ins-card .lp-ins-img { flex-shrink: 0; }
         .lp-ins-card .lp-ins-date { margin-top: 0.9rem; }
         .lp-ins-card .lp-ins-title-sm { margin-top: 0.15rem; }
+        /* push the divider + author row to the bottom so cards line up regardless of excerpt length */
+        .lp-ins-card .lp-ins-by { margin-top: auto; }
         @media (max-width: 640px) {
             .lp-insights { padding-top: 7rem; }
             .lp-ins-featured { margin-top: 3rem; }
