@@ -7,11 +7,19 @@
     <title>blog · sentinelpay</title>
     <script>document.documentElement.classList.add('theme-light');</script>
     <link rel="icon" type="image/svg+xml" href="/logo.svg">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="/style.css?v=23.0">
     <link rel="stylesheet" href="/landing.css?v=4.1">
     <link rel="stylesheet" href="/corp.css?v=126">
     <style>
+        /* self-hosted Inter (variable): no external font fetch, no flash on load */
+        @font-face {
+            font-family: 'Inter';
+            font-style: normal;
+            font-weight: 100 900;
+            font-display: swap;
+            src: url('/fonts/inter.woff2') format('woff2');
+        }
         /* essential theme-light base (mirrors the homepage inline theme) */
         html.theme-light {
             --bg-dark: #f6f7f9; --bg-panel: rgba(255,255,255,0.75);
