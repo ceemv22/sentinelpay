@@ -73,6 +73,7 @@ reference piece: "why criminals target small businesses (and exactly how they do
 ---
 
 ### current bylines
+- "we'll take almost any crypto business. gambling is where we draw the line" -> **ceem**
 - "you shouldn't have to become a bank to stay compliant" -> **ceem**
 - "you don't have an aml problem, you have a speed problem" -> **mind**
 - "why criminals target small businesses (and exactly how they do it)" -> **chibby**

@@ -168,10 +168,12 @@ app.use((req, res, next) => {
                     '01': 'blog-article.html',
                     '02': 'blog-article-2.html',
                     '03': 'blog-article-3.html',
+                    '04': 'blog-article-4.html',
                     // legacy slug aliases (keep old links working)
                     'why-criminals-target-small-businesses': 'blog-article.html',
                     'real-time-aml-why-timing-matters': 'blog-article-2.html',
                     'compliance-without-becoming-a-bank': 'blog-article-3.html',
+                    'we-dont-do-gambling': 'blog-article-4.html',
                 };
                 page = articles[slug] || 'blog-article.html';
             }
