@@ -188,8 +188,9 @@ app.use((req, res, next) => {
     next();
 });
 
-// Legal page moved to /privacy-policy; keep the old /privacy path working.
+// Legal pages moved to clean urls; keep the old paths working with 301s.
 app.get('/privacy', (req, res) => res.redirect(301, '/privacy-policy'));
+app.get('/tos', (req, res) => res.redirect(301, '/terms-of-service'));
 
 // Serve the static marketing site (/, /privacy-policy, /tos, assets).
 // Long-lived, immutable caching for media/fonts so Cloudflare's edge and the
