@@ -2513,3 +2513,24 @@ html.theme-light .lp-demo-select-list { scrollbar-width: thin; scrollbar-color: 
     .lp-net-mark { height: 36px; margin-right: 2.2rem; }
     .lp-net-mark img { width: auto; height: auto; transform: scale(0.78); }
 }
+
+/* ============ language switcher (footer) ============ */
+.sp-lang { display: flex; flex-direction: column; gap: 0.45rem; margin-bottom: 2rem; max-width: 230px; }
+.sp-lang-label {
+    font-family: 'Inter', sans-serif; font-size: 0.78rem; font-weight: 700;
+    color: #0e2358; text-transform: lowercase; letter-spacing: 0.01em;
+}
+.sp-lang-select {
+    appearance: none; -webkit-appearance: none;
+    font-family: 'Inter', sans-serif; font-size: 0.9rem; font-weight: 500;
+    color: #0e2358; background-color: #fff; cursor: pointer;
+    padding: 0.6rem 2.2rem 0.6rem 0.9rem; border: 1px solid rgba(14, 35, 88, 0.16); border-radius: 10px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230e2358' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 14px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.sp-lang-select:hover { border-color: rgba(14, 35, 88, 0.32); }
+.sp-lang-select:focus { outline: none; border-color: rgba(0, 145, 200, 0.55); box-shadow: 0 0 0 3px rgba(0, 145, 200, 0.14); }
+/* blog + article footers are a single centred row, so centre the control there too */
+.lp-footer .lp-section-inner[style*="center"] .sp-lang { margin: 0 auto 1.4rem; align-items: center; }
+@media (max-width: 860px) { .sp-lang { max-width: none; } }
