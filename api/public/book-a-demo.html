@@ -114,7 +114,8 @@
         .pp-contact p { margin: 0.4rem 0; font-size: 0.98rem; }
 
         @media (max-width: 640px) {
-            .bad-net-mark { width: 118px; height: 34px; margin-right: 2.4rem; }
+            .bad-net-mark { height: 36px; margin-right: 2.2rem; }
+            .bad-net-mark img { transform: scale(0.78); }
             .pp-title { font-size: 2rem; }
             .lp-section.pp { padding-top: 6.5rem; }
         }
@@ -149,15 +150,21 @@
         .bad-net-track { display: flex; align-items: center; width: max-content; animation: badNetScroll 55s linear infinite; will-change: transform; }
         @keyframes badNetScroll { from { transform: translate3d(-25%, 0, 0); } to { transform: translate3d(0, 0, 0); } }
         .bad-net-track:has(.bad-net-mark:hover) { animation-play-state: paused; }
-        /* logos ship in wildly different ratios, so give each an identical box and
-           let it scale inside — otherwise wordmarks dwarf the square marks */
-        .bad-net-mark { display: inline-flex; align-items: center; justify-content: center; width: 158px; height: 44px; margin-right: 3.6rem; filter: grayscale(1); opacity: 0.55; transition: filter 0.3s ease, opacity 0.3s ease; }
-        .bad-net-mark img { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; display: block; }
+        /* these logos run from 1:1 icons to 6.6:1 wordmarks. one shared box makes the
+           wide ones render short and unreadable, so each gets its own optical height. */
+        .bad-net-mark { display: inline-flex; align-items: center; justify-content: center; height: 48px; margin-right: 3.6rem; filter: grayscale(1); opacity: 0.55; transition: filter 0.3s ease, opacity 0.3s ease; }
+        .bad-net-mark img { width: auto; object-fit: contain; display: block; }
+        .bad-net-mark img[alt="traveler"] { height: 46px; }
+        .bad-net-mark img[alt="majice.hr"] { height: 44px; }
+        .bad-net-mark img[alt="futura"] { height: 40px; }
+        .bad-net-mark img[alt="racunala.hr"] { height: 38px; }
+        .bad-net-mark img[alt="elektromaterijal"] { height: 32px; }
         .bad-net-mark:hover { filter: grayscale(0); opacity: 1; }
         .bad-divider { height: 1px; margin: 3.6rem 0 3rem; background: linear-gradient(90deg, transparent, rgba(0,240,255,0.32) 22%, rgba(123,108,255,0.4) 50%, rgba(160,32,240,0.32) 78%, transparent); }
         @media (max-width: 900px) { .bad-grid { grid-template-columns: 1fr; gap: 2.6rem; } .bad-sub { max-width: none; } }
         @media (max-width: 640px) {
-            .bad-net-mark { width: 118px; height: 34px; margin-right: 2.4rem; }
+            .bad-net-mark { height: 36px; margin-right: 2.2rem; }
+            .bad-net-mark img { transform: scale(0.78); }
             .lp-section.bad-demo { padding-top: 6.5rem; }
             .bad-title { font-size: 2.1rem; }
             .bad-form-card { padding: 1.9rem 1.4rem !important; }
@@ -552,26 +559,26 @@
         <div class="lp-logo-bar bad-logo-bar">
             <div class="lp-net-marquee">
                 <div class="bad-net-track">
-                    <span class="bad-net-mark"><img src="/logos/elektromaterijal.png" alt="elektromaterijal" loading="lazy" decoding="async"></span>
-                    <span class="bad-net-mark"><img src="/logos/racunalahr.png" alt="racunala.hr" loading="lazy" decoding="async"></span>
-                    <span class="bad-net-mark"><img src="/logos/traveler.png" alt="traveler" loading="lazy" decoding="async"></span>
-                    <span class="bad-net-mark"><img src="/logos/majicehr.png" alt="majice.hr" loading="lazy" decoding="async"></span>
-                    <span class="bad-net-mark"><img src="/logos/futura.png" alt="futura" loading="lazy" decoding="async"></span>
-                    <span class="bad-net-mark"><img src="/logos/elektromaterijal.png" alt="elektromaterijal" loading="lazy" decoding="async"></span>
-                    <span class="bad-net-mark"><img src="/logos/racunalahr.png" alt="racunala.hr" loading="lazy" decoding="async"></span>
-                    <span class="bad-net-mark"><img src="/logos/traveler.png" alt="traveler" loading="lazy" decoding="async"></span>
-                    <span class="bad-net-mark"><img src="/logos/majicehr.png" alt="majice.hr" loading="lazy" decoding="async"></span>
-                    <span class="bad-net-mark"><img src="/logos/futura.png" alt="futura" loading="lazy" decoding="async"></span>
-                    <span class="bad-net-mark"><img src="/logos/elektromaterijal.png" alt="elektromaterijal" loading="lazy" decoding="async"></span>
-                    <span class="bad-net-mark"><img src="/logos/racunalahr.png" alt="racunala.hr" loading="lazy" decoding="async"></span>
-                    <span class="bad-net-mark"><img src="/logos/traveler.png" alt="traveler" loading="lazy" decoding="async"></span>
-                    <span class="bad-net-mark"><img src="/logos/majicehr.png" alt="majice.hr" loading="lazy" decoding="async"></span>
-                    <span class="bad-net-mark"><img src="/logos/futura.png" alt="futura" loading="lazy" decoding="async"></span>
-                    <span class="bad-net-mark"><img src="/logos/elektromaterijal.png" alt="elektromaterijal" loading="lazy" decoding="async"></span>
-                    <span class="bad-net-mark"><img src="/logos/racunalahr.png" alt="racunala.hr" loading="lazy" decoding="async"></span>
-                    <span class="bad-net-mark"><img src="/logos/traveler.png" alt="traveler" loading="lazy" decoding="async"></span>
-                    <span class="bad-net-mark"><img src="/logos/majicehr.png" alt="majice.hr" loading="lazy" decoding="async"></span>
-                    <span class="bad-net-mark"><img src="/logos/futura.png" alt="futura" loading="lazy" decoding="async"></span>
+                    <span class="bad-net-mark"><img src="/logos/elektromaterijal.png?v=2" alt="elektromaterijal" loading="lazy" decoding="async"></span>
+                    <span class="bad-net-mark"><img src="/logos/racunalahr.png?v=2" alt="racunala.hr" loading="lazy" decoding="async"></span>
+                    <span class="bad-net-mark"><img src="/logos/traveler.png?v=2" alt="traveler" loading="lazy" decoding="async"></span>
+                    <span class="bad-net-mark"><img src="/logos/majicehr.png?v=2" alt="majice.hr" loading="lazy" decoding="async"></span>
+                    <span class="bad-net-mark"><img src="/logos/futura.png?v=2" alt="futura" loading="lazy" decoding="async"></span>
+                    <span class="bad-net-mark"><img src="/logos/elektromaterijal.png?v=2" alt="elektromaterijal" loading="lazy" decoding="async"></span>
+                    <span class="bad-net-mark"><img src="/logos/racunalahr.png?v=2" alt="racunala.hr" loading="lazy" decoding="async"></span>
+                    <span class="bad-net-mark"><img src="/logos/traveler.png?v=2" alt="traveler" loading="lazy" decoding="async"></span>
+                    <span class="bad-net-mark"><img src="/logos/majicehr.png?v=2" alt="majice.hr" loading="lazy" decoding="async"></span>
+                    <span class="bad-net-mark"><img src="/logos/futura.png?v=2" alt="futura" loading="lazy" decoding="async"></span>
+                    <span class="bad-net-mark"><img src="/logos/elektromaterijal.png?v=2" alt="elektromaterijal" loading="lazy" decoding="async"></span>
+                    <span class="bad-net-mark"><img src="/logos/racunalahr.png?v=2" alt="racunala.hr" loading="lazy" decoding="async"></span>
+                    <span class="bad-net-mark"><img src="/logos/traveler.png?v=2" alt="traveler" loading="lazy" decoding="async"></span>
+                    <span class="bad-net-mark"><img src="/logos/majicehr.png?v=2" alt="majice.hr" loading="lazy" decoding="async"></span>
+                    <span class="bad-net-mark"><img src="/logos/futura.png?v=2" alt="futura" loading="lazy" decoding="async"></span>
+                    <span class="bad-net-mark"><img src="/logos/elektromaterijal.png?v=2" alt="elektromaterijal" loading="lazy" decoding="async"></span>
+                    <span class="bad-net-mark"><img src="/logos/racunalahr.png?v=2" alt="racunala.hr" loading="lazy" decoding="async"></span>
+                    <span class="bad-net-mark"><img src="/logos/traveler.png?v=2" alt="traveler" loading="lazy" decoding="async"></span>
+                    <span class="bad-net-mark"><img src="/logos/majicehr.png?v=2" alt="majice.hr" loading="lazy" decoding="async"></span>
+                    <span class="bad-net-mark"><img src="/logos/futura.png?v=2" alt="futura" loading="lazy" decoding="async"></span>
                 </div>
             </div>
         </div>
