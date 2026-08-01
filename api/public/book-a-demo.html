@@ -114,6 +114,8 @@
         .pp-contact p { margin: 0.4rem 0; font-size: 0.98rem; }
 
         @media (max-width: 640px) {
+            .bad-net-mark { margin-right: 2.8rem; }
+            .bad-net-mark img { height: 26px; max-width: 130px; }
             .pp-title { font-size: 2rem; }
             .lp-section.pp { padding-top: 6.5rem; }
         }
@@ -125,7 +127,12 @@
         .bad-copy { padding-top: 0.5rem; }
         .bad-title { margin: 0 0 1.2rem; font-size: 2.9rem; font-weight: 800; line-height: 1.08; letter-spacing: -0.02em; color: #0e2358; text-transform: lowercase; }
         .bad-sub { margin: 0; font-size: 1rem; line-height: 1.7; color: rgba(14,35,88,0.62); max-width: 44ch; }
-        .bad-form-card { grid-template-columns: 1fr !important; padding: 2.8rem 2.9rem !important; }
+        .bad-form-card { grid-template-columns: 1fr !important; padding: 2.4rem 2.6rem !important; }
+        /* the shared form pins every step to 316px so the card never jumps. here the
+           card sits in the fold, so let it hug its content instead of holding a gap. */
+        .bad-form-card .lp-demo-step { height: auto !important; min-height: 0 !important; max-height: none !important; }
+        .bad-form-card .lp-demo-form { padding-top: 8px; }
+        .bad-form-card .lp-demo-progress { margin-top: 1.6rem; }
         .bad-checklist { list-style: none; margin: 1.5rem 0 0; padding: 0; }
         .bad-checklist li { position: relative; padding-left: 1.9rem; margin-bottom: 0.75rem; font-size: 0.98rem; line-height: 1.5; color: #2a3550; }
         .bad-checklist li::before { content: ''; position: absolute; left: 0; top: 2px; width: 20px; height: 20px; border-radius: 50%; background: linear-gradient(135deg, #00f0ff, #a020f0);
@@ -155,20 +162,28 @@
             transform: skewX(-18deg); pointer-events: none;
         }
         .bad-trial-btn:hover::after { left: 130%; transition: left 0.55s cubic-bezier(0.22, 1, 0.36, 1); }
-        .bad-trusted { padding: 0 0 6rem; text-align: center; }
-        /* full-width hairline separating the demo block from the logo wall */
+        /* first screen: nav + demo block + logo strip, nothing peeking from below */
+        .bad-fold { min-height: calc(100vh - 64px); min-height: calc(100dvh - 64px); display: flex; flex-direction: column; }
+        .bad-fold .lp-section.bad-demo { flex: 1 0 auto; display: flex; align-items: center; padding-top: 6.5rem; padding-bottom: 2.5rem; }
+        .bad-fold .lp-section-inner { width: 100%; }
+        .bad-logo-bar { flex-shrink: 0; padding: 1.9rem 0; }
+        /* moving company strip, same mechanic as the homepage network marquee */
+        .bad-net-track { display: flex; align-items: center; width: max-content; animation: badNetScroll 55s linear infinite; will-change: transform; }
+        @keyframes badNetScroll { from { transform: translate3d(-25%, 0, 0); } to { transform: translate3d(0, 0, 0); } }
+        .bad-net-track:has(.bad-net-mark:hover) { animation-play-state: paused; }
+        .bad-net-mark { display: inline-flex; align-items: center; margin-right: 4.5rem; filter: grayscale(1); opacity: 0.55; transition: filter 0.3s ease, opacity 0.3s ease; }
+        .bad-net-mark img { height: 34px; width: auto; max-width: 170px; object-fit: contain; display: block; }
+        .bad-net-mark:hover { filter: grayscale(0); opacity: 1; }
+        /* closing cta band */
+        .bad-cta { padding: 4.5rem 0 5.5rem; }
         .bad-divider { height: 1px; margin: 3.6rem 0 3rem; background: linear-gradient(90deg, transparent, rgba(0,240,255,0.32) 22%, rgba(123,108,255,0.4) 50%, rgba(160,32,240,0.32) 78%, transparent); }
-        .bad-trusted h2 { font-size: 1.15rem; font-weight: 700; color: #0e2358; margin: 0 0 2.6rem; text-transform: lowercase; letter-spacing: -0.01em; }
-        .bad-logos { display: grid; grid-template-columns: repeat(5, 1fr); gap: 2.4rem 1.6rem; max-width: 900px; margin: 0 auto; align-items: center; }
-        .bad-logo { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; opacity: 0.5; }
-        .bad-logo svg { width: 26px; height: 26px; }
-        .bad-logo span { font-size: 1.05rem; font-weight: 800; letter-spacing: -0.02em; color: #0e1220; }
         @media (max-width: 900px) { .bad-grid { grid-template-columns: 1fr; gap: 2.6rem; } .bad-sub { max-width: none; } }
         @media (max-width: 640px) {
+            .bad-net-mark { margin-right: 2.8rem; }
+            .bad-net-mark img { height: 26px; max-width: 130px; }
             .lp-section.bad-demo { padding-top: 6.5rem; }
             .bad-title { font-size: 2.1rem; }
             .bad-form-card { padding: 1.9rem 1.4rem !important; }
-            .bad-logos { grid-template-columns: repeat(2, 1fr); gap: 2rem 1rem; }
         }
     </style>
 </head>
@@ -387,9 +402,10 @@
         </div>
     </div>
 
-    <section class="lp-section bad-demo" id="book-a-demo">
-        <div class="lp-section-inner">
-            <div class="bad-grid">
+    <div class="bad-fold">
+        <section class="lp-section bad-demo" id="book-a-demo">
+            <div class="lp-section-inner">
+                <div class="bad-grid">
                 <div class="bad-copy">
                     <h1 class="bad-title">book a demo<br>with an expert</h1>
                     <p class="bad-sub">see how sentinelpay screens every wallet and transaction that touches your business. in your demo, we'll walk you through how to:</p>
@@ -554,31 +570,44 @@
                 </div>
             </div>
                 </div>
-            <div class="bad-divider" aria-hidden="true"></div>
+            </div>
+        </section>
+        <div class="lp-logo-bar bad-logo-bar">
+            <div class="lp-net-marquee">
+                <div class="bad-net-track">
+                    <span class="bad-net-mark"><img src="/logos/elektromaterijal.png" alt="elektromaterijal" loading="lazy" decoding="async"></span>
+                    <span class="bad-net-mark"><img src="/logos/racunalahr.png" alt="racunala.hr" loading="lazy" decoding="async"></span>
+                    <span class="bad-net-mark"><img src="/logos/traveler.png" alt="traveler" loading="lazy" decoding="async"></span>
+                    <span class="bad-net-mark"><img src="/logos/majicehr.png" alt="majice.hr" loading="lazy" decoding="async"></span>
+                    <span class="bad-net-mark"><img src="/logos/futura.png" alt="futura" loading="lazy" decoding="async"></span>
+                    <span class="bad-net-mark"><img src="/logos/elektromaterijal.png" alt="elektromaterijal" loading="lazy" decoding="async"></span>
+                    <span class="bad-net-mark"><img src="/logos/racunalahr.png" alt="racunala.hr" loading="lazy" decoding="async"></span>
+                    <span class="bad-net-mark"><img src="/logos/traveler.png" alt="traveler" loading="lazy" decoding="async"></span>
+                    <span class="bad-net-mark"><img src="/logos/majicehr.png" alt="majice.hr" loading="lazy" decoding="async"></span>
+                    <span class="bad-net-mark"><img src="/logos/futura.png" alt="futura" loading="lazy" decoding="async"></span>
+                    <span class="bad-net-mark"><img src="/logos/elektromaterijal.png" alt="elektromaterijal" loading="lazy" decoding="async"></span>
+                    <span class="bad-net-mark"><img src="/logos/racunalahr.png" alt="racunala.hr" loading="lazy" decoding="async"></span>
+                    <span class="bad-net-mark"><img src="/logos/traveler.png" alt="traveler" loading="lazy" decoding="async"></span>
+                    <span class="bad-net-mark"><img src="/logos/majicehr.png" alt="majice.hr" loading="lazy" decoding="async"></span>
+                    <span class="bad-net-mark"><img src="/logos/futura.png" alt="futura" loading="lazy" decoding="async"></span>
+                    <span class="bad-net-mark"><img src="/logos/elektromaterijal.png" alt="elektromaterijal" loading="lazy" decoding="async"></span>
+                    <span class="bad-net-mark"><img src="/logos/racunalahr.png" alt="racunala.hr" loading="lazy" decoding="async"></span>
+                    <span class="bad-net-mark"><img src="/logos/traveler.png" alt="traveler" loading="lazy" decoding="async"></span>
+                    <span class="bad-net-mark"><img src="/logos/majicehr.png" alt="majice.hr" loading="lazy" decoding="async"></span>
+                    <span class="bad-net-mark"><img src="/logos/futura.png" alt="futura" loading="lazy" decoding="async"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="lp-section bad-cta">
+        <div class="lp-section-inner">
             <div class="bad-trial">
                 <h3 class="bad-trial-title">looking to try it yourself?</h3>
                 <a href="#book-a-demo" class="bad-trial-btn" id="bad-trial-btn">
                     <span class="bad-trial-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="13 6 19 12 13 18"></polyline></svg></span>
                     <span>request a free trial</span>
                 </a>
-            </div>
-            <div class="bad-divider" aria-hidden="true"></div>
-            </div>
-        </section>
-    <section class="lp-section bad-trusted">
-        <div class="lp-section-inner">
-            <h2>trusted by industry leaders like:</h2>
-            <div class="bad-logos">
-                <div class="bad-logo"><svg viewBox="0 0 120 120" fill="none" stroke="#0e1220" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z"/><path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z"/><circle cx="60" cy="60" r="6"/></svg><span>sentinelpay</span></div>
-                <div class="bad-logo"><svg viewBox="0 0 120 120" fill="none" stroke="#0e1220" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z"/><path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z"/><circle cx="60" cy="60" r="6"/></svg><span>sentinelpay</span></div>
-                <div class="bad-logo"><svg viewBox="0 0 120 120" fill="none" stroke="#0e1220" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z"/><path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z"/><circle cx="60" cy="60" r="6"/></svg><span>sentinelpay</span></div>
-                <div class="bad-logo"><svg viewBox="0 0 120 120" fill="none" stroke="#0e1220" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z"/><path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z"/><circle cx="60" cy="60" r="6"/></svg><span>sentinelpay</span></div>
-                <div class="bad-logo"><svg viewBox="0 0 120 120" fill="none" stroke="#0e1220" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z"/><path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z"/><circle cx="60" cy="60" r="6"/></svg><span>sentinelpay</span></div>
-                <div class="bad-logo"><svg viewBox="0 0 120 120" fill="none" stroke="#0e1220" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z"/><path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z"/><circle cx="60" cy="60" r="6"/></svg><span>sentinelpay</span></div>
-                <div class="bad-logo"><svg viewBox="0 0 120 120" fill="none" stroke="#0e1220" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z"/><path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z"/><circle cx="60" cy="60" r="6"/></svg><span>sentinelpay</span></div>
-                <div class="bad-logo"><svg viewBox="0 0 120 120" fill="none" stroke="#0e1220" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z"/><path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z"/><circle cx="60" cy="60" r="6"/></svg><span>sentinelpay</span></div>
-                <div class="bad-logo"><svg viewBox="0 0 120 120" fill="none" stroke="#0e1220" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z"/><path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z"/><circle cx="60" cy="60" r="6"/></svg><span>sentinelpay</span></div>
-                <div class="bad-logo"><svg viewBox="0 0 120 120" fill="none" stroke="#0e1220" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z"/><path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z"/><circle cx="60" cy="60" r="6"/></svg><span>sentinelpay</span></div>
             </div>
         </div>
     </section>
