@@ -75,6 +75,36 @@ async function verifyTurnstile(token, ip) {
     }
 }
 
+// --- CSP script hashes ------------------------------------------------------
+// Our pages are static files, so there is no request to hang a nonce off. Instead
+// we hash every inline <script> we actually ship and list those hashes, which lets
+// us drop 'unsafe-inline' without templating 9 pages. Hashes are derived from the
+// files on disk at boot, so editing a page just works after the next restart.
+// If a third party ever needs inline script we cannot hash, set CSP_STRICT=false
+// to fall back to 'unsafe-inline' without a code change.
+const fsSync = require('fs');
+const cspStrict = String(process.env.CSP_STRICT || 'true').trim().toLowerCase() !== 'false';
+function inlineScriptHashes(dir) {
+    const hashes = new Set();
+    const walk = (d) => {
+        for (const entry of fsSync.readdirSync(d, { withFileTypes: true })) {
+            const full = path.join(d, entry.name);
+            if (entry.isDirectory()) { walk(full); continue; }
+            if (!entry.name.endsWith('.html')) continue;
+            const html = fsSync.readFileSync(full, 'utf8');
+            const re = /<script(?![^>]*\ssrc=)[^>]*>([\s\S]*?)<\/script>/gi;
+            let m;
+            while ((m = re.exec(html)) !== null) {
+                hashes.add("'sha256-" + crypto.createHash('sha256').update(m[1], 'utf8').digest('base64') + "'");
+            }
+        }
+    };
+    try { walk(dir); } catch (err) { console.error('[csp hash scan failed]', err.message); }
+    return [...hashes];
+}
+const scriptHashes = cspStrict ? inlineScriptHashes(path.join(__dirname, 'public')) : [];
+console.log(`[csp] ${cspStrict ? `strict, ${scriptHashes.length} inline script hashes` : "relaxed ('unsafe-inline')"}`);
+
 app.use(hpp());
 app.use(helmet({
     contentSecurityPolicy: {
@@ -82,7 +112,7 @@ app.use(helmet({
             'default-src': ["'self'"],
             'script-src': [
                 "'self'",
-                "'unsafe-inline'",
+                ...(cspStrict ? scriptHashes : ["'unsafe-inline'"]),
                 'https://challenges.cloudflare.com',
                 'https://widget.intercom.io',
                 'https://js.intercomcdn.com',
@@ -209,6 +239,19 @@ app.use(express.static(path.join(__dirname, 'public'), {
             res.setHeader('Cache-Control', 'no-cache');
         }
     }
+}));
+
+// Coarse per-IP ceiling on everything (static pages included) so a single client
+// cannot hammer the origin. Deliberately generous: normal browsing loads dozens of
+// assets per page. Cloudflare's own rate limiting is the real edge defence; this is
+// in-process depth behind it, and it resets on deploy (single-instance store).
+app.use(rateLimit({
+    windowMs: 60 * 1000,
+    max: 300,
+    standardHeaders: true,
+    legacyHeaders: false,
+    keyGenerator: (req) => `all:${req.realIp}`,
+    message: { error: 'too many requests, please slow down' }
 }));
 
 // Rate-limit the demo form: 5 submissions / hour / IP (in-memory store).

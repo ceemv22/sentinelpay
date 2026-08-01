@@ -204,22 +204,7 @@
             update();
         })();
     </script>
-    <script>
-        /* avatar fallback. inline onerror attributes are blocked by our csp
-           (script-src-attr 'none'), so wire it from a script block instead:
-           try data-fb, then drop the img so the shield placeholder shows. */
-        (function() {
-            document.querySelectorAll('.article-avatar img').forEach(function(img) {
-                function fail() {
-                    var fb = img.getAttribute('data-fb');
-                    if (fb) { img.removeAttribute('data-fb'); img.src = fb; }
-                    else { img.remove(); }
-                }
-                img.addEventListener('error', fail);
-                if (img.complete && img.naturalWidth === 0) fail();
-            });
-        })();
-    </script>
     <script>window.addEventListener('load',function(){window.scrollTo(0,0);var l=document.getElementById('sp-loader');if(!l)return;l.classList.add('spl-done');setTimeout(function(){l.remove();},620);});</script>
+    <script src="/img-fallback.js" defer></script>
 </body>
 </html>

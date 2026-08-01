@@ -156,7 +156,7 @@
 
             <a class="lp-ins-featured" href="/article/04">
                 <div class="lp-ins-img lp-ins-img-lg has-cover">
-                    <img class="lp-ins-cover-img" src="/covers/no-gambling.webp" alt="we'll take almost any crypto business. gambling is where we draw the line" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/covers/no-gambling.png'">
+                    <img class="lp-ins-cover-img" src="/covers/no-gambling.webp" alt="we'll take almost any crypto business. gambling is where we draw the line" loading="lazy" decoding="async" data-fb="/covers/no-gambling.png">
                 </div>
                 <div class="lp-ins-meta">
                     <span class="lp-ins-date">july 28, 2026</span>
@@ -168,19 +168,19 @@
             <div class="lp-ins-grid">
                 <a class="lp-ins-card" href="/article/03">
                     <div class="lp-ins-img has-cover">
-                        <img class="lp-ins-cover-img" src="/covers/compliance-bank.webp" alt="you shouldn't have to become a bank to stay compliant" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/covers/compliance-bank.png'">
+                        <img class="lp-ins-cover-img" src="/covers/compliance-bank.webp" alt="you shouldn't have to become a bank to stay compliant" loading="lazy" decoding="async" data-fb="/covers/compliance-bank.png">
                     </div>
                     <span class="lp-ins-date">july 21, 2026</span>
                     <h3 class="lp-ins-title-sm">you shouldn't have to become a bank to stay compliant</h3>
                     <p class="lp-ins-card-ex">small crypto businesses get two options: ignore compliance until a bank freezes you, or build a department you can't afford. here is the third option.</p>
                     <div class="lp-ins-by">
-                        <span class="lp-ins-avatar"><img src="/authors/ceem.png" alt="ceem" decoding="async" onerror="this.remove()"><svg viewBox="0 0 120 120"><g fill="none" stroke="#0091c8" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"><path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z"/><circle cx="60" cy="60" r="7"/></g></svg></span>
+                        <span class="lp-ins-avatar"><img src="/authors/ceem.png" alt="ceem" decoding="async"><svg viewBox="0 0 120 120"><g fill="none" stroke="#0091c8" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"><path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z"/><circle cx="60" cy="60" r="7"/></g></svg></span>
                         <div><b>ceem</b><small>july 21, 2026 · 4 min read</small></div>
                     </div>
                 </a>
                 <a class="lp-ins-card" href="/article/02">
                     <div class="lp-ins-img has-cover">
-                        <img class="lp-ins-cover-img" src="/covers/speed-problem.webp" alt="you don't have an aml problem, you have a speed problem" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/covers/speed-problem.png'">
+                        <img class="lp-ins-cover-img" src="/covers/speed-problem.webp" alt="you don't have an aml problem, you have a speed problem" loading="lazy" decoding="async" data-fb="/covers/speed-problem.png">
                     </div>
                     <span class="lp-ins-date">july 14, 2026</span>
                     <h3 class="lp-ins-title-sm">you don't have an aml problem, you have a speed problem</h3>
@@ -195,13 +195,13 @@
                 </a>
                 <a class="lp-ins-card" href="/article/01">
                     <div class="lp-ins-img has-cover">
-                        <img class="lp-ins-cover-img" src="/covers/why-criminals.webp" alt="why criminals target small businesses" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/covers/why-criminals.png'">
+                        <img class="lp-ins-cover-img" src="/covers/why-criminals.webp" alt="why criminals target small businesses" loading="lazy" decoding="async" data-fb="/covers/why-criminals.png">
                     </div>
                     <span class="lp-ins-date">july 7, 2026</span>
                     <h3 class="lp-ins-title-sm">why criminals target small businesses (and exactly how they do it)</h3>
                     <p class="lp-ins-card-ex">criminals don't chase the big players with whole aml departments. they chase the easy path. here is exactly how, with three real cases.</p>
                     <div class="lp-ins-by">
-                        <span class="lp-ins-avatar"><img src="/authors/chibby.png" alt="chibby" decoding="async" onerror="this.remove()"><svg viewBox="0 0 120 120"><g fill="none" stroke="#0091c8" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"><path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z"/><circle cx="60" cy="60" r="7"/></g></svg></span>
+                        <span class="lp-ins-avatar"><img src="/authors/chibby.png" alt="chibby" decoding="async"><svg viewBox="0 0 120 120"><g fill="none" stroke="#0091c8" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"><path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z"/><circle cx="60" cy="60" r="7"/></g></svg></span>
                         <div><b>chibby</b><small>july 7, 2026 · 5 min read</small></div>
                     </div>
                 </a>
@@ -221,21 +221,6 @@
         </div>
     </footer>
     <script>
-        /* avatar fallback. inline onerror attributes are blocked by our csp
-           (script-src-attr 'none'), so wire it from a script block instead. */
-        (function() {
-            document.querySelectorAll('.lp-ins-avatar img').forEach(function(img) {
-                function fail() {
-                    var fb = img.getAttribute('data-fb');
-                    if (fb) { img.removeAttribute('data-fb'); img.src = fb; }
-                    else { img.remove(); }
-                }
-                img.addEventListener('error', fail);
-                if (img.complete && img.naturalWidth === 0) fail();
-            });
-        })();
-    </script>
-    <script>
     (function(){
         // reserve equal excerpt height across the grid (match the tallest) so every
         // card's divider + author row sits at the same distance from the text
@@ -252,5 +237,6 @@
     })();
     </script>
     <script>window.addEventListener('load',function(){window.scrollTo(0,0);var l=document.getElementById('sp-loader');if(!l)return;l.classList.add('spl-done');setTimeout(function(){l.remove();},620);});</script>
+    <script src="/img-fallback.js" defer></script>
 </body>
 </html>
