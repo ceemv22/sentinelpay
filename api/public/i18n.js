@@ -467,26 +467,55 @@
         wrap.className = 'sp-lang';
         wrap.setAttribute('data-i18n-skip', '');
 
-        var label = document.createElement('label');
+        var label = document.createElement('span');
         label.className = 'sp-lang-label';
-        label.setAttribute('for', 'sp-lang-switch');
         label.textContent = { en: 'language', hr: 'jezik', de: 'sprache' }[lang] || 'language';
 
-        var sel = document.createElement('select');
-        sel.id = 'sp-lang-switch';
-        sel.className = 'sp-lang-select';
+        // a native <select> renders its option list with os chrome we cannot style,
+        // so the control is our own button + menu that mirrors the field styling.
+        var dd = document.createElement('div');
+        dd.className = 'sp-lang-dd';
+
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'sp-lang-btn';
+        btn.setAttribute('aria-haspopup', 'listbox');
+        btn.setAttribute('aria-expanded', 'false');
+        btn.innerHTML = '<span class="sp-lang-value"></span>'
+            + '<svg class="sp-lang-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>';
+        btn.querySelector('.sp-lang-value').textContent = LANGS[lang];
+
+        var menu = document.createElement('div');
+        menu.className = 'sp-lang-menu';
+        menu.setAttribute('role', 'listbox');
+
+        function close() { dd.classList.remove('open'); btn.setAttribute('aria-expanded', 'false'); }
+
         Object.keys(LANGS).forEach(function (code) {
-            var o = document.createElement('option');
-            o.value = code; o.textContent = LANGS[code];
-            if (code === lang) o.selected = true;
-            sel.appendChild(o);
-        });
-        sel.addEventListener('change', function () {
-            persist(sel.value);
-            location.reload();
+            var opt = document.createElement('button');
+            opt.type = 'button';
+            opt.className = 'sp-lang-opt' + (code === lang ? ' active' : '');
+            opt.setAttribute('role', 'option');
+            opt.setAttribute('aria-selected', code === lang ? 'true' : 'false');
+            opt.textContent = LANGS[code];
+            opt.addEventListener('click', function () {
+                if (code === lang) { close(); return; }
+                persist(code);
+                location.reload();
+            });
+            menu.appendChild(opt);
         });
 
-        wrap.appendChild(label); wrap.appendChild(sel);
+        btn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            var open = dd.classList.toggle('open');
+            btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) { if (!dd.contains(e.target)) close(); });
+        document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+
+        dd.appendChild(btn); dd.appendChild(menu);
+        wrap.appendChild(label); wrap.appendChild(dd);
         host.appendChild(wrap);
     }
 

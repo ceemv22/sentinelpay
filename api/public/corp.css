@@ -2520,20 +2520,38 @@ html.theme-light .lp-demo-select-list { scrollbar-width: thin; scrollbar-color: 
     font-family: 'Inter', sans-serif; font-size: 0.78rem; font-weight: 700;
     color: #0e2358; text-transform: lowercase; letter-spacing: 0.01em;
 }
-.sp-lang-select {
-    appearance: none; -webkit-appearance: none; -moz-appearance: none;
-    width: 100%;
-    font-family: 'Inter', sans-serif; font-size: 0.9rem; font-weight: 500; line-height: 1.2;
-    color: #0e2358; background-color: #fff; cursor: pointer;
-    padding: 0.62rem 2.4rem 0.62rem 0.95rem;
+.sp-lang-dd { position: relative; width: 100%; }
+/* the trigger keeps the plain white field look */
+.sp-lang-btn {
+    display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; width: 100%;
+    font-family: 'Inter', sans-serif; font-size: 0.9rem; font-weight: 500; line-height: 1.2; text-align: left;
+    color: #0e2358; background: #fff; cursor: pointer;
+    padding: 0.62rem 0.85rem 0.62rem 0.95rem;
     border: 1px solid rgba(14, 35, 88, 0.16); border-radius: 10px;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230e2358' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
-    background-repeat: no-repeat; background-position: right 0.8rem center; background-size: 13px;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
-.sp-lang-select::-ms-expand { display: none; }
-.sp-lang-select:hover { border-color: rgba(14, 35, 88, 0.34); }
-.sp-lang-select:focus { outline: none; border-color: rgba(0, 145, 200, 0.55); box-shadow: 0 0 0 3px rgba(0, 145, 200, 0.14); }
-.sp-lang-select option { color: #0e2358; background: #fff; }
+.sp-lang-btn:hover { border-color: rgba(14, 35, 88, 0.34); }
+.sp-lang-btn:focus-visible { outline: none; border-color: rgba(0, 145, 200, 0.55); box-shadow: 0 0 0 3px rgba(0, 145, 200, 0.14); }
+.sp-lang-chev { width: 13px; height: 13px; flex-shrink: 0; color: #0e2358; transition: transform 0.25s ease; }
+.sp-lang-dd.open .sp-lang-chev { transform: rotate(180deg); }
+.sp-lang-dd.open .sp-lang-btn { border-color: rgba(0, 145, 200, 0.45); }
+/* our own option list: opens upward because the switcher sits at the page bottom */
+.sp-lang-menu {
+    position: absolute; left: 0; right: 0; bottom: calc(100% + 6px); z-index: 30;
+    display: flex; flex-direction: column; gap: 0.15rem; padding: 0.35rem;
+    background: #fff; border: 1px solid rgba(14, 35, 88, 0.12); border-radius: 12px;
+    box-shadow: 0 14px 34px -12px rgba(14, 35, 88, 0.28);
+    opacity: 0; transform: translateY(6px); pointer-events: none;
+    transition: opacity 0.18s ease, transform 0.18s ease;
+}
+.sp-lang-dd.open .sp-lang-menu { opacity: 1; transform: translateY(0); pointer-events: auto; }
+.sp-lang-opt {
+    font-family: 'Inter', sans-serif; font-size: 0.88rem; font-weight: 500; text-align: left;
+    color: #33456b; background: none; border: none; border-radius: 8px;
+    padding: 0.5rem 0.7rem; cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+.sp-lang-opt:hover { background: #f2f4fb; color: #0e2358; }
+.sp-lang-opt.active { background: #eef1fb; color: #2563eb; font-weight: 600; }
 /* blog + article footers are one centred row */
 .lp-footer .lp-section-inner[style*="center"] .sp-lang { align-items: center; margin: 0 auto 1.4rem; }
