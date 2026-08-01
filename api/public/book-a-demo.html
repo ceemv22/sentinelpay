@@ -114,8 +114,7 @@
         .pp-contact p { margin: 0.4rem 0; font-size: 0.98rem; }
 
         @media (max-width: 640px) {
-            .bad-net-mark { margin-right: 2.8rem; }
-            .bad-net-mark img { height: 26px; max-width: 130px; }
+            .bad-net-mark { width: 118px; height: 34px; margin-right: 2.4rem; }
             .pp-title { font-size: 2rem; }
             .lp-section.pp { padding-top: 6.5rem; }
         }
@@ -150,14 +149,15 @@
         .bad-net-track { display: flex; align-items: center; width: max-content; animation: badNetScroll 55s linear infinite; will-change: transform; }
         @keyframes badNetScroll { from { transform: translate3d(-25%, 0, 0); } to { transform: translate3d(0, 0, 0); } }
         .bad-net-track:has(.bad-net-mark:hover) { animation-play-state: paused; }
-        .bad-net-mark { display: inline-flex; align-items: center; margin-right: 4.5rem; filter: grayscale(1); opacity: 0.55; transition: filter 0.3s ease, opacity 0.3s ease; }
-        .bad-net-mark img { height: 34px; width: auto; max-width: 170px; object-fit: contain; display: block; }
+        /* logos ship in wildly different ratios, so give each an identical box and
+           let it scale inside — otherwise wordmarks dwarf the square marks */
+        .bad-net-mark { display: inline-flex; align-items: center; justify-content: center; width: 158px; height: 44px; margin-right: 3.6rem; filter: grayscale(1); opacity: 0.55; transition: filter 0.3s ease, opacity 0.3s ease; }
+        .bad-net-mark img { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; display: block; }
         .bad-net-mark:hover { filter: grayscale(0); opacity: 1; }
         .bad-divider { height: 1px; margin: 3.6rem 0 3rem; background: linear-gradient(90deg, transparent, rgba(0,240,255,0.32) 22%, rgba(123,108,255,0.4) 50%, rgba(160,32,240,0.32) 78%, transparent); }
         @media (max-width: 900px) { .bad-grid { grid-template-columns: 1fr; gap: 2.6rem; } .bad-sub { max-width: none; } }
         @media (max-width: 640px) {
-            .bad-net-mark { margin-right: 2.8rem; }
-            .bad-net-mark img { height: 26px; max-width: 130px; }
+            .bad-net-mark { width: 118px; height: 34px; margin-right: 2.4rem; }
             .lp-section.bad-demo { padding-top: 6.5rem; }
             .bad-title { font-size: 2.1rem; }
             .bad-form-card { padding: 1.9rem 1.4rem !important; }
