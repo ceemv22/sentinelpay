@@ -455,30 +455,66 @@
     }
 
     function buildSwitcher(lang) {
-        var footer = document.querySelector('.lp-footer .lp-section-inner');
-        if (!footer || document.getElementById('sp-lang-switch')) return;
+        if (document.querySelector('.sp-lang')) return;
+        var footer = document.querySelector('.lp-footer');
+        if (!footer) return;
+        // sit under the brand blurb so the footer keeps its original shape; the
+        // simpler blog/article footer has no brand column, so fall back to it.
+        var host = footer.querySelector('.lp-footer-brand') || footer.querySelector('.lp-section-inner');
+        if (!host) return;
+
         var wrap = document.createElement('div');
         wrap.className = 'sp-lang';
         wrap.setAttribute('data-i18n-skip', '');
-        var label = document.createElement('label');
+
+        var label = document.createElement('span');
         label.className = 'sp-lang-label';
-        label.setAttribute('for', 'sp-lang-switch');
         label.textContent = { en: 'language', hr: 'jezik', de: 'sprache' }[lang] || 'language';
-        var sel = document.createElement('select');
-        sel.id = 'sp-lang-switch';
-        sel.className = 'sp-lang-select';
+
+        // reuse the homepage role-picker dropdown so the styling matches exactly
+        var dd = document.createElement('div');
+        dd.className = 'lp-roles-dd sp-lang-dd';
+
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'lp-roles-dd-btn';
+        btn.setAttribute('aria-haspopup', 'listbox');
+        btn.setAttribute('aria-expanded', 'false');
+        var btnLabel = document.createElement('span');
+        btnLabel.className = 'lp-roles-dd-label';
+        btnLabel.textContent = LANGS[lang];
+        btn.appendChild(btnLabel);
+        btn.insertAdjacentHTML('beforeend', '<svg class="lp-roles-dd-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>');
+
+        var menu = document.createElement('div');
+        menu.className = 'lp-roles-dd-menu';
+        menu.setAttribute('role', 'listbox');
         Object.keys(LANGS).forEach(function (code) {
-            var o = document.createElement('option');
-            o.value = code; o.textContent = LANGS[code];
-            if (code === lang) o.selected = true;
-            sel.appendChild(o);
+            var opt = document.createElement('button');
+            opt.type = 'button';
+            opt.className = 'lp-roles-dd-opt' + (code === lang ? ' active' : '');
+            opt.setAttribute('role', 'option');
+            opt.textContent = LANGS[code];
+            opt.addEventListener('click', function () {
+                if (code === lang) { dd.classList.remove('open'); return; }
+                persist(code);
+                location.reload();
+            });
+            menu.appendChild(opt);
         });
-        sel.addEventListener('change', function () {
-            persist(sel.value);
-            location.reload();
+
+        btn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            var open = dd.classList.toggle('open');
+            btn.setAttribute('aria-expanded', open ? 'true' : 'false');
         });
-        wrap.appendChild(label); wrap.appendChild(sel);
-        footer.insertBefore(wrap, footer.firstChild);
+        document.addEventListener('click', function (e) {
+            if (!dd.contains(e.target)) { dd.classList.remove('open'); btn.setAttribute('aria-expanded', 'false'); }
+        });
+
+        dd.appendChild(btn); dd.appendChild(menu);
+        wrap.appendChild(label); wrap.appendChild(dd);
+        host.appendChild(wrap);
     }
 
     function init() {
