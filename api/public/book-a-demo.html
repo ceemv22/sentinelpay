@@ -118,25 +118,31 @@
             .lp-section.pp { padding-top: 6.5rem; }
         }
 
-        /* book-a-demo page */
+        /* book-a-demo page: copy sits on the page (like the reference), only the
+           form lives in a card, and the card keeps our homepage dot/edge pattern */
         .lp-section.bad-demo { padding-top: 8rem; }
+        .bad-grid { display: grid; grid-template-columns: 1fr 1.05fr; gap: 4rem; align-items: start; }
+        .bad-copy { padding-top: 0.5rem; }
+        .bad-title { margin: 0 0 1.2rem; font-size: 2.9rem; font-weight: 800; line-height: 1.08; letter-spacing: -0.02em; color: #0e2358; text-transform: lowercase; }
+        .bad-sub { margin: 0; font-size: 1rem; line-height: 1.7; color: rgba(14,35,88,0.62); max-width: 44ch; }
+        .bad-form-card { grid-template-columns: 1fr !important; padding: 2.8rem 2.9rem !important; }
         .bad-checklist { list-style: none; margin: 1.5rem 0 0; padding: 0; }
-        .bad-checklist li { position: relative; padding-left: 1.9rem; margin-bottom: 0.75rem; font-size: 0.98rem; line-height: 1.5; color: rgba(214,224,244,0.85); }
+        .bad-checklist li { position: relative; padding-left: 1.9rem; margin-bottom: 0.75rem; font-size: 0.98rem; line-height: 1.5; color: #2a3550; }
         .bad-checklist li::before { content: ''; position: absolute; left: 0; top: 2px; width: 20px; height: 20px; border-radius: 50%; background: linear-gradient(135deg, #00f0ff, #a020f0);
             -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") center / 12px no-repeat;
             mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") center / 12px no-repeat; }
-        .bad-smallprint { margin-top: 1.6rem; font-size: 0.82rem; line-height: 1.65; color: rgba(206,218,244,0.5); }
+        .bad-smallprint { margin-top: 1.6rem; font-size: 0.82rem; line-height: 1.65; color: rgba(14,35,88,0.5); }
         /* "looking to try it yourself?" secondary cta */
-        .bad-trial { margin-top: 2.2rem; padding-top: 1.9rem; border-top: 1px solid rgba(120,180,255,0.14); }
-        .bad-trial-title { margin: 0 0 1.1rem; font-size: 1.35rem; font-weight: 800; line-height: 1.25; letter-spacing: -0.01em; color: #fff; text-transform: lowercase; }
+        .bad-trial { margin-top: 2.4rem; padding-top: 2.1rem; border-top: 1px solid rgba(14,35,88,0.12); }
+        .bad-trial-title { margin: 0 0 1.1rem; font-size: 1.5rem; font-weight: 800; line-height: 1.25; letter-spacing: -0.01em; color: #0e2358; text-transform: lowercase; }
         .bad-trial-btn {
             position: relative; overflow: hidden; display: inline-flex; align-items: center; gap: 0.65rem;
-            background: #fff; color: #06070f; border-radius: 10px; padding: 0.6rem 1.5rem 0.6rem 0.6rem;
+            background: #1a1a1c; color: #fff; border-radius: 10px; padding: 0.6rem 1.5rem 0.6rem 0.6rem;
             font-size: 0.85rem; font-weight: 700; text-transform: lowercase; text-decoration: none;
             transition: box-shadow 0.3s ease, transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
         }
         .bad-trial-btn > span { position: relative; z-index: 1; }
-        .bad-trial-btn:hover { transform: translateY(-2px); box-shadow: 0 14px 34px -12px rgba(0,240,255,0.45); }
+        .bad-trial-btn:hover { background: #34343a; transform: translateY(-2px); box-shadow: 0 14px 34px -14px rgba(14,35,88,0.55); }
         .bad-trial-btn:active { transform: translateY(0); }
         .bad-trial-ico { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 8px; background: linear-gradient(135deg, #00f0ff, #a020f0); color: #fff; flex-shrink: 0; }
         .bad-trial-ico svg { width: 14px; height: 14px; transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1); }
@@ -155,7 +161,13 @@
         .bad-logo { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; opacity: 0.5; }
         .bad-logo svg { width: 26px; height: 26px; }
         .bad-logo span { font-size: 1.05rem; font-weight: 800; letter-spacing: -0.02em; color: #0e1220; }
-        @media (max-width: 640px) { .lp-section.bad-demo { padding-top: 6.5rem; } .bad-logos { grid-template-columns: repeat(2, 1fr); gap: 2rem 1rem; } }
+        @media (max-width: 900px) { .bad-grid { grid-template-columns: 1fr; gap: 2.6rem; } .bad-sub { max-width: none; } }
+        @media (max-width: 640px) {
+            .lp-section.bad-demo { padding-top: 6.5rem; }
+            .bad-title { font-size: 2.1rem; }
+            .bad-form-card { padding: 1.9rem 1.4rem !important; }
+            .bad-logos { grid-template-columns: repeat(2, 1fr); gap: 2rem 1rem; }
+        }
     </style>
 </head>
 <body class="lp-body">
@@ -373,14 +385,12 @@
         </div>
     </div>
 
-    <section class="lp-section lp-demo bad-demo" id="book-a-demo">
+    <section class="lp-section bad-demo" id="book-a-demo">
         <div class="lp-section-inner">
-            <div class="lp-demo-card">
-                <span class="lp-demo-dots" aria-hidden="true"></span>
-                <span class="lp-demo-edge" aria-hidden="true"></span>
-                <div class="lp-demo-left">
-                    <h2 class="lp-demo-title">book a demo<br>with an expert</h2>
-                    <p class="lp-demo-sub">see how sentinelpay screens every wallet and transaction that touches your business. in your demo, we'll walk you through how to:</p>
+            <div class="bad-grid">
+                <div class="bad-copy">
+                    <h1 class="bad-title">book a demo<br>with an expert</h1>
+                    <p class="bad-sub">see how sentinelpay screens every wallet and transaction that touches your business. in your demo, we'll walk you through how to:</p>
                     <ul class="bad-checklist">
                         <li>monitor crypto wallets and transactions in real time</li>
                         <li>investigate complex, multi-chain movements in one view</li>
@@ -396,7 +406,10 @@
                         </a>
                     </div>
                 </div>
-                <div class="lp-demo-right">
+                <div class="lp-demo-card bad-form-card">
+                    <span class="lp-demo-dots" aria-hidden="true"></span>
+                    <span class="lp-demo-edge" aria-hidden="true"></span>
+                    <div class="lp-demo-right">
                     <form class="lp-demo-form" id="lp-demo-form" novalidate>
                         <div class="lp-demo-hp" aria-hidden="true"><label>company url<input type="text" name="company_url" tabindex="-1" autocomplete="off"></label></div>
                         <div class="lp-demo-formhead" id="lp-demo-formhead">tell us about yourself</div>
@@ -534,7 +547,7 @@
                         </div>
                     </form>
                 </div>
-                <div class="lp-demo-success" id="lp-demo-success" hidden>
+                    <div class="lp-demo-success" id="lp-demo-success" hidden>
                     <div class="lp-demo-success-badge">
                         <svg viewBox="0 0 52 52" class="lp-demo-success-svg" aria-hidden="true">
                             <circle class="lp-demo-success-ring" cx="26" cy="26" r="24"/>
@@ -545,8 +558,9 @@
                     <p>your request just landed on our <em>chief compliance officer's</em> desk. you'll get a reply within one business day, from someone who actually read what you wrote. bring your hardest questions to the call.</p>
                 </div>
             </div>
-        </div>
-    </section>
+                </div>
+            </div>
+        </section>
     <section class="lp-section bad-trusted">
         <div class="lp-section-inner">
             <div class="bad-trusted-line"></div>
