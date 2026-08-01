@@ -510,6 +510,11 @@
             e.stopPropagation();
             var open = dd.classList.toggle('open');
             btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+            if (open) {
+                // open downward by default, flip up only when the viewport would clip it
+                var space = window.innerHeight - btn.getBoundingClientRect().bottom;
+                dd.classList.toggle('up', space < menu.scrollHeight + 16);
+            }
         });
         document.addEventListener('click', function (e) { if (!dd.contains(e.target)) close(); });
         document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });

@@ -2535,16 +2535,19 @@ html.theme-light .lp-demo-select-list { scrollbar-width: thin; scrollbar-color: 
 .sp-lang-chev { width: 13px; height: 13px; flex-shrink: 0; color: #0e2358; transition: transform 0.25s ease; }
 .sp-lang-dd.open .sp-lang-chev { transform: rotate(180deg); }
 .sp-lang-dd.open .sp-lang-btn { border-color: rgba(0, 145, 200, 0.45); }
-/* our own option list: opens upward because the switcher sits at the page bottom */
+/* our own option list */
 .sp-lang-menu {
-    position: absolute; left: 0; right: 0; bottom: calc(100% + 6px); z-index: 30;
+    position: absolute; left: 0; right: 0; top: calc(100% + 6px); z-index: 30;
     display: flex; flex-direction: column; gap: 0.15rem; padding: 0.35rem;
     background: #fff; border: 1px solid rgba(14, 35, 88, 0.12); border-radius: 12px;
     box-shadow: 0 14px 34px -12px rgba(14, 35, 88, 0.28);
-    opacity: 0; transform: translateY(6px); pointer-events: none;
+    opacity: 0; transform: translateY(-6px); pointer-events: none;
     transition: opacity 0.18s ease, transform 0.18s ease;
 }
 .sp-lang-dd.open .sp-lang-menu { opacity: 1; transform: translateY(0); pointer-events: auto; }
+/* flip above the field when there is not enough room below */
+.sp-lang-dd.up .sp-lang-menu { top: auto; bottom: calc(100% + 6px); transform: translateY(6px); }
+.sp-lang-dd.up.open .sp-lang-menu { transform: translateY(0); }
 .sp-lang-opt {
     font-family: 'Inter', sans-serif; font-size: 0.88rem; font-weight: 500; text-align: left;
     color: #33456b; background: none; border: none; border-radius: 8px;
