@@ -133,7 +133,8 @@
             mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") center / 12px no-repeat; }
         .bad-smallprint { margin-top: 1.6rem; font-size: 0.82rem; line-height: 1.65; color: rgba(14,35,88,0.5); }
         /* "looking to try it yourself?" secondary cta */
-        .bad-trial { margin-top: 2.6rem; }
+        /* full-width band under both columns */
+        .bad-trial { text-align: center; }
         .bad-trial-title { margin: 0 0 1.1rem; font-size: 1.5rem; font-weight: 800; line-height: 1.25; letter-spacing: -0.01em; color: #0e2358; text-transform: lowercase; }
         .bad-trial-btn {
             position: relative; overflow: hidden; display: inline-flex; align-items: center; gap: 0.65rem;
@@ -156,7 +157,7 @@
         .bad-trial-btn:hover::after { left: 130%; transition: left 0.55s cubic-bezier(0.22, 1, 0.36, 1); }
         .bad-trusted { padding: 4.5rem 0 6rem; text-align: center; }
         /* full-width hairline separating the demo block from the logo wall */
-        .bad-divider { height: 1px; margin: 0 0 3.6rem; background: linear-gradient(90deg, transparent, rgba(0,240,255,0.32) 22%, rgba(123,108,255,0.4) 50%, rgba(160,32,240,0.32) 78%, transparent); }
+        .bad-divider { height: 1px; margin: 3.6rem 0 3rem; background: linear-gradient(90deg, transparent, rgba(0,240,255,0.32) 22%, rgba(123,108,255,0.4) 50%, rgba(160,32,240,0.32) 78%, transparent); }
         .bad-trusted h2 { font-size: 1.15rem; font-weight: 700; color: #0e2358; margin: 0 0 2.6rem; text-transform: lowercase; letter-spacing: -0.01em; }
         .bad-logos { display: grid; grid-template-columns: repeat(5, 1fr); gap: 2.4rem 1.6rem; max-width: 900px; margin: 0 auto; align-items: center; }
         .bad-logo { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; opacity: 0.5; }
@@ -399,13 +400,6 @@
                         <li>resolve cases faster with clear, explainable risk scores</li>
                     </ul>
                     <p class="bad-smallprint">fill out the form and our team will be in touch shortly to walk you through the platform and how it fits your workflow.</p>
-                    <div class="bad-trial">
-                        <h3 class="bad-trial-title">looking to try it yourself?</h3>
-                        <a href="#book-a-demo" class="bad-trial-btn" id="bad-trial-btn">
-                            <span class="bad-trial-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="13 6 19 12 13 18"></polyline></svg></span>
-                            <span>request a free trial</span>
-                        </a>
-                    </div>
                 </div>
                 <div class="lp-demo-card bad-form-card">
                     <span class="lp-demo-dots" aria-hidden="true"></span>
@@ -560,11 +554,18 @@
                 </div>
             </div>
                 </div>
+            <div class="bad-divider" aria-hidden="true"></div>
+            <div class="bad-trial">
+                <h3 class="bad-trial-title">looking to try it yourself?</h3>
+                <a href="#book-a-demo" class="bad-trial-btn" id="bad-trial-btn">
+                    <span class="bad-trial-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="13 6 19 12 13 18"></polyline></svg></span>
+                    <span>request a free trial</span>
+                </a>
+            </div>
             </div>
         </section>
     <section class="lp-section bad-trusted">
         <div class="lp-section-inner">
-            <div class="bad-divider" aria-hidden="true"></div>
             <h2>trusted by industry leaders like:</h2>
             <div class="bad-logos">
                 <div class="bad-logo"><svg viewBox="0 0 120 120" fill="none" stroke="#0e1220" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z"/><path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z"/><circle cx="60" cy="60" r="6"/></svg><span>sentinelpay</span></div>
