@@ -2497,3 +2497,19 @@ html.theme-light .lp-demo-select-list { scrollbar-width: thin; scrollbar-color: 
 /* turnstile widget spacing (only renders when a site key is configured) */
 .lp-demo-turnstile { margin-top: 1rem; }
 .lp-demo-turnstile:empty { margin-top: 0; }
+
+/* ============ partner logo strip (homepage) ============
+   these marks are company logos, not chain icons: the wordmarks carry their own
+   name so there is no text label, and ratios run from 1:1 to 6.6:1, which means a
+   single shared size renders the wide ones short and unreadable. tune each. */
+.lp-net-mark { gap: 0; height: 48px; margin-right: 3.6rem; }
+.lp-net-mark img { width: auto; height: auto; max-width: none; object-fit: contain; }
+.lp-net-mark img[alt="traveler"] { height: 46px; }
+.lp-net-mark img[alt="majice.hr"] { height: 44px; }
+.lp-net-mark img[alt="futura"] { height: 40px; }
+.lp-net-mark img[alt="racunala.hr"] { height: 38px; }
+.lp-net-mark img[alt="elektromaterijal"] { height: 32px; }
+@media (max-width: 560px) {
+    .lp-net-mark { height: 36px; margin-right: 2.2rem; }
+    .lp-net-mark img { width: auto; height: auto; transform: scale(0.78); }
+}
