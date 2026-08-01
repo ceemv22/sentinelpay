@@ -126,6 +126,28 @@
             -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") center / 12px no-repeat;
             mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") center / 12px no-repeat; }
         .bad-smallprint { margin-top: 1.6rem; font-size: 0.82rem; line-height: 1.65; color: rgba(206,218,244,0.5); }
+        /* "looking to try it yourself?" secondary cta */
+        .bad-trial { margin-top: 2.2rem; padding-top: 1.9rem; border-top: 1px solid rgba(120,180,255,0.14); }
+        .bad-trial-title { margin: 0 0 1.1rem; font-size: 1.35rem; font-weight: 800; line-height: 1.25; letter-spacing: -0.01em; color: #fff; text-transform: lowercase; }
+        .bad-trial-btn {
+            position: relative; overflow: hidden; display: inline-flex; align-items: center; gap: 0.65rem;
+            background: #fff; color: #06070f; border-radius: 10px; padding: 0.6rem 1.5rem 0.6rem 0.6rem;
+            font-size: 0.85rem; font-weight: 700; text-transform: lowercase; text-decoration: none;
+            transition: box-shadow 0.3s ease, transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .bad-trial-btn > span { position: relative; z-index: 1; }
+        .bad-trial-btn:hover { transform: translateY(-2px); box-shadow: 0 14px 34px -12px rgba(0,240,255,0.45); }
+        .bad-trial-btn:active { transform: translateY(0); }
+        .bad-trial-ico { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 8px; background: linear-gradient(135deg, #00f0ff, #a020f0); color: #fff; flex-shrink: 0; }
+        .bad-trial-ico svg { width: 14px; height: 14px; transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1); }
+        .bad-trial-btn:hover .bad-trial-ico svg { transform: translateX(2px); }
+        /* same sheen sweep as our other buttons */
+        .bad-trial-btn::after {
+            content: ''; position: absolute; top: 0; left: -80%; width: 55%; height: 100%;
+            background: linear-gradient(105deg, transparent, rgba(123,108,255,0.28) 50%, transparent);
+            transform: skewX(-18deg); pointer-events: none;
+        }
+        .bad-trial-btn:hover::after { left: 130%; transition: left 0.55s cubic-bezier(0.22, 1, 0.36, 1); }
         .bad-trusted { padding: 2rem 0 6rem; text-align: center; }
         .bad-trusted-line { width: 120px; height: 3px; margin: 0 auto 1.5rem; border-radius: 3px; background: linear-gradient(90deg, #00f0ff, #a020f0); }
         .bad-trusted h2 { font-size: 1.15rem; font-weight: 700; color: #0e2358; margin: 0 0 2.6rem; text-transform: lowercase; letter-spacing: -0.01em; }
@@ -366,6 +388,13 @@
                         <li>resolve cases faster with clear, explainable risk scores</li>
                     </ul>
                     <p class="bad-smallprint">fill out the form and our team will be in touch shortly to walk you through the platform and how it fits your workflow.</p>
+                    <div class="bad-trial">
+                        <h3 class="bad-trial-title">looking to try it yourself?</h3>
+                        <a href="#book-a-demo" class="bad-trial-btn" id="bad-trial-btn">
+                            <span class="bad-trial-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="13 6 19 12 13 18"></polyline></svg></span>
+                            <span>request a free trial</span>
+                        </a>
+                    </div>
                 </div>
                 <div class="lp-demo-right">
                     <form class="lp-demo-form" id="lp-demo-form" novalidate>
@@ -675,6 +704,21 @@
                 if (menu) menu.classList.remove('lp-mm-open'); if (hb) hb.classList.remove('lp-hb-open');
                 document.documentElement.classList.remove('lp-scroll-lock');
                 setTimeout(openChat, 220);
+            });
+        })();
+    </script>
+    <script>
+        /* free-trial cta: same intake form, so jump to it and focus the first field */
+        (function() {
+            var btn = document.getElementById('bad-trial-btn');
+            if (!btn) return;
+            btn.addEventListener('click', function(e) {
+                var form = document.getElementById('lp-demo-form');
+                if (!form) return;
+                e.preventDefault();
+                form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                var first = form.querySelector('input[name="firstName"]');
+                if (first) setTimeout(function() { first.focus({ preventScroll: true }); }, 420);
             });
         })();
     </script>
