@@ -164,7 +164,9 @@ app.use((req, res, next) => {
             let page = 'blog.html';
             if (req.path.startsWith('/article/')) {
                 const slug = req.path.replace(/^\/article\//, '').replace(/\/+$/, '');
-                const articles = {
+                // null-prototype map: a slug like "constructor" or "__proto__" must not
+                // resolve to an inherited Object member (that used to throw a 500).
+                const articles = Object.assign(Object.create(null), {
                     '01': 'blog-article.html',
                     '02': 'blog-article-2.html',
                     '03': 'blog-article-3.html',
@@ -174,8 +176,8 @@ app.use((req, res, next) => {
                     'real-time-aml-why-timing-matters': 'blog-article-2.html',
                     'compliance-without-becoming-a-bank': 'blog-article-3.html',
                     'we-dont-do-gambling': 'blog-article-4.html',
-                };
-                page = articles[slug] || 'blog-article.html';
+                });
+                page = typeof articles[slug] === 'string' ? articles[slug] : 'blog-article.html';
             }
             return res.status(200).sendFile(path.join(__dirname, 'public', page));
         }
