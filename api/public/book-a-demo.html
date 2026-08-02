@@ -129,9 +129,17 @@
         .bad-title { margin: 0 0 1.2rem; font-size: 2.9rem; font-weight: 800; line-height: 1.08; letter-spacing: -0.02em; color: #0e2358; text-transform: lowercase; }
         .bad-sub { margin: 0; font-size: 1rem; line-height: 1.7; color: rgba(14,35,88,0.62); max-width: 44ch; }
         .bad-form-card { grid-template-columns: 1fr !important; padding: 2.4rem 2.6rem !important; }
-        /* the shared form pins every step to 316px so the card never jumps. here the
-           card sits in the fold, so let it hug its content instead of holding a gap. */
-        .bad-form-card .lp-demo-step { height: auto !important; min-height: 0 !important; max-height: none !important; }
+        /* the shared form pins every step to 316px so the card never jumps. letting it
+           hug its content here made the card resize between steps, which moved the
+           copy, the divider and the logo strip with it. pin it to this page's tallest
+           step instead: smaller than the shared 316px, and the card never moves.
+           286px is the last step with the turnstile widget rendered (280px) plus a
+           little margin. measure again if a step gains a field. */
+        /* only where the fold is one screen. below 900px the grid stacks, the page
+           scrolls anyway, and a fixed height would cut the taller steps off. */
+        @media (min-width: 901px) {
+            .bad-form-card .lp-demo-step { height: 286px !important; min-height: 286px !important; max-height: 286px !important; }
+        }
         .bad-form-card .lp-demo-form { padding-top: 8px; }
         .bad-form-card .lp-demo-progress { margin-top: 1.6rem; }
         .bad-checklist { list-style: none; margin: 1.5rem 0 0; padding: 0; }
@@ -171,17 +179,34 @@
         .bad-trial-q { font-size: 0.94rem; color: rgba(14,35,88,0.62); }
         .bad-trial-btn { display: inline-flex; align-items: center; padding: 0.64rem 1.2rem; border-radius: 10px; border: 1px solid rgba(14,35,88,0.16); background: rgba(255,255,255,0.7); font-size: 0.88rem; font-weight: 600; color: #0e2358; text-decoration: none; white-space: nowrap; transition: border-color 0.18s ease, background 0.18s ease; }
         .bad-trial-btn:hover { border-color: rgba(0,145,200,0.5); background: #fff; }
-        @media (max-height: 860px) {
-            .bad-fold .lp-section.bad-demo { padding-top: 5.6rem; padding-bottom: 1.6rem; }
-            .bad-trial-divider { margin: 1.3rem 0 1rem; }
-            /* corp.css pins the strip to 176px above 1280px wide. on a short screen
-               that height is what pushes it out of the fold, so release it here. */
+        /* the card holds a constant height now, so the fold needs the room. these tiers
+           give it back as the screen gets shorter, in the order that costs the least:
+           the strip's fixed height first, then padding, then the divider's margins. */
+        @media (max-height: 980px) {
+            /* corp.css pins the strip to 176px above 1280px wide, which is the single
+               biggest fixed block in the fold. release it before touching anything else. */
             .bad-logo-bar { padding: 1.2rem 0; height: auto; }
         }
-        @media (max-height: 760px) {
+        @media (max-height: 900px) {
+            .bad-fold .lp-section.bad-demo { padding-top: 5.6rem; padding-bottom: 1.6rem; }
+            .bad-trial-divider { margin: 1.3rem 0 1rem; }
+        }
+        @media (max-height: 800px) {
             .bad-fold .lp-section.bad-demo { padding-top: 5.2rem; padding-bottom: 1.1rem; }
             .bad-trial-divider { margin: 1rem 0 0.8rem; }
             .bad-trial-q { font-size: 0.88rem; }
+            .bad-form-card { padding: 1.9rem 2.2rem !important; }
+        }
+        @media (max-height: 740px) {
+            .bad-fold .lp-section.bad-demo { padding-top: 4.9rem; padding-bottom: 0.5rem; }
+            .bad-trial-divider { margin: 0.7rem 0 0.55rem; }
+            .bad-logo-bar { padding: 0.9rem 0; }
+        }
+        @media (max-height: 700px) {
+            .bad-fold .lp-section.bad-demo { padding-top: 4.7rem; padding-bottom: 0.3rem; }
+            .bad-form-card { padding: 1.5rem 2.2rem !important; }
+            .bad-trial-divider { margin: 0.55rem 0 0.45rem; }
+            .bad-logo-bar { padding: 0.7rem 0; }
         }
         @media (max-width: 560px) {
             .bad-trial { flex-direction: column; align-items: stretch; gap: 0.85rem; }
