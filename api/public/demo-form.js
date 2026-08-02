@@ -348,7 +348,9 @@
                 form.querySelectorAll('.lp-demo-consent input[type="checkbox"]').forEach(function(cb) { data[cb.name] = !!cb.checked; });
                 if (turnstileToken) data['cf-turnstile-response'] = turnstileToken;
                 submitBtn.disabled = true;
-                submitBtn.textContent = 'sending…';
+                // i18n already ran its one-shot pass, so translate labels we set now
+                var t = function (x) { return window.SentinelI18n ? window.SentinelI18n.t(x) : x; };
+                submitBtn.textContent = t('sending…');
                 fetch(cfg.endpoint, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -372,7 +374,7 @@
                     if (successBox) successBox.hidden = false;
                 }).catch(function() {
                     submitBtn.disabled = false;
-                    submitBtn.textContent = cfg.submitLabel;
+                    submitBtn.textContent = t(cfg.submitLabel);
                     turnstileToken = '';
                     if (turnstileEnabled && window.turnstile) { try { window.turnstile.reset(); } catch (e) {} }
                     if (window.SentinelToast) window.SentinelToast.show('could not send. email us at support@sentinelpay.org', 'error');

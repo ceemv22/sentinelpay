@@ -13,8 +13,8 @@
        and marketing lines are rewritten for the language rather than word-for-word. */
     var T = {
         hr: {
+            "sending…": "šaljem…",
             "not ready to talk to anyone yet?": "još vam se ne priča ni s kim?",
-            "start a free trial": "pokrenite besplatnu probu",
             "sentinelpay | start a free trial": "sentinelpay | pokrenite besplatnu probu",
             "free trial": "besplatnu probu",
             "start a 14-day": "pokrenite 14-dnevnu",
@@ -25,7 +25,6 @@
             "every scan logged, so you can prove what you checked": "svaka provjera zapisana, pa možete dokazati što ste provjerili",
             "the domain check runs automatically. if it matches, your trial opens straight away. if it does not, we email you to sort it out rather than leaving you waiting.": "provjera domene ide automatski. ako se poklapa, proba vam se otvara odmah. ako se ne poklapa, javimo vam se mailom da to riješimo umjesto da vas ostavimo da čekate.",
             "would you rather be walked through it?": "radije biste da vas netko provede kroz to?",
-            "book a demo instead": "onda dogovorite demo",
             "who is signing up": "tko se prijavljuje",
             "the business behind the account": "tvrtka iza računa",
             "confirm and start": "potvrdite i krenite",
@@ -39,7 +38,6 @@
             "and to be contacted about this account.": "i da me kontaktirate u vezi ovog računa.",
             "you're verified": "provjereni ste",
             "your domain checked out, so there is nothing left to wait on from our side. your trial access lands in your work email, and the first scan runs as soon as you connect a public key.": "domena je prošla provjeru, pa s naše strane nema više ničega za čekati. pristup probi stiže vam na poslovni mail, a prva provjera kreće čim spojite javni ključ.",
-            "start free trial": "pokreni besplatnu probu",
             "no waiting": "bez čekanja",
             "sentinelpay | terms of service": "sentinelpay | uvjeti korištenja",
             "these terms are the agreement between you and sentinelpay for the use of our website, product and services. by using sentinelpay you accept them, so please actually read them. we have kept them as plain as terms can be.": "ovi uvjeti su ugovor između vas i sentinelpaya o korištenju naše stranice, proizvoda i usluga. korištenjem sentinelpaya prihvaćate ih, pa vas molimo da ih stvarno pročitate. napisali smo ih koliko god uvjeti mogu biti jednostavni.",
@@ -582,8 +580,8 @@
             "sentinelpay requires javascript to initialize secure sessions.": "sentinelpayu treba javascript za pokretanje sigurne sesije."
         },
         de: {
+            "sending…": "senden…",
             "not ready to talk to anyone yet?": "noch kein gespräch nötig?",
-            "start a free trial": "kostenlos testen",
             "sentinelpay | start a free trial": "sentinelpay | kostenlos testen",
             "free trial": "kostenlos testen",
             "start a 14-day": "14 tage",
@@ -594,7 +592,6 @@
             "every scan logged, so you can prove what you checked": "jede prüfung protokolliert, damit sie belegen können, was sie geprüft haben",
             "the domain check runs automatically. if it matches, your trial opens straight away. if it does not, we email you to sort it out rather than leaving you waiting.": "die domain-prüfung läuft automatisch. passt sie, startet ihre testphase sofort. passt sie nicht, melden wir uns per e-mail, statt sie warten zu lassen.",
             "would you rather be walked through it?": "lieber persönlich durchgehen?",
-            "book a demo instead": "dann demo vereinbaren",
             "who is signing up": "wer meldet sich an",
             "the business behind the account": "das unternehmen hinter dem konto",
             "confirm and start": "bestätigen und starten",
@@ -608,7 +605,6 @@
             "and to be contacted about this account.": "und bin mit kontaktaufnahme zu diesem konto einverstanden.",
             "you're verified": "sie sind verifiziert",
             "your domain checked out, so there is nothing left to wait on from our side. your trial access lands in your work email, and the first scan runs as soon as you connect a public key.": "ihre domain hat die prüfung bestanden, von unserer seite ist also nichts mehr abzuwarten. ihr testzugang kommt an ihre arbeits-e-mail, und der erste scan läuft, sobald sie einen public key verbinden.",
-            "start free trial": "testphase starten",
             "no waiting": "ohne warten",
             "sentinelpay | terms of service": "sentinelpay | nutzungsbedingungen",
             "these terms are the agreement between you and sentinelpay for the use of our website, product and services. by using sentinelpay you accept them, so please actually read them. we have kept them as plain as terms can be.": "diese bedingungen sind der vertrag zwischen ihnen und sentinelpay über die nutzung unserer website, unseres produkts und unserer leistungen. mit der nutzung von sentinelpay akzeptieren sie sie, lesen sie sie also bitte wirklich. wir haben sie so schlicht gehalten, wie bedingungen sein können.",
@@ -1280,6 +1276,16 @@
         wrap.appendChild(label); wrap.appendChild(dd);
         host.appendChild(wrap);
     }
+
+    // scripts that write text at runtime (button labels while a form submits) miss
+    // the one-shot pass above, so let them look a string up the same way we do.
+    window.SentinelI18n = {
+        lang: current,
+        t: function (s) {
+            var dict = T[current()];
+            return (dict && dict[norm(s)]) || s;
+        }
+    };
 
     function init() {
         var lang = current();
