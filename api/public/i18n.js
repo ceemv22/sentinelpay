@@ -13,6 +13,11 @@
        and marketing lines are rewritten for the language rather than word-for-word. */
     var T = {
         hr: {
+            "sentinelpay | page not found": "sentinelpay | stranica nije pronađena",
+            "this page isn't here": "ove stranice nema",
+            "the link is broken or the page has moved. nothing is wrong with your account, and no scan was affected.": "link je neispravan ili se stranica preselila. s vašim računom je sve u redu i nijedna provjera nije pogođena.",
+            "back to homepage": "natrag na naslovnicu",
+            "or pick up where you meant to go:": "ili nastavite tamo gdje ste krenuli:",
             "this field is required": "ovo polje je obavezno",
             "that looks too short": "ovo je prekratko",
             "letters only, no numbers or symbols": "samo slova, bez brojeva i znakova",
@@ -600,6 +605,11 @@
             "sentinelpay requires javascript to initialize secure sessions.": "sentinelpayu treba javascript za pokretanje sigurne sesije."
         },
         de: {
+            "sentinelpay | page not found": "sentinelpay | seite nicht gefunden",
+            "this page isn't here": "diese seite gibt es nicht",
+            "the link is broken or the page has moved. nothing is wrong with your account, and no scan was affected.": "der link ist defekt oder die seite ist umgezogen. mit ihrem konto ist alles in ordnung, und keine prüfung ist betroffen.",
+            "back to homepage": "zurück zur startseite",
+            "or pick up where you meant to go:": "oder machen sie dort weiter, wo sie hinwollten:",
             "this field is required": "dieses feld ist erforderlich",
             "that looks too short": "das ist zu kurz",
             "letters only, no numbers or symbols": "nur buchstaben, keine zahlen oder zeichen",
