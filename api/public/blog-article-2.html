@@ -12,7 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/style.css?v=23.0">
     <link rel="stylesheet" href="/landing.css?v=4.3">
-    <link rel="stylesheet" href="/corp.css?v=136">
+    <link rel="stylesheet" href="/corp.css?v=137">
     <style>
         /* page loader: hold the page until everything is loaded (matches homepage) */
         #sp-loader{position:fixed;inset:0;z-index:99999;background:#050505;display:flex;align-items:center;justify-content:center;transition:opacity 0.55s ease;}
@@ -188,8 +188,94 @@
     </article>
 
     <footer class="lp-footer">
-        <div class="lp-section-inner" style="text-align:center; padding: 1.5rem 0;">
-            <span style="color: rgba(14,35,88,0.5); font-size: 0.82rem;">© 2026 sentinelpay. all rights reserved.</span>
+        <div class="lp-section-inner">
+            <div class="lp-footer-top">
+                <div class="lp-footer-brand">
+                    <div class="lp-footer-brand-row">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" class="lp-footer-icon">
+                          <defs>
+                            <linearGradient id="neonGradientFooter" x1="0%" y1="0%" x2="100%" y2="100%">
+                              <stop offset="0%" stop-color="#00ffff" />
+                              <stop offset="100%" stop-color="#a020f0" />
+                            </linearGradient>
+                            <filter id="neonGlowFooter" x="-50%" y="-50%" width="200%" height="200%">
+                              <feGaussianBlur stdDeviation="3.5" result="coloredBlur"/>
+                              <feMerge>
+                                <feMergeNode in="coloredBlur"/>
+                                <feMergeNode in="SourceGraphic"/>
+                              </feMerge>
+                            </filter>
+                          </defs>
+                          <g filter="url(#neonGlowFooter)" fill="none" stroke="url(#neonGradientFooter)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M60 15 L25 30 V55 C25 80 50 100 60 105 C70 100 95 80 95 55 V30 Z" />
+                            <path d="M38 60 Q 60 40 82 60 Q 60 80 38 60 Z" />
+                            <g>
+                              <circle cx="60" cy="60" r="6" />
+                              <circle cx="60" cy="60" r="2" fill="url(#neonGradientFooter)" stroke="none"/>
+                            </g>
+                            <path d="M60 15 V 30" stroke-width="2" opacity="0.6"/>
+                            <path d="M60 90 V 105" stroke-width="2" opacity="0.6"/>
+                          </g>
+                        </svg>
+                        <span class="lp-logo-text lp-footer-logo">sentinelpay</span>
+                    </div>
+                    <p class="lp-footer-tagline">real-time blockchain monitoring for crypto payment operators.</p>
+                </div>
+                <div class="lp-footer-links">
+                    <div class="lp-footer-col">
+                        <span class="lp-footer-col-title">solutions</span>
+                        <a href="https://sentinelpay.org/#solutions" class="lp-footer-link">crypto compliance</a>
+                        <a href="https://sentinelpay.org/#solutions" class="lp-footer-link">transaction screening</a>
+                        <a href="https://sentinelpay.org/#solutions" class="lp-footer-link">wallet investigations</a>
+                        <a href="https://sentinelpay.org/#solutions" class="lp-footer-link">threat intelligence</a>
+                        <a href="https://sentinelpay.org/#solutions" class="lp-footer-link">real-time alerting</a>
+                        <a href="https://sentinelpay.org/#solutions" class="lp-footer-link">configurable thresholds</a>
+                        <a href="https://sentinelpay.org/#demo" class="lp-footer-link">pricing</a>
+                    </div>
+                    <div class="lp-footer-col">
+                        <span class="lp-footer-col-title">industries</span>
+                        <a href="https://sentinelpay.org/#who-its-for" class="lp-footer-link">financial institutions</a>
+                        <a href="https://sentinelpay.org/#who-its-for" class="lp-footer-link">centralized exchanges</a>
+                        <a href="https://sentinelpay.org/#who-its-for" class="lp-footer-link">payment services</a>
+                        <a href="https://sentinelpay.org/#who-its-for" class="lp-footer-link">stablecoin &amp; token issuers</a>
+                        <a href="https://sentinelpay.org/#who-its-for" class="lp-footer-link">network operators</a>
+                        <a href="https://sentinelpay.org/#who-its-for" class="lp-footer-link">law enforcement</a>
+                        <a href="https://sentinelpay.org/#who-its-for" class="lp-footer-link">regulators</a>
+                    </div>
+                    <div class="lp-footer-col">
+                        <span class="lp-footer-col-title">platform</span>
+                        <a href="https://sentinelpay.org/" class="lp-footer-link">data &amp; apis</a>
+                        <a href="https://sentinelpay.org/" class="lp-footer-link">api documentation</a>
+                        <a href="https://sentinelpay.org/#solutions" class="lp-footer-link">risk scoring</a>
+                        <a href="https://sentinelpay.org/#solutions" class="lp-footer-link">coverage</a>
+                        <a href="https://sentinelpay.org/#solutions" class="lp-footer-link">scalability</a>
+                        <a href="https://sentinelpay.org/#solutions" class="lp-footer-link">configurability</a>
+                    </div>
+                    <div class="lp-footer-col">
+                        <span class="lp-footer-col-title">resources</span>
+                        <a href="/" class="lp-footer-link">blog</a>
+                        <a href="https://sentinelpay.org/" class="lp-footer-link">reports &amp; guides</a>
+                        <a href="https://sentinelpay.org/" class="lp-footer-link">documentation</a>
+                        <a href="https://sentinelpay.org/" class="lp-footer-link">quickstart</a>
+                        <a href="https://sentinelpay.org/" class="lp-footer-link">newsletter</a>
+                        <a href="https://sentinelpay.org/" class="lp-footer-link">crypto glossary</a>
+                    </div>
+                    <div class="lp-footer-col">
+                        <span class="lp-footer-col-title">company</span>
+                        <a href="https://sentinelpay.org/" class="lp-footer-link">who we are</a>
+                        <a href="https://sentinelpay.org/" class="lp-footer-link">security</a>
+                        <a href="https://sentinelpay.org/" class="lp-footer-link">careers</a>
+                        <a href="mailto:support@sentinelpay.org" class="lp-footer-link">contact us</a>
+                        <a href="https://sentinelpay.org/" class="lp-footer-link">partner program</a>
+                        <a href="https://sentinelpay.org/privacy-policy" class="lp-footer-link">privacy policy</a>
+                        <a href="https://sentinelpay.org/terms-of-service" class="lp-footer-link">terms of service</a>
+                    </div>
+                </div>
+            </div>
+            <div class="lp-footer-bottom">
+                <span class="lp-footer-copy">© 2026 sentinelpay. all rights reserved.</span>
+                <a href="mailto:support@sentinelpay.org" class="lp-footer-email">support@sentinelpay.org</a>
+            </div>
         </div>
     </footer>
 

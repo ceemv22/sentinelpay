@@ -414,6 +414,16 @@ html.theme-light .lp-insight-preview {
 
 html.theme-light .lp-footer { background: #f6f8fc !important; }
 
+/* the wordmark's base gradient is white -> grey for the dark theme. the homepage
+   and blog index flip it inline, but the article pages had no .lp-logo-text at
+   all until the shared footer landed there, so it rendered nearly invisible. */
+html.theme-light .lp-footer .lp-logo-text {
+    background: linear-gradient(160deg, #15161a 0%, #5a5a66 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
 @media (max-width: 1000px) {
     .lp-sol-grid, .lp-testi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .lp-insight-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
