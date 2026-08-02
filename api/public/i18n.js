@@ -13,6 +13,8 @@
        and marketing lines are rewritten for the language rather than word-for-word. */
     var T = {
         hr: {
+            "not ready to talk to anyone yet?": "još vam se ne priča ni s kim?",
+            "start a free trial": "pokrenite besplatnu probu",
             "sentinelpay | start a free trial": "sentinelpay | pokrenite besplatnu probu",
             "free trial": "besplatnu probu",
             "start a 14-day": "pokrenite 14-dnevnu",
@@ -580,6 +582,8 @@
             "sentinelpay requires javascript to initialize secure sessions.": "sentinelpayu treba javascript za pokretanje sigurne sesije."
         },
         de: {
+            "not ready to talk to anyone yet?": "noch kein gespräch nötig?",
+            "start a free trial": "kostenlos testen",
             "sentinelpay | start a free trial": "sentinelpay | kostenlos testen",
             "free trial": "kostenlos testen",
             "start a 14-day": "14 tage",

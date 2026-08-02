@@ -162,6 +162,31 @@
         .bad-net-mark img[alt="elektromaterijal"] { height: 32px; }
         .bad-net-mark:hover { filter: grayscale(0); opacity: 1; }
         .bad-divider { height: 1px; margin: 3.6rem 0 3rem; background: linear-gradient(90deg, transparent, rgba(0,240,255,0.32) 22%, rgba(123,108,255,0.4) 50%, rgba(160,32,240,0.32) 78%, transparent); }
+        /* the fold had dead space between the form and the logo strip. it now carries
+           the self-serve alternative, mirroring the "book a demo instead" link on the
+           trial page. the strip must stay in the fold, so the spacing tightens as the
+           viewport gets shorter rather than pushing the strip out of view. */
+        .bad-trial-divider { margin: 1.9rem 0 1.4rem; }
+        .bad-trial { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; }
+        .bad-trial-q { font-size: 0.94rem; color: rgba(14,35,88,0.62); }
+        .bad-trial-btn { display: inline-flex; align-items: center; padding: 0.64rem 1.2rem; border-radius: 10px; border: 1px solid rgba(14,35,88,0.16); background: rgba(255,255,255,0.7); font-size: 0.88rem; font-weight: 600; color: #0e2358; text-decoration: none; white-space: nowrap; transition: border-color 0.18s ease, background 0.18s ease; }
+        .bad-trial-btn:hover { border-color: rgba(0,145,200,0.5); background: #fff; }
+        @media (max-height: 860px) {
+            .bad-fold .lp-section.bad-demo { padding-top: 5.6rem; padding-bottom: 1.6rem; }
+            .bad-trial-divider { margin: 1.3rem 0 1rem; }
+            /* corp.css pins the strip to 176px above 1280px wide. on a short screen
+               that height is what pushes it out of the fold, so release it here. */
+            .bad-logo-bar { padding: 1.2rem 0; height: auto; }
+        }
+        @media (max-height: 760px) {
+            .bad-fold .lp-section.bad-demo { padding-top: 5.2rem; padding-bottom: 1.1rem; }
+            .bad-trial-divider { margin: 1rem 0 0.8rem; }
+            .bad-trial-q { font-size: 0.88rem; }
+        }
+        @media (max-width: 560px) {
+            .bad-trial { flex-direction: column; align-items: stretch; gap: 0.85rem; }
+            .bad-trial-btn { justify-content: center; }
+        }
         @media (max-width: 900px) { .bad-grid { grid-template-columns: 1fr; gap: 2.6rem; } .bad-sub { max-width: none; } }
         @media (max-width: 640px) {
             .bad-net-mark { height: 36px; margin-right: 2.2rem; }
@@ -555,6 +580,12 @@
                 </div>
             </div>
                 </div>
+
+                <div class="bad-divider bad-trial-divider"></div>
+                <div class="bad-trial">
+                    <span class="bad-trial-q">not ready to talk to anyone yet?</span>
+                    <a href="/start-free-trial" class="bad-trial-btn">start a free trial</a>
+                </div>
             </div>
         </section>
         <div class="lp-logo-bar bad-logo-bar">
@@ -728,6 +759,6 @@
     </script>
     <script src="/demo-form.js?v=4" defer></script>
     <script>window.addEventListener('load',function(){window.scrollTo(0,0);var l=document.getElementById('sp-loader');if(!l)return;l.classList.add('spl-done');setTimeout(function(){l.remove();},620);});</script>
-    <script src="/i18n.js?v=13" defer></script>
+    <script src="/i18n.js?v=14" defer></script>
 </body>
 </html>
