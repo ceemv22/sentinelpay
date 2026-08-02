@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>sentinelpay | page not found</title>
     <script>/* tab title before first paint; for articles this is the h1 translation */(function(){var T={"hr":"sentinelpay | stranica nije pronađena","de":"sentinelpay | seite nicht gefunden"},m=document.cookie.match(/(?:^|; )sp-lang=([^;]*)/),l=m?decodeURIComponent(m[1]):null;if(!l){try{l=localStorage.getItem("sp-lang")}catch(e){}}if(l!=="hr"&&l!=="de"&&l!=="en")l=document.documentElement.getAttribute("data-geo-lang");if(l!=="hr"&&l!=="de")return;document.documentElement.lang=l;if(!T)return;window.__SP_TITLE_SRC=document.title.replace(/\s+/g," ").trim();document.title=T[l];})();</script>
-        <meta name="description" content="that page does not exist. head back to sentinelpay or pick one of the pages below.">
+        <meta name="description" content="that page does not exist. head back to sentinelpay or book a demo.">
     <script>document.documentElement.classList.add('theme-light');</script>
     <script>if(history.scrollRestoration)history.scrollRestoration='manual';window.scrollTo(0,0);</script>
     <script>window.intercomSettings={api_base:'https://api-iam.intercom.io',app_id:'obn3omwl',hide_default_launcher:true,language_override:'en'};</script>
@@ -173,41 +173,55 @@
 
 
         /* 404: the shield stands in for the zero, same as the old page did, but in
-           the light theme the rest of the site now uses. footer stays at the bottom
-           even though there is very little content above it. */
-        html.theme-light body.lp-body { display: flex !important; flex-direction: column; min-height: 100vh; }
-        body.lp-body .lp-footer { flex-shrink: 0; }
-        .nf-main { flex: 1 0 auto; display: flex; align-items: center; justify-content: center; padding: 8rem 1.5rem 4rem; }
-        .nf-inner { text-align: center; max-width: 34rem; }
+           the light theme the rest of the site now uses.
 
-        .nf-code { display: flex; align-items: center; justify-content: center; gap: 0.4rem; margin-bottom: 2rem; }
+           the block owns exactly one screen, so the footer sits below the fold and
+           has to be scrolled to. sizing asks the device itself rather than guessing
+           from a user agent: dvh follows the real visible height once mobile browser
+           chrome slides away, and clamp() ties type and spacing to the viewport so
+           the same layout holds from a 320px phone to a 4k display. */
+        .nf-main {
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+            /* top padding clears the fixed nav, which overlays rather than pushes */
+            padding: clamp(5.5rem, 11vh, 8rem) clamp(1.1rem, 5vw, 2rem) clamp(2rem, 6vh, 4rem);
+        }
+        .nf-inner { text-align: center; max-width: 34rem; width: 100%; }
+
+        .nf-code { display: flex; align-items: center; justify-content: center; gap: clamp(0.2rem, 1vw, 0.5rem); margin-bottom: clamp(1.1rem, 3.2vh, 2rem); }
         .nf-digit {
-            font-family: 'Inter', sans-serif; font-size: 7rem; font-weight: 800; line-height: 1; letter-spacing: -0.04em;
+            font-family: 'Inter', sans-serif; font-weight: 800; line-height: 1; letter-spacing: -0.04em;
+            font-size: clamp(3.2rem, 13vw, 7rem);
             /* the site's headline gradient is grey; here it sits right above a navy
                title, so tint it navy instead and the two read as one mark */
             background: linear-gradient(160deg, #0e2358 0%, #46567f 100%);
             -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
         }
-        .nf-shield { width: 5.9rem; height: 5.9rem; flex-shrink: 0; margin-top: 0.35rem; }
+        .nf-shield { width: clamp(2.7rem, 11vw, 5.9rem); height: auto; flex-shrink: 0; margin-top: 0.06em; }
 
-        .nf-title { margin: 0 0 1rem; font-size: 2.3rem; font-weight: 800; line-height: 1.1; letter-spacing: -0.02em; color: #0e2358; text-transform: lowercase; }
-        .nf-sub { margin: 0 auto; font-size: 1rem; line-height: 1.7; color: rgba(14,35,88,0.62); max-width: 30rem; }
+        .nf-title { margin: 0 0 clamp(0.55rem, 1.6vh, 1rem); font-size: clamp(1.45rem, 5.2vw, 2.3rem); font-weight: 800; line-height: 1.12; letter-spacing: -0.02em; color: #0e2358; text-transform: lowercase; }
+        .nf-sub { margin: 0 auto; font-size: clamp(0.92rem, 2.6vw, 1rem); line-height: 1.65; color: rgba(14,35,88,0.62); max-width: 30rem; }
 
-        .nf-actions { margin-top: 2.2rem; display: flex; align-items: center; justify-content: center; gap: 0.9rem; flex-wrap: wrap; }
+        .nf-actions { margin-top: clamp(1.4rem, 3.6vh, 2.2rem); display: flex; align-items: center; justify-content: center; gap: 0.75rem; flex-wrap: wrap; }
 
-        .nf-more { margin-top: 2.6rem; padding-top: 1.6rem; border-top: 1px solid rgba(14,35,88,0.1); }
-        .nf-more-q { display: block; margin-bottom: 0.85rem; font-size: 0.86rem; color: rgba(14,35,88,0.5); }
-        .nf-more-links { display: flex; align-items: center; justify-content: center; gap: 0.4rem 1.4rem; flex-wrap: wrap; }
-        .nf-more-links a { font-size: 0.88rem; font-weight: 600; color: #0091c8; text-decoration: none; border-bottom: 1px solid rgba(0,145,200,0.3); }
-        .nf-more-links a:hover { border-bottom-color: #0091c8; }
-
-        @media (max-width: 640px) {
-            .nf-main { padding-top: 6.5rem; }
-            .nf-digit { font-size: 4.6rem; }
-            .nf-shield { width: 3.8rem; height: 3.8rem; }
-            .nf-title { font-size: 1.7rem; }
+        /* narrow phones: stack the buttons instead of letting them wrap unevenly */
+        @media (max-width: 420px) {
             .nf-actions { flex-direction: column; align-items: stretch; }
             .nf-actions a { justify-content: center; text-align: center; }
+        }
+        /* landscape phones and short windows: nothing may spill past one screen */
+        @media (max-height: 520px) {
+            .nf-main { padding-top: 4.6rem; padding-bottom: 1.2rem; }
+            .nf-code { margin-bottom: 0.7rem; }
+            .nf-digit { font-size: clamp(2.4rem, 9vh, 4rem); }
+            .nf-shield { width: clamp(2.1rem, 8vh, 3.4rem); }
+            .nf-title { font-size: clamp(1.25rem, 4.6vh, 1.8rem); }
+            .nf-sub { font-size: 0.9rem; }
+            .nf-actions { margin-top: 1rem; flex-direction: row; }
         }
     </style>
     <noscript><style>
@@ -465,22 +479,14 @@
             </div>
 
             <h1 class="nf-title">this page isn't here</h1>
-            <p class="nf-sub">the link is broken or the page has moved. nothing is wrong with your account, and no scan was affected.</p>
+            <p class="nf-sub">the link is broken, or the page has moved.</p>
 
             <div class="nf-actions">
                 <a href="/" class="lp-cta-primary">back to homepage</a>
                 <a href="/book-a-demo" class="lp-cta-ghost">book a demo</a>
             </div>
 
-            <div class="nf-more">
-                <span class="nf-more-q">or pick up where you meant to go:</span>
-                <div class="nf-more-links">
-                    <a href="/start-free-trial">start free trial</a>
-                    <a href="https://blog.sentinelpay.org/">blog</a>
-                    <a href="/privacy-policy">privacy policy</a>
-                    <a href="/terms-of-service">terms of service</a>
-                </div>
-            </div>
+        </div>
         </div>
     </main>
 
@@ -626,6 +632,6 @@
         })();
     </script>
     <script>window.addEventListener('load',function(){window.scrollTo(0,0);var l=document.getElementById('sp-loader');if(!l)return;l.classList.add('spl-done');setTimeout(function(){l.remove();},620);});</script>
-    <script src="/i18n.js?v=19" defer></script>
+    <script src="/i18n.js?v=20" defer></script>
 </body>
 </html>
