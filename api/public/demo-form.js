@@ -22,7 +22,7 @@
                     endpoint: '/v1/demo-request',
                     submitLabel: 'request a demo',
                     heads: { 1: 'tell us about yourself', 2: 'help us understand your business', 3: 'your crypto exposure & needs', 4: 'one last thing' },
-                    required: { 1: ['firstName','lastName','jobTitle','email'], 2: ['company','website','industry','country'], 3: ['size','volume'], 4: ['message'] }
+                    required: { 1: ['firstName','lastName','jobTitle','email'], 2: ['company','website','industry','country'], 3: ['size','volume'], 4: [] }
                 },
                 trial: {
                     endpoint: '/v1/trial-request',
@@ -87,8 +87,8 @@
                         if (!v) return 'please pick an expected volume';
                         return '';
                     case 'message':
-                        if (!v) return 'this field is required';
-                        if (v.length < 50) return 'a little more detail, at least 50 characters';
+                        // optional: skip it entirely, or write as little as you like
+                        if (!v) return '';
                         if (v.length > 250) return 'keep it under 250 characters';
                         return '';
                     case 'email':
