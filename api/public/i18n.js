@@ -184,7 +184,7 @@
             "sentinelpay | book a demo": "sentinelpay | dogovorite demo",
             "e.g. sentinelpay ltd": "npr. sentinelpay d.o.o.",
             "e.g. we settle stablecoin payouts to 40+ countries and need to screen every counterparty wallet before funds move…": "npr. isplaćujemo stablecoine u 40+ zemalja i trebamo provjeriti novčanik svake druge strane prije nego novac krene…",
-            "sentinelpay | blog | you shouldn't have to become a bank to stay compliant": "sentinelpay | blog | ne biste trebali postati banka da biste bili usklađeni",
+            "sentinelpay | blog | you shouldn't have to become a bank to stay compliant": "sentinelpay | blog | ne morate postati banka da biste bili u skladu s propisima",
             "i want to be straight about why we are building sentinelpay, because the reason is also the thing that is broken. right now, if you run a small crypto business, the market hands you two ways to stay compliant, and both of them are bad.": "želim otvoreno reći zašto gradimo sentinelpay, jer je taj razlog ujedno i ono što je pokvareno. ako danas vodite malu kripto tvrtku, tržište vam nudi dva načina da budete usklađeni, i oba su loša.",
             "option one: do nothing serious.": "opcija jedan: ne radite ništa ozbiljno.",
             "no screening, no records, no real process. you tell yourself you are too small to matter. this works right up until the morning a bank closes your account, or tether freezes funds already sitting in your wallet. then you find out you were never too small. you were just unprepared.": "bez provjera, bez evidencije, bez pravog procesa. govorite si da ste premali da biste bili važni. to drži sve do jutra kad vam banka zatvori račun ili tether zamrzne novac koji vam već stoji u novčaniku. tad shvatite da nikad niste bili premali. bili ste samo nespremni.",
@@ -208,7 +208,7 @@
             "if that is the option you have been missing, follow along and get early access when we launch at": "ako je to opcija koja vam je nedostajala, pratite nas i osigurajte rani pristup kad krenemo na",
             ". we are building it for you specifically, and we would rather build it with you watching.": ". gradimo ga baš za vas i radije ga gradimo dok gledate.",
             "you should not have to choose between ignoring compliance and becoming a bank. that we all quietly accepted those as the only two options is the real problem. sentinelpay is the third one.": "ne biste trebali birati između ignoriranja compliancea i pretvaranja u banku. pravi problem je što smo svi tiho prihvatili da su to jedine dvije opcije. sentinelpay je treća.",
-            "sentinelpay | blog | we'll take almost any crypto business. gambling is where we draw the line": "sentinelpay | blog | primamo gotovo svaku kripto tvrtku. kockanje je granica",
+            "sentinelpay | blog | we'll take almost any crypto business. gambling is where we draw the line": "sentinelpay | blog | primamo skoro svaki kripto biznis. kod kockanja povlačimo crtu",
             "july 28, 2026 · 3 min read": "28. srpnja 2026. · 3 min čitanja",
             "i want to say this plainly, before anyone has to ask. sentinelpay is built for crypto businesses of almost every shape. gambling is the one thing we will never touch, and i am not going to be diplomatic about why. we think it is one of the most destructive businesses on earth, and we refuse to be any part of it.": "želim ovo reći jasno, prije nego itko mora pitati. sentinelpay je napravljen za kripto tvrtke gotovo svakog oblika. kockanje je jedina stvar koju nikad nećemo dirati i neću biti diplomatski oko razloga. mislimo da je to jedan od najrazornijih poslova na svijetu i odbijamo biti ijedan njegov dio.",
             "first, the part that is wide open. if you take crypto for a real product or a real service, we want to work with you. payment processors. otc desks. small exchanges. freelancers getting paid in usdt. the shop on the corner that started accepting crypto last month. you all carry the same core problem, a wallet can be dirty no matter who it pays, and we built sentinelpay so you can finally see it before it costs you. that door is open, and it stays open.": "prvo dio koji je širom otvoren. ako primate kripto za pravi proizvod ili pravu uslugu, želimo raditi s vama. payment procesori. otc deskovi. male burze. freelanceri koje plaćaju u usdt. dućan na uglu koji je prošli mjesec počeo primati kripto. svi imate isti temeljni problem, novčanik može biti prljav bez obzira kome plaća, a sentinelpay smo napravili da to konačno vidite prije nego vas košta. ta vrata su otvorena i ostaju otvorena.",
@@ -273,7 +273,7 @@
             "you pause on that one payment before you commit and ask for what you'd want anyway: identity, source of funds, the wallet's history, a real kyc on that client. you investigate first, decide second, deliver third, instead of finding out three months later.": "zastanete na toj jednoj uplati prije nego se obvežete i tražite ono što biste ionako htjeli: identitet, izvor sredstava, povijest novčanika, pravi kyc na tom klijentu. prvo istražite, onda odlučite, pa isporučite, umjesto da saznate za tri mjeseca.",
             "that is the whole safety net. you stop shipping blind, and you stop accepting money from wallets you were never able to look at.": "to je cijela sigurnosna mreža. prestajete isporučivati naslijepo i prestajete primati novac iz novčanika koje nikad niste mogli pogledati.",
             "criminals don't pick you because you did something wrong. they pick you because, until now, you had no way to see them coming. that is the entire reason, and it is the one thing on this whole page you can actually fix today.": "kriminalci vas ne biraju zato što ste nešto pogriješili. biraju vas jer ih dosad niste imali čime vidjeti da dolaze. to je cijeli razlog, i jedina stvar na ovoj stranici koju danas stvarno možete popraviti.",
-            "sentinelpay | blog | you don't have an aml problem, you have a speed problem": "sentinelpay | blog | nemate aml problem, imate problem s brzinom",
+            "sentinelpay | blog | you don't have an aml problem, you have a speed problem": "sentinelpay | blog | nemate aml problem, nego problem s brzinom",
             "everyone pictures aml as detection: a clever system that spots the one bad transaction in a sea of good ones. that is half the job. the half nobody talks about is timing, and in crypto, timing is where most teams quietly lose.": "svi zamišljaju aml kao detekciju: pametan sustav koji uoči onu jednu lošu transakciju u moru dobrih. to je pola posla. druga polovica o kojoj nitko ne priča je vrijeme, a u kriptu većina timova tiho gubi upravo na vremenu.",
             "a transaction you flag two weeks after it happened makes a tidy report. it does almost nothing for you. by then the funds have been withdrawn, swapped into another asset, or bridged across three chains. you found the problem. you found it in the wreckage.": "transakcija koju označite dva tjedna nakon što se dogodila daje uredan izvještaj. vama gotovo ništa ne znači. dotad je novac podignut, zamijenjen u drugu imovinu ili premošten preko tri lanca. našli ste problem. našli ste ga u olupini.",
             "in crypto, money does not wait for you to catch up.": "u kriptu novac ne čeka da ga sustignete.",
@@ -749,7 +749,7 @@
             "if that is the option you have been missing, follow along and get early access when we launch at": "wenn ihnen genau diese option gefehlt hat, bleiben sie dran und sichern sie sich early access zum start auf",
             ". we are building it for you specifically, and we would rather build it with you watching.": ". wir bauen es genau für sie, und uns ist lieber, sie schauen dabei zu.",
             "you should not have to choose between ignoring compliance and becoming a bank. that we all quietly accepted those as the only two options is the real problem. sentinelpay is the third one.": "sie sollten nicht zwischen compliance ignorieren und zur bank werden wählen müssen. das eigentliche problem ist, dass wir alle stillschweigend akzeptiert haben, dass es nur diese zwei optionen gibt. sentinelpay ist die dritte.",
-            "sentinelpay | blog | we'll take almost any crypto business. gambling is where we draw the line": "sentinelpay | blog | wir nehmen fast jedes krypto-unternehmen. bei glücksspiel ist schluss",
+            "sentinelpay | blog | we'll take almost any crypto business. gambling is where we draw the line": "sentinelpay | blog | wir nehmen fast jedes krypto-geschäft. beim glücksspiel ziehen wir die grenze",
             "july 28, 2026 · 3 min read": "28. juli 2026 · 3 min lesezeit",
             "i want to say this plainly, before anyone has to ask. sentinelpay is built for crypto businesses of almost every shape. gambling is the one thing we will never touch, and i am not going to be diplomatic about why. we think it is one of the most destructive businesses on earth, and we refuse to be any part of it.": "ich will das klar sagen, bevor jemand fragen muss. sentinelpay ist für krypto-unternehmen fast jeder art gebaut. glücksspiel ist das eine, was wir nie anfassen werden, und beim warum werde ich nicht diplomatisch. wir halten es für eines der zerstörerischsten geschäfte überhaupt und weigern uns, irgendein teil davon zu sein.",
             "first, the part that is wide open. if you take crypto for a real product or a real service, we want to work with you. payment processors. otc desks. small exchanges. freelancers getting paid in usdt. the shop on the corner that started accepting crypto last month. you all carry the same core problem, a wallet can be dirty no matter who it pays, and we built sentinelpay so you can finally see it before it costs you. that door is open, and it stays open.": "zuerst der teil, der weit offen steht. wenn sie krypto für ein echtes produkt oder eine echte leistung annehmen, wollen wir mit ihnen arbeiten. zahlungsdienstleister. otc-desks. kleine börsen. freelancer, die in usdt bezahlt werden. der laden an der ecke, der letzten monat angefangen hat, krypto zu nehmen. sie alle haben dasselbe grundproblem: eine wallet kann schmutzig sein, egal wem sie zahlt, und wir haben sentinelpay gebaut, damit sie das endlich sehen, bevor es sie etwas kostet. diese tür ist offen und bleibt offen.",
@@ -765,7 +765,7 @@
             "so there is no confusion, here is the exact edge. we work with businesses that accept crypto for goods, services, trading, payments, and payroll. we do not work with online casinos, sportsbooks, betting or wagering platforms, or anything whose core product is gambling. if you are genuinely not sure which side you land on, just ask us, and we will tell you straight.": "damit es keine verwirrung gibt, hier die genaue kante. wir arbeiten mit unternehmen, die krypto für waren, dienstleistungen, handel, zahlungen und gehälter annehmen. wir arbeiten nicht mit online-casinos, sportwetten, wettplattformen oder irgendetwas, dessen kernprodukt glücksspiel ist. wenn sie wirklich unsicher sind, auf welche seite sie fallen, fragen sie uns einfach, wir sagen es ihnen direkt.",
             "every company claims to have values right up until the values cost real money. this one costs us a fortune we will never see, and we are keeping it without a second thought. sentinelpay is for the people building something real. it will never be for the house, no matter what they put on the table.": "jede firma behauptet, werte zu haben, bis die werte echtes geld kosten. dieser kostet uns ein vermögen, das wir nie sehen werden, und wir halten ihn ohne zu zögern. sentinelpay ist für leute, die etwas echtes bauen. es wird nie für die bank sein, egal was sie auf den tisch legt.",
             "if that is the kind of company you want watching your back, follow along and get early access when we launch at": "wenn sie so eine firma im rücken haben wollen, bleiben sie dran und sichern sie sich early access zum start auf",
-            "sentinelpay | blog | why criminals target small businesses (and exactly how they do it)": "sentinelpay | blog | warum kriminelle es auf kleine unternehmen abgesehen haben (und wie genau)",
+            "sentinelpay | blog | why criminals target small businesses (and exactly how they do it)": "sentinelpay | blog | warum kriminelle kleine unternehmen ins visier nehmen (und wie genau)",
             "all articles": "alle artikel",
             "chibby": "chibby",
             "ceem": "ceem",
@@ -1119,18 +1119,18 @@
 
     var norm = function (s) { return s.replace(/\s+/g, ' ').trim(); };
 
-    // /i18n-title.js runs in <head> and owns the tab title, so it is already
-    // translated by the time we get here. it hands us the english original and
-    // the title map; fall back to our own dictionary if it did not load.
+    // an inline script in <head> sets the tab title before first paint, so it is
+    // already translated here. it leaves the english original behind for us; if
+    // it did not run, document.title is still english and works as the key.
+    // for articles the dictionary entry is the h1 translation with the
+    // "sentinelpay | blog | " prefix, so tab and headline always read the same.
     var sourceTitle = window.__SP_TITLE_SRC || norm(document.title);
-    var titles = window.__SP_TITLES || null;
 
     function translate(lang) {
         var dict = T[lang];
         document.documentElement.lang = lang;
         // the tab title lives in <head>, so the body walker never sees it
-        var tt = titles && titles[sourceTitle];
-        document.title = (tt && tt[lang]) || (dict && dict[sourceTitle]) || sourceTitle;
+        document.title = (dict && dict[sourceTitle]) || sourceTitle;
         if (!dict) return;
         // text nodes
         var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
