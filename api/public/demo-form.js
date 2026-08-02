@@ -155,11 +155,6 @@
                 nextBtn.hidden = cur === total - 1;
                 submitBtn.hidden = cur !== total - 1;
                 if (headEl) { var no = parseInt(active.getAttribute('data-step'), 10); if (heads[no]) headEl.textContent = heads[no]; }
-                // the trial card shows a numbered rail beside the bar; keep it in step
-                document.querySelectorAll('.sft-rail-step').forEach(function(el, i) {
-                    el.classList.toggle('is-active', i === cur);
-                    el.classList.toggle('is-done', i < cur);
-                });
             }
             render();
 

@@ -171,79 +171,19 @@
             .bad-form-card { padding: 1.9rem 1.4rem !important; }
         }
 
-        /* start-free-trial: the demo form is a black slab with a neon edge. this one
-           is deliberately its opposite so the two never read as the same screen:
-           a white sheet, a numbered rail down the side instead of a bare bar, and
-           ink-on-paper inputs. same type, radii and accent, inverted surface. */
+        /* start-free-trial: same card as the book-a-demo form, only the steps and
+           the destination differ. everything below is page copy, not form skin. */
         .sft-eyebrow { display: inline-block; margin-bottom: 0.9rem; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: #0091c8; }
-        .sft-grid { grid-template-columns: 1fr 1.02fr; align-items: start; }
-
         .sft-alt { margin-top: 2.4rem; padding-top: 1.6rem; border-top: 1px solid rgba(14,35,88,0.1); }
         .sft-alt-q { display: block; margin-bottom: 0.8rem; font-size: 0.92rem; color: rgba(14,35,88,0.62); }
         .sft-alt-btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.68rem 1.25rem; border-radius: 10px; border: 1px solid rgba(14,35,88,0.16); background: rgba(255,255,255,0.7); font-size: 0.88rem; font-weight: 600; color: #0e2358; text-decoration: none; transition: border-color 0.18s ease, background 0.18s ease; }
         .sft-alt-btn:hover { border-color: rgba(0,145,200,0.5); background: #fff; }
-
-        .sft-card { position: relative; overflow: hidden; border-radius: 22px; padding: 2.4rem 2.6rem 2.2rem; background: #ffffff; border: 1px solid rgba(14,35,88,0.1); box-shadow: 0 30px 70px -40px rgba(14,35,88,0.4); }
-        /* the demo card carries its gradient hairline along the bottom; this one wears
-           it at the top, which is the quickest way to tell them apart at a glance */
-        .sft-card-top { position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #00f0ff, #7b6cff, #a020f0); }
-        .sft-card-head { margin-bottom: 1.5rem; }
-        .sft-card-kicker { display: block; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(14,35,88,0.38); margin-bottom: 0.45rem; }
-        .sft-card-title { display: block; font-size: 1.32rem; font-weight: 800; letter-spacing: -0.01em; color: #0e2358; text-transform: lowercase; }
-
-        /* numbered rail, the signature bit. horizontal on wide cards, and it never
-           replaces the progress bar, it just says which of the three you are on. */
-        .sft-rail { list-style: none; display: flex; align-items: center; gap: 0; margin: 0 0 1.7rem; padding: 0; }
-        .sft-rail-step { display: flex; align-items: center; gap: 0.55rem; flex: 0 0 auto; }
-        .sft-rail-step + .sft-rail-step { flex: 1 1 auto; }
-        .sft-rail-step + .sft-rail-step::before { content: ''; flex: 1 1 auto; height: 1px; margin: 0 0.7rem; background: rgba(14,35,88,0.14); transition: background 0.3s ease; }
-        .sft-rail-step.is-done + .sft-rail-step::before, .sft-rail-step.is-active + .sft-rail-step::before { background: linear-gradient(90deg, rgba(0,240,255,0.55), rgba(160,32,240,0.45)); }
-        .sft-rail-dot { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; font-size: 0.76rem; font-weight: 700; color: rgba(14,35,88,0.4); background: rgba(14,35,88,0.05); border: 1px solid rgba(14,35,88,0.12); transition: color 0.25s ease, background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease; }
-        .sft-rail-label { font-size: 0.8rem; font-weight: 600; color: rgba(14,35,88,0.42); transition: color 0.25s ease; }
-        .sft-rail-step.is-active .sft-rail-dot { color: #fff; background: linear-gradient(135deg, #00c8e6, #7b3fd6); border-color: transparent; box-shadow: 0 0 0 4px rgba(0,145,200,0.12); }
-        .sft-rail-step.is-active .sft-rail-label { color: #0e2358; }
-        .sft-rail-step.is-done .sft-rail-dot { color: #0091c8; background: rgba(0,145,200,0.1); border-color: rgba(0,145,200,0.3); }
-        .sft-rail-step.is-done .sft-rail-label { color: rgba(14,35,88,0.62); }
-
-        /* ink on paper: every field control from the dark card gets re-skinned */
-        .sft-card .lp-demo-step { height: auto !important; min-height: 0 !important; max-height: none !important; }
-        .sft-card .lp-demo-field > label { color: rgba(14,35,88,0.72); }
-        .sft-card .lp-demo-field:focus-within > label { color: #0091c8; }
-        .sft-card .lp-demo-field > label i { color: #0091c8; }
-        .sft-card .lp-demo-note { color: rgba(14,35,88,0.45); }
-        .sft-card .lp-demo-field input,
-        .sft-card .lp-demo-field textarea,
-        .sft-card .lp-demo-select-btn { color: #0e2358; background: #fbfcfe; border: 1px solid rgba(14,35,88,0.14); }
-        .sft-card .lp-demo-field input::placeholder, .sft-card .lp-demo-field textarea::placeholder { color: rgba(14,35,88,0.3); }
-        .sft-card .lp-demo-select-val.is-placeholder { color: rgba(14,35,88,0.42); }
-        .sft-card .lp-demo-field input:focus,
-        .sft-card .lp-demo-field textarea:focus,
-        .sft-card .lp-demo-select.is-open .lp-demo-select-btn { border-color: rgba(0,145,200,0.55); background: #fff; box-shadow: 0 0 0 3px rgba(0,145,200,0.12); }
-        .sft-card .lp-demo-field.lp-demo-invalid input,
-        .sft-card .lp-demo-field.lp-demo-invalid .lp-demo-select-btn { border-color: #e0405f; box-shadow: 0 0 0 3px rgba(224,64,95,0.12); }
-        .sft-card .lp-demo-error { color: #c8324f; }
-
-        .sft-verify-lead { margin: 0 0 1.1rem; font-size: 0.92rem; line-height: 1.6; color: rgba(14,35,88,0.62); }
-        .sft-consent { align-items: flex-start; padding: 0.9rem 1rem; margin-bottom: 0.7rem; border: 1px solid rgba(14,35,88,0.12); border-radius: 12px; background: #fbfcfe; transition: border-color 0.18s ease, background 0.18s ease; }
-        .sft-consent:hover { border-color: rgba(0,145,200,0.35); background: #fff; }
-        .sft-consent span { color: rgba(14,35,88,0.78); font-size: 0.88rem; line-height: 1.55; }
-        .sft-consent a { color: #0091c8; text-decoration: none; border-bottom: 1px solid rgba(0,145,200,0.35); }
-        .sft-consent.lp-demo-consent-err { border-color: #e0405f; background: rgba(224,64,95,0.04); }
-
-        .sft-progress { margin-top: 1.6rem; }
-        .sft-card .lp-demo-pct { color: rgba(14,35,88,0.5); }
-        .sft-card .lp-demo-track { background: rgba(14,35,88,0.09); }
-        .sft-card .lp-demo-back { color: rgba(14,35,88,0.6); border-color: rgba(14,35,88,0.16); }
-        .sft-card .lp-demo-back:hover { color: #0e2358; border-color: rgba(14,35,88,0.3); background: rgba(14,35,88,0.03); }
-        .sft-card .lp-demo-success h3 { color: #0e2358; }
-        .sft-card .lp-demo-success p { color: rgba(14,35,88,0.66); }
-
-        @media (max-width: 900px) { .sft-grid { grid-template-columns: 1fr; } }
-        @media (max-width: 640px) {
-            .sft-card { padding: 1.9rem 1.4rem 1.7rem; }
-            .sft-rail-label { display: none; }
-            .sft-rail-step + .sft-rail-step::before { margin: 0 0.5rem; }
-        }
+        /* the verify step is mostly declarations, so it needs a line of lead-in */
+        .sft-verify-lead { margin: 0 0 1.2rem; font-size: 0.92rem; line-height: 1.6; color: rgba(255,255,255,0.55); }
+        .lp-demo-consent + .lp-demo-consent { margin-top: 1rem; }
+        /* the only consent line on the site carrying a link, so it needs the dark-card treatment */
+        .lp-demo-consent a { color: #7bdcff; text-decoration: none; border-bottom: 1px solid rgba(123,220,255,0.35); }
+        .lp-demo-consent a:hover { border-bottom-color: #7bdcff; }
     </style>
 </head>
 <body class="lp-body">
@@ -462,9 +402,9 @@
     </div>
 
     <div class="bad-fold">
-        <section class="lp-section bad-demo sft-demo" id="start-free-trial">
+        <section class="lp-section bad-demo" id="start-free-trial">
             <div class="lp-section-inner">
-                <div class="bad-grid sft-grid">
+                <div class="bad-grid">
                 <div class="bad-copy">
                     <span class="lp-cta-label sft-eyebrow">no waiting</span>
                     <h1 class="bad-title">start a 14-day<br>free trial</h1>
@@ -482,20 +422,12 @@
                     </div>
                 </div>
 
-                <div class="sft-card">
-                    <span class="sft-card-top" aria-hidden="true"></span>
-                    <div class="sft-card-head" data-on-success="hide">
-                        <span class="sft-card-kicker">free trial sign-up</span>
-                        <span class="sft-card-title" id="lp-demo-formhead">who is signing up</span>
-                    </div>
-
-                    <ol class="sft-rail" id="sft-rail" aria-hidden="true" data-on-success="hide">
-                        <li class="sft-rail-step is-active"><span class="sft-rail-dot">1</span><span class="sft-rail-label">you</span></li>
-                        <li class="sft-rail-step"><span class="sft-rail-dot">2</span><span class="sft-rail-label">business</span></li>
-                        <li class="sft-rail-step"><span class="sft-rail-dot">3</span><span class="sft-rail-label">verify</span></li>
-                    </ol>
-
-                    <form class="lp-demo-form sft-form" id="lp-demo-form" data-form="trial" novalidate>
+                <div class="lp-demo-card bad-form-card">
+                    <span class="lp-demo-dots" aria-hidden="true"></span>
+                    <span class="lp-demo-edge" aria-hidden="true"></span>
+                    <div class="lp-demo-right">
+                    <form class="lp-demo-form" id="lp-demo-form" data-form="trial" novalidate>
+                        <div class="lp-demo-formhead" id="lp-demo-formhead">who is signing up</div>
                         <div class="lp-demo-hp" aria-hidden="true"><label>company url<input type="text" name="company_url" tabindex="-1" autocomplete="off"></label></div>
 
                         <div class="lp-demo-step" data-step="1">
@@ -563,24 +495,26 @@
 
                         <div class="lp-demo-step" data-step="3" hidden>
                             <p class="sft-verify-lead">two things we need you to confirm. we check both, and the second one is not a formality.</p>
-                            <label class="lp-demo-consent sft-consent"><input type="checkbox" name="notGambling"><span>this business is not an online casino, sportsbook or betting platform, and gambling is not its core product.</span></label>
-                            <label class="lp-demo-consent sft-consent"><input type="checkbox" name="consent"><span>i agree to the <a href="/terms-of-service">terms of service</a> and to be contacted about this account.</span></label>
+                            <label class="lp-demo-consent"><input type="checkbox" name="notGambling"><span>this business is not an online casino, sportsbook or betting platform, and gambling is not its core product.</span></label>
+                            <label class="lp-demo-consent"><input type="checkbox" name="consent"><span>i agree to the <a href="/terms-of-service">terms of service</a> and to be contacted about this account.</span></label>
                             <div class="lp-demo-turnstile" id="lp-demo-turnstile"></div>
                         </div>
 
-                        <div class="lp-demo-progress sft-progress">
+                        <div class="lp-demo-progress">
                             <span class="lp-demo-pct" id="lp-demo-pct">33%</span>
                             <div class="lp-demo-track"><div class="lp-demo-fill" id="lp-demo-fill"></div></div>
                         </div>
 
-                        <div class="lp-demo-actions sft-actions">
+                        <div class="lp-demo-actions">
                             <button type="button" class="lp-demo-back" id="lp-demo-back" hidden>back</button>
                             <button type="button" class="lp-demo-next" id="lp-demo-next">next</button>
                             <button type="submit" class="lp-demo-submit" id="lp-demo-submit" hidden>start free trial</button>
                         </div>
                     </form>
 
-                    <div class="lp-demo-success sft-success" id="lp-demo-success" hidden>
+                    </div>
+
+                    <div class="lp-demo-success" id="lp-demo-success" hidden>
                         <div class="lp-demo-success-badge">
                             <svg viewBox="0 0 52 52" class="lp-demo-success-svg" aria-hidden="true">
                                 <circle class="lp-demo-success-ring" cx="26" cy="26" r="24"/>
@@ -763,8 +697,8 @@
             });
         })();
     </script>
-    <script src="/demo-form.js?v=3" defer></script>
+    <script src="/demo-form.js?v=4" defer></script>
     <script>window.addEventListener('load',function(){window.scrollTo(0,0);var l=document.getElementById('sp-loader');if(!l)return;l.classList.add('spl-done');setTimeout(function(){l.remove();},620);});</script>
-    <script src="/i18n.js?v=12" defer></script>
+    <script src="/i18n.js?v=13" defer></script>
 </body>
 </html>
