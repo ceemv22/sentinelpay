@@ -95,6 +95,10 @@
            way somewhere. stop the pulse so it reads as a message, not a hang. */
         /* theme-light is added by an inline script, which never runs here, so the
            loader would sit on the dark default. force the light one. */
+        /* the loader covers the viewport, but the page behind it still has its full
+           height, so the window kept a scrollbar with nothing to scroll to. and
+           without theme-light that scrollbar renders in the dark theme's colours. */
+        html, body { overflow: hidden !important; height: 100%; }
         #sp-loader { background: #fbfcfd !important; flex-direction: column; gap: 1.6rem; padding: 0 1.5rem; }
         #sp-loader .spl-logo-svg { animation: none; filter: none; opacity: 0.75; width: 96px; height: 96px; }
         .sp-ns { max-width: 30rem; text-align: center; font-family: 'Inter', sans-serif; }

@@ -239,15 +239,19 @@ function escapeHtml(s) {
     return String(s).replace(/[<>&"']/g, (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;', "'": '&#39;' }[c]));
 }
 
+const HELP_QUERY = {
+    hr: (b) => 'kako uključiti javascript' + (b ? ' u ' + b : ''),
+    de: (b) => 'javascript aktivieren' + (b ? ' in ' + b : ''),
+    en: (b) => 'how to enable javascript' + (b ? ' on ' + b : ''),
+};
+
 function helpSearchUrl(lang, browser) {
-    // the query language is not the ui language on purpose: croatian results for
-    // this are thin, so croatian visitors get the english search. german visitors
-    // get german, everyone else english.
-    const inGerman = lang === 'de';
-    const q = inGerman
-        ? 'javascript aktivieren' + (browser ? ' in ' + browser : '')
-        : 'how to enable javascript' + (browser ? ' on ' + browser : '');
-    return 'https://www.google.com/search?q=' + encodeURIComponent(q) + '&hl=' + (inGerman ? 'de' : 'en');
+    // the search is in the same language the notice is in, and google is asked to
+    // return results in it too. browser name is appended only when we recognised
+    // one, so we never send someone searching for a browser they do not use.
+    const build = HELP_QUERY[lang] || HELP_QUERY.en;
+    return 'https://www.google.com/search?q=' + encodeURIComponent(build(browser)) +
+        '&hl=' + (HELP_QUERY[lang] ? lang : 'en');
 }
 
 function renderPage(file, req) {
