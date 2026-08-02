@@ -180,6 +180,104 @@ app.use(cors({
 
 app.use(express.json({ limit: '10kb' }));
 
+// ---------------------------------------------------------------------------
+// Per-request page rendering.
+//
+// Two things can only be decided on the server, per visitor:
+//   1. their country, so a first visit lands in their language before any js runs
+//   2. their browser, so the "how do I switch javascript on" link is actually useful
+//
+// Both are injected as plain html: an attribute on <html> and an ordinary <a>.
+// Never as an inline <script> — the CSP hashes are computed at boot from the
+// files on disk, so anything injected per request would be blocked outright.
+// The javascript-disabled notice has to be plain markup for the same reason:
+// it is the one screen that must work with scripting off.
+const pageCache = new Map();
+
+function geoLang(req) {
+    // Cloudflare resolves the ip to a country for us; without it (local dev,
+    // direct origin hit) everyone gets english.
+    const cc = String(req.headers['cf-ipcountry'] || '').trim().toUpperCase();
+    if (cc === 'HR') return 'hr';
+    if (cc === 'DE') return 'de';
+    return 'en';
+}
+
+function browserName(ua) {
+    ua = String(ua || '');
+    // order matters: edge and opera both also claim to be chrome
+    if (/\bEdgA?\//.test(ua)) return 'microsoft edge';
+    if (/\bOPR\/|\bOpera\//.test(ua)) return 'opera';
+    if (/SamsungBrowser\//.test(ua)) return 'samsung internet';
+    if (/\bFxiOS\/|\bFirefox\//.test(ua)) return 'firefox';
+    if (/\bCriOS\//.test(ua)) return 'chrome';
+    if (/\bChrome\/|HeadlessChrome\//.test(ua)) return 'chrome';
+    if (/\bChromium\//.test(ua)) return 'chromium';
+    if (/\bVersion\/[\d.]+.*\bSafari\//.test(ua)) return 'safari';
+    return '';
+}
+
+const NOSCRIPT_COPY = {
+    en: {
+        title: 'javascript is switched off',
+        body: 'sentinelpay needs javascript to run. switch it on, then reload this page.',
+        link: 'not sure how? here are instructions for your browser',
+    },
+    hr: {
+        title: 'javascript je isključen',
+        body: 'sentinelpayu treba javascript. uključite ga pa osvježite stranicu.',
+        link: 'ne znate kako? evo uputa za vaš preglednik',
+    },
+    de: {
+        title: 'javascript ist deaktiviert',
+        body: 'sentinelpay braucht javascript. schalten sie es ein und laden sie die seite neu.',
+        link: 'unsicher wie? hier ist eine anleitung für ihren browser',
+    },
+};
+
+function escapeHtml(s) {
+    return String(s).replace(/[<>&"']/g, (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+function helpSearchUrl(lang, browser) {
+    // the query language is not the ui language on purpose: croatian results for
+    // this are thin, so croatian visitors get the english search. german visitors
+    // get german, everyone else english.
+    const inGerman = lang === 'de';
+    const q = inGerman
+        ? 'javascript aktivieren' + (browser ? ' in ' + browser : '')
+        : 'how to enable javascript' + (browser ? ' on ' + browser : '');
+    return 'https://www.google.com/search?q=' + encodeURIComponent(q) + '&hl=' + (inGerman ? 'de' : 'en');
+}
+
+function renderPage(file, req) {
+    let html = pageCache.get(file);
+    if (html === undefined) {
+        html = fsSync.readFileSync(path.join(__dirname, 'public', file), 'utf8');
+        pageCache.set(file, html);
+    }
+    const lang = geoLang(req);
+    const copy = NOSCRIPT_COPY[lang] || NOSCRIPT_COPY.en;
+    const url = helpSearchUrl(lang, browserName(req.headers['user-agent']));
+    const notice =
+        '<div class="sp-ns">' +
+        '<p class="sp-ns-title">' + escapeHtml(copy.title) + '</p>' +
+        '<p class="sp-ns-text">' + escapeHtml(copy.body) + '</p>' +
+        '<a class="sp-ns-link" href="' + escapeHtml(url) + '" rel="noopener nofollow" target="_blank">' + escapeHtml(copy.link) + '</a>' +
+        '</div>';
+    return html
+        .replace('<!--SP_NOSCRIPT-->', notice)
+        .replace(/<html lang="en">/, '<html lang="en" data-geo-lang="' + lang + '">');
+}
+
+function sendPage(res, req, file, status) {
+    res.status(status || 200)
+        .set('Cache-Control', 'no-cache')
+        .set('Vary', 'CF-IPCountry, User-Agent')
+        .type('html')
+        .send(renderPage(file, req));
+}
+
 // Subdomain routing, served by this same service via Host header (no extra service):
 //  - blog.sentinelpay.org -> the blog page (public/blog.html)
 //  - help.sentinelpay.org -> a blank page until real content exists
@@ -209,7 +307,7 @@ app.use((req, res, next) => {
                 });
                 page = typeof articles[slug] === 'string' ? articles[slug] : 'blog-article.html';
             }
-            return res.status(200).sendFile(path.join(__dirname, 'public', page));
+            return sendPage(res, req, page);
         }
         return next();
     }
@@ -223,6 +321,22 @@ app.use((req, res, next) => {
 // Legal pages moved to clean urls; keep the old paths working with 301s.
 app.get('/privacy', (req, res) => res.redirect(301, '/privacy-policy'));
 app.get('/tos', (req, res) => res.redirect(301, '/terms-of-service'));
+
+// Page requests go through the renderer above so the javascript-disabled notice
+// and the geo language land in the html. Assets fall straight through to
+// express.static below.
+app.use((req, res, next) => {
+    if (req.method !== 'GET' && req.method !== 'HEAD') return next();
+    if (path.extname(req.path) && !/\.html$/i.test(req.path)) return next();
+    let file = req.path === '/' ? 'index.html'
+        : req.path.replace(/^\/+/, '').replace(/\/+$/, '');
+    if (!/\.html$/i.test(file)) file += '.html';
+    // stay inside public/: no traversal, no nested paths
+    if (file.includes('/') || file.includes('\\') || file.includes('..')) return next();
+    const full = path.join(__dirname, 'public', file);
+    if (!fsSync.existsSync(full)) return next();
+    return sendPage(res, req, file);
+});
 
 // Serve the static marketing site (/, /privacy-policy, /tos, assets).
 // Long-lived, immutable caching for media/fonts so Cloudflare's edge and the
@@ -454,7 +568,7 @@ app.use((err, req, res, next) => {
 });
 
 app.use((req, res) => {
-    res.status(404).sendFile(path.join(__dirname, 'public', '404.html'));
+    sendPage(res, req, '404.html', 404);
 });
 
 process.on('unhandledRejection', (reason) => {

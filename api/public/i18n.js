@@ -1202,7 +1202,12 @@
     function current() {
         var v = readCookie(COOKIE);
         if (!v) { try { v = localStorage.getItem(COOKIE); } catch (e) {} }
-        return LANGS[v] ? v : 'en';
+        if (LANGS[v]) return v;
+        // nothing saved yet: fall back to the country the server resolved from the
+        // ip. deliberately not written to the cookie, so a guess never hardens into
+        // a stored preference and the switcher still shows nothing was chosen.
+        var geo = document.documentElement.getAttribute('data-geo-lang');
+        return LANGS[geo] ? geo : 'en';
     }
     function persist(v) {
         writeCookie(COOKIE, v);
