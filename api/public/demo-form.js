@@ -15,7 +15,24 @@
             var nameRe = /^[a-zA-ZÀ-ɏ'’.\- ]+$/;
             var letterRe = /[a-zA-ZÀ-ɏ]/;
             var alnumRe = /[a-zA-Z0-9À-ɏ]/;
-            var heads = { 1: 'tell us about yourself', 2: 'help us understand your business', 3: 'your crypto exposure & needs', 4: 'one last thing' };
+            // two pages share this form engine. the markup, validation and custom
+            // selects are identical; only the step contents and destination differ.
+            var CONFIG = {
+                demo: {
+                    endpoint: '/v1/demo-request',
+                    submitLabel: 'request a demo',
+                    heads: { 1: 'tell us about yourself', 2: 'help us understand your business', 3: 'your crypto exposure & needs', 4: 'one last thing' },
+                    required: { 1: ['firstName','lastName','jobTitle','email'], 2: ['company','website','industry','country'], 3: ['size','volume'], 4: ['message'] }
+                },
+                trial: {
+                    endpoint: '/v1/trial-request',
+                    submitLabel: 'start free trial',
+                    heads: { 1: 'who is signing up', 2: 'the business behind the account', 3: 'confirm and start' },
+                    required: { 1: ['firstName','lastName','jobTitle','email'], 2: ['company','website','industry','country'], 3: [] }
+                }
+            };
+            var cfg = CONFIG[form.getAttribute('data-form')] || CONFIG.demo;
+            var heads = cfg.heads;
             var domainRe = /^([a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,}$/i;
             var headEl = document.getElementById('lp-demo-formhead');
             function setError(input, msg) {
@@ -85,7 +102,7 @@
             }
             function validateStep(i) {
                 var ok = true;
-                var required = { 1: ['firstName','lastName','jobTitle','email'], 2: ['company','website','industry','country'], 3: ['size','volume'], 4: ['message'] };
+                var required = cfg.required;
                 var stepEl = steps[i];
                 var stepNo = parseInt(stepEl.getAttribute('data-step'), 10);
                 var names = required[stepNo] || [];
@@ -111,9 +128,13 @@
                     }
                 }
                 if (i === total - 1) {
-                    var consent = form.querySelector('input[name="consent"]');
-                    if (consent && !consent.checked) { ok = false; consent.closest('.lp-demo-consent').classList.add('lp-demo-consent-err'); }
-                    else if (consent) { consent.closest('.lp-demo-consent').classList.remove('lp-demo-consent-err'); }
+                    // every tickbox in the final step is a declaration we rely on, so
+                    // all of them must be ticked, not just the contact consent
+                    stepEl.querySelectorAll('.lp-demo-consent input[type="checkbox"]').forEach(function(cb) {
+                        var wrap = cb.closest('.lp-demo-consent');
+                        if (!cb.checked) { ok = false; wrap.classList.add('lp-demo-consent-err'); }
+                        else { wrap.classList.remove('lp-demo-consent-err'); }
+                    });
                 }
                 return ok;
             }
@@ -134,6 +155,11 @@
                 nextBtn.hidden = cur === total - 1;
                 submitBtn.hidden = cur !== total - 1;
                 if (headEl) { var no = parseInt(active.getAttribute('data-step'), 10); if (heads[no]) headEl.textContent = heads[no]; }
+                // the trial card shows a numbered rail beside the bar; keep it in step
+                document.querySelectorAll('.sft-rail-step').forEach(function(el, i) {
+                    el.classList.toggle('is-active', i === cur);
+                    el.classList.toggle('is-done', i < cur);
+                });
             }
             render();
 
@@ -324,17 +350,21 @@
                 var data = {};
                 new FormData(form).forEach(function(v, k) { if (k !== 'solutions') data[k] = typeof v === 'string' ? v.trim() : v; });
                 data.solutions = Array.prototype.map.call(form.querySelectorAll('input[name="solutions"]:checked'), function(c) { return c.value; });
-                data.consent = !!form.querySelector('input[name="consent"]').checked;
+                form.querySelectorAll('.lp-demo-consent input[type="checkbox"]').forEach(function(cb) { data[cb.name] = !!cb.checked; });
                 if (turnstileToken) data['cf-turnstile-response'] = turnstileToken;
                 submitBtn.disabled = true;
                 submitBtn.textContent = 'sending…';
-                fetch('/v1/demo-request', {
+                fetch(cfg.endpoint, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)
                 }).then(function(r) {
                     return r.ok ? r.json().catch(function(){ return {}; }) : Promise.reject(r);
                 }).then(function() {
+                    // clear the way for the success panel. the demo page wraps the form
+                    // in a two-pane card, the trial page does not, so hide the form
+                    // itself and let each page mark whatever else should go.
+                    form.style.display = 'none';
                     var card = form.closest('.lp-demo-card');
                     if (card) {
                         var left = card.querySelector('.lp-demo-left');
@@ -342,10 +372,12 @@
                         if (left) left.style.display = 'none';
                         if (right) right.style.display = 'none';
                     }
+                    var host = form.parentElement;
+                    if (host) host.querySelectorAll('[data-on-success="hide"]').forEach(function(el) { el.style.display = 'none'; });
                     if (successBox) successBox.hidden = false;
                 }).catch(function() {
                     submitBtn.disabled = false;
-                    submitBtn.textContent = 'request a demo';
+                    submitBtn.textContent = cfg.submitLabel;
                     turnstileToken = '';
                     if (turnstileEnabled && window.turnstile) { try { window.turnstile.reset(); } catch (e) {} }
                     if (window.SentinelToast) window.SentinelToast.show('could not send. email us at support@sentinelpay.org', 'error');

@@ -264,6 +264,98 @@ const demoRequestLimiter = rateLimit({
     message: { error: 'too many requests, please try again later' }
 });
 
+// Rate-limit trial sign-ups harder than demo requests: a trial grants access,
+// so a burst from one IP is worth more to an abuser. 3 / hour / IP.
+const trialRequestLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000,
+    max: 3,
+    standardHeaders: true,
+    legacyHeaders: false,
+    keyGenerator: (req) => `trial_request:${req.realIp}`,
+    message: { error: 'too many requests, please try again later' }
+});
+
+app.post('/v1/trial-request', requireCloudflareOrigin, trialRequestLimiter, async (req, res) => {
+    try {
+        const b = req.body || {};
+
+        if (typeof b.company_url === 'string' && b.company_url.trim() !== '') {
+            return res.json({ ok: true });
+        }
+        const turnstileToken = b['cf-turnstile-response'] || b.turnstileToken;
+        if (!(await verifyTurnstile(turnstileToken, req.realIp))) {
+            return res.status(400).json({ error: 'verification failed, please try again' });
+        }
+
+        const clean = (v, max) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
+        const firstName = clean(b.firstName, 80);
+        const lastName = clean(b.lastName, 80);
+        const jobTitle = clean(b.jobTitle, 120);
+        const email = clean(b.email, 160);
+        const company = clean(b.company, 120);
+        const website = clean(b.website, 160);
+        const industry = clean(b.industry, 80);
+        const country = clean(b.country, 80);
+        const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const nameRe = /^[a-zA-ZÀ-ɏ'’.\- ]{2,}$/;
+
+        // both declarations are the basis for granting access, so both are required.
+        if (!nameRe.test(firstName) || !nameRe.test(lastName) || jobTitle.length < 2 ||
+            !emailRe.test(email) || !company || !website || !industry || !country ||
+            b.consent !== true || b.notGambling !== true) {
+            return res.status(400).json({ error: 'invalid submission' });
+        }
+
+        // the domain check is the verification the trial rests on: a work email at
+        // the company's own domain is what stands in for a manual KYB pass.
+        const host = website.replace(/^https?:\/\//i, '').replace(/\/.*$/, '').replace(/^www\./i, '').toLowerCase();
+        const emailDomain = email.split('@').pop().toLowerCase();
+        if (!(host === emailDomain || host.endsWith('.' + emailDomain) || emailDomain.endsWith('.' + host))) {
+            return res.status(400).json({ error: 'website domain must match your work email domain' });
+        }
+
+        // we publicly refuse gambling operators, so the declared industry is checked
+        // here too and not only in the tickbox above.
+        if (/gambling|igaming|casino|betting|sportsbook/i.test(industry)) {
+            return res.status(400).json({ error: 'we do not onboard gambling operators' });
+        }
+
+        const esc = (s) => String(s).replace(/[<>&"]/g, (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c]));
+        const row = (k, v) => v ? `<tr><td style="padding:4px 12px 4px 0;color:#888;">${k}</td><td style="padding:4px 0;color:#111;">${esc(v)}</td></tr>` : '';
+
+        if (process.env.RESEND_API_KEY) {
+            const { Resend } = require('resend');
+            const resend = new Resend(process.env.RESEND_API_KEY);
+            await resend.emails.send({
+                from: 'sentinelpay <noreply@sentinelpay.org>',
+                to: 'support@sentinelpay.org',
+                replyTo: email,
+                subject: `new trial sign-up — ${firstName} ${lastName} @ ${company}`,
+                html: `<div style="font-family:Arial,sans-serif;font-size:14px;">
+                    <h2 style="margin:0 0 12px;">free trial sign-up</h2>
+                    <table style="border-collapse:collapse;">
+                        ${row('name', `${firstName} ${lastName}`)}
+                        ${row('job title', jobTitle)}
+                        ${row('work email', email)}
+                        ${row('company', company)}
+                        ${row('website', website)}
+                        ${row('industry', industry)}
+                        ${row('country', country)}
+                        ${row('domain check', 'passed')}
+                    </table>
+                </div>`
+            });
+        } else {
+            console.log('[trial-request]', { firstName, lastName, jobTitle, email, company, website, industry, country });
+        }
+
+        res.json({ ok: true });
+    } catch (err) {
+        console.error('[trial-request error]', err.message);
+        res.status(500).json({ error: 'failed to submit' });
+    }
+});
+
 app.post('/v1/demo-request', requireCloudflareOrigin, demoRequestLimiter, async (req, res) => {
     try {
         const b = req.body || {};
