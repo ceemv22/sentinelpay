@@ -13,6 +13,27 @@
        and marketing lines are rewritten for the language rather than word-for-word. */
     var T = {
         hr: {
+            "this field is required": "ovo polje je obavezno",
+            "that looks too short": "ovo je prekratko",
+            "letters only, no numbers or symbols": "samo slova, bez brojeva i znakova",
+            "enter a real job title": "upišite stvarno radno mjesto",
+            "enter a real company name": "upišite stvarni naziv tvrtke",
+            "enter a valid domain, e.g. company.com": "upišite ispravnu domenu, npr. tvrtka.hr",
+            "must match your work email domain": "mora se poklapati s domenom vašeg poslovnog maila",
+            "please select company size": "odaberite veličinu tvrtke",
+            "please pick an industry": "odaberite industriju",
+            "please pick your country": "odaberite državu",
+            "please pick an expected volume": "odaberite očekivani volumen",
+            "keep it under 250 characters": "najviše 250 znakova",
+            "email cannot contain spaces": "e-mail ne smije sadržavati razmake",
+            "enter a valid email address": "upišite ispravnu e-mail adresu",
+            "pick at least one": "odaberite barem jedno",
+            "please complete the verification below.": "riješite provjeru ispod.",
+            "could not send. email us at support@sentinelpay.org": "slanje nije uspjelo. pišite nam na support@sentinelpay.org",
+            "could not send right now. please email support@sentinelpay.org": "slanje trenutno ne radi. molimo pišite na support@sentinelpay.org",
+            "menu": "izbornik",
+            "open live chat": "otvori chat uživo",
+            "why criminals target small businesses": "zašto kriminalci ciljaju male tvrtke",
             "sending…": "šaljem…",
             "not ready to talk to anyone yet?": "još vam se ne priča ni s kim?",
             "sentinelpay | start a free trial": "sentinelpay | pokrenite besplatnu probu",
@@ -579,6 +600,27 @@
             "sentinelpay requires javascript to initialize secure sessions.": "sentinelpayu treba javascript za pokretanje sigurne sesije."
         },
         de: {
+            "this field is required": "dieses feld ist erforderlich",
+            "that looks too short": "das ist zu kurz",
+            "letters only, no numbers or symbols": "nur buchstaben, keine zahlen oder zeichen",
+            "enter a real job title": "geben sie eine echte position an",
+            "enter a real company name": "geben sie einen echten firmennamen an",
+            "enter a valid domain, e.g. company.com": "geben sie eine gültige domain an, z. b. firma.de",
+            "must match your work email domain": "muss zur domain ihrer arbeits-e-mail passen",
+            "please select company size": "bitte wählen sie die unternehmensgröße",
+            "please pick an industry": "bitte wählen sie eine branche",
+            "please pick your country": "bitte wählen sie ihr land",
+            "please pick an expected volume": "bitte wählen sie ein erwartetes volumen",
+            "keep it under 250 characters": "höchstens 250 zeichen",
+            "email cannot contain spaces": "die e-mail darf keine leerzeichen enthalten",
+            "enter a valid email address": "geben sie eine gültige e-mail-adresse an",
+            "pick at least one": "wählen sie mindestens eins",
+            "please complete the verification below.": "bitte schließen sie die prüfung unten ab.",
+            "could not send. email us at support@sentinelpay.org": "senden fehlgeschlagen. schreiben sie an support@sentinelpay.org",
+            "could not send right now. please email support@sentinelpay.org": "senden ist gerade nicht möglich. bitte schreiben sie an support@sentinelpay.org",
+            "menu": "menü",
+            "open live chat": "live-chat öffnen",
+            "why criminals target small businesses": "warum kriminelle kleine unternehmen ins visier nehmen",
             "sending…": "senden…",
             "not ready to talk to anyone yet?": "noch kein gespräch nötig?",
             "sentinelpay | start a free trial": "sentinelpay | kostenlos testen",
@@ -1198,10 +1240,15 @@
             var hit = dict[norm(node.nodeValue)];
             if (hit) node.nodeValue = node.nodeValue.replace(/\S[\s\S]*\S|\S/, hit);
         });
-        // placeholders + aria labels
-        document.querySelectorAll('[placeholder]').forEach(function (el) {
-            var hit = dict[norm(el.getAttribute('placeholder'))];
-            if (hit) el.setAttribute('placeholder', hit);
+        // text the walker cannot reach: it lives in attributes, not in nodes.
+        // alt and title surface when an image fails or on hover, aria-label is
+        // all a screen reader gets.
+        ['placeholder', 'alt', 'title', 'aria-label'].forEach(function (attr) {
+            document.querySelectorAll('[' + attr + ']').forEach(function (el) {
+                if (el.closest('[data-i18n-skip]')) return;
+                var hit = dict[norm(el.getAttribute(attr))];
+                if (hit) el.setAttribute(attr, hit);
+            });
         });
     }
 
