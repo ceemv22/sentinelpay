@@ -248,7 +248,6 @@ body.lp-body {
 .lp-btn-solid.auth-nav-btn:hover {
     background: rgba(255, 255, 255, 0.88) !important;
     box-shadow: 0 0 24px rgba(255, 255, 255, 0.12) !important;
-    transform: translateY(-1px) !important;
 }
 
 
@@ -403,7 +402,6 @@ body.lp-body {
 .lp-cta-primary:hover {
     background: rgba(255, 255, 255, 0.88);
     box-shadow: 0 0 32px rgba(255, 255, 255, 0.12);
-    transform: translateY(-2px);
 }
 
 .lp-cta-ghost {
@@ -1185,7 +1183,6 @@ body.lp-body {
 .lp-plan-cta-solid:hover {
     background: rgba(255, 255, 255, 0.88);
     box-shadow: 0 0 24px rgba(255, 255, 255, 0.1);
-    transform: translateY(-1px);
 }
 
 

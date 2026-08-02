@@ -2558,12 +2558,6 @@ html.theme-light .lp-demo-select-list { scrollbar-width: thin; scrollbar-color: 
 /* flip above the field when there is not enough room below */
 .sp-lang-dd.up .sp-lang-menu { top: auto; bottom: calc(100% + 6px); transform: translateY(6px); }
 .sp-lang-dd.up.open .sp-lang-menu { transform: translateY(0); }
-/* style.css lifts every button via `button:hover:not(:disabled)`; match that
-   specificity so the dropdowns stay put instead of nudging under the cursor */
-.sp-lang-btn:hover:not(:disabled), .sp-lang-btn:focus:not(:disabled),
-.sp-lang-opt:hover:not(:disabled), .sp-lang-opt:focus:not(:disabled),
-.lp-roles-dd-btn:hover:not(:disabled), .lp-roles-dd-btn:focus:not(:disabled),
-.lp-roles-dd-opt:hover:not(:disabled), .lp-roles-dd-opt:focus:not(:disabled) { transform: none; }
 .sp-lang-opt {
     font-family: 'Inter', sans-serif; font-size: 0.88rem; font-weight: 500; text-align: left;
     color: #33456b; background: none; border: none; border-radius: 8px;
