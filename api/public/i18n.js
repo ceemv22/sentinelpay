@@ -1119,19 +1119,19 @@
 
     var norm = function (s) { return s.replace(/\s+/g, ' ').trim(); };
 
-    // the english title is the dictionary key, so remember it before the first
-    // swap: switching hr -> de without a reload must still look up the original.
-    var sourceTitle = document.title;
+    // /i18n-title.js runs in <head> and owns the tab title, so it is already
+    // translated by the time we get here. it hands us the english original and
+    // the title map; fall back to our own dictionary if it did not load.
+    var sourceTitle = window.__SP_TITLE_SRC || norm(document.title);
+    var titles = window.__SP_TITLES || null;
 
     function translate(lang) {
         var dict = T[lang];
         document.documentElement.lang = lang;
-        if (!dict) {
-            document.title = sourceTitle;
-            return;
-        }
-        // browser tab title lives in <head>, so the body walker never sees it
-        document.title = dict[norm(sourceTitle)] || sourceTitle;
+        // the tab title lives in <head>, so the body walker never sees it
+        var tt = titles && titles[sourceTitle];
+        document.title = (tt && tt[lang]) || (dict && dict[sourceTitle]) || sourceTitle;
+        if (!dict) return;
         // text nodes
         var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
             acceptNode: function (n) {
