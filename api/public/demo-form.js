@@ -27,8 +27,8 @@
                 trial: {
                     endpoint: '/v1/trial-request',
                     submitLabel: 'start free trial',
-                    heads: { 1: 'who is signing up', 2: 'the business behind the account', 3: 'confirm and start' },
-                    required: { 1: ['firstName','lastName','jobTitle','email'], 2: ['company','website','industry','country'], 3: [] }
+                    heads: { 1: 'who is signing up', 2: 'confirm and start' },
+                    required: { 1: ['firstName','lastName','email','website'], 2: [] }
                 }
             };
             var cfg = CONFIG[form.getAttribute('data-form')] || CONFIG.demo;

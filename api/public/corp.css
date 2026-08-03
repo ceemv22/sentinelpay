@@ -2655,6 +2655,13 @@ html.theme-light .lp-demo-select-list { scrollbar-width: thin; scrollbar-color: 
     .bad-trial { flex-direction: column; align-items: stretch; gap: 0.85rem; }
     .bad-trial-btn { justify-content: center; }
 }
+/* between 900 and 1100 the grid is still two columns but each is narrow, so a
+   long headline wraps to more lines than the card is tall and the copy column
+   starts driving the fold height. ease the type down before that happens. */
+@media (max-width: 1100px) {
+    .bad-title { font-size: 2.4rem; }
+    .bad-sub { font-size: 0.95rem; }
+}
 @media (max-width: 900px) { .bad-grid { grid-template-columns: 1fr; gap: 2.6rem; } .bad-sub { max-width: none; } }
 @media (max-width: 640px) {
     .bad-net-mark { height: 36px; margin-right: 2.2rem; }

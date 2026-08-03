@@ -422,9 +422,12 @@ app.post('/v1/trial-request', requireCloudflareOrigin, trialRequestLimiter, asyn
         const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         const nameRe = /^[a-zA-ZÀ-ɏ'’.\- ]{2,}$/;
 
-        // both declarations are the basis for granting access, so both are required.
-        if (!nameRe.test(firstName) || !nameRe.test(lastName) || jobTitle.length < 2 ||
-            !emailRe.test(email) || !company || !website || !industry || !country ||
+        // the trial asks for what the product needs and nothing else: who to reach,
+        // and the domain that verifies them. job title, industry and country are
+        // sales fields and are not collected here, so they are not required either.
+        // both declarations are the basis for granting access, so both stay required.
+        if (!nameRe.test(firstName) || !nameRe.test(lastName) ||
+            !emailRe.test(email) || !website ||
             b.consent !== true || b.notGambling !== true) {
             return res.status(400).json({ error: 'invalid submission' });
         }
@@ -439,7 +442,7 @@ app.post('/v1/trial-request', requireCloudflareOrigin, trialRequestLimiter, asyn
 
         // we publicly refuse gambling operators, so the declared industry is checked
         // here too and not only in the tickbox above.
-        if (/gambling|igaming|casino|betting|sportsbook|wager/i.test(industry)) {
+        if (industry && /gambling|igaming|casino|betting|sportsbook|wager/i.test(industry)) {
             return res.status(400).json({ error: 'we do not onboard gambling operators' });
         }
 
@@ -453,7 +456,7 @@ app.post('/v1/trial-request', requireCloudflareOrigin, trialRequestLimiter, asyn
                 from: 'sentinelpay <noreply@sentinelpay.org>',
                 to: 'support@sentinelpay.org',
                 replyTo: email,
-                subject: `new trial sign-up — ${firstName} ${lastName} @ ${company}`,
+                subject: `new trial sign-up — ${firstName} ${lastName}${company ? ' @ ' + company : ''}`,
                 html: `<div style="font-family:Arial,sans-serif;font-size:14px;">
                     <h2 style="margin:0 0 12px;">free trial sign-up</h2>
                     <table style="border-collapse:collapse;">
