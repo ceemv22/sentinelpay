@@ -399,6 +399,49 @@ const trialRequestLimiter = rateLimit({
     message: { error: 'too many requests, please try again later' }
 });
 
+// Diagnostics for outbound mail. Off unless ADMIN_TOKEN is set, and it answers 404
+// rather than 403 when the token is wrong so its existence is not discoverable.
+// GET  /v1/mail-status?token=...            what the server thinks it is configured with
+// POST /v1/mail-status?token=...&send=1     actually send a test message and report the
+//                                           provider's raw answer
+app.all('/v1/mail-status', async (req, res) => {
+    const adminToken = process.env.ADMIN_TOKEN || '';
+    const provided = String(req.query.token || '');
+    if (!adminToken || !crypto.timingSafeEqual(sha256(provided), sha256(adminToken))) {
+        return sendPage(res, req, '404.html', 404);
+    }
+
+    const state = {
+        nodeEnv: process.env.NODE_ENV || '(unset)',
+        resendKey: process.env.RESEND_API_KEY
+            ? 'set, ' + process.env.RESEND_API_KEY.length + ' chars, starts ' + process.env.RESEND_API_KEY.slice(0, 3)
+            : 'NOT SET',
+        from: mailer.MAIL_FROM,
+        to: mailer.MAIL_TO,
+        // a form POST is rejected outright when cloudflare is not adding this header,
+        // which looks exactly like "the email never arrived"
+        cloudflareOriginCheck: process.env.CF_ORIGIN_SECRET ? 'enforced' : 'off',
+    };
+
+    if (String(req.query.send || '') !== '1') {
+        return res.json({ state, hint: 'add &send=1 with POST to send a test message' });
+    }
+
+    try {
+        const result = await mailer.send({
+            subject: 'sentinelpay mail test',
+            eyebrow: 'diagnostics',
+            title: 'mail is working',
+            intro: 'this message was sent by /v1/mail-status, so delivery from the server is fine.',
+            pairs: [['sent at', new Date().toISOString()], ['from', mailer.MAIL_FROM], ['to', mailer.MAIL_TO]],
+        });
+        if (result && result.preview) return res.json({ state, sent: false, mode: 'preview only, no api key', file: result.preview });
+        return res.json({ state, sent: true, result });
+    } catch (err) {
+        return res.status(500).json({ state, sent: false, code: err.code || null, error: err.message });
+    }
+});
+
 app.post('/v1/trial-request', requireCloudflareOrigin, trialRequestLimiter, async (req, res) => {
     try {
         const b = req.body || {};
