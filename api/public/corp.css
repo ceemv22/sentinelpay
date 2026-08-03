@@ -2514,6 +2514,26 @@ html.theme-light .lp-demo-select-list { scrollbar-width: thin; scrollbar-color: 
     overflow: hidden;
 }
 /* turnstile widget spacing (only renders when a site key is configured) */
+/* declarations are commitments, not fine print, so give each one its own surface
+   instead of leaving two bare checkboxes floating in the step. */
+.lp-demo-step .lp-demo-consent.lp-demo-declare {
+    align-items: flex-start;
+    gap: 0.7rem;
+    margin-top: 0.7rem;
+    padding: 0.75rem 0.9rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.025);
+    line-height: 1.5;
+    transition: border-color 0.18s ease, background 0.18s ease;
+}
+.lp-demo-step .lp-demo-consent.lp-demo-declare:hover { border-color: rgba(0, 240, 255, 0.3); background: rgba(255, 255, 255, 0.045); }
+.lp-demo-step .lp-demo-consent.lp-demo-declare input { margin-top: 0.12rem; flex-shrink: 0; }
+/* ticked reads as done, so the row stops asking for attention */
+.lp-demo-step .lp-demo-consent.lp-demo-declare:has(input:checked) { border-color: rgba(0, 240, 255, 0.32); background: rgba(0, 240, 255, 0.05); }
+.lp-demo-step .lp-demo-consent.lp-demo-declare.lp-demo-consent-err { border-color: rgba(255, 90, 122, 0.55); background: rgba(255, 90, 122, 0.06); }
+.lp-demo-declare-lead { margin: 0 0 0.2rem; font-size: 0.85rem; line-height: 1.55; color: rgba(255, 255, 255, 0.5); }
+
 .lp-demo-turnstile { margin-top: 1rem; }
 .lp-demo-turnstile:empty { margin-top: 0; }
 
@@ -2687,7 +2707,13 @@ html.theme-light .lp-demo-select-list { scrollbar-width: thin; scrollbar-color: 
    only above 900px, where the fold is one screen; below that the grid stacks and
    a fixed height would cut the taller steps off. */
 @media (min-width: 901px) {
-    .bad-form-card .lp-demo-step { height: 286px !important; min-height: 286px !important; max-height: 286px !important; }
+    .bad-form-card .lp-demo-step {
+        height: 286px !important; min-height: 286px !important; max-height: 286px !important;
+        /* the box is fixed so the card never jumps, which leaves slack on the
+           shorter steps. centre the content so the slack sits either side of it
+           rather than pooling under it and reading as a dead gap. */
+        display: flex; flex-direction: column; justify-content: center;
+    }
 }
 
 /* on submit the success panel replaced the form, and it is a different height, so

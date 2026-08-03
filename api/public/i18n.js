@@ -13,6 +13,12 @@
        and marketing lines are rewritten for the language rather than word-for-word. */
     var T = {
         hr: {
+            "two things to confirm. we check both, and the second one is not a formality.": "dvije stvari za potvrditi. obje provjeravamo, a druga nije formalnost.",
+            "trial without a company domain": "proba bez domene tvrtke",
+            "hi, i want to start a sentinelpay trial, but my business has no company domain, so the automatic check will not pass. this message was written for you. our team knows exactly what it means and what to send back, so you can press send without changing or deleting anything. if you want to add something, write it below this line.": "pozdrav,\n\nželim pokrenuti sentinelpay probu, ali moj posao nema domenu tvrtke, pa automatska provjera neće proći.\n\novu poruku smo napisali umjesto vas. naš tim točno zna što znači i što vam treba odgovoriti, pa je možete poslati bez da išta mijenjate ili brišete. ako želite nešto dodati, napišite ispod ove crte.\n",
+            "help us understand your business": "recite nam nešto o poslu",
+            "your crypto exposure & needs": "vaša kripto izloženost i potrebe",
+            "one last thing": "još samo jedno",
             "find out what already": "otkrijte što je već",
             "touched your wallets": "dotaknulo vaše novčanike",
             "connect a key and we screen what has already happened, not just what comes next. no call to sit through and nobody to wait for.": "spojite ključ i provjerimo što se već dogodilo, ne samo ono što tek dolazi. nema poziva koji morate odsjediti ni čekanja da vam se netko javi.",
@@ -58,7 +64,6 @@
             "this is what we verify against, so no gmail or outlook.": "prema tome provjeravamo, pa ne gmail ni outlook.",
             "Merchant / Online Store": "Trgovina / Webshop",
             "Freelancer / Sole Trader": "Freelancer / Obrt",
-            "two things we need you to confirm. we check both, and the second one is not a formality.": "dvije stvari koje trebate potvrditi. obje provjeravamo, a druga nije formalnost.",
             "this business is not an online casino, sportsbook or betting platform, and gambling is not its core product.": "ova tvrtka nije online kasino, kladionica ni platforma za klađenje, i kockanje nije njezin osnovni proizvod.",
             "i agree to the": "prihvaćam",
             "and to be contacted about this account.": "i da me kontaktirate u vezi ovog računa.",
@@ -604,6 +609,12 @@
             "sentinelpay requires javascript to initialize secure sessions.": "sentinelpayu treba javascript za pokretanje sigurne sesije."
         },
         de: {
+            "two things to confirm. we check both, and the second one is not a formality.": "zwei dinge zu bestätigen. wir prüfen beide, und die zweite ist keine formsache.",
+            "trial without a company domain": "testphase ohne firmendomain",
+            "hi, i want to start a sentinelpay trial, but my business has no company domain, so the automatic check will not pass. this message was written for you. our team knows exactly what it means and what to send back, so you can press send without changing or deleting anything. if you want to add something, write it below this line.": "hallo,\n\nich möchte eine sentinelpay-testphase starten, aber mein unternehmen hat keine firmendomain, daher wird die automatische prüfung nicht bestehen.\n\ndiese nachricht wurde für sie verfasst. unser team weiß genau, was sie bedeutet und was zu antworten ist, sie können sie also abschicken, ohne etwas zu ändern oder zu löschen. wenn sie etwas ergänzen möchten, schreiben sie es unter diese zeile.\n",
+            "help us understand your business": "erzählen sie uns von ihrem geschäft",
+            "your crypto exposure & needs": "ihre krypto-exposure und bedürfnisse",
+            "one last thing": "nur noch eines",
             "find out what already": "finden sie heraus, was schon",
             "touched your wallets": "ihre wallets berührt hat",
             "connect a key and we screen what has already happened, not just what comes next. no call to sit through and nobody to wait for.": "verbinden sie einen key und wir prüfen, was bereits passiert ist, nicht nur was noch kommt. kein termin, den sie absitzen müssen, und niemand, auf den sie warten.",
@@ -649,7 +660,6 @@
             "this is what we verify against, so no gmail or outlook.": "danach prüfen wir, also kein gmail oder outlook.",
             "Merchant / Online Store": "Händler / Onlineshop",
             "Freelancer / Sole Trader": "Freelancer / Einzelunternehmen",
-            "two things we need you to confirm. we check both, and the second one is not a formality.": "zwei dinge müssen sie bestätigen. wir prüfen beide, und die zweite ist keine formsache.",
             "this business is not an online casino, sportsbook or betting platform, and gambling is not its core product.": "dieses unternehmen ist kein online-casino, keine sportwette und keine wettplattform, und glücksspiel ist nicht sein kernprodukt.",
             "i agree to the": "ich akzeptiere die",
             "and to be contacted about this account.": "und bin mit kontaktaufnahme zu diesem konto einverstanden.",
@@ -1345,9 +1355,29 @@
         }
     };
 
+    // a mailto's subject and body are copy like any other, but frozen in the href
+    // they would stay english on a translated page. carry them as source text on
+    // the link and assemble the href here, so they follow the page language.
+    function buildMailtos(lang) {
+        var dict = T[lang] || null;
+        var pick = function (src) {
+            if (!src) return '';
+            var hit = dict && dict[norm(src)];
+            return hit || src;
+        };
+        document.querySelectorAll('a[data-mail-subject]').forEach(function (a) {
+            var base = (a.getAttribute('href') || '').split('?')[0];
+            var subject = pick(a.getAttribute('data-mail-subject'));
+            var body = pick(a.getAttribute('data-mail-body'));
+            a.setAttribute('href', base + '?subject=' + encodeURIComponent(subject) +
+                (body ? '&body=' + encodeURIComponent(body) : ''));
+        });
+    }
+
     function init() {
         var lang = current();
         if (lang !== 'en') translate(lang);
+        buildMailtos(lang);
         buildSwitcher(lang);
     }
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);

@@ -163,7 +163,7 @@
                 backBtn.hidden = cur === 0;
                 nextBtn.hidden = cur === total - 1;
                 submitBtn.hidden = cur !== total - 1;
-                if (headEl) { var no = parseInt(active.getAttribute('data-step'), 10); if (heads[no]) headEl.textContent = heads[no]; }
+                if (headEl) { var no = parseInt(active.getAttribute('data-step'), 10); if (heads[no]) headEl.textContent = t(heads[no]); }
             }
             render();
 

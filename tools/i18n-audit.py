@@ -64,6 +64,17 @@ for f in sorted(x for x in os.listdir(PUB) if x.endswith('.js')):
     # a string wrapped in t('…') is looked up at runtime, so it still has to be
     # in the dictionary. check those too rather than trusting the wrapper.
     lits += re.findall(r"[^a-zA-Z_.]t\(\s*'((?:[^'\\]|\\.)*)'", src)
+    # strings sitting in a config object reach the user too. the step headings did,
+    # and none of the patterns above saw them because they are neither returned nor
+    # assigned. take every literal that reads like a sentence and drop the ones that
+    # are plainly code: selectors, class and event names, urls, attributes.
+    # prose starts with a letter and carries no code punctuation. that alone
+    # separates copy from selectors, regex fragments and concatenation stubs.
+    CODEY = re.compile(r'^[^a-zA-Z]|[\\\[\]{}<>=()]|^https?:|\bdata-|\baria-')
+    for lit in re.findall(r"'((?:[^'\\\n]|\\.){4,})'", src):
+        if ' ' not in lit or CODEY.search(lit):
+            continue
+        lits.append(lit)
     total += report('js-literal', f, lits)
 
 print()
