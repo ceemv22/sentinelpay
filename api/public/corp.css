@@ -2516,80 +2516,22 @@ html.theme-light .lp-demo-select-list { scrollbar-width: thin; scrollbar-color: 
 /* turnstile widget spacing (only renders when a site key is configured) */
 /* declarations are commitments, not fine print, so give each one its own surface
    instead of leaving two bare checkboxes floating in the step. */
-/* the two declarations are the legal basis for opening an account, so they are
-   built as deliberate rows rather than afterthought tickboxes. the native control
-   is replaced: its default blue-purple square fought the cyan the rest of the card
-   uses, and it cannot be sized or given a tick weight that matches the type. */
 .lp-demo-step .lp-demo-consent.lp-demo-declare {
-    position: relative;
     align-items: flex-start;
-    gap: 0.85rem;
-    margin-top: 0.65rem;
-    padding: 0.85rem 1rem;
-    border: 1px solid rgba(255, 255, 255, 0.09);
+    gap: 0.7rem;
+    margin-top: 0.7rem;
+    padding: 0.75rem 0.9rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
-    background: rgba(255, 255, 255, 0.022);
-    line-height: 1.55;
-    color: rgba(255, 255, 255, 0.72);
-    transition: border-color 0.18s ease, background 0.18s ease, color 0.18s ease;
-}
-.lp-demo-step .lp-demo-consent.lp-demo-declare:hover {
-    border-color: rgba(255, 255, 255, 0.18);
-    background: rgba(255, 255, 255, 0.04);
-}
-/* the input still receives the click and the keyboard, it is only not painted */
-.lp-demo-step .lp-demo-consent.lp-demo-declare input {
-    position: absolute;
-    width: 20px; height: 20px;
-    margin: 0;
-    opacity: 0;
-    cursor: pointer;
-}
-.lp-demo-step .lp-demo-consent.lp-demo-declare::before {
-    content: '';
-    flex: 0 0 auto;
-    width: 20px; height: 20px;
-    margin-top: 0.1rem;
-    border: 1.5px solid rgba(255, 255, 255, 0.28);
-    border-radius: 6px;
-    background: rgba(255, 255, 255, 0.03);
+    background: rgba(255, 255, 255, 0.025);
+    line-height: 1.5;
     transition: border-color 0.18s ease, background 0.18s ease;
 }
-/* the tick is drawn, not a glyph, so its weight matches the ui rather than the font */
-.lp-demo-step .lp-demo-consent.lp-demo-declare::after {
-    content: '';
-    position: absolute;
-    left: 1.42rem; top: 1.32rem;
-    width: 5px; height: 9px;
-    border: solid #04252b;
-    border-width: 0 2px 2px 0;
-    transform: rotate(45deg) scale(0.4);
-    opacity: 0;
-    transition: opacity 0.14s ease, transform 0.18s cubic-bezier(0.22, 1, 0.36, 1);
-}
-.lp-demo-step .lp-demo-consent.lp-demo-declare:has(input:checked) {
-    border-color: rgba(0, 240, 255, 0.34);
-    background: rgba(0, 240, 255, 0.045);
-    color: rgba(255, 255, 255, 0.9);
-}
-.lp-demo-step .lp-demo-consent.lp-demo-declare:has(input:checked)::before {
-    border-color: #00f0ff;
-    background: #00f0ff;
-}
-.lp-demo-step .lp-demo-consent.lp-demo-declare:has(input:checked)::after {
-    opacity: 1;
-    transform: rotate(45deg) scale(1);
-}
-/* keyboard users get the same ring the rest of the form uses */
-.lp-demo-step .lp-demo-consent.lp-demo-declare:has(input:focus-visible)::before {
-    border-color: #00f0ff;
-    box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.22);
-}
-.lp-demo-step .lp-demo-consent.lp-demo-declare.lp-demo-consent-err {
-    border-color: rgba(255, 90, 122, 0.55);
-    background: rgba(255, 90, 122, 0.06);
-}
-.lp-demo-step .lp-demo-consent.lp-demo-declare.lp-demo-consent-err::before { border-color: rgba(255, 90, 122, 0.75); }
+.lp-demo-step .lp-demo-consent.lp-demo-declare:hover { border-color: rgba(0, 240, 255, 0.3); background: rgba(255, 255, 255, 0.045); }
+.lp-demo-step .lp-demo-consent.lp-demo-declare input { margin-top: 0.12rem; flex-shrink: 0; }
+/* ticked reads as done, so the row stops asking for attention */
+.lp-demo-step .lp-demo-consent.lp-demo-declare:has(input:checked) { border-color: rgba(0, 240, 255, 0.32); background: rgba(0, 240, 255, 0.05); }
+.lp-demo-step .lp-demo-consent.lp-demo-declare.lp-demo-consent-err { border-color: rgba(255, 90, 122, 0.55); background: rgba(255, 90, 122, 0.06); }
 .lp-demo-declare-lead { margin: 0 0 0.2rem; font-size: 0.85rem; line-height: 1.55; color: rgba(255, 255, 255, 0.5); }
 
 .lp-demo-turnstile { margin-top: 1rem; display: flex; justify-content: center; }
