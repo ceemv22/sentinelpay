@@ -15,7 +15,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/style.css?v=24">
     <link rel="stylesheet" href="/landing.css?v=4.4">
-    <link rel="stylesheet" href="/corp.css?v=138">
+    <link rel="stylesheet" href="/corp.css?v=140">
     <style>
         /* page loader */
         #sp-loader{position:fixed;inset:0;z-index:99999;background:#050505;display:flex;align-items:center;justify-content:center;transition:opacity 0.55s ease;}
@@ -121,105 +121,6 @@
             .lp-section.pp { padding-top: 6.5rem; }
         }
 
-        /* book-a-demo page: copy sits on the page (like the reference), only the
-           form lives in a card, and the card keeps our homepage dot/edge pattern */
-        .lp-section.bad-demo { padding-top: 8rem; }
-        .bad-grid { display: grid; grid-template-columns: 1fr 1.05fr; gap: 4rem; align-items: stretch; }
-        .bad-copy { padding-top: 0.5rem; }
-        .bad-title { margin: 0 0 1.2rem; font-size: 2.9rem; font-weight: 800; line-height: 1.08; letter-spacing: -0.02em; color: #0e2358; text-transform: lowercase; }
-        .bad-sub { margin: 0; font-size: 1rem; line-height: 1.7; color: rgba(14,35,88,0.62); max-width: 44ch; }
-        .bad-form-card { grid-template-columns: 1fr !important; padding: 2.4rem 2.6rem !important; }
-        /* the shared form pins every step to 316px so the card never jumps. letting it
-           hug its content here made the card resize between steps, which moved the
-           copy, the divider and the logo strip with it. pin it to this page's tallest
-           step instead: smaller than the shared 316px, and the card never moves.
-           286px is the last step with the turnstile widget rendered (280px) plus a
-           little margin. measure again if a step gains a field. */
-        /* only where the fold is one screen. below 900px the grid stacks, the page
-           scrolls anyway, and a fixed height would cut the taller steps off. */
-        @media (min-width: 901px) {
-            .bad-form-card .lp-demo-step { height: 286px !important; min-height: 286px !important; max-height: 286px !important; }
-        }
-        .bad-form-card .lp-demo-form { padding-top: 8px; }
-        .bad-form-card .lp-demo-progress { margin-top: 1.6rem; }
-        .bad-checklist { list-style: none; margin: 1.5rem 0 0; padding: 0; }
-        .bad-checklist li { position: relative; padding-left: 1.9rem; margin-bottom: 0.75rem; font-size: 0.98rem; line-height: 1.5; color: #2a3550; }
-        .bad-checklist li::before { content: ''; position: absolute; left: 0; top: 2px; width: 20px; height: 20px; border-radius: 50%; background: linear-gradient(135deg, #00f0ff, #a020f0);
-            -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") center / 12px no-repeat;
-            mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") center / 12px no-repeat; }
-        .bad-smallprint { margin-top: 1.6rem; font-size: 0.82rem; line-height: 1.65; color: rgba(14,35,88,0.5); }
-        /* first screen: nav + demo block + logo strip, nothing peeking from below */
-        /* nav is fixed and overlays the top, so the fold is a full viewport tall
-           and the demo section's own top padding clears the nav */
-        .bad-fold { min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; }
-        .bad-fold .lp-section.bad-demo { flex: 1 0 auto; display: flex; align-items: center; padding-top: 6.5rem; padding-bottom: 2.5rem; }
-        .bad-fold .lp-section-inner { width: 100%; }
-        .bad-logo-bar { flex-shrink: 0; padding: 1.9rem 0; }
-        /* moving company strip, same mechanic as the homepage network marquee */
-        .bad-net-track { display: flex; align-items: center; width: max-content; animation: badNetScroll 55s linear infinite; will-change: transform; }
-        @keyframes badNetScroll { from { transform: translate3d(-25%, 0, 0); } to { transform: translate3d(0, 0, 0); } }
-        .bad-net-track:has(.bad-net-mark:hover) { animation-play-state: paused; }
-        /* these logos run from 1:1 icons to 6.6:1 wordmarks. one shared box makes the
-           wide ones render short and unreadable, so each gets its own optical height. */
-        .bad-net-mark { display: inline-flex; align-items: center; justify-content: center; height: 48px; margin-right: 3.6rem; filter: grayscale(1); opacity: 0.55; transition: filter 0.3s ease, opacity 0.3s ease; }
-        .bad-net-mark img { width: auto; object-fit: contain; display: block; }
-        .bad-net-mark img[alt="traveler"] { height: 46px; }
-        .bad-net-mark img[alt="majice.hr"] { height: 44px; }
-        .bad-net-mark img[alt="futura"] { height: 40px; }
-        .bad-net-mark img[alt="racunala.hr"] { height: 38px; }
-        .bad-net-mark img[alt="elektromaterijal"] { height: 32px; }
-        .bad-net-mark:hover { filter: grayscale(0); opacity: 1; }
-        .bad-divider { height: 1px; margin: 3.6rem 0 3rem; background: linear-gradient(90deg, transparent, rgba(0,240,255,0.32) 22%, rgba(123,108,255,0.4) 50%, rgba(160,32,240,0.32) 78%, transparent); }
-        /* the fold had dead space between the form and the logo strip. it now carries
-           the self-serve alternative, mirroring the "book a demo instead" link on the
-           trial page. the strip must stay in the fold, so the spacing tightens as the
-           viewport gets shorter rather than pushing the strip out of view. */
-        .bad-trial-divider { margin: 1.9rem 0 1.4rem; }
-        .bad-trial { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; }
-        .bad-trial-q { font-size: 0.94rem; color: rgba(14,35,88,0.62); }
-        .bad-trial-btn { display: inline-flex; align-items: center; padding: 0.64rem 1.2rem; border-radius: 10px; border: 1px solid rgba(14,35,88,0.16); background: rgba(255,255,255,0.7); font-size: 0.88rem; font-weight: 600; color: #0e2358; text-decoration: none; white-space: nowrap; transition: border-color 0.18s ease, background 0.18s ease; }
-        .bad-trial-btn:hover { border-color: rgba(0,145,200,0.5); background: #fff; }
-        /* the card holds a constant height now, so the fold needs the room. these tiers
-           give it back as the screen gets shorter, in the order that costs the least:
-           the strip's fixed height first, then padding, then the divider's margins. */
-        @media (max-height: 980px) {
-            /* corp.css pins the strip to 176px above 1280px wide, which is the single
-               biggest fixed block in the fold. release it before touching anything else. */
-            .bad-logo-bar { padding: 1.2rem 0; height: auto; }
-        }
-        @media (max-height: 900px) {
-            .bad-fold .lp-section.bad-demo { padding-top: 5.6rem; padding-bottom: 1.6rem; }
-            .bad-trial-divider { margin: 1.3rem 0 1rem; }
-        }
-        @media (max-height: 800px) {
-            .bad-fold .lp-section.bad-demo { padding-top: 5.2rem; padding-bottom: 1.1rem; }
-            .bad-trial-divider { margin: 1rem 0 0.8rem; }
-            .bad-trial-q { font-size: 0.88rem; }
-            .bad-form-card { padding: 1.9rem 2.2rem !important; }
-        }
-        @media (max-height: 740px) {
-            .bad-fold .lp-section.bad-demo { padding-top: 4.9rem; padding-bottom: 0.5rem; }
-            .bad-trial-divider { margin: 0.7rem 0 0.55rem; }
-            .bad-logo-bar { padding: 0.9rem 0; }
-        }
-        @media (max-height: 700px) {
-            .bad-fold .lp-section.bad-demo { padding-top: 4.7rem; padding-bottom: 0.3rem; }
-            .bad-form-card { padding: 1.5rem 2.2rem !important; }
-            .bad-trial-divider { margin: 0.55rem 0 0.45rem; }
-            .bad-logo-bar { padding: 0.7rem 0; }
-        }
-        @media (max-width: 560px) {
-            .bad-trial { flex-direction: column; align-items: stretch; gap: 0.85rem; }
-            .bad-trial-btn { justify-content: center; }
-        }
-        @media (max-width: 900px) { .bad-grid { grid-template-columns: 1fr; gap: 2.6rem; } .bad-sub { max-width: none; } }
-        @media (max-width: 640px) {
-            .bad-net-mark { height: 36px; margin-right: 2.2rem; }
-            .bad-net-mark img { transform: scale(0.78); }
-            .lp-section.bad-demo { padding-top: 6.5rem; }
-            .bad-title { font-size: 2.1rem; }
-            .bad-form-card { padding: 1.9rem 1.4rem !important; }
-        }
     </style>
     <noscript><style>
         /* scripting is off, so the loader is the final screen, not a stage on the
@@ -801,6 +702,6 @@
     </script>
     <script src="/demo-form.js?v=7" defer></script>
     <script>window.addEventListener('load',function(){window.scrollTo(0,0);var l=document.getElementById('sp-loader');if(!l)return;l.classList.add('spl-done');setTimeout(function(){l.remove();},620);});</script>
-    <script src="/i18n.js?v=20" defer></script>
+    <script src="/i18n.js?v=21" defer></script>
 </body>
 </html>
