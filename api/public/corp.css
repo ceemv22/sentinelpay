@@ -1865,6 +1865,15 @@ html.theme-light .lp-demo-card .lp-cta-label {
     margin: -0.15rem 0 0.1rem;
 }
 .lp-demo-note-inline { color: rgba(255, 255, 255, 0.38); font-weight: 500; text-transform: none; letter-spacing: 0; }
+/* a link in these notes fell back to the browser's blue-and-underline, which on
+   the dark card reads as a broken style. same treatment as the consent link. */
+.lp-demo-note a {
+    color: rgba(123, 220, 255, 0.85);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(123, 220, 255, 0.28);
+    transition: color 0.18s ease, border-color 0.18s ease;
+}
+.lp-demo-note a:hover { color: #7bdcff; border-bottom-color: #7bdcff; }
 .lp-demo-checks {
     display: grid;
     grid-template-columns: 1fr 1fr;
