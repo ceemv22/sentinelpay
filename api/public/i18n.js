@@ -13,12 +13,13 @@
        and marketing lines are rewritten for the language rather than word-for-word. */
     var T = {
         hr: {
+            "no call to sit through and nobody to wait for. connect a key for round-the-clock monitoring, or paste one address when you just need an answer.": "nema poziva koji morate odsjediti ni čekanja da vam se netko javi. spojite ključ za nadzor 24 sata dnevno ili zalijepite jednu adresu kad vam treba samo odgovor.",
+            "connect an xpub once and monitoring runs 24/7": "spojite xpub jednom i nadzor radi 24/7",
+            "or check a single wallet on demand, no setup": "ili provjerite pojedini novčanik po potrebi, bez postavljanja",
             "one trial per company, matched on your domain. the check is automatic: if your work email and your website agree, you are in straight away. if not, we email you.": "jedna proba po tvrtki, vezana uz vašu domenu. provjera je automatska: ako se vaš poslovni mail i web slažu, odmah ste unutra. ako ne, javimo vam se mailom.",
             "start with 250": "krenite s 250",
             "free wallet scans": "besplatnih provjera novčanika",
-            "no call to sit through and nobody to wait for. connect your public key and start screening the wallets that pay you.": "nema poziva koji morate odsjediti ni čekanja da vam se netko javi. spojite javni ključ i krenite provjeravati novčanike koji vam plaćaju.",
             "250 scans, spend them at your own pace": "250 provjera, potrošite ih svojim tempom",
-            "we only scan wallets that actually touch your business": "provjeravamo samo novčanike koji stvarno dotiču vaš posao",
             "the link is broken, or the page has moved.": "link je neispravan ili se stranica preselila.",
             "sentinelpay | page not found": "sentinelpay | stranica nije pronađena",
             "this page isn't here": "ove stranice nema",
@@ -47,7 +48,6 @@
             "sending…": "šaljem…",
             "not ready to talk to anyone yet?": "još vam se ne priča ni s kim?",
             "sentinelpay | start a free trial": "sentinelpay | pokrenite besplatnu probu",
-            "connect a public key, no integration work": "spojite javni ključ, bez integracije",
             "every scan logged, so you can prove what you checked": "svaka provjera zapisana, pa možete dokazati što ste provjerili",
             "would you rather be walked through it?": "radije biste da vas netko provede kroz to?",
             "who is signing up": "tko se prijavljuje",
@@ -603,12 +603,13 @@
             "sentinelpay requires javascript to initialize secure sessions.": "sentinelpayu treba javascript za pokretanje sigurne sesije."
         },
         de: {
+            "no call to sit through and nobody to wait for. connect a key for round-the-clock monitoring, or paste one address when you just need an answer.": "kein termin, den sie absitzen müssen, und niemand, auf den sie warten. verbinden sie einen key für rund-um-die-uhr-überwachung, oder fügen sie eine adresse ein, wenn sie nur eine antwort brauchen.",
+            "connect an xpub once and monitoring runs 24/7": "einmal xpub verbinden und die überwachung läuft 24/7",
+            "or check a single wallet on demand, no setup": "oder prüfen sie eine einzelne wallet bei bedarf, ohne einrichtung",
             "one trial per company, matched on your domain. the check is automatic: if your work email and your website agree, you are in straight away. if not, we email you.": "eine testphase pro unternehmen, gebunden an ihre domain. die prüfung ist automatisch: stimmen ihre arbeits-e-mail und ihre website überein, sind sie sofort drin. wenn nicht, melden wir uns per e-mail.",
             "start with 250": "starten sie mit 250",
             "free wallet scans": "kostenlosen wallet-prüfungen",
-            "no call to sit through and nobody to wait for. connect your public key and start screening the wallets that pay you.": "kein termin, den sie absitzen müssen, und niemand, auf den sie warten. verbinden sie ihren public key und prüfen sie die wallets, die ihnen zahlen.",
             "250 scans, spend them at your own pace": "250 prüfungen, in ihrem eigenen tempo",
-            "we only scan wallets that actually touch your business": "wir prüfen nur wallets, die ihr geschäft wirklich berühren",
             "the link is broken, or the page has moved.": "der link ist defekt oder die seite ist umgezogen.",
             "sentinelpay | page not found": "sentinelpay | seite nicht gefunden",
             "this page isn't here": "diese seite gibt es nicht",
@@ -637,7 +638,6 @@
             "sending…": "senden…",
             "not ready to talk to anyone yet?": "noch kein gespräch nötig?",
             "sentinelpay | start a free trial": "sentinelpay | kostenlos testen",
-            "connect a public key, no integration work": "public key verbinden, keine integrationsarbeit",
             "every scan logged, so you can prove what you checked": "jede prüfung protokolliert, damit sie belegen können, was sie geprüft haben",
             "would you rather be walked through it?": "lieber persönlich durchgehen?",
             "who is signing up": "wer meldet sich an",
