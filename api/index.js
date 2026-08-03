@@ -6,6 +6,7 @@ const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const hpp = require('hpp');
 require('dotenv').config();
+const mailer = require('./mailer');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -446,33 +447,30 @@ app.post('/v1/trial-request', requireCloudflareOrigin, trialRequestLimiter, asyn
             return res.status(400).json({ error: 'we do not onboard gambling operators' });
         }
 
-        const esc = (s) => String(s).replace(/[<>&"]/g, (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c]));
-        const row = (k, v) => v ? `<tr><td style="padding:4px 12px 4px 0;color:#888;">${k}</td><td style="padding:4px 0;color:#111;">${esc(v)}</td></tr>` : '';
-
-        if (process.env.RESEND_API_KEY) {
-            const { Resend } = require('resend');
-            const resend = new Resend(process.env.RESEND_API_KEY);
-            await resend.emails.send({
-                from: 'sentinelpay <noreply@sentinelpay.org>',
-                to: 'support@sentinelpay.org',
+        try {
+            await mailer.send({
+                subject: `new trial sign-up: ${firstName} ${lastName}${company ? ' @ ' + company : ''}`,
                 replyTo: email,
-                subject: `new trial sign-up — ${firstName} ${lastName}${company ? ' @ ' + company : ''}`,
-                html: `<div style="font-family:Arial,sans-serif;font-size:14px;">
-                    <h2 style="margin:0 0 12px;">free trial sign-up</h2>
-                    <table style="border-collapse:collapse;">
-                        ${row('name', `${firstName} ${lastName}`)}
-                        ${row('job title', jobTitle)}
-                        ${row('work email', email)}
-                        ${row('company', company)}
-                        ${row('website', website)}
-                        ${row('industry', industry)}
-                        ${row('country', country)}
-                        ${row('domain check', 'passed')}
-                    </table>
-                </div>`
+                eyebrow: 'free trial',
+                title: 'a company signed up for the trial',
+                intro: 'the domain check passed automatically, so this account can be opened.',
+                pairs: [
+                    ['name', `${firstName} ${lastName}`],
+                    ['job title', jobTitle],
+                    ['work email', email],
+                    ['company', company],
+                    ['website', website],
+                    ['industry', industry],
+                    ['country', country],
+                    ['domain check', 'passed'],
+                ],
+                footnote: 'send the access link to the work email above. it unlocks one live scan and one from their history.',
             });
-        } else {
-            console.log('[trial-request]', { firstName, lastName, jobTitle, email, company, website, industry, country });
+        } catch (mailErr) {
+            // never answer "ok" when nothing was sent: the visitor would believe
+            // they are signed up while the inbox stays empty.
+            console.error('[trial-request mail failed]', mailErr.code || '', mailErr.message);
+            return res.status(500).json({ error: 'failed to submit' });
         }
 
         res.json({ ok: true });
@@ -537,36 +535,30 @@ app.post('/v1/demo-request', requireCloudflareOrigin, demoRequestLimiter, async 
             }
         }
 
-        const esc = (s) => String(s).replace(/[<>&"]/g, (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c]));
-        const row = (k, v) => v ? `<tr><td style="padding:4px 12px 4px 0;color:#888;">${k}</td><td style="padding:4px 0;color:#111;">${esc(v)}</td></tr>` : '';
-
-        if (process.env.RESEND_API_KEY) {
-            const { Resend } = require('resend');
-            const resend = new Resend(process.env.RESEND_API_KEY);
-            await resend.emails.send({
-                from: 'sentinelpay <noreply@sentinelpay.org>',
-                to: 'support@sentinelpay.org',
+        try {
+            await mailer.send({
+                subject: `new demo request: ${firstName} ${lastName}${company ? ' @ ' + company : ''}`,
                 replyTo: email,
-                subject: `new demo request — ${firstName} ${lastName}${company ? ' @ ' + company : ''}`,
-                html: `<div style="font-family:Arial,sans-serif;font-size:14px;">
-                    <h2 style="margin:0 0 12px;">new demo request</h2>
-                    <table style="border-collapse:collapse;">
-                        ${row('name', firstName + ' ' + lastName)}
-                        ${row('job title', jobTitle)}
-                        ${row('email', email)}
-                        ${row('company', company)}
-                        ${row('website', website)}
-                        ${row('industry', industry)}
-                        ${row('country', country)}
-                        ${row('company size', size)}
-                        ${row('wallets/txns per year', volume)}
-                        ${row('solutions', solutions)}
-                        ${row('message', message)}
-                    </table>
-                </div>`
+                eyebrow: 'demo request',
+                title: 'someone asked for a demo',
+                intro: 'sent from the demo form on sentinelpay.org.',
+                pairs: [
+                    ['name', `${firstName} ${lastName}`],
+                    ['job title', jobTitle],
+                    ['email', email],
+                    ['company', company],
+                    ['website', website],
+                    ['industry', industry],
+                    ['country', country],
+                    ['company size', size],
+                    ['wallets/txns per year', volume],
+                    ['solutions', solutions],
+                    ['message', message],
+                ],
             });
-        } else {
-            console.log('[demo-request]', { firstName, lastName, jobTitle, email, company, website, industry, country, size, volume, solutions });
+        } catch (mailErr) {
+            console.error('[demo-request mail failed]', mailErr.code || '', mailErr.message);
+            return res.status(500).json({ error: 'failed to submit' });
         }
 
         res.json({ ok: true });
@@ -599,4 +591,9 @@ process.on('uncaughtException', (err) => {
 
 app.listen(PORT, () => {
     console.log(`[sentinelpay-web] server active on port ${PORT}`);
+    if (mailer.isConfigured()) {
+        console.log(`[mail] ready, ${mailer.MAIL_FROM} -> ${mailer.MAIL_TO}`);
+    } else {
+        console.error('[mail] RESEND_API_KEY is not set: form submissions will fail with a 500 instead of sending');
+    }
 });
