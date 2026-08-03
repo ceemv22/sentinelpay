@@ -376,6 +376,8 @@
                 data.solutions = Array.prototype.map.call(form.querySelectorAll('input[name="solutions"]:checked'), function(c) { return c.value; });
                 form.querySelectorAll('.lp-demo-consent input[type="checkbox"]').forEach(function(cb) { data[cb.name] = !!cb.checked; });
                 if (turnstileToken) data['cf-turnstile-response'] = turnstileToken;
+                // the confirmation email is written in whatever language the visitor is reading
+                data.lang = (window.SentinelI18n && typeof window.SentinelI18n.lang === 'function' ? window.SentinelI18n.lang() : 'en') || 'en';
                 submitBtn.disabled = true;
                 submitBtn.textContent = t('sending…');
                 fetch(cfg.endpoint, {

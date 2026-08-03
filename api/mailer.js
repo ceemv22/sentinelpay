@@ -41,7 +41,7 @@ function row(label, value) {
 }
 
 // Builds the full document. `rows` is already-escaped markup from row().
-function layout({ eyebrow, title, intro, rows, footnote }) {
+function layout({ eyebrow, title, intro, rows, bullets, cta, footnote, signoff }) {
     const font = "-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,Roboto,Helvetica,Arial,sans-serif";
     return '<!doctype html><html><head><meta charset="utf-8">' +
         '<meta name="viewport" content="width=device-width,initial-scale=1">' +
@@ -67,9 +67,25 @@ function layout({ eyebrow, title, intro, rows, footnote }) {
         '<div style="margin-top:8px;font-size:14px;line-height:21px;color:' + C.muted + ';">' + esc(intro) + '</div>' +
         '</td></tr>' +
 
-        '<tr><td style="padding:20px 28px 4px;">' +
-        '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">' + rows + '</table>' +
-        '</td></tr>' +
+        (rows ? '<tr><td style="padding:20px 28px 4px;">' +
+            '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">' + rows + '</table>' +
+            '</td></tr>' : '') +
+
+        // checklist, styled like the one on the trial page: a cyan tick per line
+        (bullets && bullets.length ? '<tr><td style="padding:20px 28px 0;">' +
+            '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">' +
+            bullets.map(function (b) {
+                return '<tr>' +
+                    '<td width="1%" style="padding:5px 10px 5px 0;vertical-align:top;font-size:14px;line-height:21px;color:' + C.cyan + ';">&#10003;</td>' +
+                    '<td style="padding:5px 0;font-size:14px;line-height:21px;color:' + C.text + ';">' + esc(b) + '</td>' +
+                    '</tr>';
+            }).join('') +
+            '</table></td></tr>' : '') +
+
+        // bulletproof-ish button: a padded anchor, which every client renders
+        (cta ? '<tr><td style="padding:26px 28px 0;">' +
+            '<a href="' + esc(cta.href) + '" style="display:inline-block;padding:13px 26px;border-radius:10px;background:' + C.cyan + ';color:#04252b;font-size:14px;font-weight:700;text-decoration:none;">' + esc(cta.label) + '</a>' +
+            '</td></tr>' : '') +
 
         (footnote ? '<tr><td style="padding:18px 28px 0;">' +
             '<div style="padding:12px 14px;border:1px solid ' + C.line + ';border-radius:10px;font-size:12px;line-height:18px;color:' + C.muted + ';">' + esc(footnote) + '</div>' +
@@ -77,7 +93,7 @@ function layout({ eyebrow, title, intro, rows, footnote }) {
 
         '<tr><td style="padding:22px 28px 26px;">' +
         '<div style="border-top:1px solid ' + C.line + ';padding-top:14px;font-size:11px;line-height:17px;color:' + C.muted + ';">' +
-        'sent automatically by sentinelpay.org. reply to this email to answer the sender directly.' +
+        esc(signoff || 'sent automatically by sentinelpay.org. reply to this email to answer the sender directly.') +
         '</div></td></tr>' +
 
         '</table></td></tr></table></body></html>';
@@ -85,9 +101,11 @@ function layout({ eyebrow, title, intro, rows, footnote }) {
 
 // Plain-text alternative. Without it, spam filters mark an html-only mail down and
 // some clients render nothing at all.
-function textVersion({ title, intro, pairs, footnote }) {
+function textVersion({ title, intro, pairs, bullets, cta, footnote }) {
     const lines = [title, '', intro, ''];
-    pairs.forEach(([k, v]) => { if (v) lines.push(k + ': ' + v); });
+    (pairs || []).forEach(([k, v]) => { if (v) lines.push(k + ': ' + v); });
+    (bullets || []).forEach((b) => lines.push('- ' + b));
+    if (cta) lines.push('', cta.label + ': ' + cta.href);
     if (footnote) lines.push('', footnote);
     lines.push('', 'sent automatically by sentinelpay.org');
     return lines.join('\n');
@@ -95,10 +113,10 @@ function textVersion({ title, intro, pairs, footnote }) {
 
 // Sends, or throws. It never resolves quietly when nothing was sent: an endpoint
 // that answers "ok" while the inbox stays empty is the worst possible outcome.
-async function send({ subject, replyTo, eyebrow, title, intro, pairs, footnote }) {
-    const rows = pairs.map(([k, v]) => row(k, v)).join('');
-    const html = layout({ eyebrow, title, intro, rows, footnote });
-    const text = textVersion({ title, intro, pairs, footnote });
+async function send({ to, subject, replyTo, eyebrow, title, intro, pairs, bullets, cta, footnote, signoff }) {
+    const rows = (pairs || []).map(([k, v]) => row(k, v)).join('');
+    const html = layout({ eyebrow, title, intro, rows, bullets, cta, footnote, signoff });
+    const text = textVersion({ title, intro, pairs, bullets, cta, footnote });
 
     if (!isConfigured()) {
         // in production a missing key is a hard failure: the form must not claim
@@ -118,7 +136,7 @@ async function send({ subject, replyTo, eyebrow, title, intro, pairs, footnote }
     const resend = new Resend(process.env.RESEND_API_KEY);
     const result = await resend.emails.send({
         from: MAIL_FROM,
-        to: MAIL_TO,
+        to: to || MAIL_TO,
         replyTo: replyTo,
         subject: subject,
         html: html,
@@ -134,4 +152,77 @@ async function send({ subject, replyTo, eyebrow, title, intro, pairs, footnote }
     return result;
 }
 
-module.exports = { send, isConfigured, MAIL_FROM, MAIL_TO };
+
+// The message the person who signed up receives. It is the only mail a customer
+// ever gets from us, so it carries the copy in the language they were reading the
+// site in, and nothing else.
+const TRIAL_COPY = {
+    en: {
+        subject: 'your sentinelpay trial is ready',
+        eyebrow: 'free trial',
+        title: 'your trial is ready',
+        intro: 'you signed up at sentinelpay.org. here is what is waiting for you.',
+        bullets: [
+            'one free scan plus one from your history, right away',
+            'the rest of your history is already there, just locked',
+            'confirm by sms to unlock it all and 10 live checks',
+            'every scan logged, so you can prove what you checked',
+        ],
+        ctaLabel: 'open your trial',
+        pending: 'we are opening your account now and this link will follow in a separate email shortly.',
+        footnote: 'you are getting this because this address was used to start a trial at sentinelpay.org. if that was not you, ignore this email and nothing happens.',
+        signoff: 'sent by sentinelpay.org. need a hand? open the live chat on our site.',
+    },
+    hr: {
+        subject: 'vaša sentinelpay proba je spremna',
+        eyebrow: 'besplatna proba',
+        title: 'vaša proba je spremna',
+        intro: 'prijavili ste se na sentinelpay.org. evo što vas čeka.',
+        bullets: [
+            'odmah jedna besplatna provjera i jedna iz vaše povijesti',
+            'ostatak povijesti već je tu, samo je zaključan',
+            'potvrdite se sms-om i otključavate sve i 10 provjera uživo',
+            'svaka provjera zapisana, pa možete dokazati što ste provjerili',
+        ],
+        ctaLabel: 'otvorite svoju probu',
+        pending: 'upravo otvaramo vaš račun i ovaj link stiže u zasebnom mailu ubrzo.',
+        footnote: 'ovaj mail dobivate jer je s ove adrese pokrenuta proba na sentinelpay.org. ako to niste bili vi, samo ga zanemarite i ništa se ne događa.',
+        signoff: 'šalje sentinelpay.org. trebate pomoć? otvorite chat uživo na našoj stranici.',
+    },
+    de: {
+        subject: 'ihre sentinelpay testphase ist bereit',
+        eyebrow: 'kostenlose testphase',
+        title: 'ihre testphase ist bereit',
+        intro: 'sie haben sich auf sentinelpay.org angemeldet. das erwartet sie.',
+        bullets: [
+            'sofort eine kostenlose prüfung und eine aus ihrer historie',
+            'der rest ihrer historie ist schon da, nur gesperrt',
+            'per sms bestätigen und alles plus 10 live-prüfungen freischalten',
+            'jede prüfung protokolliert, damit sie belegen können, was sie geprüft haben',
+        ],
+        ctaLabel: 'testphase öffnen',
+        pending: 'wir richten ihr konto gerade ein, der link folgt in kürze in einer separaten e-mail.',
+        footnote: 'sie erhalten diese e-mail, weil mit dieser adresse eine testphase auf sentinelpay.org gestartet wurde. waren sie das nicht, ignorieren sie die e-mail einfach.',
+        signoff: 'gesendet von sentinelpay.org. brauchen sie hilfe? öffnen sie den live-chat auf unserer website.',
+    },
+};
+
+// The trial app does not exist yet. Until TRIAL_APP_URL is set the mail says so
+// plainly rather than shipping a button that leads nowhere.
+async function sendTrialWelcome({ to, lang }) {
+    const copy = TRIAL_COPY[lang] || TRIAL_COPY.en;
+    const appUrl = process.env.TRIAL_APP_URL || '';
+    return send({
+        to: to,
+        subject: copy.subject,
+        eyebrow: copy.eyebrow,
+        title: copy.title,
+        intro: copy.intro,
+        bullets: copy.bullets,
+        cta: appUrl ? { href: appUrl, label: copy.ctaLabel } : null,
+        footnote: appUrl ? copy.footnote : copy.pending + ' ' + copy.footnote,
+        signoff: copy.signoff,
+    });
+}
+
+module.exports = { send, sendTrialWelcome, isConfigured, MAIL_FROM, MAIL_TO };

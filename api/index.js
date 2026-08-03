@@ -490,13 +490,26 @@ app.post('/v1/trial-request', requireCloudflareOrigin, trialRequestLimiter, asyn
             return res.status(400).json({ error: 'we do not onboard gambling operators' });
         }
 
+        // the mail that matters is the one to the person who signed up: it is their
+        // access to the trial. if that fails the sign-up has not happened, so it is
+        // the only send whose failure is reported back to the form.
+        const lang = ['hr', 'de', 'en'].includes(b.lang) ? b.lang : 'en';
+        try {
+            await mailer.sendTrialWelcome({ to: email, lang });
+        } catch (mailErr) {
+            console.error('[trial-request welcome failed]', mailErr.code || '', mailErr.message);
+            return res.status(500).json({ error: 'failed to submit' });
+        }
+
+        // our own copy is best effort. it goes to a shared inbox that may not be
+        // configured, and a bounce there must never cost the visitor their trial.
         try {
             await mailer.send({
                 subject: `new trial sign-up: ${firstName} ${lastName}${company ? ' @ ' + company : ''}`,
                 replyTo: email,
                 eyebrow: 'free trial',
                 title: 'a company signed up for the trial',
-                intro: 'the domain check passed automatically, so this account can be opened.',
+                intro: 'the domain check passed and the welcome email has been sent to them.',
                 pairs: [
                     ['name', `${firstName} ${lastName}`],
                     ['job title', jobTitle],
@@ -505,15 +518,12 @@ app.post('/v1/trial-request', requireCloudflareOrigin, trialRequestLimiter, asyn
                     ['website', website],
                     ['industry', industry],
                     ['country', country],
+                    ['language', lang],
                     ['domain check', 'passed'],
                 ],
-                footnote: 'send the access link to the work email above. it unlocks one live scan and one from their history.',
             });
-        } catch (mailErr) {
-            // never answer "ok" when nothing was sent: the visitor would believe
-            // they are signed up while the inbox stays empty.
-            console.error('[trial-request mail failed]', mailErr.code || '', mailErr.message);
-            return res.status(500).json({ error: 'failed to submit' });
+        } catch (notifyErr) {
+            console.error('[trial-request notify failed]', notifyErr.code || '', notifyErr.message);
         }
 
         res.json({ ok: true });
