@@ -60,8 +60,10 @@
         /* overlapping avatar group (co-authors): one full circle + half of the next behind it */
         .article-avatars { display: inline-flex; align-items: center; }
         .article-avatars .article-avatar { box-shadow: 0 0 0 2px #fbfcfd; }
-        .article-avatars .article-avatar:first-child { z-index: 2; }
-        .article-avatars .article-avatar + .article-avatar { margin-left: -15px; z-index: 1; }
+        .article-avatars .article-avatar:nth-child(1) { z-index: 3; }
+        .article-avatars .article-avatar:nth-child(2) { z-index: 2; }
+        .article-avatars .article-avatar:nth-child(3) { z-index: 1; }
+        .article-avatars .article-avatar + .article-avatar { margin-left: -15px; }
         .article-byline b { font-size: 0.92rem; font-weight: 700; color: #0e2358; }
         .article-byline small { display: block; font-size: 0.8rem; color: rgba(14,35,88,0.5); }
 
@@ -310,6 +312,6 @@
     </script>
     <script>window.addEventListener('load',function(){window.scrollTo(0,0);var l=document.getElementById('sp-loader');if(!l)return;l.classList.add('spl-done');setTimeout(function(){l.remove();},620);});</script>
     <script src="/img-fallback.js?v=2" defer></script>
-    <script src="/i18n.js?v=29" defer></script>
+    <script src="/i18n.js?v=30" defer></script>
 </body>
 </html>

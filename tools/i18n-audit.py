@@ -16,7 +16,9 @@ KEYS = set(json.load(open(sys.argv[1], encoding='utf-8')))
 
 SKIP_EXACT = {
     'sentinelpay', 'support@sentinelpay.org', 'privacy@sentinelpay.org',
-    'yourcompany.com', 'sentinelpay.org', 'ceem', 'mind', 'chibby',
+    'yourcompany.com', 'sentinelpay.org',
+    # author bylines, alone or together: names, not copy
+    'ceem', 'mind', 'chibby', 'mind, chibby', 'ceem, mind, chibby',
 }
 SKIP_RE = re.compile(r'^[\W\d\s]*$')          # punctuation / numbers only
 LOGOS = {'elektromaterijal', 'racunala.hr', 'traveler', 'majice.hr', 'futura'}
