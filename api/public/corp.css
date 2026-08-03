@@ -2673,3 +2673,18 @@ html.theme-light .lp-demo-select-list { scrollbar-width: thin; scrollbar-color: 
 @media (min-width: 901px) {
     .bad-form-card .lp-demo-step { height: 286px !important; min-height: 286px !important; max-height: 286px !important; }
 }
+
+/* on submit the success panel replaced the form, and it is a different height, so
+   the card resized and the whole block re-centred under the cursor. keep the form
+   in the layout but hidden, and lay the panel over it: the card then holds exactly
+   the height it already had, at every viewport tier, with no magic number. */
+.bad-form-card .lp-demo-form.is-sent { visibility: hidden; }
+.bad-form-card .lp-demo-success:not([hidden]) {
+    position: absolute;
+    inset: 0;
+    padding: inherit;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}

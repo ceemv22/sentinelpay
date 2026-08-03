@@ -37,6 +37,10 @@
             // afterwards (validation messages, button labels, toasts) has to look the
             // string up itself or it comes back in english on a translated page.
             var t = function (x) { return window.SentinelI18n ? window.SentinelI18n.t(x) : x; };
+            // we publicly refuse gambling operators, so the form says so the moment it
+            // is picked rather than letting someone fill four steps and be rejected by
+            // the server. the server checks it too; this is the courteous half.
+            var gamblingRe = /gambling|igaming|casino|betting|sportsbook|wager/i;
             var domainRe = /^([a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,}$/i;
             var headEl = document.getElementById('lp-demo-formhead');
             function setError(input, msg) {
@@ -83,6 +87,7 @@
                         return '';
                     case 'industry':
                         if (!v) return t('please pick an industry');
+                        if (gamblingRe.test(v)) return t('we do not work with gambling operators. this is a policy, not a limit we can lift.');
                         return '';
                     case 'country':
                         if (!v) return t('please pick your country');
@@ -248,7 +253,7 @@
                         input.value = opt.getAttribute('data-value');
                         val.textContent = opt.textContent;
                         val.classList.remove('is-placeholder');
-                        setError(input, '');
+                        setError(input, fieldError(input));
                         open(false);
                     });
                 });
@@ -311,6 +316,26 @@
                 if (cur > 0) { cur--; render(); }
             });
 
+            // A single-input form submits on enter, and this form has one <form> across
+            // four steps, so enter on step 1 fired the real submit: it validated only the
+            // step you were on and posted a half-empty request, once per press. Enter now
+            // means "next" until the last step, where it means submit.
+            form.addEventListener('keydown', function(e) {
+                if (e.key !== 'Enter' || e.shiftKey || e.altKey || e.ctrlKey || e.metaKey) return;
+                var el = e.target;
+                var tag = el && el.tagName;
+                if (tag === 'TEXTAREA') return;                 // enter is a newline there
+                if (tag === 'BUTTON' || tag === 'A') return;     // let the control do its job
+                if (cur < total - 1) {
+                    e.preventDefault();
+                    if (validateStep(cur)) { cur++; render(); }
+                    return;
+                }
+                // last step: only let it through once the declarations are ticked, and
+                // never while a send is already in flight
+                if (submitBtn.disabled) { e.preventDefault(); }
+            });
+
             // Cloudflare Turnstile — activates only when window.__TURNSTILE_SITEKEY is set.
             var turnstileToken = '';
             var turnstileEnabled = false;
@@ -360,16 +385,23 @@
                 }).then(function(r) {
                     return r.ok ? r.json().catch(function(){ return {}; }) : Promise.reject(r);
                 }).then(function() {
-                    // clear the way for the success panel. the demo page wraps the form
-                    // in a two-pane card, the trial page does not, so hide the form
-                    // itself and let each page mark whatever else should go.
-                    form.style.display = 'none';
-                    var card = form.closest('.lp-demo-card');
-                    if (card) {
-                        var left = card.querySelector('.lp-demo-left');
-                        var right = card.querySelector('.lp-demo-right');
-                        if (left) left.style.display = 'none';
-                        if (right) right.style.display = 'none';
+                    // clear the way for the success panel. on the fold pages the card
+                    // must not change size, so the form keeps its space and the panel
+                    // is laid over it. elsewhere the card is free to collapse.
+                    var fold = form.closest('.bad-form-card');
+                    if (fold) {
+                        // the pane stays in the layout, only invisible, so the card
+                        // keeps its height and nothing below it shifts
+                        form.classList.add('is-sent');
+                    } else {
+                        form.style.display = 'none';
+                        var card = form.closest('.lp-demo-card');
+                        if (card) {
+                            var left = card.querySelector('.lp-demo-left');
+                            var right = card.querySelector('.lp-demo-right');
+                            if (left) left.style.display = 'none';
+                            if (right) right.style.display = 'none';
+                        }
                     }
                     var host = form.parentElement;
                     if (host) host.querySelectorAll('[data-on-success="hide"]').forEach(function(el) { el.style.display = 'none'; });

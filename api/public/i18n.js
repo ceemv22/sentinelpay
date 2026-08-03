@@ -13,6 +13,7 @@
        and marketing lines are rewritten for the language rather than word-for-word. */
     var T = {
         hr: {
+            "we do not work with gambling operators. this is a policy, not a limit we can lift.": "ne radimo s operaterima kockanja. to je politika, a ne ograničenje koje možemo maknuti.",
             "no call to sit through and nobody to wait for. connect a key for round-the-clock monitoring, or paste one address when you just need an answer.": "nema poziva koji morate odsjediti ni čekanja da vam se netko javi. spojite ključ za nadzor 24 sata dnevno ili zalijepite jednu adresu kad vam treba samo odgovor.",
             "connect an xpub once and monitoring runs 24/7": "spojite xpub jednom i nadzor radi 24/7",
             "or check a single wallet on demand, no setup": "ili provjerite pojedini novčanik po potrebi, bez postavljanja",
@@ -603,6 +604,7 @@
             "sentinelpay requires javascript to initialize secure sessions.": "sentinelpayu treba javascript za pokretanje sigurne sesije."
         },
         de: {
+            "we do not work with gambling operators. this is a policy, not a limit we can lift.": "wir arbeiten nicht mit glücksspielanbietern. das ist eine richtlinie, keine grenze, die wir aufheben können.",
             "no call to sit through and nobody to wait for. connect a key for round-the-clock monitoring, or paste one address when you just need an answer.": "kein termin, den sie absitzen müssen, und niemand, auf den sie warten. verbinden sie einen key für rund-um-die-uhr-überwachung, oder fügen sie eine adresse ein, wenn sie nur eine antwort brauchen.",
             "connect an xpub once and monitoring runs 24/7": "einmal xpub verbinden und die überwachung läuft 24/7",
             "or check a single wallet on demand, no setup": "oder prüfen sie eine einzelne wallet bei bedarf, ohne einrichtung",

@@ -439,7 +439,7 @@ app.post('/v1/trial-request', requireCloudflareOrigin, trialRequestLimiter, asyn
 
         // we publicly refuse gambling operators, so the declared industry is checked
         // here too and not only in the tickbox above.
-        if (/gambling|igaming|casino|betting|sportsbook/i.test(industry)) {
+        if (/gambling|igaming|casino|betting|sportsbook|wager/i.test(industry)) {
             return res.status(400).json({ error: 'we do not onboard gambling operators' });
         }
 
@@ -514,6 +514,12 @@ app.post('/v1/demo-request', requireCloudflareOrigin, demoRequestLimiter, async 
         if (!nameRe.test(firstName) || !nameRe.test(lastName) || jobTitle.length < 2 ||
             !emailRe.test(email) || !company || b.consent !== true) {
             return res.status(400).json({ error: 'invalid submission' });
+        }
+
+        // the same refusal as the trial endpoint: we do not onboard gambling, so a
+        // demo request from one should not reach the inbox either.
+        if (/gambling|igaming|casino|betting|sportsbook|wager/i.test(industry)) {
+            return res.status(400).json({ error: 'we do not onboard gambling operators' });
         }
 
         // website domain must match the work email domain (subdomains either way are fine)
