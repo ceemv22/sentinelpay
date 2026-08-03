@@ -35,11 +35,6 @@ app.set('trust proxy', trustProxySetting === undefined ? 1 : trustProxySetting);
 // the demo-form limit. Default: Express's trust-proxy-derived req.ip (not spoofable
 // past the immediate proxy).
 const enforceCloudflare = String(process.env.ENFORCE_CLOUDFLARE || '').trim().toLowerCase() === 'true';
-app.use((req, res, next) => {
-    const cfIp = req.headers['cf-connecting-ip'];
-    req.realIp = (enforceCloudflare && typeof cfIp === 'string' && cfIp.length > 0) ? cfIp : req.ip;
-    next();
-});
 
 // --- Origin lockdown ---------------------------------------------------------
 // When CF_ORIGIN_SECRET is set, require a matching secret header (injected by a
@@ -49,12 +44,30 @@ app.use((req, res, next) => {
 const cfOriginSecret = process.env.CF_ORIGIN_SECRET;
 const cfOriginHeader = (process.env.CF_ORIGIN_HEADER || 'x-sentinel-origin').trim().toLowerCase();
 const sha256 = (s) => crypto.createHash('sha256').update(String(s)).digest();
+function fromOurCloudflare(req) {
+    if (!cfOriginSecret) return false;
+    const provided = req.headers[cfOriginHeader];
+    return Boolean(provided) && crypto.timingSafeEqual(sha256(String(provided)), sha256(cfOriginSecret));
+}
 function requireCloudflareOrigin(req, res, next) {
     if (!cfOriginSecret) return next();
-    const provided = req.headers[cfOriginHeader];
-    if (provided && crypto.timingSafeEqual(sha256(provided), sha256(cfOriginSecret))) return next();
+    if (fromOurCloudflare(req)) return next();
     return res.status(403).json({ error: 'forbidden' });
 }
+
+// --- Client ip ---------------------------------------------------------------
+// Every rate limit is keyed on this, so getting it wrong means the limits do not
+// exist. `req.ip` is derived from x-forwarded-for, which anything reaching the
+// origin directly can set to whatever it likes: rotating the header gives a fresh
+// bucket per request. So cf-connecting-ip is trusted only when the request proves
+// it came through our own Cloudflare, and ENFORCE_CLOUDFLARE stays as the manual
+// override for setups without the origin secret.
+app.use((req, res, next) => {
+    const cfIp = req.headers['cf-connecting-ip'];
+    const trusted = fromOurCloudflare(req) || enforceCloudflare;
+    req.realIp = (trusted && typeof cfIp === 'string' && cfIp.length > 0) ? cfIp : req.ip;
+    next();
+});
 
 // --- Cloudflare Turnstile ----------------------------------------------------
 // When TURNSTILE_SECRET_KEY is set, the demo form must include a valid Turnstile
@@ -465,6 +478,26 @@ app.all('/v1/mail-status', async (req, res) => {
     }
 });
 
+// Free and disposable mail providers. The trial's whole verification is "your work
+// email is at your company's own domain", which a visitor can otherwise satisfy by
+// entering the provider's domain as their website: x@gmail.com + gmail.com matched
+// and let anyone in. Checked on both sides of the pair.
+const PUBLIC_EMAIL_DOMAINS = new Set([
+    'gmail.com', 'googlemail.com', 'outlook.com', 'hotmail.com', 'live.com', 'msn.com',
+    'yahoo.com', 'yahoo.co.uk', 'ymail.com', 'aol.com', 'icloud.com', 'me.com', 'mac.com',
+    'proton.me', 'protonmail.com', 'pm.me', 'gmx.com', 'gmx.de', 'gmx.net', 'web.de',
+    't-online.de', 'freenet.de', 'mail.com', 'zoho.com', 'yandex.com', 'yandex.ru',
+    'mail.ru', 'inbox.lv', 'seznam.cz', 'net.hr', 'gmail.hr', 'vip.hr', 'hi.t-com.hr',
+    'a1.hr', 'optinet.hr', 'inet.hr', 'email.t-com.hr',
+    // throwaway services
+    'mailinator.com', 'guerrillamail.com', 'yopmail.com', '10minutemail.com',
+    'tempmail.com', 'temp-mail.org', 'trashmail.com', 'sharklasers.com',
+    'dispostable.com', 'getnada.com', 'maildrop.cc', 'fakeinbox.com', 'throwawaymail.com',
+]);
+function isPublicMailDomain(domain) {
+    return PUBLIC_EMAIL_DOMAINS.has(String(domain || '').toLowerCase());
+}
+
 app.post('/v1/trial-request', requireCloudflareOrigin, trialRequestLimiter, async (req, res) => {
     try {
         const b = req.body || {};
@@ -503,6 +536,10 @@ app.post('/v1/trial-request', requireCloudflareOrigin, trialRequestLimiter, asyn
         // the company's own domain is what stands in for a manual KYB pass.
         const host = website.replace(/^https?:\/\//i, '').replace(/\/.*$/, '').replace(/^www\./i, '').toLowerCase();
         const emailDomain = email.split('@').pop().toLowerCase();
+        // a free mailbox is not a company, on either side of the pair
+        if (isPublicMailDomain(emailDomain) || isPublicMailDomain(host)) {
+            return res.status(400).json({ error: 'please use your work email and your company website' });
+        }
         if (!(host === emailDomain || host.endsWith('.' + emailDomain) || emailDomain.endsWith('.' + host))) {
             return res.status(400).json({ error: 'website domain must match your work email domain' });
         }
@@ -612,6 +649,9 @@ app.post('/v1/demo-request', requireCloudflareOrigin, demoRequestLimiter, async 
         if (website) {
             const host = website.replace(/^https?:\/\//i, '').replace(/\/.*$/, '').replace(/^www\./i, '').toLowerCase();
             const emailDomain = email.split('@').pop().toLowerCase();
+            if (isPublicMailDomain(emailDomain) || isPublicMailDomain(host)) {
+                return res.status(400).json({ error: 'please use your work email and your company website' });
+            }
             const matches = host === emailDomain ||
                 host.endsWith('.' + emailDomain) ||
                 emailDomain.endsWith('.' + host);
