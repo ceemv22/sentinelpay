@@ -117,6 +117,8 @@ minimum env: `DATABASE_URL` · `ETHERSCAN_API_KEY` · `SUPABASE_URL` · `SUPABAS
 
 production also requires: `REDIS_URL` · `STRIPE_SECRET_KEY` · `STRIPE_WEBHOOK_SECRET` · `RESEND_API_KEY` · `CRYPTO_MASTER_SEED`
 
+hardening: `TURNSTILE_SECRET_KEY` (without it the forms accept unverified submissions) · `CF_ORIGIN_SECRET` + `CF_ORIGIN_HEADER` (secret injected by a cloudflare transform rule; guards the form endpoints and makes cf-connecting-ip trustworthy) · `CF_ORIGIN_STRICT=true` (extends that guard to every route, so the origin url answers 403 on its own) · `CSP_STRICT`
+
 optional: `MAIL_TO` (where form notifications land, default `support@sentinelpay.org`) · `MAIL_FROM` · `TRIAL_APP_URL` (adds the "open your trial" button to the welcome email) · `LOG_DIR` (where the submission log is written; point it at a mounted volume, otherwise it resets on redeploy) · `ADMIN_TOKEN` (enables the two diagnostic endpoints below)
 
 ### where form submissions go

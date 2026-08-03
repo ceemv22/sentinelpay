@@ -55,6 +55,20 @@ function requireCloudflareOrigin(req, res, next) {
     return res.status(403).json({ error: 'forbidden' });
 }
 
+// Site-wide origin lockdown. The per-endpoint guard above protects the two form
+// endpoints; this closes the rest, so hitting the railway url directly gets nothing
+// at all and every request has to come through cloudflare's waf and rate limits.
+// Deliberately opt-in and separate from CF_ORIGIN_SECRET: turning it on before the
+// cloudflare transform rule exists would 403 the whole site, so it is a second,
+// explicit switch you flip once you have verified the header arrives.
+const cfOriginStrict = String(process.env.CF_ORIGIN_STRICT || '').trim().toLowerCase() === 'true';
+app.use((req, res, next) => {
+    if (!cfOriginStrict || !cfOriginSecret) return next();
+    if (fromOurCloudflare(req)) return next();
+    // no hint about why: a direct hit on the origin should look like nothing is here
+    return res.status(403).type('text/plain').send('forbidden');
+});
+
 // --- Client ip ---------------------------------------------------------------
 // Every rate limit is keyed on this, so getting it wrong means the limits do not
 // exist. `req.ip` is derived from x-forwarded-for, which anything reaching the
@@ -451,7 +465,9 @@ app.all('/v1/mail-status', async (req, res) => {
         to: mailer.MAIL_TO,
         // a form POST is rejected outright when cloudflare is not adding this header,
         // which looks exactly like "the email never arrived"
-        cloudflareOriginCheck: process.env.CF_ORIGIN_SECRET ? 'enforced' : 'off',
+        cloudflareOriginCheck: process.env.CF_ORIGIN_SECRET
+            ? (process.env.CF_ORIGIN_STRICT === 'true' ? 'enforced site-wide' : 'enforced on form endpoints only')
+            : 'off',
         // without this the forms accept submissions with no bot challenge at all
         turnstile: process.env.TURNSTILE_SECRET_KEY ? 'enforced' : 'OFF (forms accept unverified submissions)',
         submissionLog: submissions.LOG_DIR,
