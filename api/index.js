@@ -255,11 +255,16 @@ function helpSearchUrl(lang, browser) {
 }
 
 function renderPage(file, req) {
-    let html = pageCache.get(file);
-    if (html === undefined) {
-        html = fsSync.readFileSync(path.join(__dirname, 'public', file), 'utf8');
-        pageCache.set(file, html);
+    // keyed on mtime, so an edited page is picked up without a restart. in
+    // production files only change on deploy, which restarts anyway.
+    const full = path.join(__dirname, 'public', file);
+    const stamp = fsSync.statSync(full).mtimeMs;
+    let entry = pageCache.get(file);
+    if (!entry || entry.stamp !== stamp) {
+        entry = { stamp, html: fsSync.readFileSync(full, 'utf8') };
+        pageCache.set(file, entry);
     }
+    const html = entry.html;
     const lang = geoLang(req);
     const copy = NOSCRIPT_COPY[lang] || NOSCRIPT_COPY.en;
     const url = helpSearchUrl(lang, browserName(req.headers['user-agent']));
