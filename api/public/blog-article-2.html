@@ -59,7 +59,11 @@
         .article-avatar img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 2; }
         /* overlapping avatar group (co-authors): one full circle + half of the next behind it */
         .article-avatars { display: inline-flex; align-items: center; }
-        .article-avatars .article-avatar { box-shadow: 0 0 0 2px #fbfcfd; }
+        /* the avatar's own border is translucent, so on a stack it let the face
+           underneath bleed through as a dark hairline just inside the white ring.
+           an opaque backing (the same tint, flattened onto the page colour) keeps
+           the border looking identical without showing what is behind it. */
+        .article-avatars .article-avatar { box-shadow: 0 0 0 2px #fbfcfd; background: #e7f3f9; }
         .article-avatars .article-avatar:nth-child(1) { z-index: 3; }
         .article-avatars .article-avatar:nth-child(2) { z-index: 2; }
         .article-avatars .article-avatar:nth-child(3) { z-index: 1; }
