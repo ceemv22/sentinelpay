@@ -289,6 +289,21 @@ function sendPage(res, req, file, status) {
         .send(renderPage(file, req));
 }
 
+// Coarse per-IP ceiling on everything, pages and assets included, so a single
+// client cannot hammer the origin. It has to sit ahead of the page renderer and
+// express.static: mounted after them it never ran for anything but /v1/*.
+// cannot hammer the origin. Deliberately generous: normal browsing loads dozens of
+// assets per page. Cloudflare's own rate limiting is the real edge defence; this is
+// in-process depth behind it, and it resets on deploy (single-instance store).
+app.use(rateLimit({
+    windowMs: 60 * 1000,
+    max: 300,
+    standardHeaders: true,
+    legacyHeaders: false,
+    keyGenerator: (req) => `all:${req.realIp}`,
+    message: { error: 'too many requests, please slow down' }
+}));
+
 // Subdomain routing, served by this same service via Host header (no extra service):
 //  - blog.sentinelpay.org -> the blog page (public/blog.html)
 //  - help.sentinelpay.org -> a blank page until real content exists
@@ -366,19 +381,6 @@ app.use(express.static(path.join(__dirname, 'public'), {
     }
 }));
 
-// Coarse per-IP ceiling on everything (static pages included) so a single client
-// cannot hammer the origin. Deliberately generous: normal browsing loads dozens of
-// assets per page. Cloudflare's own rate limiting is the real edge defence; this is
-// in-process depth behind it, and it resets on deploy (single-instance store).
-app.use(rateLimit({
-    windowMs: 60 * 1000,
-    max: 300,
-    standardHeaders: true,
-    legacyHeaders: false,
-    keyGenerator: (req) => `all:${req.realIp}`,
-    message: { error: 'too many requests, please slow down' }
-}));
-
 // Rate-limit the demo form: 5 submissions / hour / IP (in-memory store).
 const demoRequestLimiter = rateLimit({
     windowMs: 60 * 60 * 1000,
@@ -437,10 +439,15 @@ app.all('/v1/mail-status', async (req, res) => {
         // a form POST is rejected outright when cloudflare is not adding this header,
         // which looks exactly like "the email never arrived"
         cloudflareOriginCheck: process.env.CF_ORIGIN_SECRET ? 'enforced' : 'off',
+        // without this the forms accept submissions with no bot challenge at all
+        turnstile: process.env.TURNSTILE_SECRET_KEY ? 'enforced' : 'OFF (forms accept unverified submissions)',
+        submissionLog: submissions.LOG_DIR,
     };
 
-    if (String(req.query.send || '') !== '1') {
-        return res.json({ state, hint: 'add &send=1 with POST to send a test message' });
+    // sending is a side effect, so it needs POST: a token that leaks into a url
+    // must not be firable by an <img src> or a link preview bot.
+    if (req.method !== 'POST' || String(req.query.send || '') !== '1') {
+        return res.json({ state, hint: 'POST with &send=1 to send a test message' });
     }
 
     try {
