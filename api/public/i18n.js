@@ -13,9 +13,9 @@
        and marketing lines are rewritten for the language rather than word-for-word. */
     var T = {
         hr: {
+            "hi, i want to start a sentinelpay trial, but my business has no company domain, so the automatic check will not pass. (this message was written for you. our team knows exactly what it means and what to send back, so you can press send without changing or deleting anything. if you want to add something, write it under the line.) ------------------------------": "pozdrav,\n\nželim pokrenuti sentinelpay probu, ali moj posao nema domenu tvrtke, pa automatska provjera neće proći.\n\n(ovu poruku smo napisali umjesto vas. naš tim točno zna što znači i što treba odgovoriti, pa je možete poslati bez da išta mijenjate ili brišete. ako želite nešto dodati, napišite ispod crte.)\n\n------------------------------\n",
             "two things to confirm. we check both, and the second one is not a formality.": "dvije stvari za potvrditi. obje provjeravamo, a druga nije formalnost.",
             "trial without a company domain": "proba bez domene tvrtke",
-            "hi, i want to start a sentinelpay trial, but my business has no company domain, so the automatic check will not pass. this message was written for you. our team knows exactly what it means and what to send back, so you can press send without changing or deleting anything. if you want to add something, write it below this line.": "pozdrav,\n\nželim pokrenuti sentinelpay probu, ali moj posao nema domenu tvrtke, pa automatska provjera neće proći.\n\novu poruku smo napisali umjesto vas. naš tim točno zna što znači i što vam treba odgovoriti, pa je možete poslati bez da išta mijenjate ili brišete. ako želite nešto dodati, napišite ispod ove crte.\n",
             "help us understand your business": "recite nam nešto o poslu",
             "your crypto exposure & needs": "vaša kripto izloženost i potrebe",
             "one last thing": "još samo jedno",
@@ -609,9 +609,9 @@
             "sentinelpay requires javascript to initialize secure sessions.": "sentinelpayu treba javascript za pokretanje sigurne sesije."
         },
         de: {
+            "hi, i want to start a sentinelpay trial, but my business has no company domain, so the automatic check will not pass. (this message was written for you. our team knows exactly what it means and what to send back, so you can press send without changing or deleting anything. if you want to add something, write it under the line.) ------------------------------": "hallo,\n\nich möchte eine sentinelpay-testphase starten, aber mein unternehmen hat keine firmendomain, daher wird die automatische prüfung nicht bestehen.\n\n(diese nachricht wurde für sie verfasst. unser team weiß genau, was sie bedeutet und was zu antworten ist, sie können sie also abschicken, ohne etwas zu ändern oder zu löschen. wenn sie etwas ergänzen möchten, schreiben sie es unter die linie.)\n\n------------------------------\n",
             "two things to confirm. we check both, and the second one is not a formality.": "zwei dinge zu bestätigen. wir prüfen beide, und die zweite ist keine formsache.",
             "trial without a company domain": "testphase ohne firmendomain",
-            "hi, i want to start a sentinelpay trial, but my business has no company domain, so the automatic check will not pass. this message was written for you. our team knows exactly what it means and what to send back, so you can press send without changing or deleting anything. if you want to add something, write it below this line.": "hallo,\n\nich möchte eine sentinelpay-testphase starten, aber mein unternehmen hat keine firmendomain, daher wird die automatische prüfung nicht bestehen.\n\ndiese nachricht wurde für sie verfasst. unser team weiß genau, was sie bedeutet und was zu antworten ist, sie können sie also abschicken, ohne etwas zu ändern oder zu löschen. wenn sie etwas ergänzen möchten, schreiben sie es unter diese zeile.\n",
             "help us understand your business": "erzählen sie uns von ihrem geschäft",
             "your crypto exposure & needs": "ihre krypto-exposure und bedürfnisse",
             "one last thing": "nur noch eines",

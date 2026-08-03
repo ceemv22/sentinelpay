@@ -48,7 +48,9 @@ for f in sorted(x for x in os.listdir(PUB) if x.endswith('.html')):
     body = htmlmod.unescape(body)
     total += report('html-text', f, re.findall(r'>([^<>]+)<', body))
     attrs = []
-    for a in ('placeholder', 'alt', 'title', 'aria-label'):
+    # data-mail-* is the subject and body a mailto link is built from: copy the
+    # reader sees, just assembled at runtime rather than rendered in place.
+    for a in ('placeholder', 'alt', 'title', 'aria-label', 'data-mail-subject', 'data-mail-body'):
         attrs += re.findall(a + r'="([^"]*)"', body)
     total += report('html-attr', f, attrs)
 
