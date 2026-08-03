@@ -7,6 +7,7 @@ const helmet = require('helmet');
 const hpp = require('hpp');
 require('dotenv').config();
 const mailer = require('./mailer');
+const submissions = require('./submissions-log');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -404,6 +405,21 @@ const trialRequestLimiter = rateLimit({
 // GET  /v1/mail-status?token=...            what the server thinks it is configured with
 // POST /v1/mail-status?token=...&send=1     actually send a test message and report the
 //                                           provider's raw answer
+// Reads the submission log back. Same token gate as /v1/mail-status, same 404 when
+// it is wrong. Useful because the container's disk is wiped on redeploy: this is how
+// you check who came in before that happens.
+app.get('/v1/submissions', (req, res) => {
+    const adminToken = process.env.ADMIN_TOKEN || '';
+    const provided = String(req.query.token || '');
+    if (!adminToken || !crypto.timingSafeEqual(sha256(provided), sha256(adminToken))) {
+        return sendPage(res, req, '404.html', 404);
+    }
+    const all = submissions.recent(req.query.limit);
+    const kind = String(req.query.kind || '');
+    const rows = kind ? all.filter((r) => r.kind === kind) : all;
+    res.json({ dir: submissions.LOG_DIR, count: rows.length, submissions: rows });
+});
+
 app.all('/v1/mail-status', async (req, res) => {
     const adminToken = process.env.ADMIN_TOKEN || '';
     const provided = String(req.query.token || '');
@@ -494,10 +510,19 @@ app.post('/v1/trial-request', requireCloudflareOrigin, trialRequestLimiter, asyn
         // access to the trial. if that fails the sign-up has not happened, so it is
         // the only send whose failure is reported back to the form.
         const lang = ['hr', 'de', 'en'].includes(b.lang) ? b.lang : 'en';
+
+        // written first: if the mail then fails, we still know who signed up
+        submissions.record('trial', req, {
+            name: `${firstName} ${lastName}`,
+            email, company, website, jobTitle, industry, formCountry: country, lang,
+            domainCheck: 'passed',
+        }, 'accepted');
+
         try {
             await mailer.sendTrialWelcome({ to: email, lang });
         } catch (mailErr) {
             console.error('[trial-request welcome failed]', mailErr.code || '', mailErr.message);
+            submissions.record('trial', req, { email }, 'welcome-mail-failed');
             return res.status(500).json({ error: 'failed to submit' });
         }
 
@@ -588,6 +613,12 @@ app.post('/v1/demo-request', requireCloudflareOrigin, demoRequestLimiter, async 
             }
         }
 
+        submissions.record('demo', req, {
+            name: `${firstName} ${lastName}`,
+            email, company, website, jobTitle, industry, formCountry: country,
+            size, volume, solutions, message,
+        }, 'accepted');
+
         try {
             await mailer.send({
                 subject: `new demo request: ${firstName} ${lastName}${company ? ' @ ' + company : ''}`,
@@ -611,6 +642,7 @@ app.post('/v1/demo-request', requireCloudflareOrigin, demoRequestLimiter, async 
             });
         } catch (mailErr) {
             console.error('[demo-request mail failed]', mailErr.code || '', mailErr.message);
+            submissions.record('demo', req, { email }, 'notify-mail-failed');
             return res.status(500).json({ error: 'failed to submit' });
         }
 

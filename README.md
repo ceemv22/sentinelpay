@@ -117,6 +117,25 @@ minimum env: `DATABASE_URL` · `ETHERSCAN_API_KEY` · `SUPABASE_URL` · `SUPABAS
 
 production also requires: `REDIS_URL` · `STRIPE_SECRET_KEY` · `STRIPE_WEBHOOK_SECRET` · `RESEND_API_KEY` · `CRYPTO_MASTER_SEED`
 
+optional: `MAIL_TO` (where form notifications land, default `support@sentinelpay.org`) · `MAIL_FROM` · `TRIAL_APP_URL` (adds the "open your trial" button to the welcome email) · `LOG_DIR` (where the submission log is written; point it at a mounted volume, otherwise it resets on redeploy) · `ADMIN_TOKEN` (enables the two diagnostic endpoints below)
+
+### where form submissions go
+
+| form | who gets an email | logged |
+| --- | --- | --- |
+| homepage, `/book-a-demo` | us only, at `MAIL_TO` | yes |
+| `/start-free-trial` | the applicant, plus a copy to `MAIL_TO` | yes |
+
+every submission is appended to `LOG_DIR/submissions-YYYY-MM.jsonl` and echoed to stdout, so a bounced or missed email never loses a lead. with `ADMIN_TOKEN` set:
+
+```
+GET  /v1/submissions?token=…&limit=50&kind=trial   read the log back
+GET  /v1/mail-status?token=…                       what the mailer is configured with
+POST /v1/mail-status?token=…&send=1                send a test message
+```
+
+both answer with the 404 page when the token is missing or wrong.
+
 ## license
 
 mit
