@@ -13,6 +13,7 @@
        and marketing lines are rewritten for the language rather than word-for-word. */
     var T = {
         hr: {
+            "25 free scans: 5 on your history, 20 as new payments land": "25 besplatnih provjera: 5 na povijesti, 20 kako uplate stižu",
             "hi, i want to start a sentinelpay trial, but my business has no company domain, so the automatic check will not pass. (this message was written for you. our team knows exactly what it means and what to send back, so you can press send without changing or deleting anything. if you want to add something, write it under the line.) ------------------------------": "pozdrav,\n\nželim pokrenuti sentinelpay probu, ali moj posao nema domenu tvrtke, pa automatska provjera neće proći.\n\n(ovu poruku smo napisali umjesto vas. naš tim točno zna što znači i što treba odgovoriti, pa je možete poslati bez da išta mijenjate ili brišete. ako želite nešto dodati, napišite ispod crte.)\n\n------------------------------\n",
             "two things to confirm. we check both, and the second one is not a formality.": "dvije stvari za potvrditi. obje provjeravamo, a druga nije formalnost.",
             "trial without a company domain": "proba bez domene tvrtke",
@@ -22,7 +23,6 @@
             "find out what already": "otkrijte što je već",
             "touched your wallets": "dotaknulo vaše novčanike",
             "connect a key and we screen what has already happened, not just what comes next. no call to sit through and nobody to wait for.": "spojite ključ i provjerimo što se već dogodilo, ne samo ono što tek dolazi. nema poziva koji morate odsjediti ni čekanja da vam se netko javi.",
-            "250 free scans to start, at your own pace": "250 besplatnih provjera za početak, svojim tempom",
             "must match your work email domain.": "mora se poklapati s domenom vašeg poslovnog maila.",
             "no company domain?": "nemate domenu tvrtke?",
             "we do not work with gambling operators. this is a policy, not a limit we can lift.": "ne radimo s operaterima kockanja. to je politika, a ne ograničenje koje možemo maknuti.",
@@ -609,6 +609,7 @@
             "sentinelpay requires javascript to initialize secure sessions.": "sentinelpayu treba javascript za pokretanje sigurne sesije."
         },
         de: {
+            "25 free scans: 5 on your history, 20 as new payments land": "25 kostenlose prüfungen: 5 auf ihrer historie, 20 für neu eingehende zahlungen",
             "hi, i want to start a sentinelpay trial, but my business has no company domain, so the automatic check will not pass. (this message was written for you. our team knows exactly what it means and what to send back, so you can press send without changing or deleting anything. if you want to add something, write it under the line.) ------------------------------": "hallo,\n\nich möchte eine sentinelpay-testphase starten, aber mein unternehmen hat keine firmendomain, daher wird die automatische prüfung nicht bestehen.\n\n(diese nachricht wurde für sie verfasst. unser team weiß genau, was sie bedeutet und was zu antworten ist, sie können sie also abschicken, ohne etwas zu ändern oder zu löschen. wenn sie etwas ergänzen möchten, schreiben sie es unter die linie.)\n\n------------------------------\n",
             "two things to confirm. we check both, and the second one is not a formality.": "zwei dinge zu bestätigen. wir prüfen beide, und die zweite ist keine formsache.",
             "trial without a company domain": "testphase ohne firmendomain",
@@ -618,7 +619,6 @@
             "find out what already": "finden sie heraus, was schon",
             "touched your wallets": "ihre wallets berührt hat",
             "connect a key and we screen what has already happened, not just what comes next. no call to sit through and nobody to wait for.": "verbinden sie einen key und wir prüfen, was bereits passiert ist, nicht nur was noch kommt. kein termin, den sie absitzen müssen, und niemand, auf den sie warten.",
-            "250 free scans to start, at your own pace": "250 kostenlose prüfungen zum start, in ihrem tempo",
             "must match your work email domain.": "muss zur domain ihrer arbeits-e-mail passen.",
             "no company domain?": "keine firmendomain?",
             "we do not work with gambling operators. this is a policy, not a limit we can lift.": "wir arbeiten nicht mit glücksspielanbietern. das ist eine richtlinie, keine grenze, die wir aufheben können.",
