@@ -13,7 +13,7 @@
        and marketing lines are rewritten for the language rather than word-for-word. */
     var T = {
         hr: {
-            "25 free scans: 5 on your history, 20 as new payments land": "25 besplatnih provjera: 5 na povijesti, 20 kako uplate stižu",
+            "one free scan first, before we ask you for anything else": "prva provjera besplatno, prije nego što vas išta pitamo",
             "hi, i want to start a sentinelpay trial, but my business has no company domain, so the automatic check will not pass. (this message was written for you. our team knows exactly what it means and what to send back, so you can press send without changing or deleting anything. if you want to add something, write it under the line.) ------------------------------": "pozdrav,\n\nželim pokrenuti sentinelpay probu, ali moj posao nema domenu tvrtke, pa automatska provjera neće proći.\n\n(ovu poruku smo napisali umjesto vas. naš tim točno zna što znači i što treba odgovoriti, pa je možete poslati bez da išta mijenjate ili brišete. ako želite nešto dodati, napišite ispod crte.)\n\n------------------------------\n",
             "two things to confirm. we check both, and the second one is not a formality.": "dvije stvari za potvrditi. obje provjeravamo, a druga nije formalnost.",
             "trial without a company domain": "proba bez domene tvrtke",
@@ -26,9 +26,9 @@
             "must match your work email domain.": "mora se poklapati s domenom vašeg poslovnog maila.",
             "no company domain?": "nemate domenu tvrtke?",
             "we do not work with gambling operators. this is a policy, not a limit we can lift.": "ne radimo s operaterima kockanja. to je politika, a ne ograničenje koje možemo maknuti.",
-            "connect an xpub once and monitoring runs 24/7": "spojite xpub jednom i nadzor radi 24/7",
-            "or check a single wallet on demand, no setup": "ili provjerite pojedini novčanik po potrebi, bez postavljanja",
-            "one trial per company, matched on your domain. the check is automatic: if your work email and your website agree, you are in straight away. if not, we email you.": "jedna proba po tvrtki, vezana uz vašu domenu. provjera je automatska: ako se vaš poslovni mail i web slažu, odmah ste unutra. ako ne, javimo vam se mailom.",
+            "confirm your email and we scan your whole history, free": "potvrdite mail i pregledamo cijelu vašu povijest, besplatno",
+            "then 10 live checks as new payments land": "zatim 10 provjera uživo kako uplate stižu",
+            "one trial per company, matched on your domain. the first scan is automatic: if your work email and your website agree, you are in straight away. if not, we email you.": "jedna proba po tvrtki, vezana uz vašu domenu. prva provjera je automatska: ako se vaš poslovni mail i web slažu, odmah ste unutra. ako ne, javimo vam se mailom.",
             "the link is broken, or the page has moved.": "link je neispravan ili se stranica preselila.",
             "sentinelpay | page not found": "sentinelpay | stranica nije pronađena",
             "this page isn't here": "ove stranice nema",
@@ -608,7 +608,7 @@
             "sentinelpay requires javascript to initialize secure sessions.": "sentinelpayu treba javascript za pokretanje sigurne sesije."
         },
         de: {
-            "25 free scans: 5 on your history, 20 as new payments land": "25 kostenlose prüfungen: 5 auf ihrer historie, 20 für neu eingehende zahlungen",
+            "one free scan first, before we ask you for anything else": "zuerst eine kostenlose prüfung, bevor wir sie um irgendetwas bitten",
             "hi, i want to start a sentinelpay trial, but my business has no company domain, so the automatic check will not pass. (this message was written for you. our team knows exactly what it means and what to send back, so you can press send without changing or deleting anything. if you want to add something, write it under the line.) ------------------------------": "hallo,\n\nich möchte eine sentinelpay-testphase starten, aber mein unternehmen hat keine firmendomain, daher wird die automatische prüfung nicht bestehen.\n\n(diese nachricht wurde für sie verfasst. unser team weiß genau, was sie bedeutet und was zu antworten ist, sie können sie also abschicken, ohne etwas zu ändern oder zu löschen. wenn sie etwas ergänzen möchten, schreiben sie es unter die linie.)\n\n------------------------------\n",
             "two things to confirm. we check both, and the second one is not a formality.": "zwei dinge zu bestätigen. wir prüfen beide, und die zweite ist keine formsache.",
             "trial without a company domain": "testphase ohne firmendomain",
@@ -621,9 +621,9 @@
             "must match your work email domain.": "muss zur domain ihrer arbeits-e-mail passen.",
             "no company domain?": "keine firmendomain?",
             "we do not work with gambling operators. this is a policy, not a limit we can lift.": "wir arbeiten nicht mit glücksspielanbietern. das ist eine richtlinie, keine grenze, die wir aufheben können.",
-            "connect an xpub once and monitoring runs 24/7": "einmal xpub verbinden und die überwachung läuft 24/7",
-            "or check a single wallet on demand, no setup": "oder prüfen sie eine einzelne wallet bei bedarf, ohne einrichtung",
-            "one trial per company, matched on your domain. the check is automatic: if your work email and your website agree, you are in straight away. if not, we email you.": "eine testphase pro unternehmen, gebunden an ihre domain. die prüfung ist automatisch: stimmen ihre arbeits-e-mail und ihre website überein, sind sie sofort drin. wenn nicht, melden wir uns per e-mail.",
+            "confirm your email and we scan your whole history, free": "e-mail bestätigen und wir prüfen ihre gesamte historie, kostenlos",
+            "then 10 live checks as new payments land": "danach 10 live-prüfungen für neu eingehende zahlungen",
+            "one trial per company, matched on your domain. the first scan is automatic: if your work email and your website agree, you are in straight away. if not, we email you.": "eine testphase pro unternehmen, gebunden an ihre domain. die erste prüfung ist automatisch: stimmen ihre arbeits-e-mail und ihre website überein, sind sie sofort drin. wenn nicht, melden wir uns per e-mail.",
             "the link is broken, or the page has moved.": "der link ist defekt oder die seite ist umgezogen.",
             "sentinelpay | page not found": "sentinelpay | seite nicht gefunden",
             "this page isn't here": "diese seite gibt es nicht",
