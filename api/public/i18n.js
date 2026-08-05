@@ -1265,7 +1265,14 @@
         while ((n = walker.nextNode())) nodes.push(n);
         nodes.forEach(function (node) {
             var hit = dict[norm(node.nodeValue)];
-            if (hit) node.nodeValue = node.nodeValue.replace(/\S[\s\S]*\S|\S/, hit);
+            if (!hit) return;
+            // an article can be flipped back to the english it was written in, so
+            // remember what each node said before we replaced it. only inside the
+            // article: nothing else on the page offers that toggle.
+            if (node.parentNode && node.parentNode.closest('[data-original-scope]')) {
+                originals.push({ node: node, text: node.nodeValue });
+            }
+            node.nodeValue = node.nodeValue.replace(/\S[\s\S]*\S|\S/, hit);
         });
         // text the walker cannot reach: it lives in attributes, not in nodes.
         // alt and title surface when an image fails or on hover, aria-label is
@@ -1277,6 +1284,67 @@
                 if (hit) el.setAttribute(attr, hit);
             });
         });
+    }
+
+    // --- show the original ---------------------------------------------------
+    // articles are written in english and translated like the rest of the site.
+    // a reader who wants the author's own words can flip one article back without
+    // leaving their language: the site chrome, the nav and every other page stay
+    // exactly as they were.
+    var originals = [];
+    var showingOriginal = false;
+
+    function setOriginal(on) {
+        if (on === showingOriginal) return;
+        originals.forEach(function (entry) {
+            var shown = entry.node.nodeValue;
+            entry.node.nodeValue = entry.text;
+            entry.text = shown;
+        });
+        // an article's tab title is its headline, and that rule holds here too:
+        // flip the headline to english and the tab follows it.
+        var english = window.__SP_TITLE_SRC;
+        if (english) {
+            if (on) { translatedTitle = document.title; document.title = english; }
+            else if (translatedTitle) { document.title = translatedTitle; }
+        }
+        showingOriginal = on;
+    }
+    var translatedTitle = '';
+
+    function buildOriginalToggle(lang) {
+        // english readers are already reading the original
+        if (lang === 'en') return;
+        var scopes = document.querySelectorAll('[data-original-scope]');
+        if (!scopes.length || !originals.length) return;
+        var host = document.querySelector('[data-original-toggle]');
+        if (!host) return;
+
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'article-original-btn';
+        // the button is chrome, not article text: it must never flip with the body
+        btn.setAttribute('data-i18n-skip', '');
+
+        var LABEL = {
+            hr: { show: 'prikaži izvornik (engleski)', back: 'prikaži prijevod' },
+            de: { show: 'original anzeigen (englisch)', back: 'übersetzung anzeigen' },
+        }[lang] || { show: 'show original (english)', back: 'show translation' };
+
+        function paint() {
+            btn.textContent = showingOriginal ? LABEL.back : LABEL.show;
+            btn.setAttribute('aria-pressed', showingOriginal ? 'true' : 'false');
+            // the article itself changes language, so say so for screen readers
+            scopes.forEach(function (el) {
+                el.setAttribute('lang', showingOriginal ? 'en' : lang);
+            });
+        }
+        btn.addEventListener('click', function () {
+            setOriginal(!showingOriginal);
+            paint();
+        });
+        paint();
+        host.appendChild(btn);
     }
 
     function buildSwitcher(lang) {
@@ -1390,6 +1458,7 @@
         if (lang !== 'en') translate(lang);
         buildMailtos(lang);
         buildSwitcher(lang);
+        buildOriginalToggle(lang);
     }
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
     else init();

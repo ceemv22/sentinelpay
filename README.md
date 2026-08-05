@@ -56,6 +56,7 @@ english, croatian and german. **592 translated strings per language**, keyed on 
 - **the homepage has real addresses**: `/en`, `/hr`, `/de`, each with a self-referencing canonical and `hreflang` alternates. the bare domain resolves a language and redirects to it, 302 and never cached, because the answer depends on the visitor.
 - **first visit picks a language from the visitor's country**, resolved server-side from `cf-ipcountry`. the guess is never written to the cookie, so it cannot harden into a stored preference.
 - **tab titles are translated before first paint.** an inline script in `<head>` sets the title from the cookie, so no page ever shows an english title and then swaps it. measured at one title frame per language.
+- **every translated article can be read in the original.** croatian and german readers get a toggle that flips one article back to the english it was written in, headline, body and tab title together, while the site stays in their language. english readers are already reading the original, so they never see the button.
 - **`tools/i18n-audit.py` refuses to pass on any untranslated string**, including strings written at runtime by javascript. it currently reports zero missing.
 
 ## security
