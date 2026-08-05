@@ -1324,10 +1324,12 @@
         var host = document.querySelector('[data-original-toggle]');
         if (!host) return;
 
+        // the language is named in brackets so it is clear what "the original"
+        // actually is before anyone clicks
         var LABEL = {
-            hr: { show: 'pročitaj izvornik', back: 'prikaži prijevod' },
-            de: { show: 'original lesen', back: 'übersetzung anzeigen' },
-        }[lang] || { show: 'read the original', back: 'show the translation' };
+            hr: { show: 'pročitaj izvornik (engleski)', back: 'prikaži prijevod' },
+            de: { show: 'original lesen (englisch)', back: 'übersetzung anzeigen' },
+        }[lang] || { show: 'read the original (english)', back: 'show the translation' };
 
         var btn = document.createElement('button');
         btn.type = 'button';
