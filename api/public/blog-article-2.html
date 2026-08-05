@@ -53,21 +53,53 @@
         .article-back:hover { color: #0e2358; border-color: rgba(14,35,88,0.32); background: #fbfcfd; box-shadow: 0 6px 18px -10px rgba(14,35,88,0.35); }
         .article-back:hover svg { transform: translateX(-3px); }
         .article-title { margin: 0 0 1.4rem; font-size: 2.7rem; font-weight: 800; line-height: 1.14; letter-spacing: -0.02em; color: #0e2358; text-transform: lowercase; }
-        /* show-original toggle: only rendered on a translated article */
-        .article-original { margin-top: 1.15rem; }
-        .article-original-btn {
-            display: inline-flex; align-items: center; gap: 0.45rem;
-            padding: 0.4rem 0.85rem;
-            font: inherit; font-size: 0.82rem; font-weight: 600;
-            color: rgba(14,35,88,0.7);
-            background: rgba(255,255,255,0.7);
-            border: 1px solid rgba(14,35,88,0.14);
-            border-radius: 999px;
-            cursor: pointer;
-            transition: border-color 0.18s ease, color 0.18s ease, background 0.18s ease;
+        /* translation notice: only rendered on a translated article */
+        .article-original { margin-top: 1.6rem; }
+        .article-translated {
+            display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;
+            padding: 0.7rem 0.95rem;
+            border: 1px solid rgba(0,145,200,0.18);
+            border-left: 3px solid rgba(0,145,200,0.55);
+            border-radius: 10px;
+            background: rgba(0,145,200,0.045);
+            font-size: 0.86rem; line-height: 1.5;
+            color: rgba(14,35,88,0.66);
+            transition: background 0.2s ease, border-color 0.2s ease;
         }
-        .article-original-btn:hover { border-color: rgba(0,145,200,0.45); color: #0e2358; background: #fff; }
-        .article-original-btn[aria-pressed="true"] { border-color: rgba(0,145,200,0.45); color: #0091c8; }
+        .article-translated-ico { flex: 0 0 auto; width: 17px; height: 17px; color: #0091c8; opacity: 0.85; }
+        .article-translated-text { flex: 1 1 auto; min-width: 0; }
+        /* the action reads as a link, because that is what it behaves like */
+        .article-translated-action {
+            /* a blockified flex item with flex-basis:auto fills its line once the
+               row wraps, which stretched the underline across the whole notice */
+            flex: 0 0 auto;
+            width: fit-content;
+            text-align: left;
+            padding: 0; margin: 0;
+            font: inherit; font-weight: 600; line-height: 1.25;
+            color: #0091c8;
+            background: none; border: 0;
+            padding-bottom: 1px;
+            border-bottom: 1px solid rgba(0,145,200,0.35);
+            cursor: pointer;
+            transition: color 0.18s ease, border-color 0.18s ease;
+        }
+        .article-translated-action:hover { color: #0e2358; border-bottom-color: #0e2358; }
+        .article-translated-action:focus-visible { outline: 2px solid rgba(0,145,200,0.5); outline-offset: 3px; border-radius: 2px; }
+        /* reading the original is the quieter state: it is no longer a caveat */
+        .article-translated.is-original {
+            border-color: rgba(14,35,88,0.12);
+            border-left-color: rgba(14,35,88,0.3);
+            background: rgba(14,35,88,0.03);
+        }
+        .article-translated.is-original .article-translated-ico { color: rgba(14,35,88,0.45); }
+        @media (max-width: 560px) {
+            /* the link drops to its own line and lines up under the text, not under
+               the icon. align-self stops it stretching to the full row width. */
+            .article-translated { align-items: flex-start; row-gap: 0.5rem; font-size: 0.82rem; }
+            .article-translated-ico { margin-top: 1px; }
+            .article-translated-action { align-self: flex-start; margin-left: calc(17px + 0.6rem); }
+        }
         .article-byline { display: flex; align-items: center; gap: 0.7rem; }
         .article-avatar { position: relative; width: 40px; height: 40px; border-radius: 50%; overflow: hidden; display: grid; place-items: center; background: rgba(0,145,200,0.08); border: 1px solid rgba(14,35,88,0.1); }
         .article-avatar svg { width: 22px; height: 22px; }
@@ -332,6 +364,6 @@
     </script>
     <script>window.addEventListener('load',function(){window.scrollTo(0,0);var l=document.getElementById('sp-loader');if(!l)return;l.classList.add('spl-done');setTimeout(function(){l.remove();},620);});</script>
     <script src="/img-fallback.js?v=2" defer></script>
-    <script src="/i18n.js?v=36" defer></script>
+    <script src="/i18n.js?v=37" defer></script>
 </body>
 </html>
