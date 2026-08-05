@@ -1214,6 +1214,14 @@
         document.cookie = n + '=' + encodeURIComponent(v) + '; path=/; max-age=31536000; samesite=lax' + domain + secure;
     }
     function current() {
+        // /hr, /de and /en are explicit requests for a language, so they win over a
+        // stored preference and are then saved: navigating on to any other page
+        // stays in the language the visitor asked for.
+        var forced = document.documentElement.getAttribute('data-force-lang');
+        if (LANGS[forced]) {
+            if (readCookie(COOKIE) !== forced) persist(forced);
+            return forced;
+        }
         var v = readCookie(COOKIE);
         if (!v) { try { v = localStorage.getItem(COOKIE); } catch (e) {} }
         if (LANGS[v]) return v;
@@ -1318,7 +1326,14 @@
             opt.addEventListener('click', function () {
                 if (code === lang) { close(); return; }
                 persist(code);
-                location.reload();
+                // on a language url the path itself pins the language, so reloading
+                // would land back on the one we just switched away from. move to the
+                // matching url instead; everywhere else a reload is right.
+                if (document.documentElement.getAttribute('data-force-lang')) {
+                    location.assign('/' + code);
+                } else {
+                    location.reload();
+                }
             });
             menu.appendChild(opt);
         });

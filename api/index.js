@@ -283,7 +283,24 @@ function helpSearchUrl(lang, browser) {
         '&hl=' + (HELP_QUERY[lang] ? lang : 'en');
 }
 
-function renderPage(file, req) {
+// The homepage is reachable at /, /en, /hr and /de. Search engines need to be told
+// those are the same page in different languages, and each one needs to point at
+// itself as canonical, so the tags are built per request rather than sitting in the
+// file. Only the homepage has them: no other page has language urls.
+const SITE_URL = process.env.SITE_URL || 'https://sentinelpay.org';
+const HOMEPAGE_LANGS = ['en', 'hr', 'de'];
+function homepageLinkTags(forced) {
+    const self = forced ? SITE_URL + '/' + forced : SITE_URL;
+    const alts = HOMEPAGE_LANGS
+        .map((l) => '<link rel="alternate" hreflang="' + l + '" href="' + SITE_URL + '/' + l + '">')
+        .join('');
+    // x-default is the language-neutral entry point, which is the bare domain: it
+    // still picks a language from the visitor's country.
+    return '<link rel="canonical" href="' + self + '">' + alts +
+        '<link rel="alternate" hreflang="x-default" href="' + SITE_URL + '">';
+}
+
+function renderPage(file, req, forcedLang) {
     // keyed on mtime, so an edited page is picked up without a restart. in
     // production files only change on deploy, which restarts anyway.
     const full = path.join(__dirname, 'public', file);
@@ -294,7 +311,7 @@ function renderPage(file, req) {
         pageCache.set(file, entry);
     }
     const html = entry.html;
-    const lang = geoLang(req);
+    const lang = forcedLang || geoLang(req);
     const copy = NOSCRIPT_COPY[lang] || NOSCRIPT_COPY.en;
     const url = helpSearchUrl(lang, browserName(req.headers['user-agent']));
     const notice =
@@ -303,17 +320,22 @@ function renderPage(file, req) {
         '<p class="sp-ns-text">' + escapeHtml(copy.body) + '</p>' +
         '<a class="sp-ns-link" href="' + escapeHtml(url) + '" rel="noopener nofollow" target="_blank">' + escapeHtml(copy.link) + '</a>' +
         '</div>';
+    // a forced language is an instruction, not a guess: the client treats it as
+    // stronger than a stored preference, so it is carried on its own attribute.
+    const attrs = ' data-geo-lang="' + lang + '"' +
+        (forcedLang ? ' data-force-lang="' + forcedLang + '"' : '');
     return html
         .replace('<!--SP_NOSCRIPT-->', notice)
-        .replace(/<html lang="en">/, '<html lang="en" data-geo-lang="' + lang + '">');
+        .replace('<!--SP_HREFLANG-->', () => homepageLinkTags(forcedLang))
+        .replace(/<html lang="en">/, '<html lang="en"' + attrs + '>');
 }
 
-function sendPage(res, req, file, status) {
+function sendPage(res, req, file, status, forcedLang) {
     res.status(status || 200)
         .set('Cache-Control', 'no-cache')
         .set('Vary', 'CF-IPCountry, User-Agent')
         .type('html')
-        .send(renderPage(file, req));
+        .send(renderPage(file, req, forcedLang));
 }
 
 // Coarse per-IP ceiling on everything, pages and assets included, so a single
@@ -369,6 +391,18 @@ app.use((req, res, next) => {
         return res.status(200).type('html').send(BLANK_PAGE);
     }
     next();
+});
+
+// Language urls, homepage only. /hr, /de and /en serve the same homepage with the
+// language pinned, which gives each language a real address to link and to index.
+// The rest of the site has no language urls: it follows the cookie these routes set.
+// express 5 dropped inline path regexes, so the paths are listed instead
+app.get(HOMEPAGE_LANGS.flatMap((l) => ['/' + l, '/' + l + '/']), (req, res, next) => {
+    const host = String(req.headers.host || '').split(':')[0].toLowerCase();
+    // the blog and help subdomains have their own routing above
+    if (host.startsWith('blog.') || host.startsWith('help.')) return next();
+    const lang = req.path.replace(/\//g, '');
+    return sendPage(res, req, 'index.html', 200, lang);
 });
 
 // Legal pages moved to clean urls; keep the old paths working with 301s.

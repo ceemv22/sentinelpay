@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>sentinelpay</title>
-    <script>/* tab title before first paint; for articles this is the h1 translation */(function(){var T=null,m=document.cookie.match(/(?:^|; )sp-lang=([^;]*)/),l=m?decodeURIComponent(m[1]):null;if(!l){try{l=localStorage.getItem("sp-lang")}catch(e){}}if(l!=="hr"&&l!=="de"&&l!=="en")l=document.documentElement.getAttribute("data-geo-lang");if(l!=="hr"&&l!=="de")return;document.documentElement.lang=l;if(!T)return;window.__SP_TITLE_SRC=document.title.replace(/\s+/g," ").trim();document.title=T[l];})();</script>
+    <script>/* tab title before first paint; for articles this is the h1 translation */(function(){var T=null,f=document.documentElement.getAttribute("data-force-lang"),m=document.cookie.match(/(?:^|; )sp-lang=([^;]*)/),l=f||(m?decodeURIComponent(m[1]):null);if(!l){try{l=localStorage.getItem("sp-lang")}catch(e){}}if(l!=="hr"&&l!=="de"&&l!=="en")l=document.documentElement.getAttribute("data-geo-lang");if(l!=="hr"&&l!=="de")return;document.documentElement.lang=l;if(!T)return;window.__SP_TITLE_SRC=document.title.replace(/\s+/g," ").trim();document.title=T[l];})();</script>
     <meta name="description" content="connect your rpc. sentinelpay monitors every transaction 24/7 and emails your team the moment a high-risk wallet is detected.">
     <meta name="keywords" content="sentinelpay, blockchain monitoring, crypto aml, real-time risk detection, rpc listener, wallet screening">
     <meta name="google-site-verification" content="eJA6iy1k02Jx0DsiCQeXU9TvMZyPqaZaTVvOPop3hY8" />
-    <link rel="canonical" href="https://sentinelpay.org">
+<!--SP_HREFLANG-->
 
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://sentinelpay.org">
@@ -1758,6 +1758,6 @@
     </script>
     <script src="/demo-form.js?v=14" defer></script>
     <script src="/img-fallback.js?v=2" defer></script>
-    <script src="/i18n.js?v=32" defer></script>
+    <script src="/i18n.js?v=34" defer></script>
 </body>
 </html>
