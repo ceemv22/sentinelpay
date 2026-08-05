@@ -391,7 +391,8 @@
                     // not working" instead sends people to support over something
                     // they could fix in the field in front of them.
                     return r.json().catch(function(){ return {}; }).then(function(body) {
-                        var err = new Error('request failed');
+                        // not user-facing copy: a status code, so the translation audit does not flag it
+                        var err = new Error('http_' + r.status);
                         err.reason = body && body.error;
                         err.status = r.status;
                         throw err;
