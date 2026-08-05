@@ -1312,9 +1312,10 @@
     }
     var translatedTitle = '';
 
-    // A translation notice rather than a button. It says the thing a reader
-    // actually wants to know, that these are not the author's own words, and
-    // offers the original as a quiet inline link. A lone pill button said neither.
+    // The control is a pill, cut from the same pattern as the "all articles"
+    // button above it: same height, same radius, same border weight. It carries an
+    // icon so it reads as an action at a glance, and it flips to a filled state
+    // when the original is showing, so the current state is never in doubt.
     function buildOriginalToggle(lang) {
         // english readers are already reading the original
         if (lang === 'en') return;
@@ -1323,59 +1324,41 @@
         var host = document.querySelector('[data-original-toggle]');
         if (!host) return;
 
-        var COPY = {
-            hr: {
-                note: 'ovaj članak je preveden s engleskog.',
-                action: 'pročitaj izvornik',
-                noteOn: 'čitate izvornik, onako kako ga je autor napisao.',
-                actionOn: 'prikaži prijevod',
-            },
-            de: {
-                note: 'dieser artikel wurde aus dem englischen übersetzt.',
-                action: 'original lesen',
-                noteOn: 'sie lesen das original, so wie der autor es geschrieben hat.',
-                actionOn: 'übersetzung anzeigen',
-            },
-        }[lang] || {
-            note: 'this article was translated from english.',
-            action: 'read the original',
-            noteOn: 'you are reading the original, as the author wrote it.',
-            actionOn: 'show the translation',
-        };
+        var LABEL = {
+            hr: { show: 'pročitaj izvornik', back: 'prikaži prijevod' },
+            de: { show: 'original lesen', back: 'übersetzung anzeigen' },
+        }[lang] || { show: 'read the original', back: 'show the translation' };
 
-        var bar = document.createElement('div');
-        bar.className = 'article-translated';
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'article-original-btn';
         // chrome, not article text: it must never flip with the body
-        bar.setAttribute('data-i18n-skip', '');
-        bar.innerHTML =
-            '<svg class="article-translated-ico" viewBox="0 0 24 24" fill="none" ' +
-            'stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+        btn.setAttribute('data-i18n-skip', '');
+        btn.innerHTML =
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" ' +
+            'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
             '<circle cx="12" cy="12" r="9"></circle>' +
             '<path d="M3.6 9h16.8M3.6 15h16.8"></path>' +
             '<path d="M12 3a15 15 0 0 1 0 18a15 15 0 0 1 0-18z"></path>' +
-            '</svg>' +
-            '<span class="article-translated-text"></span>' +
-            '<button type="button" class="article-translated-action"></button>';
+            '</svg><span></span>';
 
-        var text = bar.querySelector('.article-translated-text');
-        var action = bar.querySelector('.article-translated-action');
+        var label = btn.querySelector('span');
 
         function paint() {
-            text.textContent = showingOriginal ? COPY.noteOn : COPY.note;
-            action.textContent = showingOriginal ? COPY.actionOn : COPY.action;
-            action.setAttribute('aria-pressed', showingOriginal ? 'true' : 'false');
-            bar.classList.toggle('is-original', showingOriginal);
+            label.textContent = showingOriginal ? LABEL.back : LABEL.show;
+            btn.setAttribute('aria-pressed', showingOriginal ? 'true' : 'false');
+            btn.classList.toggle('is-on', showingOriginal);
             // the article itself changes language, so say so for screen readers
             scopes.forEach(function (el) {
                 el.setAttribute('lang', showingOriginal ? 'en' : lang);
             });
         }
-        action.addEventListener('click', function () {
+        btn.addEventListener('click', function () {
             setOriginal(!showingOriginal);
             paint();
         });
         paint();
-        host.appendChild(bar);
+        host.appendChild(btn);
     }
 
     function buildSwitcher(lang) {
