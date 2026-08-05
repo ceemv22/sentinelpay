@@ -396,6 +396,28 @@ app.use((req, res, next) => {
 // Language urls, homepage only. /hr, /de and /en serve the same homepage with the
 // language pinned, which gives each language a real address to link and to index.
 // The rest of the site has no language urls: it follows the cookie these routes set.
+// The bare domain picks a language and then says so in the address bar. Landing on
+// "/" and staying there hides which language you are reading, and gives the three
+// translations nothing to be linked or shared as. So "/" resolves the language the
+// same way the client would, and redirects to it.
+//
+// 302, never 301: the target depends on the visitor's cookie and country, and a
+// permanent redirect would be cached by their browser and pin them to whichever
+// language they happened to get first. no-store and Vary keep any shared cache out
+// of it for the same reason.
+app.get('/', (req, res, next) => {
+    const host = String(req.headers.host || '').split(':')[0].toLowerCase();
+    if (host.startsWith('blog.') || host.startsWith('help.')) return next();
+
+    const cookie = String(req.headers.cookie || '').match(/(?:^|;\s*)sp-lang=([^;]*)/);
+    const saved = cookie ? decodeURIComponent(cookie[1]) : '';
+    const lang = HOMEPAGE_LANGS.includes(saved) ? saved : geoLang(req);
+
+    res.set('Cache-Control', 'no-store');
+    res.set('Vary', 'Cookie, CF-IPCountry');
+    return res.redirect(302, '/' + lang);
+});
+
 // express 5 dropped inline path regexes, so the paths are listed instead
 app.get(HOMEPAGE_LANGS.flatMap((l) => ['/' + l, '/' + l + '/']), (req, res, next) => {
     const host = String(req.headers.host || '').split(':')[0].toLowerCase();

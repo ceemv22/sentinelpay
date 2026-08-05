@@ -2,16 +2,6 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://sentinelpay.org/</loc>
-    <lastmod>2026-08-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://sentinelpay.org/en"/>
-    <xhtml:link rel="alternate" hreflang="hr" href="https://sentinelpay.org/hr"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://sentinelpay.org/de"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://sentinelpay.org/"/>
-  </url>
-  <url>
     <loc>https://sentinelpay.org/en</loc>
     <lastmod>2026-08-05</lastmod>
     <changefreq>weekly</changefreq>
