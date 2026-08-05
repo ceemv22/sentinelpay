@@ -385,7 +385,17 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)
                 }).then(function(r) {
-                    return r.ok ? r.json().catch(function(){ return {}; }) : Promise.reject(r);
+                    if (r.ok) return r.json().catch(function(){ return {}; });
+                    // the server says exactly what is wrong: a domain that does not
+                    // match, a free mailbox, too many attempts. showing "sending is
+                    // not working" instead sends people to support over something
+                    // they could fix in the field in front of them.
+                    return r.json().catch(function(){ return {}; }).then(function(body) {
+                        var err = new Error('request failed');
+                        err.reason = body && body.error;
+                        err.status = r.status;
+                        throw err;
+                    });
                 }).then(function() {
                     // clear the way for the success panel. on the fold pages the card
                     // must not change size, so the form keeps its space and the panel
@@ -408,13 +418,18 @@
                     var host = form.parentElement;
                     if (host) host.querySelectorAll('[data-on-success="hide"]').forEach(function(el) { el.style.display = 'none'; });
                     if (successBox) successBox.hidden = false;
-                }).catch(function() {
+                }).catch(function(err) {
                     submitBtn.disabled = false;
                     submitBtn.textContent = t(cfg.submitLabel);
                     turnstileToken = '';
                     if (turnstileEnabled && window.turnstile) { try { window.turnstile.reset(); } catch (e) {} }
-                    if (window.SentinelToast) window.SentinelToast.show(t('could not send. email us at support@sentinelpay.org'), 'error');
-                    else alert(t('could not send right now. please email support@sentinelpay.org'));
+                    // only a 500 or a dead connection is actually "sending is broken".
+                    // everything else is something the visitor can act on.
+                    var msg = (err && err.reason && err.status && err.status < 500)
+                        ? t(err.reason)
+                        : t('could not send right now. please email support@sentinelpay.org');
+                    if (window.SentinelToast) window.SentinelToast.show(msg, 'error');
+                    else alert(msg);
                 });
             });
         })();

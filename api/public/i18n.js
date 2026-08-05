@@ -13,6 +13,13 @@
        and marketing lines are rewritten for the language rather than word-for-word. */
     var T = {
         hr: {
+            "please use your work email and your company website": "koristite poslovni mail i web svoje tvrtke",
+            "website domain must match your work email domain": "domena weba mora se poklapati s domenom vašeg poslovnog maila",
+            "we do not onboard gambling operators": "ne radimo s operaterima kockanja",
+            "too many requests, please try again later": "previše pokušaja, pokušajte kasnije",
+            "too many requests, please slow down": "previše zahtjeva, usporite malo",
+            "verification failed, please try again": "provjera nije prošla, pokušajte ponovno",
+            "invalid submission": "nešto u obrascu nije ispravno, provjerite podatke",
             "one free scan plus one from your history, right away": "odmah jedna besplatna provjera i jedna iz vaše povijesti",
             "hi, i want to start a sentinelpay trial, but my business has no company domain, so the automatic check will not pass. (this message was written for you. our team knows exactly what it means and what to send back, so you can press send without changing or deleting anything. if you want to add something, write it under the line.) ------------------------------": "pozdrav,\n\nželim pokrenuti sentinelpay probu, ali moj posao nema domenu tvrtke, pa automatska provjera neće proći.\n\n(ovu poruku smo napisali umjesto vas. naš tim točno zna što znači i što treba odgovoriti, pa je možete poslati bez da išta mijenjate ili brišete. ako želite nešto dodati, napišite ispod crte.)\n\n------------------------------\n",
             "two things to confirm. we check both, and the second one is not a formality.": "dvije stvari za potvrdu. obje provjeravamo, a druga nije formalnost.",
@@ -607,6 +614,13 @@
             "sentinelpay requires javascript to initialize secure sessions.": "sentinelpayu treba javascript za pokretanje sigurne sesije."
         },
         de: {
+            "please use your work email and your company website": "bitte verwenden sie ihre arbeits-e-mail und ihre firmenwebsite",
+            "website domain must match your work email domain": "die domain der website muss zur domain ihrer arbeits-e-mail passen",
+            "we do not onboard gambling operators": "wir nehmen keine glücksspielanbieter auf",
+            "too many requests, please try again later": "zu viele versuche, bitte später erneut probieren",
+            "too many requests, please slow down": "zu viele anfragen, bitte etwas langsamer",
+            "verification failed, please try again": "die prüfung ist fehlgeschlagen, bitte erneut versuchen",
+            "invalid submission": "etwas im formular stimmt nicht, bitte prüfen sie ihre angaben",
             "one free scan plus one from your history, right away": "sofort eine kostenlose prüfung und eine aus ihrer historie",
             "hi, i want to start a sentinelpay trial, but my business has no company domain, so the automatic check will not pass. (this message was written for you. our team knows exactly what it means and what to send back, so you can press send without changing or deleting anything. if you want to add something, write it under the line.) ------------------------------": "hallo,\n\nich möchte eine sentinelpay-testphase starten, aber mein unternehmen hat keine firmendomain, daher wird die automatische prüfung nicht bestehen.\n\n(diese nachricht wurde für sie verfasst. unser team weiß genau, was sie bedeutet und was zu antworten ist, sie können sie also abschicken, ohne etwas zu ändern oder zu löschen. wenn sie etwas ergänzen möchten, schreiben sie es unter die linie.)\n\n------------------------------\n",
             "two things to confirm. we check both, and the second one is not a formality.": "noch zwei dinge zu bestätigen. wir prüfen beide, und die zweite ist keine formsache.",
