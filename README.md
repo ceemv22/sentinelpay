@@ -115,16 +115,26 @@ nothing is required to boot. everything below changes behaviour when set.
 
 a running incident is announced above the nav on every page, and the form submit is
 disabled while it stops mail reaching us, so nobody is walked through four steps into
-a dead end. env-driven, so it goes up and comes down without a deploy:
+a dead end. env-driven, so it goes up and comes down without a deploy: unset
+`STATUS_MESSAGE` and the banner, the attributes and the disabling all disappear.
 
 | variable | effect |
 | --- | --- |
-| `STATUS_MESSAGE` | the english source text. empty or unset hides the banner entirely |
-| `STATUS_LINK`, `STATUS_LINK_TEXT` | optional link, for a status page |
-| `STATUS_BLOCKS_MAIL` | `true` while submissions cannot reach us: disables the submit button and the mailto fallbacks |
+| `STATUS_MESSAGE` | a preset key, or free text. empty or unset hides everything |
+| `STATUS_LINK`, `STATUS_LINK_TEXT` | optional link. a preset supplies its own label |
+| `STATUS_BLOCKS_MAIL` | `true` while submissions cannot reach us |
+| `STATUS_MESSAGE_HR`, `STATUS_MESSAGE_DE` | croatian and german text for a custom message |
+| `STATUS_LINK_TEXT_HR`, `STATUS_LINK_TEXT_DE` | the same, for a custom button label |
 
-the message is injected as plain markup and translated client-side like the rest of
-the site, so add the english text to `i18n.js` for hr and de before switching it on.
+presets are written properly in all three languages and need nothing else set:
+`email-outage` · `degraded` · `maintenance`. free text shows as typed in every
+language unless the per-language variables are given: machine translating whatever
+someone types would produce exactly the stiff wording the rest of the site avoids.
+
+`STATUS_BLOCKS_MAIL=true` disables every form's submit button, in the markup and not
+only visually, and makes the forms' mailto fallback inert. the support and privacy
+addresses in the footer and the legal pages stay clickable on purpose: they are the
+contact routes those pages are obliged to offer.
 
 ### operations
 

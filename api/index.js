@@ -306,30 +306,98 @@ function homepageLinkTags(forced) {
 // plain markup like the noscript notice: the csp hashes are computed at boot, so
 // nothing injected per request may be a script.
 //
-//   STATUS_MESSAGE   the english source text. empty or unset hides the banner.
-//   STATUS_LINK      optional url the banner links to (a status page)
-//   STATUS_LINK_TEXT optional label for that link
-//   STATUS_BLOCKS_MAIL  "true" while the outage stops us receiving form submissions
+//   STATUS_MESSAGE      a preset key (below) or free text. empty or unset hides it
+//   STATUS_LINK         optional url the banner links to
+//   STATUS_LINK_TEXT    optional button label. a preset supplies its own
+//   STATUS_BLOCKS_MAIL  "true" while the outage stops us receiving submissions
+//
+// Translation: machine translating whatever someone types would produce exactly
+// the stiff wording we spent this project avoiding. So the common incidents ship
+// as presets, written properly in all three languages, and anything custom can be
+// given per-language text with STATUS_MESSAGE_HR / STATUS_MESSAGE_DE. All three
+// variants ride on the element as attributes and the client picks one, which keeps
+// the banner correct even when the visitor's language differs from what the
+// server guessed.
+const STATUS_PRESETS = {
+    'email-outage': {
+        message: {
+            en: 'we are having trouble receiving email. sign-ups and demo requests are paused while we fix it.',
+            hr: 'imamo problem s primanjem mailova. prijave i zahtjevi za demo pauzirani su dok to ne riješimo.',
+            de: 'wir haben probleme beim empfang von e-mails. anmeldungen und demo-anfragen pausieren, bis das behoben ist.',
+        },
+        button: { en: 'what is happening', hr: 'što se događa', de: 'was ist los' },
+    },
+    'degraded': {
+        message: {
+            en: 'some parts of sentinelpay are slower than usual. we are on it.',
+            hr: 'dijelovi sentinelpaya trenutno rade sporije nego inače. radimo na tome.',
+            de: 'teile von sentinelpay sind gerade langsamer als sonst. wir kümmern uns darum.',
+        },
+        button: { en: 'what is happening', hr: 'što se događa', de: 'was ist los' },
+    },
+    'maintenance': {
+        message: {
+            en: 'we are doing planned maintenance. some things may not work for a short while.',
+            hr: 'radimo planirano održavanje. neke stvari možda nakratko neće raditi.',
+            de: 'wir führen geplante wartungsarbeiten durch. einiges funktioniert kurzzeitig eventuell nicht.',
+        },
+        button: { en: 'what is happening', hr: 'što se događa', de: 'was ist los' },
+    },
+};
+
 const STATUS_MESSAGE = String(process.env.STATUS_MESSAGE || '').trim();
 const STATUS_LINK = String(process.env.STATUS_LINK || '').trim();
 const STATUS_LINK_TEXT = String(process.env.STATUS_LINK_TEXT || '').trim();
 const STATUS_BLOCKS_MAIL = String(process.env.STATUS_BLOCKS_MAIL || '').trim().toLowerCase() === 'true';
 
+// Resolves the message and the button label into one text per language.
+function statusCopy() {
+    if (!STATUS_MESSAGE) return null;
+    const preset = STATUS_PRESETS[STATUS_MESSAGE.toLowerCase()];
+    const env = (name) => String(process.env[name] || '').trim();
+
+    const message = {
+        en: preset ? preset.message.en : STATUS_MESSAGE,
+        hr: env('STATUS_MESSAGE_HR') || (preset ? preset.message.hr : ''),
+        de: env('STATUS_MESSAGE_DE') || (preset ? preset.message.de : ''),
+    };
+    const button = {
+        en: STATUS_LINK_TEXT || (preset ? preset.button.en : ''),
+        hr: env('STATUS_LINK_TEXT_HR') || (STATUS_LINK_TEXT ? '' : (preset ? preset.button.hr : '')),
+        de: env('STATUS_LINK_TEXT_DE') || (STATUS_LINK_TEXT ? '' : (preset ? preset.button.de : '')),
+    };
+    return { message, button };
+}
+const STATUS_COPY = statusCopy();
+
+function langAttrs(prefix, texts) {
+    // only the languages we actually have text for; the client falls back to en
+    return ['hr', 'de'].map((l) => (texts[l] ? ' ' + prefix + '-' + l + '="' + escapeHtml(texts[l]) + '"' : '')).join('');
+}
+
 function statusBanner() {
-    if (!STATUS_MESSAGE) return '';
-    // the english text is what the client dictionary is keyed on, so the banner
-    // translates with the rest of the page and nothing has to be duplicated here
-    var inner =
-        '<span class="sp-status-dot" aria-hidden="true"></span>' +
-        '<span class="sp-status-text">' + escapeHtml(STATUS_MESSAGE) + '</span>';
-    if (STATUS_LINK) {
-        inner += '<a class="sp-status-link" href="' + escapeHtml(STATUS_LINK) + '">' +
-            escapeHtml(STATUS_LINK_TEXT || 'more') +
-            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" ' +
+    if (!STATUS_COPY) return '';
+    // a warning triangle rather than a dot: this is a fault, not an announcement,
+    // and the shape reads as one before a word is parsed
+    const icon =
+        '<svg class="sp-status-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+        'stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+        '<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>' +
+        '<path d="M12 9v4"></path><path d="M12 17h.01"></path>' +
+        '</svg>';
+
+    let inner = icon +
+        '<span class="sp-status-text"' + langAttrs('data-sp', STATUS_COPY.message) + '>' +
+        escapeHtml(STATUS_COPY.message.en) + '</span>';
+
+    if (STATUS_LINK && STATUS_COPY.button.en) {
+        inner += '<a class="sp-status-btn" href="' + escapeHtml(STATUS_LINK) + '">' +
+            '<span' + langAttrs('data-sp', STATUS_COPY.button) + '>' + escapeHtml(STATUS_COPY.button.en) + '</span>' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" ' +
             'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
             '<path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>';
     }
-    return '<div class="sp-status" role="status">' +
+    return '<div class="sp-status" role="status" data-i18n-skip>' +
         '<div class="sp-status-inner">' + inner + '</div></div>';
 }
 

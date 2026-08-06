@@ -13,6 +13,8 @@
        and marketing lines are rewritten for the language rather than word-for-word. */
     var T = {
         hr: {
+            "we are having trouble receiving email. sign-ups and demo requests are paused while we fix it.": "imamo problem s primanjem mailova. prijave i zahtjevi za demo su pauzirani dok to ne riješimo.",
+            "what is happening": "što se događa",
             "we are fixing a problem with email. form submissions are paused.": "popravljamo problem s mailom. slanje obrazaca je privremeno pauzirano.",
             "we cannot receive form submissions right now. we are working on it, please try again shortly.": "trenutno ne možemo primati obrasce. radimo na tome, pokušajte ponovno uskoro.",
             "follow the status": "pratite status",
@@ -617,6 +619,8 @@
             "sentinelpay requires javascript to initialize secure sessions.": "sentinelpayu treba javascript za pokretanje sigurne sesije."
         },
         de: {
+            "we are having trouble receiving email. sign-ups and demo requests are paused while we fix it.": "wir haben derzeit probleme beim empfang von e-mails. anmeldungen und demo-anfragen pausieren, bis das behoben ist.",
+            "what is happening": "was ist los",
             "we are fixing a problem with email. form submissions are paused.": "wir beheben gerade ein problem mit e-mails. das absenden von formularen pausiert.",
             "we cannot receive form submissions right now. we are working on it, please try again shortly.": "wir können formulare gerade nicht entgegennehmen. wir arbeiten daran, bitte versuchen sie es in kürze erneut.",
             "follow the status": "status verfolgen",
@@ -1336,6 +1340,19 @@
     // button above it: same height, same radius, same border weight. It carries an
     // icon so it reads as an action at a glance, and it flips to a filled state
     // when the original is showing, so the current state is never in doubt.
+    // The status banner carries its own copy for each language as attributes,
+    // written by the server. It is not looked up in the dictionary: an incident is
+    // wording someone types today, not shipped copy, so it cannot be a key. English
+    // is already in the element, so anything without a variant simply stays as-is.
+    function paintStatusBanner(lang) {
+        var bar = document.querySelector('.sp-status');
+        if (!bar) return;
+        bar.querySelectorAll('[data-sp-hr], [data-sp-de]').forEach(function (el) {
+            var text = el.getAttribute('data-sp-' + lang);
+            if (text) el.textContent = text;
+        });
+    }
+
     function buildOriginalToggle(lang) {
         // english readers are already reading the original
         if (lang === 'en') return;
@@ -1497,6 +1514,7 @@
         buildMailtos(lang);
         buildSwitcher(lang);
         buildOriginalToggle(lang);
+        paintStatusBanner(lang);
     }
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
     else init();
