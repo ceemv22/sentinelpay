@@ -392,10 +392,7 @@ function statusBanner() {
 
     if (STATUS_LINK && STATUS_COPY.button.en) {
         inner += '<a class="sp-status-btn" href="' + escapeHtml(STATUS_LINK) + '">' +
-            '<span' + langAttrs('data-sp', STATUS_COPY.button) + '>' + escapeHtml(STATUS_COPY.button.en) + '</span>' +
-            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" ' +
-            'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
-            '<path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>';
+            '<span' + langAttrs('data-sp', STATUS_COPY.button) + '>' + escapeHtml(STATUS_COPY.button.en) + '</span></a>';
     }
     return '<div class="sp-status" role="status" data-i18n-skip>' +
         '<div class="sp-status-inner">' + inner + '</div></div>';

@@ -2793,7 +2793,6 @@ html[data-status] { --sp-status-h: 46px; }
     transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
 }
 .sp-status-btn:hover { background: rgba(255,176,60,0.22); border-color: rgba(255,176,60,0.75); color: #fff; }
-.sp-status-btn svg { width: 13px; height: 13px; }
 
 /* everything fixed to the top moves down by the banner's height */
 html[data-status] .lp-nav { top: var(--sp-status-h); }
