@@ -300,6 +300,39 @@ function homepageLinkTags(forced) {
         '<link rel="alternate" hreflang="x-default" href="' + SITE_URL + '">';
 }
 
+// --- Status banner -----------------------------------------------------------
+// A running incident is announced on every page, the way a status page does it.
+// It is env-driven so it can be switched on and off without a deploy, and it is
+// plain markup like the noscript notice: the csp hashes are computed at boot, so
+// nothing injected per request may be a script.
+//
+//   STATUS_MESSAGE   the english source text. empty or unset hides the banner.
+//   STATUS_LINK      optional url the banner links to (a status page)
+//   STATUS_LINK_TEXT optional label for that link
+//   STATUS_BLOCKS_MAIL  "true" while the outage stops us receiving form submissions
+const STATUS_MESSAGE = String(process.env.STATUS_MESSAGE || '').trim();
+const STATUS_LINK = String(process.env.STATUS_LINK || '').trim();
+const STATUS_LINK_TEXT = String(process.env.STATUS_LINK_TEXT || '').trim();
+const STATUS_BLOCKS_MAIL = String(process.env.STATUS_BLOCKS_MAIL || '').trim().toLowerCase() === 'true';
+
+function statusBanner() {
+    if (!STATUS_MESSAGE) return '';
+    // the english text is what the client dictionary is keyed on, so the banner
+    // translates with the rest of the page and nothing has to be duplicated here
+    var inner =
+        '<span class="sp-status-dot" aria-hidden="true"></span>' +
+        '<span class="sp-status-text">' + escapeHtml(STATUS_MESSAGE) + '</span>';
+    if (STATUS_LINK) {
+        inner += '<a class="sp-status-link" href="' + escapeHtml(STATUS_LINK) + '">' +
+            escapeHtml(STATUS_LINK_TEXT || 'more') +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" ' +
+            'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+            '<path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>';
+    }
+    return '<div class="sp-status" role="status">' +
+        '<div class="sp-status-inner">' + inner + '</div></div>';
+}
+
 function renderPage(file, req, forcedLang) {
     // keyed on mtime, so an edited page is picked up without a restart. in
     // production files only change on deploy, which restarts anyway.
@@ -323,11 +356,14 @@ function renderPage(file, req, forcedLang) {
     // a forced language is an instruction, not a guess: the client treats it as
     // stronger than a stored preference, so it is carried on its own attribute.
     const attrs = ' data-geo-lang="' + lang + '"' +
-        (forcedLang ? ' data-force-lang="' + forcedLang + '"' : '');
+        (forcedLang ? ' data-force-lang="' + forcedLang + '"' : '') +
+        (STATUS_MESSAGE ? ' data-status' : '') +
+        (STATUS_BLOCKS_MAIL ? ' data-mail-down' : '');
     return html
         .replace('<!--SP_NOSCRIPT-->', notice)
         .replace('<!--SP_HREFLANG-->', () => homepageLinkTags(forcedLang))
-        .replace(/<html lang="en">/, '<html lang="en"' + attrs + '>');
+        .replace(/<html lang="en">/, '<html lang="en"' + attrs + '>')
+        .replace('<body class="lp-body">', () => '<body class="lp-body">' + statusBanner());
 }
 
 function sendPage(res, req, file, status, forcedLang) {

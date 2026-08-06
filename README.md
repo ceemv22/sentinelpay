@@ -111,6 +111,21 @@ nothing is required to boot. everything below changes behaviour when set.
 | `ADMIN_TOKEN` | enables the operations endpoints below |
 | `CSP_STRICT` | set to `false` only to fall back to `unsafe-inline` in an emergency |
 
+### status banner
+
+a running incident is announced above the nav on every page, and the form submit is
+disabled while it stops mail reaching us, so nobody is walked through four steps into
+a dead end. env-driven, so it goes up and comes down without a deploy:
+
+| variable | effect |
+| --- | --- |
+| `STATUS_MESSAGE` | the english source text. empty or unset hides the banner entirely |
+| `STATUS_LINK`, `STATUS_LINK_TEXT` | optional link, for a status page |
+| `STATUS_BLOCKS_MAIL` | `true` while submissions cannot reach us: disables the submit button and the mailto fallbacks |
+
+the message is injected as plain markup and translated client-side like the rest of
+the site, so add the english text to `i18n.js` for hr and de before switching it on.
+
 ### operations
 
 with `ADMIN_TOKEN` set:

@@ -364,8 +364,30 @@
                 }
             })();
 
+            // --- outage guard ---------------------------------------------
+            // when the server says it cannot receive submissions, the form says so
+            // and stops, rather than taking someone through four steps and failing
+            // at the end. the attribute is set server-side from STATUS_BLOCKS_MAIL.
+            var mailDown = document.documentElement.hasAttribute('data-mail-down');
+            if (mailDown) {
+                submitBtn.disabled = true;
+                submitBtn.setAttribute('aria-disabled', 'true');
+                // the fold pages own exactly one viewport and are tuned to the pixel,
+                // so an extra paragraph inside the card pushes the logo strip out of
+                // frame. there the banner at the top of the same viewport is the
+                // explanation, and the dead button is the signal.
+                if (!form.closest('.bad-form-card')) {
+                    var warn = document.createElement('p');
+                    warn.className = 'lp-demo-mail-down';
+                    warn.textContent = t('we cannot receive form submissions right now. we are working on it, please try again shortly.');
+                    var actions = form.querySelector('.lp-demo-actions');
+                    if (actions && actions.parentNode) actions.parentNode.insertBefore(warn, actions);
+                }
+            }
+
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
+                if (mailDown) return;
                 if (!validateStep(cur)) return;
                 if (turnstileEnabled && !turnstileToken) {
                     if (window.SentinelToast) window.SentinelToast.show(t('please complete the verification below.'), 'warning');

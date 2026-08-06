@@ -13,6 +13,9 @@
        and marketing lines are rewritten for the language rather than word-for-word. */
     var T = {
         hr: {
+            "we are fixing a problem with email. form submissions are paused.": "popravljamo problem s mailom. slanje obrazaca je privremeno pauzirano.",
+            "we cannot receive form submissions right now. we are working on it, please try again shortly.": "trenutno ne možemo primati obrasce. radimo na tome, pokušajte ponovno uskoro.",
+            "follow the status": "pratite status",
             "please use your work email and your company website": "koristite poslovni mail i web svoje tvrtke",
             "website domain must match your work email domain": "domena weba mora se poklapati s domenom vašeg poslovnog maila",
             "we do not onboard gambling operators": "ne radimo s operaterima kockanja",
@@ -614,6 +617,9 @@
             "sentinelpay requires javascript to initialize secure sessions.": "sentinelpayu treba javascript za pokretanje sigurne sesije."
         },
         de: {
+            "we are fixing a problem with email. form submissions are paused.": "wir beheben gerade ein problem mit e-mails. das absenden von formularen pausiert.",
+            "we cannot receive form submissions right now. we are working on it, please try again shortly.": "wir können formulare gerade nicht entgegennehmen. wir arbeiten daran, bitte versuchen sie es in kürze erneut.",
+            "follow the status": "status verfolgen",
             "please use your work email and your company website": "bitte verwenden sie ihre arbeits-e-mail und ihre firmenwebsite",
             "website domain must match your work email domain": "die domain der website muss zur domain ihrer arbeits-e-mail passen",
             "we do not onboard gambling operators": "wir nehmen keine glücksspielanbieter auf",

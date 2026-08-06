@@ -2742,3 +2742,80 @@ html.theme-light .lp-demo-select-list { scrollbar-width: thin; scrollbar-color: 
     align-items: center;
     justify-content: center;
 }
+
+/* ============ status banner ============
+   a running incident, announced above the nav on every page. the height is a
+   custom property because the fixed nav and the page's top padding both have to
+   move by exactly it; hard-coding the number in three places is how these drift. */
+:root { --sp-status-h: 0px; }
+html[data-status] { --sp-status-h: 40px; }
+@media (max-width: 720px) { html[data-status] { --sp-status-h: 56px; } }
+
+.sp-status {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 1001; /* above the nav, which is 1000 */
+    height: var(--sp-status-h);
+    display: flex; align-items: center; justify-content: center;
+    padding: 0 1rem;
+    background: linear-gradient(90deg, rgba(0,240,255,0.14) 0%, rgba(160,32,240,0.14) 100%), #08090d;
+    border-bottom: 1px solid rgba(0,240,255,0.18);
+    font-size: 0.82rem; line-height: 1.35;
+    color: rgba(255,255,255,0.82);
+}
+.sp-status-inner { display: flex; align-items: center; gap: 0.6rem; max-width: 1200px; text-align: center; }
+/* a live pulse, the shorthand every status page uses for "this is happening now" */
+.sp-status-dot {
+    flex: 0 0 auto; width: 7px; height: 7px; border-radius: 50%;
+    background: #00f0ff; box-shadow: 0 0 0 0 rgba(0,240,255,0.55);
+    animation: spStatusPulse 2.2s ease-out infinite;
+}
+@keyframes spStatusPulse {
+    0% { box-shadow: 0 0 0 0 rgba(0,240,255,0.5); }
+    70% { box-shadow: 0 0 0 7px rgba(0,240,255,0); }
+    100% { box-shadow: 0 0 0 0 rgba(0,240,255,0); }
+}
+.sp-status-link {
+    flex: 0 0 auto; display: inline-flex; align-items: center; gap: 0.3rem;
+    color: #7bdcff; font-weight: 600; text-decoration: none;
+    border-bottom: 1px solid rgba(123,220,255,0.35);
+    transition: color 0.18s ease, border-color 0.18s ease;
+}
+.sp-status-link:hover { color: #fff; border-bottom-color: #fff; }
+.sp-status-link svg { width: 13px; height: 13px; }
+
+/* everything fixed to the top moves down by the banner's height */
+html[data-status] .lp-nav { top: var(--sp-status-h); }
+html[data-status] .lp-mobile-menu { top: calc(64px + var(--sp-status-h)); }
+/* pages that pin a section to the viewport keep owning the full viewport, but the
+   fixed header above them is now taller, so the fold's usable area shrinks by the
+   banner's height. border-box is global, so padding-top does exactly that and the
+   five max-height tiers below keep working off the same numbers. */
+/* the fold is tuned to fill the viewport exactly, so the banner's height has to
+   come out of somewhere. the bottom padding is the only slack that is not load
+   bearing: the top padding is what clears the nav. */
+html[data-status] .bad-fold .lp-section.bad-demo { padding-bottom: 0; }
+
+@media (max-width: 720px) {
+    .sp-status { padding: 0 0.8rem; font-size: 0.76rem; }
+    .sp-status-inner { gap: 0.45rem; flex-wrap: wrap; justify-content: center; }
+}
+
+/* ---- while the incident stops mail reaching us ----
+   a form that cannot deliver must not look ready to send. the control is dimmed
+   and inert, and demo-form.js also disables it, so this is not styling alone. */
+html[data-mail-down] .lp-demo-submit,
+html[data-mail-down] .lp-demo-note a[href^="mailto:"],
+html[data-mail-down] a.bad-mailto {
+    opacity: 0.45;
+    pointer-events: none;
+    cursor: not-allowed;
+}
+.lp-demo-mail-down {
+    margin-top: 0.8rem;
+    padding: 0.7rem 0.9rem;
+    border: 1px solid rgba(255,180,90,0.32);
+    border-radius: 10px;
+    background: rgba(255,180,90,0.08);
+    font-size: 0.82rem; line-height: 1.5;
+    color: rgba(255,224,190,0.92);
+}
