@@ -1351,6 +1351,31 @@
             var text = el.getAttribute('data-sp-' + lang);
             if (text) el.textContent = text;
         });
+        fitStatusBanner(bar);
+    }
+
+    // The bar's height is a custom property because the fixed nav and the fold pages
+    // are both offset by it. A fixed number cannot fit every message, language and
+    // screen width, and guessing high leaves a half-empty bar while guessing low
+    // pushes the button through the border. So measure what is actually there.
+    function fitStatusBanner(bar) {
+        var inner = bar.querySelector('.sp-status-inner');
+        if (!inner) return;
+        var apply = function () {
+            var cs = getComputedStyle(bar);
+            var pad = (parseFloat(cs.paddingTop) || 0) + (parseFloat(cs.paddingBottom) || 0) +
+                (parseFloat(cs.borderBottomWidth) || 0);
+            var height = Math.ceil(inner.getBoundingClientRect().height + pad);
+            document.documentElement.style.setProperty('--sp-status-h', height + 'px');
+        };
+        apply();
+        // fonts land after first paint and change how the message wraps
+        if (document.fonts && document.fonts.ready) document.fonts.ready.then(apply);
+        var timer;
+        window.addEventListener('resize', function () {
+            clearTimeout(timer);
+            timer = setTimeout(apply, 120);
+        });
     }
 
     function buildOriginalToggle(lang) {

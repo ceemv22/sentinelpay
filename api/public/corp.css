@@ -2749,23 +2749,38 @@ html.theme-light .lp-demo-select-list { scrollbar-width: thin; scrollbar-color: 
    exactly it; hard-coding the number in three places is how these drift. */
 :root { --sp-status-h: 0px; }
 html[data-status] { --sp-status-h: 46px; }
-@media (max-width: 860px) { html[data-status] { --sp-status-h: 62px; } }
+@media (max-width: 860px) { html[data-status] { --sp-status-h: 90px; } }
 
 .sp-status {
     position: fixed; top: 0; left: 0; right: 0;
     z-index: 1001; /* above the nav, which is 1000 */
     height: var(--sp-status-h);
     display: flex; align-items: center; justify-content: center;
-    padding: 0 1rem;
+    /* the padding is what the measured height is built from, so it is the one place
+       the bar's air is set. the extra pixel at the bottom offsets the border, which
+       sits inside the height and would otherwise push the content half a pixel up. */
+    /* the extra pixel goes on top, not the bottom: the border sits inside the box at
+       the bottom, so the content has to move down by it to sit on the true centre. */
+    padding: calc(0.5rem + 1px) 1rem 0.5rem;
     /* amber, not brand cyan: a fault should not look like a feature */
     background: linear-gradient(180deg, rgba(255,176,60,0.16) 0%, rgba(255,176,60,0.08) 100%), #0a0a0c;
     border-bottom: 1px solid rgba(255,176,60,0.28);
-    font-size: 0.85rem; line-height: 1.35;
+    font-size: 0.84rem; line-height: 1.35;
     color: rgba(255,236,214,0.92);
 }
 .sp-status-inner { display: flex; align-items: center; gap: 0.7rem; max-width: 1200px; }
-.sp-status-ico { flex: 0 0 auto; width: 17px; height: 17px; color: #ffb43c; }
-.sp-status-text { min-width: 0; }
+/* a triangle box-centres high: its mass is at the base and its apex is a point,
+   so it needs a nudge down to sit on the same line as the type beside it. */
+.sp-status-ico { flex: 0 0 auto; width: 17px; height: 17px; color: #ffb43c; transform: translateY(0.5px); }
+/* the bar has a fixed height because the nav and the fold pages are offset by it,
+   so the message has to be bounded. one line with room to spare on desktop, two on
+   mobile where it stacks above the button. anything longer is cut rather than
+   allowed to push the button through the bottom border. */
+/* no clamp: cutting an incident message mid-sentence is worse than a taller bar.
+   the height below is a starting value; the client measures the real content once
+   the text is in its final language and writes the exact number back. an essay is
+   still bounded, at four lines, so nobody can take over the viewport. */
+.sp-status-text { min-width: 0; max-height: 5.4em; overflow: hidden; }
 /* a real button, sized like the nav's own, so it reads as something to press */
 .sp-status-btn {
     flex: 0 0 auto; display: inline-flex; align-items: center; gap: 0.35rem;
@@ -2773,7 +2788,7 @@ html[data-status] { --sp-status-h: 46px; }
     border-radius: 999px;
     border: 1px solid rgba(255,176,60,0.45);
     background: rgba(255,176,60,0.12);
-    color: #ffd8a0; font-size: 0.79rem; font-weight: 700; text-decoration: none;
+    color: #ffd8a0; font-size: 0.79rem; font-weight: 700; line-height: 1.35; text-decoration: none;
     white-space: nowrap;
     transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
 }
@@ -2783,15 +2798,70 @@ html[data-status] { --sp-status-h: 46px; }
 /* everything fixed to the top moves down by the banner's height */
 html[data-status] .lp-nav { top: var(--sp-status-h); }
 html[data-status] .lp-mobile-menu { top: calc(64px + var(--sp-status-h)); }
-/* the fold is tuned to fill the viewport exactly, so the banner's height has to
-   come out of somewhere. the bottom padding is the only slack that is not load
-   bearing: the top padding is what clears the nav. */
+/* the fold owns exactly one viewport. a fixed banner does not push content, so the
+   fold has to be told: start below it, and be that much shorter. its inner padding
+   then still clears the nav, because the nav moved down by the same amount. this is
+   the whole adjustment, and it tracks whatever height the banner turns out to be. */
+html[data-status] .bad-fold {
+    margin-top: var(--sp-status-h);
+    min-height: calc(100vh - var(--sp-status-h));
+    min-height: calc(100dvh - var(--sp-status-h));
+}
+/* the fold's tiers shrink its padding as the viewport gets shorter, but they key off
+   the viewport, which has not changed: only the room inside it has. so give back the
+   bottom padding, which is the one part of the tuning that is pure breathing space. */
 html[data-status] .bad-fold .lp-section.bad-demo { padding-bottom: 0; }
 
+/* The tiers above shrink the fold as the viewport gets shorter. The banner does not
+   shrink the viewport, only the room inside it, so with the banner up each tier has
+   to start ~48px earlier. Same declarations, thresholds moved. */
+@media (max-height: 1028px) {
+    html[data-status] .bad-logo-bar { padding: 1.2rem 0; height: auto; }
+}
+@media (max-height: 948px) {
+    html[data-status] .bad-fold .lp-section.bad-demo { padding-top: 5.6rem; }
+    html[data-status] .bad-trial-divider { margin: 1.3rem 0 1rem; }
+}
+@media (max-height: 848px) {
+    html[data-status] .bad-fold .lp-section.bad-demo { padding-top: 5.2rem; }
+    html[data-status] .bad-trial-divider { margin: 1rem 0 0.8rem; }
+    html[data-status] .bad-trial-q { font-size: 0.88rem; }
+    html[data-status] .bad-form-card { padding: 1.9rem 2.2rem !important; }
+}
+@media (max-height: 788px) {
+    html[data-status] .bad-fold .lp-section.bad-demo { padding-top: 4.9rem; }
+    html[data-status] .bad-trial-divider { margin: 0.7rem 0 0.55rem; }
+    html[data-status] .bad-logo-bar { padding: 0.9rem 0; }
+}
+@media (max-height: 748px) {
+    html[data-status] .bad-fold .lp-section.bad-demo { padding-top: 4.7rem; }
+    html[data-status] .bad-form-card { padding: 1.5rem 2.2rem !important; }
+    html[data-status] .bad-trial-divider { margin: 0.55rem 0 0.45rem; }
+    html[data-status] .bad-logo-bar { padding: 0.7rem 0; }
+}
+/* below this there is no tier left to borrow from, so one is added: the tightest
+   the fold goes. the top padding still clears the 64px nav, and the card's pinned
+   step is untouched because the turnstile widget needs every pixel of it. */
+@media (max-height: 700px) {
+    html[data-status] .bad-fold .lp-section.bad-demo { padding-top: 4.15rem; }
+    html[data-status] .bad-form-card { padding: 1.1rem 2.2rem !important; }
+    html[data-status] .bad-trial-divider { margin: 0.3rem 0 0.25rem; }
+    html[data-status] .bad-logo-bar { padding: 0.28rem 0; }
+    html[data-status] .bad-title { margin-bottom: 0.6rem; }
+}
+
 @media (max-width: 860px) {
-    .sp-status { padding: 0 0.8rem; font-size: 0.78rem; }
-    .sp-status-inner { gap: 0.5rem; flex-wrap: wrap; justify-content: center; text-align: center; }
-    .sp-status-btn { padding: 0.28rem 0.65rem; font-size: 0.74rem; }
+    .sp-status { padding: calc(0.6rem + 1px) 0.8rem 0.6rem; font-size: 0.78rem; }
+    .sp-status-inner {
+        gap: 0.4rem 0.45rem; flex-wrap: wrap; justify-content: center; text-align: center;
+        width: 100%;
+    }
+    /* icon and text share the first row, the button takes the second */
+    .sp-status-ico { transform: translateY(1.5px); }
+    /* basis 0, not auto: with auto the message's own width is its basis, so a long
+       one wrapped to its own row and left the triangle stranded above it */
+    .sp-status-text { flex: 1 1 0; text-align: left; }
+    .sp-status-btn { flex: 0 0 auto; padding: 0.28rem 0.7rem; font-size: 0.74rem; margin: 0 auto; }
 }
 
 /* ---- while the incident stops mail reaching us ----
