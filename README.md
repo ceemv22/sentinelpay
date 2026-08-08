@@ -94,6 +94,12 @@ a trial sign-up is verified automatically: the work email must sit on the compan
 
 every submission is written to `LOG_DIR/submissions-YYYY-MM.jsonl` **and** to stdout before any email is attempted, so a bounce, an outage or a missed inbox never costs a lead. emails are sent through resend from `noreply@sentinelpay.org`, in the site's own dark house style, with a plain-text alternative.
 
+## contributing
+
+`CONTRIBUTING.md` is the short list of things that are easy to get wrong here: the
+house style, the two rules that break production if forgotten, and the parts of this
+codebase that behave in a way you would not expect.
+
 ## running locally
 
 ```bash
