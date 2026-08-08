@@ -38,6 +38,14 @@ tools/                the translation audit that gates every release
 
 no build step, no framework, no bundler. the pages are html on disk; the server adds what only it can know.
 
+### branches
+
+| branch | what it is |
+| --- | --- |
+| `main` | the site, deployed on every push |
+| `dev` | an older line of work, last touched june 2026 |
+| `legacy/app-snapshot` | the application this repository used to hold, before it was stripped down to the site: prisma schema, supabase auth, the dashboard. kept because it is the only copy, and worth reading before rebuilding any of it |
+
 ## the site
 
 | page | url |
