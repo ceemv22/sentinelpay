@@ -30,8 +30,8 @@ const trustProxySetting = resolveTrustProxySetting(process.env.TRUST_PROXY);
 app.set('trust proxy', trustProxySetting === undefined ? 1 : trustProxySetting);
 
 // Only trust the client-supplied cf-connecting-ip header when we know every request
-// arrives through Cloudflare (ENFORCE_CLOUDFLARE=true). Otherwise it is spoofable —
-// an attacker could rotate it per request to get a fresh rate-limit bucket and bypass
+// arrives through Cloudflare (ENFORCE_CLOUDFLARE=true). Otherwise it is spoofable.
+// An attacker could rotate it per request to get a fresh rate-limit bucket and bypass
 // the demo-form limit. Default: Express's trust-proxy-derived req.ip (not spoofable
 // past the immediate proxy).
 const enforceCloudflare = String(process.env.ENFORCE_CLOUDFLARE || '').trim().toLowerCase() === 'true';
@@ -217,7 +217,7 @@ app.use(express.json({ limit: '10kb' }));
 //   2. their browser, so the "how do I switch javascript on" link is actually useful
 //
 // Both are injected as plain html: an attribute on <html> and an ordinary <a>.
-// Never as an inline <script> — the CSP hashes are computed at boot from the
+// Never as an inline <script>. The CSP hashes are computed at boot from the
 // files on disk, so anything injected per request would be blocked outright.
 // The javascript-disabled notice has to be plain markup for the same reason:
 // it is the one screen that must work with scripting off.
@@ -779,8 +779,8 @@ app.post('/v1/demo-request', requireCloudflareOrigin, demoRequestLimiter, async 
     try {
         const b = req.body || {};
 
-        // Honeypot: a hidden field real users never fill. If it's populated, it's a bot —
-        // pretend success and silently drop (no email, don't reveal the trap).
+        // Honeypot: a hidden field real users never fill. If it's populated, it's a bot.
+        // Pretend success and silently drop (no email, don't reveal the trap).
         if (typeof b.company_url === 'string' && b.company_url.trim() !== '') {
             return res.json({ ok: true });
         }
