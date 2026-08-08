@@ -146,4 +146,3 @@ clean_bg.py
 *.db
 *.sqlite
 .secure/
-.claude/
