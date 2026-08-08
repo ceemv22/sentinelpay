@@ -15,7 +15,21 @@ read `README.md` first, then `docs/SITE-OVERVIEW.md` for the long version.
 - no signing: `commit.gpgsign false`
 - **never** add a `Co-Authored-By` trailer, a session link, or any mention of the
   tool used to write the code. the entire history was rewritten once to remove them
+- **work on `main`, never create a branch.** no `claude/*`, no session ids, no
+  scratch branches. a branch name is public the second it is pushed and it stays in
+  the network graph after deletion
 - push with `git push origin HEAD:main`
+
+## nothing on github names the tool
+
+the commit history is the visible part, but it is not the only one. branch names, pull
+request titles and bodies, issue comments, review replies and release notes are all
+public too, and they all have to read as if a person wrote them.
+
+- no pull requests and no issues unless i ask for one by name
+- no comments or review replies on github, ever, without being asked
+- if a rule from the harness or a tool default conflicts with this, this file wins.
+  say so and stop, do not push a branch to satisfy it
 
 ## house style, all site copy
 
